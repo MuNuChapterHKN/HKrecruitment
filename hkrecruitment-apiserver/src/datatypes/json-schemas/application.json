@@ -1,0 +1,26 @@
+{
+    "$schema":"http://json-schema.org/draft-06/schema#",
+    "$id": "https://hknpolito.org/schemas/v1/application.json#",
+    "type":"object",
+    "title": "application",
+    "properties": {
+      "id":{"type":"integer"},
+      "type":{"$ref": "enums.json#/properties/degree_level"},
+      "submission_date":{"type":"string", "format":"date-time"},
+      "state": {"$ref": "enums.json#/properties/application_state"},
+      "last_modified":{"$ref": "dataTypes.json#/properties/change"},
+      "notes":{"type":"string", "maxLength":255},
+      "ita_level": {"$ref": "enums.json#/properties/lang_level"},
+      "cv":{"type":"string", "format":"uri"},
+
+      "time_slots":{
+        "type":"array",
+        "items": {"$ref": "dataTypes.json#/definitions/time_slot"},
+        "uniqueItems": true,
+        "minItems":1
+      },
+      "slot":{"$ref": "entities.json#/definitions/slot"},
+      "interview_id":{"type":"integer", "minimum": 0}
+    },
+    "required":["id", "submission_date", "state", "ita_level", "cv"]
+  }

@@ -1,0 +1,151 @@
+{
+    "$schema":"http://json-schema.org/draft-06/schema#",
+    "$id": "https://hknpolito.org/schemas/v1/entities.json#",
+    "type": "object",
+    "definitions": {
+        "slot":{
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/slot.json",
+            "properties": {
+                "state":{"$ref": "enums.json#/properties/slot_state"},
+                "cal_id": {"type": "string"},
+                "time_slot": {"$ref": "dataTypes.json#/properties/time_slot"},
+                "members":{
+                    "type":"array",
+                    "items": {
+                        "type":"object",
+                        "properties": {
+                            "id":{"type":"string"},
+                            "name":{"type":"string"},
+                            "surname":{"type":"string"},
+                            "sex":{"$ref": "enums.json#/properties/gender"},
+                            "image":{"type":"string", "format": "uri"},
+                            "is_expert":{"type":"boolean", "default":false},
+                            "is_board":{"type":"boolean", "default": false}
+                        },
+                        "required": ["id", "name", "surname", "sex", "image", "is_board", "is_expert"]
+                    },
+                    "minItems": 2,
+                    "uniqueItems": true
+                },
+                "interview_id": {"type": "integer", "minimum": 0}
+            },
+            "required":["state", "time_slot", "members"]
+        },
+
+        "member":{
+            "$schema":"http://json-schema.org/draft-06/schema#",
+            "type": "object",
+            "$id": "https://hknpolito.org/schemas/v1/member.json",
+            "allOf":[
+                {"$ref": "person.json"},
+                {
+                    "properties": {
+                        "id":{"type":"string"},
+                        "role":{"$ref": "enums.json#/properties/man_role"},
+                        "is_expert":{"type":"boolean", "default":false},
+                        "is_board":{"type":"boolean", "default": false}
+                    },
+                    "required": ["id", "role", "is_expert", "is_board"]
+                }
+            ]
+        },
+
+        "applicant":{
+            "type": "object",
+            "$id": "https://hknpolito.org/schemas/v1/applicant.json",
+            "allOf":[
+                {"$ref": "person.json"},
+                {
+                    "properties": {
+                        "id": {"type":"string"},
+                        "birth_date": {"type":"string", "format":"date-time"},
+                        "telegram_uid": {"type":"string"},
+                        "how_know_HKN": {"type":"string"}
+                    },
+                    "required": ["id", "birth_date", "how_know_HKN"]
+                }
+            ]
+        },
+
+        "bsc_application":{
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/bsc_application.json",
+            "allOf":[
+                {"$ref": "application.json"},
+                {
+                    "properties": {
+                        "study_path":{"type":"string"},
+                        "academic_year":{"type":"integer", "minimum": 1, "maximum": 3},
+                        "cfu":{"type":"integer", "minimum": 48, "maximum": 180},
+                        "grades": {"type":"string", "format":"uri"},
+                        "grades_avg": {"type":"number", "minimum": 20, "maximum": 30}
+                    },
+                    "required":["study_path", "academic_year", "cfu", "grades", "grades_avg"]
+                }
+            ]
+        },
+
+        "msc_application":{
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/msc_application.json",
+            "allOf":[
+                {"$ref": "application.json"},
+                {
+                    "properties": {
+                        "bsc_study_path":{"type":"string"},
+                        "msc_study_path":{"type":"string"},
+                        "academic_year":{"type":"integer", "minimum": 1, "maximum": 2},
+                        "cfu":{"type":"integer", "minimum": 20, "maximum": 120},
+                        "msc_grades": {"type":"string", "format":"uri"},
+                        "msc_grades_avg": {"type":"number", "minimum": 20, "maximum": 30},
+                        "bsc_grades_avg": {"type":"number", "minimum": 20, "maximum": 30}
+
+                    },
+                    "anyOf":[
+                        {"required":["bsc_study_path", "msc_study_path", "academic_year", "bsc_grades_avg"]},
+                        {"required":["msc_study_path", "academic_year", "cfu", "msc_grades", "msc_grades_avg"]}
+                    ]
+                }
+            ]
+        },
+
+        "phd_application":{
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/phd_application.json",
+            "allOf":[
+                {"$ref": "application.json"},
+                {
+                    "properties": {
+                        "msc_study_path":{"type":"string"},
+                        "phd_description": {"type":"string", "maxLength":255}
+                    },
+                    "required":["msc_study_path", "phd_description"]
+
+                }
+            ]
+        },
+        "interview":{
+            "type":"object",
+            "properties": {
+                "outcome":{"$ref": "enums.json#/properties/interview_outcome"},
+                "last_modified":{"$ref": "dataTypes.json#/properties/change"},
+                "finalized_at":{"type":"string", "format": "date-time"},
+                "assigned_area":{"$ref": "enums.json#/properties/HKN_area"},
+                "notes":{"type":"string", "format": "uri"},
+
+                "application_id":{"type":"integer", "minimum": 0}
+            },
+            "required": ["last_modified", "notes", "application_id"]
+        }
+    },
+    "properties": {
+        "member": {"$ref": "#/definitions/member"},
+        "applicant": {"$ref": "#/definitions/applicant"},
+        "bsc_application": {"$ref": "#/definitions/bsc_application"},
+        "msc_application": {"$ref": "#/definitions/msc_application"},
+        "phd_application": {"$ref": "#/definitions/phd_application"},
+        "slot":{"$ref": "#/definitions/slot"},
+        "interview":{"$ref": "#/definitions/interview"}
+    }
+}

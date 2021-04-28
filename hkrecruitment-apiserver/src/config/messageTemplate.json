@@ -1,0 +1,19 @@
+{
+  "$schema": "./json-schema/messageTemplate.json",
+  "new_application": {
+    "ita": {
+      "body": "Car* name surname, la tua candidatura è stata accettata!",
+      "fields": [
+        {"key": "name", "value": "Riccardo"},
+        {"key": "surname", "value": "Zaccone"}
+      ],
+      "vocabulary": [
+        {
+          "placeholder": "Car*",
+          "female": "Cara",
+          "male": "Caro"
+        }
+      ]
+    }
+  }
+}

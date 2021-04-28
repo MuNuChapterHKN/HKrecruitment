@@ -1,0 +1,27 @@
+{
+    "$schema":"http://json-schema.org/draft-06/schema#",
+    "$id": "https://hknpolito.org/schemas/v1/enums.json#",
+    "type": "object",
+    "definitions": {
+        "availability_state": {"enum": ["subscribed", "used", "confirmed", "usedAndConfirmed", "cancelled"]},
+        "interview_outcome": {"enum": ["member_accepted", "mentee_accepted", "rejected"]},
+        "application_state": {"enum": ["new", "accepted", "rejected", "confirmed", "finalized", "refused_by_applicant"]},
+        "slot_state": {"enum": ["free", "assigned", "reserved", "rejected"]},
+        "gender":{"enum": ["male", "female"]},
+        "man_role":{"enum": ["admin", "supervisor", "clerk", "none"]},
+        "lang_level":{"enum": ["B2", "C1", "C2", "native_speaker"]},
+        "HKN_area":{"enum": ["information_technology", "human_resources", "tutoring", "communication", "events", "corporate_training"]},
+        "degree_level":{"enum": ["BSc", "MSc", "PhD"]}
+    },
+    "properties":{
+        "availability_state": {"$ref":  "#/definitions/availability_state"},
+        "interview_outcome": {"$ref":  "#/definitions/interview_outcome"},
+        "application_state": {"$ref":  "#/definitions/application_state"},
+        "slot_state": {"$ref":  "#/definitions/slot_state"},
+        "gender":{"$ref": "#/definitions/gender"},
+        "man_role": {"$ref": "#/definitions/man_role"},
+        "lang_level": {"$ref": "#/definitions/lang_level"},
+        "HKN_area":{"$ref": "#/definitions/HKN_area"},
+        "degree_level":{"$ref": "#/definitions/degree_level"}
+    }
+}

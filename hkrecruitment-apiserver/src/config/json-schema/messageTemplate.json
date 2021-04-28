@@ -1,0 +1,73 @@
+{
+    "$schema":"http://json-schema.org/draft-06/schema#",
+    "id": "https://hknpolito.org/schemas/v1/messageTemplate.json#",
+    "title": "messageTemplates",
+    "type":"object",
+    "definitions": {
+        "messageKey": {
+            "enum": ["name", "surname", "additionalText"]
+        },
+        "messageEntry": {
+            "type": "object",
+            "properties": {
+                "key": {"$ref": "#/definitions/messageKey"},
+                "value": {"type": "string"}
+            },
+            "required": ["key", "value"],
+            "additionalProperties": false
+        },
+        "messageParamList": {
+            "type": "array",
+            "items": {"$ref":  "#/definitions/messageEntry"},
+            "uniqueItems": true
+        },
+        "vocabularyEntry": {
+            "type": "object",
+            "properties": {
+                "placeholder": {"type": "string"},
+                "male": {"type": "string"},
+                "female": {"type": "string"}
+            },
+            "additionalProperties": false,
+            "required": ["placeholder", "male", "female"]
+        },
+        "messageVocabulary": {
+            "type": "array",
+            "items": {"$ref": "#/definitions/vocabularyEntry"},
+            "uniqueItems": true
+        },
+        "message":{
+            "type":"object",
+            "properties": {
+                "body":{"type":"string"},
+                "fields": {"$ref": "#/definitions/messageParamList"},
+                "vocabulary": {"$ref": "#/definitions/messageVocabulary"}
+            },
+            "additionalProperties": false,
+            "required": ["body", "fields", "vocabulary"]
+        },
+        "messageTemplate": {
+            "type": "object",
+            "properties": {
+                "ita": {"$ref": "#/definitions/message"},
+                "eng": {"$ref": "#/definitions/message"}
+            },
+            "required": ["ita", "eng"],
+            "additionalProperties": false
+        }
+    },
+    "properties": {
+        "new_application":{ "$ref": "#/definitions/messageTemplate"},
+        "application_accepted":{ "$ref": "#/definitions/messageTemplate"},
+        "application_revocated":{ "$ref": "#/definitions/messageTemplate"},
+        "require_availability_confirmation":{ "$ref": "#/definitions/messageTemplate"},
+        "slot_reserved":{ "$ref": "#/definitions/messageTemplate"},
+        "interview_member_accepted":{ "$ref": "#/definitions/messageTemplate"},
+        "interview_mentee_accepted":{ "$ref": "#/definitions/messageTemplate"},
+        "interview_rejected":{ "$ref": "#/definitions/messageTemplate"}
+    },
+    "additionalProperties": false,
+    "required": ["new_application", "application_accepted", "application_revocated",
+        "require_availability_confirmation", "slot_reserved", "interview_member_accepted",
+        "interview_mentee_accepted", "interview_rejected"]
+}
