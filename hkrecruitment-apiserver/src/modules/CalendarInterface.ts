@@ -27,8 +27,32 @@
 
 import {TimeSlot} from "../datatypes/dataTypes";
 
+/**
+ * Represents a calendar service
+ * @interface
+ */
 export interface CalendarInterface{
-    insertEvent(when:TimeSlot, title:string, description:string, attendees: {email:string}[]):string;
-    getEvent(event_id:string):any;
-    deleteEvent(event_id:string):void;
+    /**
+     * Inserts an event on the calendar
+     * @param {TimeSlot} when indicates the temporal extremes of the event
+     * @param title the event's title
+     * @param description the event's description
+     * @param attendees list of email address of the attendees
+     * @return {Promise<string>} the id of the created event
+     */
+    insertEvent(when:TimeSlot, title:string, description:string, attendees: {email:string}[]):Promise<string>;
+
+    /**
+     * Retrieves an event
+     * @param event_id the id of the event
+     * @return {Promise<any>} the data returned by the service in the response
+     */
+    getEvent(event_id:string):Promise<any>;
+
+    /**
+     * Deletes an event
+     * @param event_id the id of the event
+     * @return {Promise<number>} the HTTP status code of the response
+     */
+    deleteEvent(event_id:string):Promise<number>;
 }
