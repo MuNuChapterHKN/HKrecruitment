@@ -33,38 +33,40 @@ describe("GCalendar Test", ()=>{
     const randomId="jnfkjwfjkwfkwwk";
     const startDate=new Date();
     const endDate=new Date();
-    endDate.setHours(23, 59)
+    const title ="Test Event (You can safely delete it)";
+    const descr="Test Event description";
+    const attendees=[{email:"haipubmnzrwwtpfurg@upived.online"}];
+    startDate.setSeconds(0, 0);
+    endDate.setHours(23, 59, 0, 0)
     const ts:TimeSlot={start: startDate.toISOString(), end:endDate.toISOString()}
+    let eventId:string;
+    describe("Event creation and rejections using invalid id", ()=>{
+        it("insertEvent", ()=>{
+            return cal.insertEvent(ts, title, descr,attendees)
+                .then((id)=>{eventId=id; expect(id).toBeDefined()});
+        });
+        it("getEvent with random id gets rejects", ()=>{
+            return expect(cal.getEvent(randomId)).rejects.toBeDefined();
+        });
+        it("deleteEvent with random id gets rejects", ()=>{
+            return expect(cal.deleteEvent(randomId)).rejects.toBeDefined();
+        });
 
-    it("insertEvent", ()=>{
-        return expect(cal.insertEvent(ts, "Test Event (You can safely delete it)", "Test Event description",
-            [{email:"haipubmnzrwwtpfurg@upived.online"}])
-        ).resolves.toBeDefined();
-    });
-    it("getEvent with random id gets rejects", ()=>{
-        return expect(cal.getEvent(randomId)).rejects.toBeDefined();
-    });
-    it("getEvent resolves", ()=>{
-        let eventId:string;
-        cal.insertEvent(ts, "Test Event", "Test Event description",
-            [{email:"haipubmnzrwwtpfurg@upived.online"}])
-            .then((id)=>{
-                eventId=id;
-                expect(id).toBeDefined();
-                expect(cal.getEvent(eventId)).resolves.toBeDefined();
+        describe("Event manipulation from valid id", ()=>{
+            it("getEvent resolves", ()=>{
+                return cal.getEvent(eventId).then((event)=>{
+                    expect(event.description).toEqual(descr);
+                    expect(event.summary).toEqual(title);
+                    expect(event.attendees[0].email).toEqual(attendees[0].email);
+                    expect(new Date(event.start.dateTime)).toEqual(startDate);
+                    expect(new Date(event.end.dateTime)).toEqual(endDate);
+                })
             });
-    });
-    it("deleteEvent with random id gets rejects", ()=>{
-        expect(cal.deleteEvent(randomId)).rejects.toBeDefined();
-    });
-    it("deleteEvent resolves", ()=>{
-        let eventId:string;
-        cal.insertEvent(ts, "Test Event", "Test Event description",
-            [{email:"haipubmnzrwwtpfurg@upived.online"}])
-            .then((id)=>{
-                eventId=id;
-                expect(id).toBeDefined();
-                expect(cal.deleteEvent(eventId)).resolves.toBe(204);
+            describe("Deletion", ()=>{
+                it("deleteEvent resolves", ()=>{
+                    return expect(cal.deleteEvent(eventId)).resolves.toBe(204);
+                });
             });
+        });
     });
 })
