@@ -32,41 +32,49 @@
 export interface FileStorageInterface {
      /**
       * Creates a folder
-      * @param parent_folder the id of the parent folder
       * @param name the name to assign to the folder to be created
+      * @param parent_folder? the id of the parent folder
       * @return {Promise<string>} the id of the created folder
       */
-     createFolder(parent_folder:string, name:string): Promise<string>;
+     createFolder(name: string, parent_folder?: string): Promise<string>;
 
      /**
       * Uploads a file
-      * @param parent_folder the id of the parent folder
       * @param name the name to assign to the file to be created
       * @param rawData the data to upload
+      * @param parent_folder? the id of the parent folder
       * @return {Promise<string>} the id of the created file
       */
-     insertFile(parent_folder:string, name:string, rawData: Uint8Array): Promise<string>;
+     insertFile(name: string, rawData: Uint8Array, parent_folder?: string): Promise<string>;
 
      /**
       * Creates a file copying a file from the same service
       * @param file_id the id of the file to be copied
-      * @param parent_folder the id of the parent folder
       * @param name the name to assign to the file to be created
+      * @param parent_folder? the id of the parent folder
       * @return {Promise<string>} the id of the created file
       */
-     copyFileFromStorage(file_id:string, parent_folder:string, name:string): Promise<string>;
+     copyFileFromStorage(file_id: string, name: string, parent_folder?: string): Promise<string>;
 
      /**
-      * Deletes a file
-      * @param file_id the id of the file to be deleted
+      * Deletes a file or directory
+      * @param item_id the id of the file to be deleted
       * @return {Promise<number>} the HTTP status code of the response
       */
-     deleteFile(file_id:string): Promise<number>;
+     deleteItem(item_id: string): Promise<number>;
 
      /**
       * Retrieves the id of a folder given its name
       * @param name the name of the target folder
+      * @param parent_folder? the id of the folder to search into
       * @return {Promise<string>} the id of the folder
       */
-     getFolderByName(name:string): Promise<string>;
+     getFolderByName(name: string, parent_folder?: string): Promise<string>;
+
+     /**
+      * Extracts the id of item (file or folder) from a string
+      * @param src a string containing the id of the resource
+      * @return {string} the id of the resource
+      */
+     extractIdFrom(src: string): string;
 }

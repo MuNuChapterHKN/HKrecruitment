@@ -37,7 +37,7 @@ import {Readable} from "stream";
  * @implements FileStorageInterface
  */
 export class GDriveStorage implements FileStorageInterface{
-    copyFileFromStorage(file_id: string, parent_folder: string, name: string): Promise<string> {
+    copyFileFromStorage(file_id: string, name: string, parent_folder?: string): Promise<string> {
         return new Promise<string>((resolve, reject)=>{
             getAuth().then((auth: OAuth2Client)=>{
                 const drive = google.drive({version: 'v3', auth});
@@ -45,7 +45,7 @@ export class GDriveStorage implements FileStorageInterface{
                 drive.files.copy({
                     fileId: file_id,
                     resource: {
-                        parents: [parent_folder],
+                        parents: parent_folder ? [parent_folder]:undefined,
                         name: name
                     },
                     supportsAllDrives: true,
@@ -56,17 +56,15 @@ export class GDriveStorage implements FileStorageInterface{
         })
     }
 
-    createFolder(parent_folder: string, name: string): Promise<string> {
+    createFolder(name: string, parent_folder?: string): Promise<string> {
         return new Promise((resolve, reject)=>{
             getAuth().then((auth: OAuth2Client)=>{
                 const fileMetadata = {
                     name: name,
                     mimeType: 'application/vnd.google-apps.folder',
-                    parents: undefined
+                    parents: parent_folder ? [parent_folder]:undefined,
                 };
-                if(parent_folder && parent_folder!=="")
-                    fileMetadata.parents=[parent_folder];
-                this.getFolderByName(name).then((folder_id)=>{
+                this.getFolderByName(name, parent_folder).then((folder_id)=>{
                     if(folder_id)
                         resolve(folder_id);
                     else{
@@ -82,27 +80,27 @@ export class GDriveStorage implements FileStorageInterface{
         });
     }
 
-    deleteFile(file_id: string): Promise<number> {
+    deleteItem(item_id: string): Promise<number> {
         return new Promise((resolve, reject)=>{
             getAuth().then((auth:OAuth2Client)=>{
                 const drive = google.drive({version: 'v3', auth});
                 drive.files.delete({
-                    fileId: file_id // @ts-ignore
+                    fileId: item_id // @ts-ignore
                 }).then((res)=>resolve(res.status)).catch((err)=>reject(err));
             }).catch(err=>reject(err));
         })
     }
 
-    insertFile(parent_folder: string, name: string, rawData: Uint8Array): Promise<string> {
+    insertFile(name: string, rawData: Uint8Array, parent_folder?: string): Promise<string> {
         return new Promise<string>((resolve, reject)=>{
             getAuth().then((auth:OAuth2Client)=>{
                 const drive = google.drive({version: 'v3', auth});
                 const fileMetadata = {
-                    title: name,
-                    parents: [parent_folder],
+                    name: name,
+                    parents: parent_folder ? [parent_folder]:undefined,
                 };
                 const stream = new Readable();
-                stream.push(rawData);
+                stream.push(rawData); stream.push(null);
                 const media = {
                     mimeType: 'application/pdf',
                     body: stream
@@ -117,12 +115,13 @@ export class GDriveStorage implements FileStorageInterface{
         });
     }
 
-    getFolderByName(name: string): Promise<string>{
+    getFolderByName(name: string, parent_folder?: string): Promise<string>{
         return new Promise((resolve, reject)=>{
             getAuth().then((auth: OAuth2Client)=>{
                 const drive = google.drive({version: 'v3', auth});
+                const inParent= parent_folder ? ` and '${parent_folder}' in parents`:"";
                 drive.files.list({
-                    q: `mimeType ='application/vnd.google-apps.folder' and name='${name}'`,
+                    q: `mimeType ='application/vnd.google-apps.folder' and name='${name}'`+inParent,
                     fields: 'files(id, name)',
                 }).then((res)=>{
                     if (res.data.files.length===1)
@@ -130,9 +129,17 @@ export class GDriveStorage implements FileStorageInterface{
                     else if(res.data.files.length===0)
                         resolve(null); //directory not present
                     else
-                        reject("Multiple folders with same name");
+                        reject("Multiple folders with same name inside the same folder");
                 }).catch((err)=>reject(err));
             })
         });
+    }
+    /**
+     * Extracts the id of item (file or folder) from the sharing url
+     * @param src the url of the resource
+     * @return {string} the id of the resource
+     */
+    extractIdFrom(src: string): string{
+        return src.match(/[-\w]{25,}/)[0];
     }
 }
