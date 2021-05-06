@@ -5,21 +5,7 @@
     "type":"object",
     "definitions": {
         "messageKey": {
-            "enum": ["name", "surname", "additionalText"]
-        },
-        "messageEntry": {
-            "type": "object",
-            "properties": {
-                "key": {"$ref": "#/definitions/messageKey"},
-                "value": {"type": "string"}
-            },
-            "required": ["key", "value"],
-            "additionalProperties": false
-        },
-        "messageParamList": {
-            "type": "array",
-            "items": {"$ref":  "#/definitions/messageEntry"},
-            "uniqueItems": true
+            "enum": ["name", "surname", "additionalText", "start", "end"]
         },
         "vocabularyEntry": {
             "type": "object",
@@ -39,12 +25,17 @@
         "message":{
             "type":"object",
             "properties": {
+                "subject": {"type": "string"},
                 "body":{"type":"string"},
-                "fields": {"$ref": "#/definitions/messageParamList"},
+                "fields": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/messageKey"},
+                    "uniqueItems": true
+                },
                 "vocabulary": {"$ref": "#/definitions/messageVocabulary"}
             },
             "additionalProperties": false,
-            "required": ["body", "fields", "vocabulary"]
+            "required": ["subject","body", "fields", "vocabulary"]
         },
         "messageTemplate": {
             "type": "object",

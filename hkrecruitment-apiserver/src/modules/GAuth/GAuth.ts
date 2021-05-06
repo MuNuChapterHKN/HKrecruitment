@@ -25,6 +25,8 @@
  * Created on 23 aprile 2021, 10:35
  */
 
+import {OAuth2Client} from "google-auth-library";
+
 const fsp = require('fs').promises;
 const readline = require('readline');
 const {google} = require('googleapis');
@@ -41,27 +43,27 @@ const SCOPES = [
 const TOKEN_PATH = './src/modules/GAuth/authInfo/token.json';
 const CREDENTIALS_PATH = './src/modules/GAuth/authInfo/credentials.json';
 
-let OAuth2Client=null;
+let googleClient: OAuth2Client|null=null;
 
-export function getAuth(){
+export function getAuth(): Promise<OAuth2Client>{
     return new Promise((resolve, reject)=>{
-        if(OAuth2Client==null){
-            authorize().then((client)=>{
-                OAuth2Client=client;
-                resolve(OAuth2Client);
+        if(googleClient==null){
+            authorize().then((client:OAuth2Client)=>{
+                googleClient=client;
+                resolve(googleClient);
             }).catch((err)=>reject(err));
         }
         else
-            resolve(OAuth2Client);
+            resolve(googleClient);
     });
 }
 
 
-function authorize(){
+function authorize():Promise<OAuth2Client>{
     //read credentials
     return new Promise((resolve, reject)=>{
         fsp.readFile(CREDENTIALS_PATH)
-            .then(async (content)=>{
+            .then(async (content: string)=>{
                 const credentials=JSON.parse(content);
                 const {client_secret, client_id, redirect_uris} = credentials.installed;
 
@@ -70,17 +72,17 @@ function authorize(){
                     client_id, client_secret, redirect_uris[0]);
                 // Check if we have previously stored a token.
                 fsp.readFile(TOKEN_PATH)
-                    .then((token)=>{
+                    .then((token: string)=>{
                         oAuth2Client.setCredentials(JSON.parse(token));
                         resolve(oAuth2Client);
                     })
-                    .catch((err)=>{ // error on reading the token
+                    .catch(()=>{ // error on reading the token
                         getNewToken(oAuth2Client)
-                            .then((client)=>{resolve(client)})
+                            .then((client: OAuth2Client)=>{resolve(client)})
                             .catch((err)=>{reject(err)});
                     });
             })
-            .catch((err)=>{reject(err)}); //error on reading credentials
+            .catch((err: any)=>{reject(err)}); //error on reading credentials
     });
 }
 
@@ -90,7 +92,7 @@ function authorize(){
  * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
  * @return {Promise} Promise object containing the configured oAuth2Client
  */
-async function getNewToken(oAuth2Client) {
+async function getNewToken(oAuth2Client:OAuth2Client):Promise<OAuth2Client> {
     const authUrl = oAuth2Client.generateAuthUrl({
         access_type: 'offline',
         scope: SCOPES,
@@ -107,13 +109,13 @@ async function getNewToken(oAuth2Client) {
     rl.close();
     return new Promise((resolve, reject) => {
         oAuth2Client.getToken(code, (err, token) => {
-            if (err)  reject('Error retrieving access token: '+err);
+            if (err || !token)  reject('Error retrieving access token: '+err);
             else {
                 oAuth2Client.setCredentials(token);
                 // Store the token to disk for later program executions
                 fsp.writeFile(TOKEN_PATH, JSON.stringify(token))
                     .then(()=>resolve(oAuth2Client))
-                    .catch((err)=>reject(err));
+                    .catch((err: any)=>reject(err));
             }
         });
     })

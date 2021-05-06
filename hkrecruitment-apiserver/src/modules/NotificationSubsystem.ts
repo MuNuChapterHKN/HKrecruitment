@@ -31,6 +31,15 @@ import Timeout = NodeJS.Timeout;
 import {Compensator} from "./Compensator";
 import {NotificationDAO} from "./DAO/DAOdefs";
 import {ConfigManager} from "./ConfigManager";
+import {TimeSlot} from "../datatypes/dataTypes";
+
+export interface NotificationData {
+    application_id?: number;
+    start?: string;
+    end?: string;
+    customMessage?: {subject:string, body:string};
+    additionalText?:string;
+}
 
 export class NotificationSubsystem{
     private notifiers : Map<NotificationMethod, Notifier>;
@@ -47,7 +56,7 @@ export class NotificationSubsystem{
         //TODO: implement
     }
 
-    notify(event:NotificationEvent, user_id:string, user_type:string, notificationData : any) : Promise<void>{
+    notify(event:NotificationEvent, user_id:string, user_type:string, data : NotificationData) : Promise<void>{
         //TODO: implement
         return {} as Promise<void>;
     }
@@ -55,15 +64,15 @@ export class NotificationSubsystem{
         //TODO: implement
 
     }
-    periodicNotify(event:NotificationEvent, user_id:string, user_type:string, notificationData : any, period:number){
+    periodicNotify(event:NotificationEvent, user_id:string, user_type:string, data : NotificationData, period:number){
         //TODO: implement
 
     }
-    stopPeriodicNotify(event:NotificationEvent, notificationData: any){
+    stopPeriodicNotify(event:NotificationEvent, data: NotificationData){
         //TODO: implement
 
     }
-    private setPeriodicNotification(period:number, callback: ()=>Promise<void>){
+    private setPeriodicNotification(period:number, callback: ()=>Promise<number>){
         //TODO: implement
     }
 }

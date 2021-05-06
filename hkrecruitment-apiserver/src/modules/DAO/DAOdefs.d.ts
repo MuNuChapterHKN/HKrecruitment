@@ -25,7 +25,25 @@
  * Created on 22 aprile 2021, 01:04
  */
 
-export interface NotificationDAO{}
+import {Applicant, Member} from "../../datatypes/entities";
+import {Application} from "../../datatypes/application";
+
+export interface NotificationDAO{
+    members: {
+        get: (id:string)=> Promise<Member>;
+        supervisors: {
+            list: ()=>Promise<Member[]>;
+        }
+    },
+    applicants: {
+        get: (id:string)=> Promise<Applicant>;
+    },
+    applications: {
+        get: (id:number)=> Promise<Application>;
+    },
+
+    [p:string]:unknown;
+}
 export interface SchedulerDAO{}
 
 export type DAO= NotificationDAO | SchedulerDAO;

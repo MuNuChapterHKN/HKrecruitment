@@ -1,5 +1,5 @@
 {
-  "$schema": "./json-schema/recruitmentConfig.json",
+  "$schema": "../../src/config/json-schema/messageTemplate.json",
   "new_application": {
     "ita": {
       "subject": "[name surname] Candidatura accettata!",

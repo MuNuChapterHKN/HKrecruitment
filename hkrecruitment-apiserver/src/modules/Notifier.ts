@@ -26,12 +26,12 @@
  */
 
 import {NotificationEvent, NotificationMethod} from "../config/recruitmentConfig";
-import {Notification} from "../datatypes/dataTypes";
 import {NotificationDAO} from "./DAO/DAOdefs";
+import {NotificationData} from "./NotificationSubsystem";
 
 export abstract class Notifier{
     private readonly _method_implemented : NotificationMethod;
-    private readonly storage : NotificationDAO;
+    protected readonly storage : NotificationDAO;
 
     protected constructor(method_implemented: NotificationMethod, storage: NotificationDAO) {
         this._method_implemented = method_implemented;
@@ -42,5 +42,5 @@ export abstract class Notifier{
         return this._method_implemented;
     }
 
-    abstract notify(event:NotificationEvent, notification: Notification):Promise<void>;
+    abstract notify(event: NotificationEvent, user_id: string, user_type: "member" | "applicant", data: NotificationData):Promise<number>;
 }

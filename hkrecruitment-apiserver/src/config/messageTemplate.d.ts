@@ -5,8 +5,7 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export type MessageKey = "name" | "surname" | "additionalText";
-export type MessageParamList = MessageEntry[];
+export type MessageKey = "name" | "surname" | "additionalText" | "start" | "end";
 export type MessageVocabulary = VocabularyEntry[];
 
 export interface MessageTemplates {
@@ -24,13 +23,10 @@ export interface MessageTemplate {
   eng: Message;
 }
 export interface Message {
+  subject: string;
   body: string;
-  fields: MessageParamList;
+  fields: MessageKey[];
   vocabulary: MessageVocabulary;
-}
-export interface MessageEntry {
-  key: MessageKey;
-  value: string;
 }
 export interface VocabularyEntry {
   placeholder: string;
