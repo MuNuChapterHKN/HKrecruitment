@@ -81,7 +81,7 @@
                         "grades": {"type":"string", "format":"uri"},
                         "grades_avg": {"type":"number", "minimum": 20, "maximum": 30}
                     },
-                    "required":["study_path", "academic_year", "cfu", "grades", "grades_avg"]
+                    "required":["study_path", "academic_year", "cfu", "grades_avg"]
                 }
             ]
         },
@@ -104,7 +104,7 @@
                     },
                     "anyOf":[
                         {"required":["bsc_study_path", "msc_study_path", "academic_year", "bsc_grades_avg"]},
-                        {"required":["msc_study_path", "academic_year", "cfu", "msc_grades", "msc_grades_avg"]}
+                        {"required":["msc_study_path", "academic_year", "cfu", "msc_grades_avg"]}
                     ]
                 }
             ]

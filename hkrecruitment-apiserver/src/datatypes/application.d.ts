@@ -22,7 +22,7 @@ export interface Application {
   };
   notes?: string;
   ita_level: LangLevel;
-  cv: string;
+  cv?: string;
   time_slots?: TimeSlot[];
   slot?: Slot;
   interview_id?: number;

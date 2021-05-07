@@ -28,7 +28,7 @@ export type BscApplication = Application & {
   study_path: string;
   academic_year: number;
   cfu: number;
-  grades: string;
+  grades?: string;
   grades_avg: number;
   [k: string]: unknown;
 };

@@ -22,5 +22,5 @@
       "slot":{"$ref": "entities.json#/definitions/slot"},
       "interview_id":{"type":"integer", "minimum": 0}
     },
-    "required":["id", "submission_date", "state", "ita_level", "cv"]
+    "required":["id", "submission_date", "state", "ita_level"]
   }

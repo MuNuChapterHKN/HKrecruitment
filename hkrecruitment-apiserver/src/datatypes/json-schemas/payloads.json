@@ -2,17 +2,17 @@
     "$schema":"http://json-schema.org/draft-06/schema#",
     "type": "object",
     "definitions": {
-        "createMemberRequest": {
+        "v1MembersInsertRequest": {
             "type":"object",
-            "$id": "https://hknpolito.org/schemas/v1/createMemberRequest.json#",
+            "$id": "https://hknpolito.org/schemas/v1/MembersInsertRequest.json#",
             "allOf": [
                 {"$ref": "person.json"}
             ]
         },
 
-        "modifyMemberRequest": {
+        "v1MembersPatchRequest": {
             "type":"object",
-            "$id": "https://hknpolito.org/schemas/v1/modifyMemberRequest.json#",
+            "$id": "https://hknpolito.org/schemas/v1/MembersPatchRequest.json#",
             "properties": {
                 "image": {"type":"string", "format": "uri"},
                 "email":{"type":"string", "format":"email"},
@@ -29,9 +29,9 @@
             ]
         },
 
-        "getMemberByFullNameResponse":{
+        "v1MembersGetByFullNameRequest":{
             "type":"object",
-            "$id": "https://hknpolito.org/schemas/v1/getMemberByFullNameResponse.json#",
+            "$id": "https://hknpolito.org/schemas/v1/MembersGetByFullNameRequest.json#",
             "properties": {
                 "id":{"type":"string"},
                 "image":{"type":"string", "format": "uri"},
@@ -42,9 +42,9 @@
             "required": ["id", "image", "name", "surname", "sex"]
         },
 
-        "createApplicantRequest": {
+        "v1ApplicantsInsertRequest": {
             "type":"object",
-            "$id": "https://hknpolito.org/schemas/v1/createApplicantRequest.json#",
+            "$id": "https://hknpolito.org/schemas/v1/ApplicantsInsertRequest.json#",
             "allOf":[
                 {"$ref": "person.json"},
                 {
@@ -78,9 +78,9 @@
             ]
         },
 
-        "putApplicantFriendListRequest": {
+        "v1ApplicantsUpdateFriendListRequest": {
             "type":"object",
-            "$id": "https://hknpolito.org/schemas/v1/putApplicantFriendListRequest.json#",
+            "$id": "https://hknpolito.org/schemas/v1/ApplicantsUpdateFriendListRequest.json#",
             "properties": {
                 "friends":{
                     "type":"array",
@@ -91,9 +91,9 @@
             "required": ["friends"]
         },
 
-        "modifyApplicantRequest": {
+        "v1ApplicantsPatchRequest": {
             "type":"object",
-            "$id": "https://hknpolito.org/schemas/v1/modifyApplicantRequest.json#",
+            "$id": "https://hknpolito.org/schemas/v1/ApplicantsPatchRequest.json#",
             "properties": {
                 "image": {"type":"string", "format": "uri"},
                 "email":{"type":"string", "format":"email"},
@@ -110,39 +110,53 @@
             ]
         },
 
-        "checkApplicantExistanceResponse":{
+        "v1ApplicantsCheckExistanceResponse":{
             "type":"object",
-            "$id": "https://hknpolito.org/schemas/v1/checkApplicantExistanceResponse.json#",
+            "$id": "https://hknpolito.org/schemas/v1/ApplicantsCheckExistanceResponse.json#",
             "properties": {
                 "found":{"type":"boolean"}
             },
             "required": ["found"]
         },
 
-        "getApplicantFriendsResponse": {
-            "type":"object",
-            "$id": "https://hknpolito.org/schemas/v1/getApplicantFriendsResponse.json#",
+        "v1ApplicantsListFriendsResponse": {
+            "type": "object",
+            "$id": "https://hknpolito.org/schemas/v1/ApplicantsListFriendsResponse.json#",
             "properties": {
-                "friends":{
-                    "type":"array",
+                "friends": {
+                    "type": "array",
                     "items": {
-                        "type":"integer",
+                        "type": "object",
                         "properties": {
-                            "id":{"type":"string"},
-                            "name":{"type":"string"},
-                            "surname":{"type":"string"}
+                            "id": {"type": "string"},
+                            "name": {"type": "string"},
+                            "surname": {"type": "string"}
                         },
                         "required": ["id", "name", "surname"]
-                    },
-                    "minItems": 1
+                    }
                 }
             },
             "required": ["friends"]
         },
 
-        "subscribeToTimeSlotRequest": {
+        "v1AvailabilitiesListResponse": {
+            "type": "object",
+            "$id": "https://hknpolito.org/schemas/v1/AvailabilitiesListResponse.json#",
+            "properties": {
+                "member_id": {"type": "string"},
+                "start": {"type": "string", "format": "date-time"},
+                "end": {"type": "string", "format": "date-time"},
+                "availabilities": {
+                    "type": "array",
+                    "items": {"$ref": "dataTypes.json#/properties/availability"}
+                }
+            },
+            "required": ["member_id", "start", "end", "availabilities"]
+        },
+
+        "v1AvailabilitiesInsertRequest": {
             "type":"object",
-            "$id": "https://hknpolito.org/schemas/v1/subscribeToTimeSlotRequest.json#",
+            "$id": "https://hknpolito.org/schemas/v1/AvailabilitiesInsertRequest.json#",
             "properties": {
                 "start":{"type":"string", "format":"date-time"},
                 "end":{"type":"string", "format":"date-time"},
@@ -151,9 +165,9 @@
             "required": ["start", "end", "member_id"]
         },
 
-        "getTimeSlotsResponse": {
+        "v1TimeSlotsGetSlotsAndAvailabilities": {
             "type":"array",
-            "$id": "https://hknpolito.org/schemas/v1/getTimeSlotsResponse.json#",
+            "$id": "https://hknpolito.org/schemas/v1/TimeSlotsGetSlotsAndAvailabilities.json#",
             "items": {
                 "type":"object",
                 "properties": {
@@ -173,9 +187,9 @@
             }
         },
 
-        "getTimeSlotsOfSlotsResponse": {
+        "v1SlotsGetTimeSlotsResponse": {
             "type":"object",
-            "$id": "https://hknpolito.org/schemas/v1/getTimeSlotsOfSlotsResponse.json#",
+            "$id": "https://hknpolito.org/schemas/v1/SlotsGetTimeSlotsResponse.json#",
             "properties": {
                 "time_slots":{
                     "type":"array",
@@ -186,9 +200,9 @@
             "required": ["time_slots"]
         },
 
-        "modifySlotsRequest": {
+        "v1SlotsBatchModifyRequest": {
             "type":"object",
-            "$id": "https://hknpolito.org/schemas/v1/modifySlotsRequest.json#",
+            "$id": "https://hknpolito.org/schemas/v1/SlotsBatchModifyRequest.json#",
             "properties": {
                 "time_slot":{"$ref": "dataTypes.json#/properties/time_slot"},
                 "slots":{
@@ -200,9 +214,9 @@
             "required": ["time_slot", "slots"]
         },
 
-        "getSlotsForApplicationResponse": {
+        "v1SlotsListEligibleResponse": {
             "type":"object",
-            "$id": "https://hknpolito.org/schemas/v1/getSlotsForApplicationResponse.json#",
+            "$id": "https://hknpolito.org/schemas/v1/SlotsListEligibleResponse.json#",
             "properties": {
                 "chosen_ts":{
                     "type":"array",
@@ -229,9 +243,30 @@
             "required": ["chosen_ts"]
         },
 
-        "chooseTimeSlotsRequest": {
+        "v1ApplicationsInsertRequest": {
+            "type": "object",
+            "$id": "https://hknpolito.org/schemas/v1/v1ApplicationsInsertRequest.json#",
+            "properties": {
+                "application": {
+                    "oneOf": [
+                        {"$ref": "entities.json#/properties/bsc_application"},
+                        {"$ref": "entities.json#/properties/msc_application"},
+                        {"$ref": "entities.json#/properties/phd_application"}
+                    ]
+                },
+                "cv_raw": {"type": "array"},
+                "grades_raw": {"type": "array"},
+                "msc_grades_raw": {"type": "array"}
+            },
+            "anyOf": [
+                {"required": ["application", "cv_raw", "grades_raw"]},
+                {"required": ["application", "cv_raw", "msc_grades_raw"]}
+            ]
+        },
+
+        "v1ApplicationsUpdateTimeSlots": {
             "type":"object",
-            "$id": "https://hknpolito.org/schemas/v1/chooseTimeSlotsRequest.json#",
+            "$id": "https://hknpolito.org/schemas/v1/ApplicationsUpdateTimeSlots.json#",
             "properties": {
                 "time_slots":{
                     "type":"array",
@@ -242,9 +277,26 @@
             "required": ["time_slots"]
         },
 
-        "listApplicationsResponse": {
+        "v1ApplicationsPatchRequest": {
+            "type": "object",
+            "$id": "https://hknpolito.org/schemas/v1/ApplicationsPatchRequest.json#",
+            "properties": {
+                "state": {"$ref": "enums.json#/properties/application_state"},
+                "notes": {"type": "string"},
+                "customMessage": {
+                    "type": "object",
+                    "properties": {
+                        "subject": {"type": "string"},
+                        "body": {"type": "string"}
+                    }
+                },
+                "additionalText": {"type": "string"}
+            }
+        },
+
+        "v1ApplicationsListResponse": {
             "type":"object",
-            "$id": "https://hknpolito.org/schemas/v1/listApplicationsResponse.json#",
+            "$id": "https://hknpolito.org/schemas/v1/ApplicationsListResponse.json#",
             "properties": {
                 "applications":{
                     "type":"array",
@@ -274,9 +326,9 @@
             "required": ["applications"]
         },
 
-        "listApplicationsOfApplicantResponse": {
+        "v1ApplicantsListApplicationsResponse": {
             "type":"object",
-            "$id": "https://hknpolito.org/schemas/v1/listApplicationsOfApplicantResponse.json#",
+            "$id": "https://hknpolito.org/schemas/v1/ApplicantsListApplicationsResponse.json#",
             "properties": {
                 "applications":{
                     "type":"array",
@@ -295,9 +347,9 @@
             "required": ["applications"]
         },
 
-        "readNotificationRequest":{
+        "v1NotificationsReadRequest":{
             "type":"object",
-            "$id": "https://hknpolito.org/schemas/v1/readNotificationRequest.json#",
+            "$id": "https://hknpolito.org/schemas/v1/NotificationsReadRequest.json#",
             "properties": {
                 "member_id":{"type":"string"},
                 "applicant_id":{"type":"string"}
@@ -305,9 +357,9 @@
             "anyOf": [{"required": ["member_id"]}, {"required": ["applicant_id"]}]
         },
 
-        "getNotificationsResponse":{
+        "v1NotificationListRequest":{
             "type":"object",
-            "$id": "https://hknpolito.org/schemas/v1/getNotificationsResponse.json#",
+            "$id": "https://hknpolito.org/schemas/v1/NotificationListRequest.json#",
             "properties": {
                 "read":{
                     "type":"array",
@@ -321,9 +373,9 @@
             "required": ["read", "unread"]
         },
 
-        "createStudyPathRequest":{
+        "v1StudyPathsInsertRequest":{
             "type":"object",
-            "$id": "https://hknpolito.org/schemas/v1/createStudyPathRequest.json#",
+            "$id": "https://hknpolito.org/schemas/v1/StudyPathsInsertRequest.json#",
             "properties": {
                 "degree_level":{"$ref": "enums.json#/properties/degree_level"},
                 "study_path": {"type":"string"}
@@ -331,9 +383,9 @@
             "required": ["degree_level", "study_path"]
         },
 
-        "getStudyPathsResponse":{
+        "v1StudyPathsListResponse":{
             "type":"object",
-            "$id": "https://hknpolito.org/schemas/v1/getStudyPathsResponse.json#",
+            "$id": "https://hknpolito.org/schemas/v1/StudyPathsListResponse.json#",
             "properties": {
                 "BSc":{
                     "type":"array",
@@ -351,9 +403,9 @@
             "required": ["BSc", "MSc", "PhD"]
         },
 
-        "getDailyInterviewSumsResponse":{
+        "v1StatisticsDailyInterviewSums":{
             "type":"object",
-            "$id": "https://hknpolito.org/schemas/v1/getDailyInterviewSumsResponse.json#",
+            "$id": "https://hknpolito.org/schemas/v1/StatisticsDailyInterviewSums.json#",
             "properties": {
                 "start":{"type":"string", "format":"date-time"},
                 "end":{"type":"string", "format":"date-time"},
@@ -395,9 +447,9 @@
             "required": ["start", "end", "stats"]
         },
 
-        "getTsInterviewSumsResponse":{
+        "v1StatisticsTsInterviewSums":{
             "type":"object",
-            "$id": "https://hknpolito.org/schemas/v1/getTsInterviewSumsResponse.json#",
+            "$id": "https://hknpolito.org/schemas/v1/StatisticsTsInterviewSums.json#",
             "properties": {
                 "start":{"type":"string", "format":"date-time"},
                 "end":{"type":"string", "format":"date-time"},
@@ -439,9 +491,9 @@
             "required": ["start", "end", "stats"]
         },
 
-        "getDailyMemberSlotDistrResponse":{
+        "v1StatisticsDailyMemberSlotDistr":{
             "type":"object",
-            "$id": "https://hknpolito.org/schemas/v1/getDailyMemberSlotDistrResponse.json#",
+            "$id": "https://hknpolito.org/schemas/v1/StatisticsDailyMemberSlotDistr.json#",
             "properties": {
                 "start":{"type":"string", "format":"date-time"},
                 "end":{"type":"string", "format":"date-time"},
@@ -460,9 +512,9 @@
             "required": ["start", "end", "stats"]
         },
 
-        "getTsMemberSlotDistrResponse":{
+        "v1StatisticsTsMemberSlotDistr":{
             "type":"object",
-            "$id": "https://hknpolito.org/schemas/v1/getTsMemberSlotDistrResponse.json#",
+            "$id": "https://hknpolito.org/schemas/v1/StatisticsTsMemberSlotDistr.json#",
             "properties": {
                 "start":{"type":"string", "format":"date-time"},
                 "end":{"type":"string", "format":"date-time"},
@@ -487,9 +539,9 @@
             "required": ["start", "end", "stats"]
         },
 
-        "getApplicantGenderDistrResponse":{
+        "v1StatisticsApplicantGenderDistr":{
             "type":"object",
-            "$id": "https://hknpolito.org/schemas/v1/getApplicantGenderDistrResponse.json#",
+            "$id": "https://hknpolito.org/schemas/v1/StatisticsApplicantGenderDistr.json#",
             "properties": {
                 "start":{"type":"string", "format":"date-time"},
                 "end":{"type":"string", "format":"date-time"},
@@ -505,9 +557,9 @@
             "required": ["start", "end", "stat"]
         },
 
-        "getMemberAvgResponseTimeResponse":{
+        "v1StatisticsMemberAvgResponseTime":{
             "type":"object",
-            "$id": "https://hknpolito.org/schemas/v1/getMemberAvgResponseTimeResponse.json#",
+            "$id": "https://hknpolito.org/schemas/v1/StatisticsMemberAvgResponseTime.json#",
             "properties": {
                 "start":{"type":"string", "format":"date-time"},
                 "end":{"type":"string", "format":"date-time"},
@@ -527,9 +579,9 @@
             "required": ["start", "end", "stats"]
         },
 
-        "getApplicationStateCountResponse":{
+        "v1StatisticsApplicationStateCount":{
             "type":"object",
-            "$id": "https://hknpolito.org/schemas/v1/getApplicationStateCountResponse.json#",
+            "$id": "https://hknpolito.org/schemas/v1/StatisticsApplicationStateCount.json#",
             "properties": {
                 "start":{"type":"string", "format":"date-time"},
                 "end":{"type":"string", "format":"date-time"},
@@ -561,9 +613,9 @@
             "required": ["start", "end", "stat"]
         },
 
-        "getInterviewOutcomeCountResponse":{
+        "v1StatisticsInterviewOutcomeCount":{
             "type":"object",
-            "$id": "https://hknpolito.org/schemas/v1/getInterviewOutcomeCountResponse.json#",
+            "$id": "https://hknpolito.org/schemas/v1/StatisticsInterviewOutcomeCount.json#",
             "properties": {
                 "start":{"type":"string", "format":"date-time"},
                 "end":{"type":"string", "format":"date-time"},

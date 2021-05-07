@@ -5,65 +5,67 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-import {Person} from "./person";
-import {Application} from "./application";
+import {ApplicationState, Gender} from "./enums";
+import {BscApplication, MscApplication, PhdApplication} from "./entities";
 
 /**
  * This interface was referenced by `Payloads`'s JSON-Schema
- * via the `definition` "createMemberRequest".
+ * via the `definition` "v1MembersInsertRequest".
  */
-export type CreateMemberRequest = Person;
+export type V1MembersInsertRequest = Person;
 /**
  * This interface was referenced by `Payloads`'s JSON-Schema
- * via the `definition` "modifyMemberRequest".
+ * via the `definition` "v1MembersPatchRequest".
  */
-export type ModifyMemberRequest = {
-  [k: string]: unknown;
+export type V1MembersPatchRequest = {
+  image?: string;
+  email?: string;
+  phone_no?: string;
+  is_board?: boolean;
+  is_expert?: boolean;
+  role?: "admin" | "supervisor" | "clerk" | "none";
 };
-export type CreateApplicantRequest = Person & {
-  role: "admin" | "supervisor" | "clerk" | "none";
-  is_expert: boolean;
-  is_board: boolean;
+export type V1ApplicantsInsertRequest =
+    | {
+  bsc_application: Application & {
+    study_path: string;
+    academic_year: number;
+    cfu: number;
+    grades: string;
+    grades_avg: number;
+    [k: string]: unknown;
+  };
   [k: string]: unknown;
-};
-export type CreateApplicantRequest1 =
-  | {
-      bsc_application: Application & {
-        study_path: string;
-        academic_year: number;
-        cfu: number;
-        grades: string;
-        grades_avg: number;
-        [k: string]: unknown;
-      };
-      [k: string]: unknown;
-    }
-  | {
-      msc_application: Application & {
-        [k: string]: unknown;
-      };
-      [k: string]: unknown;
-    }
-  | {
-      phd_application: Application & {
-        msc_study_path: string;
-        phd_description: string;
-        [k: string]: unknown;
-      };
-      [k: string]: unknown;
-    };
-/**
- * This interface was referenced by `Payloads`'s JSON-Schema
- * via the `definition` "modifyApplicantRequest".
- */
-export type ModifyApplicantRequest = {
+}
+    | {
+  msc_application: Application & {
+    [k: string]: unknown;
+  };
+  [k: string]: unknown;
+}
+    | {
+  phd_application: Application & {
+    msc_study_path: string;
+    phd_description: string;
+    [k: string]: unknown;
+  };
+  cv_raw?: Uint8Array;
+  grades_raw?: Uint8Array;
+  msc_grades_raw?: Uint8Array;
   [k: string]: unknown;
 };
 /**
  * This interface was referenced by `Payloads`'s JSON-Schema
- * via the `definition` "getTimeSlotsResponse".
+ * via the `definition` "v1ApplicantsPatchRequest".
  */
-export type GetTimeSlotsResponse = {
+export type V1ApplicantsPatchRequest = {
+  [k: string]: unknown;
+};
+/**
+ * This interface was referenced by `Payloads`'s JSON-Schema
+ * via the `definition` "v1TimeSlotsGetSlotsAndAvailabilities".
+ */
+export type V1TimeSlotsGetSlotsAndAvailabilities = {
   time_slot: {
     start: string;
     end: string;
@@ -84,6 +86,8 @@ export type GetTimeSlotsResponse = {
         surname: string;
         sex: "male" | "female";
         image: string;
+        is_expert: boolean;
+        is_board: boolean;
         [k: string]: unknown;
       },
       {
@@ -92,6 +96,8 @@ export type GetTimeSlotsResponse = {
         surname: string;
         sex: "male" | "female";
         image: string;
+        is_expert: boolean;
+        is_board: boolean;
         [k: string]: unknown;
       },
       ...{
@@ -100,9 +106,12 @@ export type GetTimeSlotsResponse = {
         surname: string;
         sex: "male" | "female";
         image: string;
+        is_expert: boolean;
+        is_board: boolean;
         [k: string]: unknown;
       }[]
     ];
+    interview_id?: number;
     [k: string]: unknown;
   }[];
   availabilities: {
@@ -121,17 +130,17 @@ export type GetTimeSlotsResponse = {
 }[];
 /**
  * This interface was referenced by `Payloads`'s JSON-Schema
- * via the `definition` "readNotificationRequest".
+ * via the `definition` "v1NotificationsReadRequest".
  */
-export type ReadNotificationRequest = {
+export type V1NotificationsReadRequest = {
   [k: string]: unknown;
 };
 
 /**
  * This interface was referenced by `Payloads`'s JSON-Schema
- * via the `definition` "getMemberByFullNameResponse".
+ * via the `definition` "v1MembersGetByFullNameRequest".
  */
-export interface GetMemberByFullNameResponse {
+export interface V1MembersGetByFullNameRequest {
   id: string;
   image: string;
   name: string;
@@ -142,33 +151,60 @@ export interface GetMemberByFullNameResponse {
 
 /**
  * This interface was referenced by `Payloads`'s JSON-Schema
- * via the `definition` "putApplicantFriendListRequest".
+ * via the `definition` "v1ApplicantsUpdateFriendListRequest".
  */
-export interface PutApplicantFriendListRequest {
+export interface V1ApplicantsUpdateFriendListRequest {
   friends: [number, ...number[]];
   [k: string]: unknown;
 }
 /**
  * This interface was referenced by `Payloads`'s JSON-Schema
- * via the `definition` "checkApplicantExistanceResponse".
+ * via the `definition` "v1ApplicantsCheckExistanceResponse".
  */
-export interface CheckApplicantExistanceResponse {
+export interface V1ApplicantsCheckExistanceResponse {
   found: boolean;
   [k: string]: unknown;
 }
 /**
  * This interface was referenced by `Payloads`'s JSON-Schema
- * via the `definition` "getApplicantFriendsResponse".
+ * via the `definition` "v1ApplicantsListFriendsResponse".
  */
-export interface GetApplicantFriendsResponse {
-  friends: [number, ...number[]];
+export interface V1ApplicantsListFriendsResponse {
+  friends: {
+    id: string;
+    name: string;
+    surname: string;
+    [k: string]: unknown;
+  }[];
   [k: string]: unknown;
 }
 /**
  * This interface was referenced by `Payloads`'s JSON-Schema
- * via the `definition` "subscribeToTimeSlotRequest".
+ * via the `definition` "v1AvailabilitiesListResponse".
  */
-export interface SubscribeToTimeSlotRequest {
+export interface V1AvailabilitiesListResponse {
+  member_id: string;
+  start: string;
+  end: string;
+  availabilities: {
+    state: "subscribed" | "used" | "confirmed" | "usedAndConfirmed" | "cancelled";
+    assigned_at?: string;
+    confirmed_at?: string;
+    time_slot: {
+      start: string;
+      end: string;
+      [k: string]: unknown;
+    };
+    member_id: string;
+    [k: string]: unknown;
+  }[];
+  [k: string]: unknown;
+}
+/**
+ * This interface was referenced by `Payloads`'s JSON-Schema
+ * via the `definition` "v1AvailabilitiesInsertRequest".
+ */
+export interface V1AvailabilitiesInsertRequest {
   start: string;
   end: string;
   member_id: string;
@@ -176,9 +212,9 @@ export interface SubscribeToTimeSlotRequest {
 }
 /**
  * This interface was referenced by `Payloads`'s JSON-Schema
- * via the `definition` "getTimeSlotsOfSlotsResponse".
+ * via the `definition` "v1SlotsGetTimeSlotsResponse".
  */
-export interface GetTimeSlotsOfSlotsResponse {
+export interface V1SlotsGetTimeSlotsResponse {
   time_slots: {
     start: string;
     end: string;
@@ -188,9 +224,9 @@ export interface GetTimeSlotsOfSlotsResponse {
 }
 /**
  * This interface was referenced by `Payloads`'s JSON-Schema
- * via the `definition` "modifySlotsRequest".
+ * via the `definition` "v1SlotsBatchModifyRequest".
  */
-export interface ModifySlotsRequest {
+export interface V1SlotsBatchModifyRequest {
   time_slot: {
     start: string;
     end: string;
@@ -212,6 +248,8 @@ export interface ModifySlotsRequest {
           surname: string;
           sex: "male" | "female";
           image: string;
+          is_expert: boolean;
+          is_board: boolean;
           [k: string]: unknown;
         },
         {
@@ -220,6 +258,8 @@ export interface ModifySlotsRequest {
           surname: string;
           sex: "male" | "female";
           image: string;
+          is_expert: boolean;
+          is_board: boolean;
           [k: string]: unknown;
         },
         ...{
@@ -228,9 +268,12 @@ export interface ModifySlotsRequest {
           surname: string;
           sex: "male" | "female";
           image: string;
+          is_expert: boolean;
+          is_board: boolean;
           [k: string]: unknown;
         }[]
       ];
+      interview_id?: number;
       [k: string]: unknown;
     },
     ...{
@@ -248,6 +291,8 @@ export interface ModifySlotsRequest {
           surname: string;
           sex: "male" | "female";
           image: string;
+          is_expert: boolean;
+          is_board: boolean;
           [k: string]: unknown;
         },
         {
@@ -256,6 +301,8 @@ export interface ModifySlotsRequest {
           surname: string;
           sex: "male" | "female";
           image: string;
+          is_expert: boolean;
+          is_board: boolean;
           [k: string]: unknown;
         },
         ...{
@@ -264,9 +311,12 @@ export interface ModifySlotsRequest {
           surname: string;
           sex: "male" | "female";
           image: string;
+          is_expert: boolean;
+          is_board: boolean;
           [k: string]: unknown;
         }[]
       ];
+      interview_id?: number;
       [k: string]: unknown;
     }[]
   ];
@@ -274,9 +324,9 @@ export interface ModifySlotsRequest {
 }
 /**
  * This interface was referenced by `Payloads`'s JSON-Schema
- * via the `definition` "getSlotsForApplicationResponse".
+ * via the `definition` "v1SlotsListEligibleResponse".
  */
-export interface GetSlotsForApplicationResponse {
+export interface V1SlotsListEligibleResponse {
   chosen_ts: [
     {
       time_slot: {
@@ -300,6 +350,8 @@ export interface GetSlotsForApplicationResponse {
               surname: string;
               sex: "male" | "female";
               image: string;
+              is_expert: boolean;
+              is_board: boolean;
               [k: string]: unknown;
             },
             {
@@ -308,6 +360,8 @@ export interface GetSlotsForApplicationResponse {
               surname: string;
               sex: "male" | "female";
               image: string;
+              is_expert: boolean;
+              is_board: boolean;
               [k: string]: unknown;
             },
             ...{
@@ -316,9 +370,12 @@ export interface GetSlotsForApplicationResponse {
               surname: string;
               sex: "male" | "female";
               image: string;
+              is_expert: boolean;
+              is_board: boolean;
               [k: string]: unknown;
             }[]
           ];
+          interview_id?: number;
           [k: string]: unknown;
         },
         ...{
@@ -336,6 +393,8 @@ export interface GetSlotsForApplicationResponse {
               surname: string;
               sex: "male" | "female";
               image: string;
+              is_expert: boolean;
+              is_board: boolean;
               [k: string]: unknown;
             },
             {
@@ -344,6 +403,8 @@ export interface GetSlotsForApplicationResponse {
               surname: string;
               sex: "male" | "female";
               image: string;
+              is_expert: boolean;
+              is_board: boolean;
               [k: string]: unknown;
             },
             ...{
@@ -352,9 +413,12 @@ export interface GetSlotsForApplicationResponse {
               surname: string;
               sex: "male" | "female";
               image: string;
+              is_expert: boolean;
+              is_board: boolean;
               [k: string]: unknown;
             }[]
           ];
+          interview_id?: number;
           [k: string]: unknown;
         }[]
       ];
@@ -408,6 +472,8 @@ export interface GetSlotsForApplicationResponse {
               surname: string;
               sex: "male" | "female";
               image: string;
+              is_expert: boolean;
+              is_board: boolean;
               [k: string]: unknown;
             },
             {
@@ -416,6 +482,8 @@ export interface GetSlotsForApplicationResponse {
               surname: string;
               sex: "male" | "female";
               image: string;
+              is_expert: boolean;
+              is_board: boolean;
               [k: string]: unknown;
             },
             ...{
@@ -424,9 +492,12 @@ export interface GetSlotsForApplicationResponse {
               surname: string;
               sex: "male" | "female";
               image: string;
+              is_expert: boolean;
+              is_board: boolean;
               [k: string]: unknown;
             }[]
           ];
+          interview_id?: number;
           [k: string]: unknown;
         },
         ...{
@@ -444,6 +515,8 @@ export interface GetSlotsForApplicationResponse {
               surname: string;
               sex: "male" | "female";
               image: string;
+              is_expert: boolean;
+              is_board: boolean;
               [k: string]: unknown;
             },
             {
@@ -452,6 +525,8 @@ export interface GetSlotsForApplicationResponse {
               surname: string;
               sex: "male" | "female";
               image: string;
+              is_expert: boolean;
+              is_board: boolean;
               [k: string]: unknown;
             },
             ...{
@@ -460,9 +535,12 @@ export interface GetSlotsForApplicationResponse {
               surname: string;
               sex: "male" | "female";
               image: string;
+              is_expert: boolean;
+              is_board: boolean;
               [k: string]: unknown;
             }[]
           ];
+          interview_id?: number;
           [k: string]: unknown;
         }[]
       ];
@@ -499,9 +577,9 @@ export interface GetSlotsForApplicationResponse {
 }
 /**
  * This interface was referenced by `Payloads`'s JSON-Schema
- * via the `definition` "chooseTimeSlotsRequest".
+ * via the `definition` "v1ApplicationsUpdateTimeSlots".
  */
-export interface ChooseTimeSlotsRequest {
+export interface V1ApplicationsUpdateTimeSlots {
   time_slots: [
     {
       start: string;
@@ -518,9 +596,9 @@ export interface ChooseTimeSlotsRequest {
 }
 /**
  * This interface was referenced by `Payloads`'s JSON-Schema
- * via the `definition` "listApplicationsResponse".
+ * via the `definition` "v1ApplicationsListResponse".
  */
-export interface ListApplicationsResponse {
+export interface V1ApplicationsListResponse {
   applications: {
     id: number;
     submission_date: string;
@@ -547,6 +625,8 @@ export interface ListApplicationsResponse {
           surname: string;
           sex: "male" | "female";
           image: string;
+          is_expert: boolean;
+          is_board: boolean;
           [k: string]: unknown;
         },
         {
@@ -555,6 +635,8 @@ export interface ListApplicationsResponse {
           surname: string;
           sex: "male" | "female";
           image: string;
+          is_expert: boolean;
+          is_board: boolean;
           [k: string]: unknown;
         },
         ...{
@@ -563,21 +645,42 @@ export interface ListApplicationsResponse {
           surname: string;
           sex: "male" | "female";
           image: string;
+          is_expert: boolean;
+          is_board: boolean;
           [k: string]: unknown;
         }[]
       ];
-      interview_id: number;
+      interview_id?: number;
       [k: string]: unknown;
     };
     [k: string]: unknown;
   }[];
   [k: string]: unknown;
 }
+
+export interface v1ApplicationsInsertRequest {
+  application: BscApplication | MscApplication | PhdApplication;
+  cv_raw?: Uint8Array;
+  grades_raw?: Uint8Array;
+  msc_grades_raw?: Uint8Array;
+}
+
+export interface V1ApplicationsPatchRequest {
+  state?: ApplicationState;
+  notes?: string;
+  customMessage? : {
+    subject: string;
+    body: string
+  },
+  additionalText?: string;
+  [k: string]: unknown;
+}
+
 /**
  * This interface was referenced by `Payloads`'s JSON-Schema
- * via the `definition` "listApplicationsOfApplicantResponse".
+ * via the `definition` "v1ApplicantsListApplicationsResponse".
  */
-export interface ListApplicationsOfApplicantResponse {
+export interface V1ApplicantsListApplicationsResponse {
   applications: {
     id: number;
     submission_date: string;
@@ -588,41 +691,41 @@ export interface ListApplicationsOfApplicantResponse {
 }
 /**
  * This interface was referenced by `Payloads`'s JSON-Schema
- * via the `definition` "getNotificationsResponse".
+ * via the `definition` "v1NotificationListRequest".
  */
-export interface GetNotificationsResponse {
+export interface V1NotificationListRequest {
   read: (
-    | {
-        [k: string]: unknown;
-      }
-    | {
-        [k: string]: unknown;
-      }
-  )[];
+      | {
+    [k: string]: unknown;
+  }
+      | {
+    [k: string]: unknown;
+  }
+      )[];
   unread: (
-    | {
-        [k: string]: unknown;
-      }
-    | {
-        [k: string]: unknown;
-      }
-  )[];
+      | {
+    [k: string]: unknown;
+  }
+      | {
+    [k: string]: unknown;
+  }
+      )[];
   [k: string]: unknown;
 }
 /**
  * This interface was referenced by `Payloads`'s JSON-Schema
- * via the `definition` "createStudyPathRequest".
+ * via the `definition` "v1StudyPathsInsertRequest".
  */
-export interface CreateStudyPathRequest {
+export interface V1StudyPathsInsertRequest {
   degree_level: "BSc" | "MSc" | "PhD";
   study_path: string;
   [k: string]: unknown;
 }
 /**
  * This interface was referenced by `Payloads`'s JSON-Schema
- * via the `definition` "getStudyPathsResponse".
+ * via the `definition` "v1StudyPathsListResponse".
  */
-export interface GetStudyPathsResponse {
+export interface V1StudyPathsListResponse {
   BSc: string[];
   MSc: string[];
   PhD: string[];
@@ -630,9 +733,9 @@ export interface GetStudyPathsResponse {
 }
 /**
  * This interface was referenced by `Payloads`'s JSON-Schema
- * via the `definition` "getDailyInterviewSumsResponse".
+ * via the `definition` "v1StatisticsDailyInterviewSums".
  */
-export interface GetDailyInterviewSumsResponse {
+export interface V1StatisticsDailyInterviewSums {
   start: string;
   end: string;
   stats: {
@@ -658,9 +761,9 @@ export interface GetDailyInterviewSumsResponse {
 }
 /**
  * This interface was referenced by `Payloads`'s JSON-Schema
- * via the `definition` "getTsInterviewSumsResponse".
+ * via the `definition` "v1StatisticsTsInterviewSums".
  */
-export interface GetTsInterviewSumsResponse {
+export interface V1StatisticsTsInterviewSums {
   start: string;
   end: string;
   stats: {
@@ -686,9 +789,9 @@ export interface GetTsInterviewSumsResponse {
 }
 /**
  * This interface was referenced by `Payloads`'s JSON-Schema
- * via the `definition` "getDailyMemberSlotDistrResponse".
+ * via the `definition` "v1StatisticsDailyMemberSlotDistr".
  */
-export interface GetDailyMemberSlotDistrResponse {
+export interface V1StatisticsDailyMemberSlotDistr {
   start: string;
   end: string;
   stats: {
@@ -701,9 +804,9 @@ export interface GetDailyMemberSlotDistrResponse {
 }
 /**
  * This interface was referenced by `Payloads`'s JSON-Schema
- * via the `definition` "getTsMemberSlotDistrResponse".
+ * via the `definition` "v1StatisticsTsMemberSlotDistr".
  */
-export interface GetTsMemberSlotDistrResponse {
+export interface V1StatisticsTsMemberSlotDistr {
   start: string;
   end: string;
   stats: {
@@ -719,9 +822,9 @@ export interface GetTsMemberSlotDistrResponse {
 }
 /**
  * This interface was referenced by `Payloads`'s JSON-Schema
- * via the `definition` "getApplicantGenderDistrResponse".
+ * via the `definition` "v1StatisticsApplicantGenderDistr".
  */
-export interface GetApplicantGenderDistrResponse {
+export interface V1StatisticsApplicantGenderDistr {
   start: string;
   end: string;
   stat: {
@@ -733,9 +836,9 @@ export interface GetApplicantGenderDistrResponse {
 }
 /**
  * This interface was referenced by `Payloads`'s JSON-Schema
- * via the `definition` "getMemberAvgResponseTimeResponse".
+ * via the `definition` "v1StatisticsMemberAvgResponseTime".
  */
-export interface GetMemberAvgResponseTimeResponse {
+export interface V1StatisticsMemberAvgResponseTime {
   start: string;
   end: string;
   stats: {
@@ -747,9 +850,9 @@ export interface GetMemberAvgResponseTimeResponse {
 }
 /**
  * This interface was referenced by `Payloads`'s JSON-Schema
- * via the `definition` "getApplicationStateCountResponse".
+ * via the `definition` "v1StatisticsApplicationStateCount".
  */
-export interface GetApplicationStateCountResponse {
+export interface V1StatisticsApplicationStateCount {
   start: string;
   end: string;
   stat: {
@@ -771,9 +874,9 @@ export interface GetApplicationStateCountResponse {
 }
 /**
  * This interface was referenced by `Payloads`'s JSON-Schema
- * via the `definition` "getInterviewOutcomeCountResponse".
+ * via the `definition` "v1StatisticsInterviewOutcomeCount".
  */
-export interface GetInterviewOutcomeCountResponse {
+export interface V1StatisticsInterviewOutcomeCount {
   start: string;
   end: string;
   stat: {
