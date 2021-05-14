@@ -1,5 +1,5 @@
 {
-  "$schema": "./json-schema/recruitmentConfig.json",
+  "$schema": "./json-schema/messageTemplate.json",
   "new_application": {
     "ita": {
       "subject": "[name surname] Candidatura accettata!",
@@ -208,6 +208,25 @@
         "name",
         "surname"
       ],
+      "vocabulary": []
+    }
+  },
+  "availability_not_required": {
+    "ita": {
+      "subject": "[name surname] Disponibilità non usata",
+      "body": "Gentile HKnuer name surname, al momento sei liber per la disponibilità start - end, perchè l'application è stata revocata.",
+      "fields": ["name", "surname", "start", "end"],
+      "vocabulary": [
+        {"placeholder": "liber",
+          "male": "libero",
+          "female": "libera"
+        }
+      ]
+    },
+    "eng": {
+      "subject": "[name surname] Availability not used",
+      "body": "Dear HKnuer name surname, your availability for start - end go free, because the availability has been revoked.",
+      "fields": ["name", "surname", "start", "end"],
       "vocabulary": []
     }
   }

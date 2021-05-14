@@ -11,7 +11,7 @@
                                         "no_interviewer_confirmation"]},
         "notification_event":{"enum": ["new_application", "application_accepted", "application_revocated",
             "require_availability_confirmation", "slot_reserved", "interview_member_accepted", "interview_mentee_accepted",
-            "interview_rejected"]}, 
+            "interview_rejected", "availability_not_required"]},
         "recruitmentConfig":{
             "type":"object",
             "properties": {
@@ -43,8 +43,8 @@
                             "required": ["gender_inequality", "slots_day", "slots_week"]
                         }
                     },
-                    "required": ["min_hours_before_interviewer_confirm", "max_slots_day", "max_slots_week", 
-                        "max_consecutive_slots", "metrics_weight", "reminder_availability_confirmation_hours"]    
+                    "required": ["min_hours_before_interviewer_confirm", "max_slots_day", "max_slots_week",
+                        "max_consecutive_slots", "metrics_weight", "reminder_availability_confirmation_hours"]
                 },
                 "compensation":{
                     "type":"object",
@@ -106,9 +106,9 @@
                 "slot_computational_strategy":{"$ref": "#/definitions/slot_computational_method"},
                 "interview_template":{"type":"string", "format": "uri"}
             },
-            "required": ["slot_computational_strategy", "notification_strategies", "compensation", "member", 
-                "applicant", "interview_template"]            
-        }       
+            "required": ["slot_computational_strategy", "notification_strategies", "compensation", "member",
+                "applicant", "interview_template"]
+        }
     },
     "properties": {
         "recruitmentConfig": {"$ref": "#/definitions/recruitmentConfig"}

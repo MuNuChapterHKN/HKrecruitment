@@ -11,7 +11,7 @@ import {Slot} from "./entities";
 
 export interface Application {
   id: number;
-  type?: DegreeLevel;
+  type: DegreeLevel;
   submission_date: string;
   state: ApplicationState;
   last_modified?: {

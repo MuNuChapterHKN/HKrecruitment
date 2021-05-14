@@ -17,6 +17,7 @@ export interface MessageTemplates {
   interview_member_accepted: MessageTemplate;
   interview_mentee_accepted: MessageTemplate;
   interview_rejected: MessageTemplate;
+  availability_not_required: MessageTemplate;
 }
 export interface MessageTemplate {
   ita: Message;

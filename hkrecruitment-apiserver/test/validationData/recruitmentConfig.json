@@ -39,6 +39,12 @@
           "email",
           "push"
         ]
+      },
+      {
+        "event": "application_revocated",
+        "methods": [
+          "email"
+        ]
       }
     ],
     "slot_computational_strategy": "bestFit",

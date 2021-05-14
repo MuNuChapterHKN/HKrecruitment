@@ -1,5 +1,5 @@
 {
-    "$schema": "./json-schema/recruitmentConfig.json"
+    "$schema": "./json-schema/recruitmentConfig.json",
     "recruitmentConfig": {
         "applicant": {
             "timeslots_num": 3,

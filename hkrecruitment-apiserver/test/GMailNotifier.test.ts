@@ -29,6 +29,7 @@ import {BasicMail, GMailNotifier, MailBuilder} from "../src/modules/GMailNotifie
 import {MessageTemplates} from "../src/config/messageTemplate";
 import {Applicant, Member} from "../src/datatypes/entities";
 import {Application} from "../src/datatypes/application";
+import {NotifierData} from "../src/modules/NotificationSubsystem";
 
 describe("Test BasicMail", ()=>{
     it("Has predefined headers after construction", ()=>{
@@ -182,10 +183,14 @@ describe("Test GMailNotifier", ()=>{
                 get: jest.fn(() => {
                     return new Promise<Application>((res) => res({} as Application))
                 })
+            },
+            notifications: {
+                insert: ()=>{return new Promise<void>(()=>{})} //not interested here in this
             }
         };
     }
     const mockedDao=getMockedDao();
+    // @ts-ignore
     const notifier=new GMailNotifier(mockedDao);
     let gMailNotifierSendMail: (mail:BasicMail)=>Promise<number>;
     beforeAll(()=>{
@@ -201,35 +206,43 @@ describe("Test GMailNotifier", ()=>{
         //restore the original method
         // @ts-ignore
         notifier.constructor.sendMail= gMailNotifierSendMail;
+    });
+    it("buildMail sets cc header", ()=>{
+        const data:NotifierData={         // @ts-ignore
+            secondaryRecipient: {email: "hknMember@email.com"}, // @ts-ignore
+            lang: "ita", notification: {uri: "https://uri.com"}, // @ts-ignore
+            mainRecipient: {name: "Mario", surname:"Rossi", sex:"male", email: "mariorossi@email.com"}
+        }
+        const mail=notifier.buildMail("application_accepted", data,
+            [data.mainRecipient.email, data.mainRecipient.email], "bcc@email.com");
+        expect(mail.getHeader("cc")).toBe(data.secondaryRecipient?.email);
+
     })
     it("Notify resolves", ()=>{
         // @ts-ignore
-        mockedDao.applicants.get.mockReturnValueOnce({name:"Mario", surname: "Rossi", email: "email@email.com", sex:"male"});
-        // @ts-ignore
-        mockedDao.applications.get.mockReturnValueOnce({ita_level: "native_speaker"});
-        // @ts-ignore
-        mockedDao.members.supervisors.list.mockReturnValueOnce([{email: "email@email.com"}, {email: "emai@email.com"}])
-        notifier.notify("new_application", "1", "applicant", {application_id:2})
+        mockedDao.members.supervisors.list.mockReturnValueOnce(new Promise((res)=>res([{email: "email@email.com"}, {email: "emai@email.com"}])));
+        const data:NotifierData={         // @ts-ignore
+            secondaryRecipient: {email: "email@email.com"}, // @ts-ignore
+            lang: "ita", notification: {uri: "https://uri.com"}, // @ts-ignore
+            mainRecipient: {name: "Mario", surname:"Rossi", sex:"male", email: "mariorossi@email.com"}
+        }
+        return notifier.notify("new_application", data)
             .then(()=>{
-                expect(mockedDao.applicants.get.mock.calls.length).toBe(1);
-                expect(mockedDao.applications.get.mock.calls.length).toBe(1);
                 expect(mockedDao.members.supervisors.list.mock.calls.length).toBe(1);
             });
     });
-    it("Notify with incorrect data rejects", ()=>{
-        const mockedDao=getMockedDao();
-        const notifier=new GMailNotifier(mockedDao);
-        //here incompatible event="require_availability_confirmation" and user_type="member"
-        return expect(notifier.notify("require_availability_confirmation", "1", "applicant", {}))
-            .rejects.toThrow(`Invalid parameters`);
-    });
+
     it("Notify with insufficient data rejects", ()=>{
         const mockedDao=getMockedDao();
-        const notifier=new GMailNotifier(mockedDao);
         // @ts-ignore
-        mockedDao.applicants.get.mockReturnValueOnce({name:"Mario", surname: "Rossi", email: "email@email.com", sex:"male"});
+        const notifier=new GMailNotifier(mockedDao);
         //missing {start, end} of the time slot of the availability that requires confirmation
-        return expect(notifier.notify("require_availability_confirmation", "1", "member", {}))
+        const data:NotifierData={ // @ts-ignore
+            secondaryRecipient: {email: "email@email.com"}, // @ts-ignore
+            lang: "ita", notification: {uri: "https://uri.com"}, // @ts-ignore
+            mainRecipient: {name: "HKnuer", surname:"HKnuer", sex:"male", email: "hknuer@hkn.com"}
+        }
+        return expect(notifier.notify("require_availability_confirmation", data))
             .rejects.toThrow(`Not enought data for event require_availability_confirmation`);
     });
 })

@@ -26,6 +26,7 @@
  */
 
 import {DAO} from "./DAO/DAOdefs";
+import {NotificationSubsystem} from "./NotificationSubsystem";
 
 export type compensation_event= "availability_revocation" | "availability_applicant_refusal"
                 | "no_interviewer_confirmation"
@@ -36,7 +37,7 @@ export class Compensator{
     constructor(storage: DAO) {
         this.storage = storage;
     }
-    compensate(event:compensation_event, data:any):void{
+    compensate(event:compensation_event, data:any, ntf: NotificationSubsystem):void{
         //TODO: implement
     }
 }

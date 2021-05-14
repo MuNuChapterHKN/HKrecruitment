@@ -27,7 +27,7 @@
 
 import {NotificationEvent, NotificationMethod} from "../config/recruitmentConfig";
 import {NotificationDAO} from "./DAO/DAOdefs";
-import {NotificationData} from "./NotificationSubsystem";
+import {NotifierData} from "./NotificationSubsystem";
 
 export abstract class Notifier{
     private readonly _method_implemented : NotificationMethod;
@@ -42,5 +42,5 @@ export abstract class Notifier{
         return this._method_implemented;
     }
 
-    abstract notify(event: NotificationEvent, user_id: string, user_type: "member" | "applicant", data: NotificationData):Promise<number>;
+    abstract notify(event: NotificationEvent, data: NotifierData):Promise<number>;
 }

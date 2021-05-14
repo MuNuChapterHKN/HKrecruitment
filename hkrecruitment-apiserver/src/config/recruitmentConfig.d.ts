@@ -19,7 +19,8 @@ export type NotificationEvent =
   | "slot_reserved"
   | "interview_member_accepted"
   | "interview_mentee_accepted"
-  | "interview_rejected";
+  | "interview_rejected"
+  | "availability_not_required";
 export type NotificationMethod = "email" | "push" | "sms" | "telegram";
 export type SlotComputationalMethod = "bestFit" | "firstFit";
 

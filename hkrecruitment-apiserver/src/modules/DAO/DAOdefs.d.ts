@@ -25,13 +25,16 @@
  * Created on 22 aprile 2021, 01:04
  */
 
-import {Applicant, Member} from "../../datatypes/entities";
+import {Applicant, Interview, Member} from "../../datatypes/entities";
 import {Application} from "../../datatypes/application";
 
 export interface NotificationDAO{
     members: {
         get: (id:string)=> Promise<Member>;
         supervisors: {
+            list: ()=>Promise<Member[]>;
+        },
+        clerks: {
             list: ()=>Promise<Member[]>;
         }
     },
@@ -40,8 +43,15 @@ export interface NotificationDAO{
     },
     applications: {
         get: (id:number)=> Promise<Application>;
+        getApplicant: (id:number)=> Promise<Applicant>;
     },
-
+    notifications: {
+        insert: (uri:string, text:string, member_id:string, application_id:string)=> Promise<void>;
+        read:  (notification_id:number, user_id:string, user_type: "applicant"|"member")=>Promise<void>;
+    },
+    interviews: {
+        get: (id:number)=> Promise<Interview>;
+    }
     [p:string]:unknown;
 }
 export interface SchedulerDAO{}
