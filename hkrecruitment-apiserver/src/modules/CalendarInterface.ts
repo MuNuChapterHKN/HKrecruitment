@@ -55,4 +55,12 @@ export interface CalendarInterface{
      * @return {Promise<number>} the HTTP status code of the response
      */
     deleteEvent(event_id:string):Promise<number>;
+
+    /**
+     * Overwrites the list of attendees for an event
+     * @param event_id the id of the event
+     * @param attendees list of email address of the new attendees
+     * @return {Promise<any>} the data returned by the service in the response
+     */
+    changeEventAttendees(event_id:string, attendees: {email:string}[]): Promise<any>;
 }

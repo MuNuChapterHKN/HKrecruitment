@@ -106,4 +106,21 @@ export class GCalendar implements CalendarInterface{
             });
         });
     }
+
+    changeEventAttendees(event_id: string, attendees: { email: string }[]): Promise<calendar_v3.Schema$Event> {
+        return new Promise((resolve, reject)=>{
+            getAuth().then((auth)=>{
+                const calendar = google.calendar({version: 'v3', auth});
+                const event={
+                    attendees: attendees,
+                }
+                // @ts-ignore
+                calendar.events.patch({
+                    calendarId: "primary",
+                    eventId: event_id,
+                    resource: event // @ts-ignore
+                }).then((res)=>resolve(res.data)).catch(e=>reject(e));
+            })
+        });
+    }
 }

@@ -36,6 +36,7 @@ describe("GCalendar Test", ()=>{
     const title ="Test Event (You can safely delete it)";
     const descr="Test Event description";
     const attendees=[{email:"haipubmnzrwwtpfurg@upived.online"}];
+    const changedAttendees=[{email:"changed@upived.online"}];
     startDate.setSeconds(0, 0);
     endDate.setHours(23, 59, 0, 0)
     const ts:TimeSlot={start: startDate.toISOString(), end:endDate.toISOString()}
@@ -62,9 +63,20 @@ describe("GCalendar Test", ()=>{
                     expect(new Date(event.end.dateTime)).toEqual(endDate);
                 })
             });
-            describe("Deletion", ()=>{
-                it("deleteEvent resolves", ()=>{
-                    return expect(cal.deleteEvent(eventId)).resolves.toBe(204);
+            describe("changeAttendees", ()=>{
+                it("changeAttendees changes only attendees", ()=>{
+                    return cal.changeEventAttendees(eventId, changedAttendees)
+                        .then((event)=>{
+                            expect(event.description).toEqual(descr);
+                            expect(event.summary).toEqual(title);
+                            expect(event.attendees[0].email).toEqual(changedAttendees[0].email);
+                            expect(new Date(event.start.dateTime)).toEqual(startDate);
+                            expect(new Date(event.end.dateTime)).toEqual(endDate);                        })
+                });
+                describe("Deletion", ()=>{
+                    it("deleteEvent resolves", ()=>{
+                        return expect(cal.deleteEvent(eventId)).resolves.toBe(204);
+                    });
                 });
             });
         });
