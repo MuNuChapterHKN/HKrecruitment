@@ -26,7 +26,7 @@
  */
 
 import {Slot} from "../datatypes/entities";
-import {TimeSlot} from "../datatypes/dataTypes";
+import {Availability, TimeSlot} from "../datatypes/dataTypes";
 import {SchedulerDAO} from "./DAO/DAOdefs";
 import {ConfigManager} from "./ConfigManager";
 
@@ -49,13 +49,36 @@ export abstract class SlotScheduler{
         return this._method_implemented;
     }
 
-    abstract makeSlot(applicant_id:string, application_id:number):Slot;
-    verifySlotsChange(ts:TimeSlot, new_slots:Slot[]):void{
+    abstract makeSlot(applicant_id:string, application_id:number): Promise<Slot>;
+    verifySlotsChange(ts:TimeSlot, new_slots:Slot[]){
         //TODO: implement
     }
-
-    eligibleTimeSlots(start:string, end:string, applicant_id:string, application_id:number): TimeSlot[]{
+    //ritorna le nuove availabilities usate nello slot
+    async purgeSlotAvailabilities(slot: Slot): Promise<Availability[]>{
         //TODO: implement
-        return {} as TimeSlot[];
+        //1)Trovare una availability "submitted" or "confirmed" nello stesso time_slot
+        //2)Fare lo scambio: via la availability ricevuta come parametro, entra la nuova
+        //3)Sistema calendario: sovrascrivi elenco attendees
+        return [];
+    }
+    //Just mark a slot as rejected
+    rejectSlot(slot: Slot): Promise<void>{
+        //TODO: implement
+        //1)Marcare lo slot come rejected, non toccare le availabilities
+        return new Promise(()=>{});
+    }
+
+    //frees the availabilities of a slot and
+    // returns the availabilities of the slot before they got modified
+    async freeSlot(slot: Slot): Promise<Availability[]>{
+        //TODO: implement, vedere un po' meglio struttura db
+        //1)Per ogni availability dello slot, cambia lo stato
+        //2)Elimina evento calendar dallo slot
+        return [];
+    }
+
+    async eligibleTimeSlots(start:string, end:string, applicant_id:string, application_id:number): Promise<TimeSlot[]>{
+        //TODO: implement
+        return [];
     }
 }

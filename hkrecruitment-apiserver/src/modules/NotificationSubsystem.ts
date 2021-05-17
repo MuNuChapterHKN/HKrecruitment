@@ -41,6 +41,15 @@ import {PeriodicEvent} from "./PeriodicEvent";
 type Language = "ita" | "eng";
 type user_type="applicant" | "member";
 
+const callbackWrapper = async (callback: (ntfS: NotificationSubsystem)=>Promise<void>, ntfS: NotificationSubsystem)=>{
+    try{
+        await callback(ntfS);
+    }
+    catch (e) { //Ok, what to do if the callback fails? Simply record it?
+        console.error(e);
+    }
+}
+
 /**
  * Describes parameters to construct a notification
  */
@@ -155,35 +164,46 @@ export class NotificationSubsystem{
                 const n=await buildNotification(event.name, mainRecipient, secondaryRecipient, user_type, lang);
                 await this.storage.notifications.insert(n.uri, n.text, n.member_id, n.applicant_id);
                 const notifiers: Notifier[]=await this.selectNotifiers(event.name);
-                const periodicCallback=(ntfS: NotificationSubsystem)=>{
-                    if(!event.stillValid(entity)) return ntfS.stopPeriodicNotify(event, entity);
-                    const promises:Promise<number>[]=[]
-                    notifiers.forEach((ntf)=>{
-                        promises.push(ntf.notify(event.name,  {...data, mainRecipient, secondaryRecipient, lang, notification: n}));
-                    });
-                    //What to do in case of rejection?
-                    Promise.all(promises).catch((err)=>console.error(err));
+                const periodicCallback=(ntfS: NotificationSubsystem):Promise<void>=>{
+                    return new Promise<void>((res, rej)=>{
+                        if(!event.stillValid(entity)) return ntfS.stopPeriodicNotify(event, entity);
+                        const promises:Promise<number>[]=[]
+                        notifiers.forEach((ntf)=>{
+                            promises.push(ntf.notify(event.name,  {...data, mainRecipient, secondaryRecipient, lang, notification: n}));
+                        });
+                        //What to do in case of rejection?
+                        return Promise.all(promises).then(()=>res()).catch(e=>rej(e));
+                    })
+
                 };
-                this.setPeriodicNotification(event, entity, period, periodicCallback);
-                resolve();
+                periodicCallback(this).then(()=>{ //execute now and every period
+                    this.setPeriodicNotification(event, entity, period, periodicCallback)
+                    resolve();
+                }).catch(e=>reject(e));
             }
             catch (e) {
                 reject(e);
             }
         });
     }
-    stopPeriodicNotify<T>(event:PeriodicEvent<T>, entity: T){
-        const id=event.getId(entity), tm=this.periodic_ntf.get(id);
-        if(!tm) throw new Error(`Timeout object not present for id ${id}`);
-        clearInterval(tm);
-        this.periodic_ntf.delete(id);
-        const c=event.needsCompensation(entity);
-        if(c) this.compensator.compensate(c, entity, this);
+    stopPeriodicNotify<T>(event:PeriodicEvent<T>, entity: T): Promise<void>{
+        return new Promise((res, rej)=>{
+            const id=event.getId(entity), tm=this.periodic_ntf.get(id);
+            if(!tm){
+                rej(`Timeout object not present for id ${id}`);
+                return;
+            }
+            clearInterval(tm);
+            this.periodic_ntf.delete(id);
+            const c=event.needsCompensation(entity);
+            if(c)  this.compensator.compensate(c, entity, this).then(()=>res()).catch(e=>rej(e));
+        });
     }
-    private setPeriodicNotification<T>(event: PeriodicEvent<T>, entity: T, period: number, callback: (ntfS: NotificationSubsystem) => void){
+    private setPeriodicNotification<T>(event: PeriodicEvent<T>, entity: T, period: number, callback: (ntfS: NotificationSubsystem) => Promise<void>){
         const id:string=event.getId(entity);
         const ms=period*60*1000; //from minutes to milliseconds
-        const tm=setInterval(callback, ms, this);
+        const tm=setInterval(callbackWrapper, ms, callback, this);
+        // @ts-ignore
         this.periodic_ntf.set(id, tm);
     }
 
@@ -213,6 +233,7 @@ export class NotificationSubsystem{
  */
 function getNotificationTextAndUri(event: NotificationEvent, lang: Language): [string, string] {
     const templates:NotificationTemplates=require(process.cwd()+"/src/config/notificationTemplate.json");
+    // @ts-ignore
     return [templates[event][lang], templates[event].uri];
 }
 
@@ -243,7 +264,8 @@ export class RecipientsSelector{
         const application_events: NotificationEvent[] = ["application_accepted", "application_revocated", "new_application", "slot_reserved"];
         let member:Member, applicant:Applicant, application:Application;
         //require_availability_confirmation will only trigger notification to the proper member
-        if (event === "require_availability_confirmation" || event==="availability_not_required") {
+        if (event === "require_availability_confirmation" || event==="availability_not_required"
+            || event==="require_manual_slot_compensation" || event==="request_availability") {
             member=await this.selectMember(data);
             return [member, null, "member", "ita"];
         }

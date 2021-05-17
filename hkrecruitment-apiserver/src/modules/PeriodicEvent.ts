@@ -94,7 +94,7 @@ export class AvailabilityEvent extends PeriodicEvent<Availability>{
      */
     private readonly min_hours_before_interviewer_confirm: number;
 
-    constructor(event: NotificationEvent, min_hours_before_interviewer_confirm: number) {
+    constructor(event: NotificationEvent, min_hours_before_interviewer_confirm: number=0) {
         if(event!=="require_availability_confirmation")
             throw new Error(`Invalid event for AvailabilityEvent`);
         super(event);
@@ -106,11 +106,8 @@ export class AvailabilityEvent extends PeriodicEvent<Availability>{
     }
 
     needsCompensation(entity: Availability): compensation_event | false {
-        if(this.name==="require_availability_confirmation"){
-            if(this.tooNear(entity))
-                return "no_interviewer_confirmation";
-            return "availability_revocation";
-        }
+        if(this.name==="require_availability_confirmation" && this.tooNear(entity))
+            return "no_interviewer_confirmation";
         return false;
     }
 

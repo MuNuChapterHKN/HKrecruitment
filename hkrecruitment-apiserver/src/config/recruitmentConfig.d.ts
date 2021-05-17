@@ -20,7 +20,10 @@ export type NotificationEvent =
   | "interview_member_accepted"
   | "interview_mentee_accepted"
   | "interview_rejected"
-  | "availability_not_required";
+  | "availability_not_required"
+  | "request_availability"
+  | "reAskTimeSlot"
+  | "require_manual_slot_compensation";
 export type NotificationMethod = "email" | "push" | "sms" | "telegram";
 export type SlotComputationalMethod = "bestFit" | "firstFit";
 

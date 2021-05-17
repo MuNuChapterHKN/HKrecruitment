@@ -41,6 +41,7 @@ export type PhdApplication = Application & {
   [k: string]: unknown;
 };
 export interface Slot {
+  id: number;
   state: SlotState;
   cal_id?: string;
   time_slot: TimeSlot;

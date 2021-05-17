@@ -11,7 +11,7 @@
                                         "no_interviewer_confirmation"]},
         "notification_event":{"enum": ["new_application", "application_accepted", "application_revocated",
             "require_availability_confirmation", "slot_reserved", "interview_member_accepted", "interview_mentee_accepted",
-            "interview_rejected", "availability_not_required"]},
+            "interview_rejected", "availability_not_required", "request_availability", "reAskTimeSlot", "require_manual_slot_compensation"]},
         "recruitmentConfig":{
             "type":"object",
             "properties": {

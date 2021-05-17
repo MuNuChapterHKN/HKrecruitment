@@ -25,8 +25,10 @@
  * Created on 22 aprile 2021, 01:04
  */
 
-import {Applicant, Interview, Member} from "../../datatypes/entities";
+import {Applicant, Interview, Member, Slot} from "../../datatypes/entities";
 import {Application} from "../../datatypes/application";
+import {Availability} from "../../datatypes/dataTypes";
+import {AvailabilityState} from "../../datatypes/enums";
 
 export interface NotificationDAO{
     members: {
@@ -56,4 +58,28 @@ export interface NotificationDAO{
 }
 export interface SchedulerDAO{}
 
-export type DAO= NotificationDAO | SchedulerDAO;
+export type CompensatorDAO = {
+    members: {
+        supervisors: {
+            list: ()=>Promise<Member[]>;
+        }
+    };
+    slots:{
+        getFromAvailability: (availability: Availability)=>Promise<Slot>;
+    },
+    availabilities: {
+        update: (start:string, end:string, member_id:string, {state:AvailabilityState})=>Promise<void>;
+    },
+    interviewers: {
+        list: ()=>Promise<Member[]>;
+        listAvailableInDay: (timeInDay: string)=>Promise<Member[]>;
+        leastNBusy: (N: number)=>Promise<Member[]>;
+    },
+    applications: {
+        deleteSlot: (slot_id: number)=>Promise<void>;
+        getBySlotId: (slot_id: number)=>Promise<Application>;
+        getSlot: (id: number)=>Promise<Slot>;
+    }
+}
+
+export type DAO={}
