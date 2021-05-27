@@ -30,10 +30,11 @@ import {NotificationEvent} from "../config/recruitmentConfig";
 import {MessageKey, MessageTemplates} from "../config/messageTemplate";
 import {NotificationDAO} from "./DAO/DAOdefs";
 import {Gender} from "../datatypes/enums";
-import {NotifierData, oneOf} from "./NotificationSubsystem";
+import {NotifierData} from "./NotificationSubsystem";
 import {getAuth} from "./GAuth/GAuth";
 import {google} from "googleapis";
 import {OAuth2Client} from "google-auth-library";
+import {oneOf} from "./utils";
 
 type Language = "ita" | "eng";
 type MessageFields = { [k in MessageKey]?: string };

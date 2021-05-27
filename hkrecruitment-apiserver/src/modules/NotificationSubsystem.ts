@@ -37,6 +37,7 @@ import {Application} from "../datatypes/application";
 import {Applicant, Member} from "../datatypes/entities";
 import {LangLevel} from "../datatypes/enums";
 import {PeriodicEvent} from "./PeriodicEvent";
+import {oneOf} from "./utils";
 
 type Language = "ita" | "eng";
 type user_type="applicant" | "member";
@@ -127,11 +128,9 @@ export class NotificationSubsystem{
                 const n=buildNotification(event, mainRecipient, secondaryRecipient, user_type, lang);
                 await this.storage.notifications.insert(n.uri, n.text, n.member_id, n.applicant_id);
                 const notifiers: Notifier[]=await this.selectNotifiers(event);
-                const promises:Promise<number>[]=[]
-                notifiers.forEach((ntf)=>{
-                    promises.push(ntf.notify(event,  {...data, mainRecipient, secondaryRecipient, lang, notification: n}));
-                });
-                Promise.all(promises).then(()=>resolve()).catch((err)=>reject(err));
+                await Promise.all(notifiers.map(async (ntf)=>
+                    ntf.notify(event,  {...data, mainRecipient, secondaryRecipient, lang, notification: n})));
+                resolve();
             }
             catch (e) {
                 reject(e);
@@ -164,17 +163,10 @@ export class NotificationSubsystem{
                 const n=await buildNotification(event.name, mainRecipient, secondaryRecipient, user_type, lang);
                 await this.storage.notifications.insert(n.uri, n.text, n.member_id, n.applicant_id);
                 const notifiers: Notifier[]=await this.selectNotifiers(event.name);
-                const periodicCallback=(ntfS: NotificationSubsystem):Promise<void>=>{
-                    return new Promise<void>((res, rej)=>{
-                        if(!event.stillValid(entity)) return ntfS.stopPeriodicNotify(event, entity);
-                        const promises:Promise<number>[]=[]
-                        notifiers.forEach((ntf)=>{
-                            promises.push(ntf.notify(event.name,  {...data, mainRecipient, secondaryRecipient, lang, notification: n}));
-                        });
-                        //What to do in case of rejection?
-                        return Promise.all(promises).then(()=>res()).catch(e=>rej(e));
-                    })
-
+                const periodicCallback=(ntfS: NotificationSubsystem):Promise<any>=>{
+                    if(!event.stillValid(entity)) return ntfS.stopPeriodicNotify(event, entity);
+                    return Promise.all(notifiers.map(async (ntf)=>
+                        ntf.notify(event.name,  {...data, mainRecipient, secondaryRecipient, lang, notification: n})));
                 };
                 periodicCallback(this).then(()=>{ //execute now and every period
                     this.setPeriodicNotification(event, entity, period, periodicCallback)
@@ -296,7 +288,7 @@ export class RecipientsSelector{
     async selectApplicantFromApplication(data: NotificationData): Promise<[Applicant, Application]>{
         if (!data.application_id) throw new Error("Missing application_id");
         const mainRecipient = await this.storage.applications.getApplicant(data.application_id);
-        const application = await this.storage.applications.get(data.application_id);
+        const application = await this.storage.applications.get(data.application_id, mainRecipient.id);
         return [mainRecipient, application];
     }
 
@@ -307,9 +299,9 @@ export class RecipientsSelector{
     async selectApplicantFromInterview(data: NotificationData): Promise<[Applicant, Application]>{
         if(!data.interview_id) throw new Error("Missing interview_id");
         const interview=await this.storage.interviews.get(data.interview_id)
-        const application=this.storage.applications.get(interview.application_id);
-        const mainRecipient=this.storage.applications.getApplicant(interview.application_id);
-        return [await mainRecipient, await application];
+        const mainRecipient=await this.storage.applications.getApplicant(interview.application_id);
+        const application=await this.storage.applications.get(interview.application_id, mainRecipient.id);
+        return [mainRecipient, application];
     }
 
     /**
@@ -343,16 +335,4 @@ export class RecipientsSelector{
      static notificationLanguage(level: LangLevel): Language{
         return level==="native_speaker" ? "ita":"eng";
     }
-}
-
-/**
- * Return one random element of an array of elements
- * @template T
- * @param items<T> an array of items
- * @return {T} an element of the array
- * @throws {Error} if the array is empty
- */
-export function oneOf<T>(items: T[]): T{
-    if(items.length===0) throw new Error("Empty array");
-    return items[Math.floor(Math.random() * items.length)];
 }

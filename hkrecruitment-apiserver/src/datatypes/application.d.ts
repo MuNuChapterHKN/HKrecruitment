@@ -26,5 +26,6 @@ export interface Application {
   time_slots?: TimeSlot[];
   slot?: Slot;
   interview_id?: number;
+  applicant_id: string;
   [k: string]: unknown;
 }

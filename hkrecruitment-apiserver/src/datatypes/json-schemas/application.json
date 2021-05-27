@@ -20,7 +20,8 @@
         "minItems":1
       },
       "slot":{"$ref": "entities.json#/definitions/slot"},
-      "interview_id":{"type":"integer", "minimum": 0}
+      "interview_id":{"type":"integer", "minimum": 0},
+      "applicant_id": {"type": "string"}
     },
     "required":["id", "submission_date", "state", "ita_level", "type"]
   }

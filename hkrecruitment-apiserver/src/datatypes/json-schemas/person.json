@@ -11,5 +11,5 @@
         "email":{"type":"string", "format":"email"},
         "phone_no":{"type":"string", "maxLength": 15}
     },
-    "required":["name", "surname", "sex", "email", "phone_no"]
+    "required":["name", "surname", "sex", "email", "phone_no", "image"]
 }

@@ -70,7 +70,8 @@ describe("Test RecipientsSelector", ()=>{
         phone_no: "1234",
         role: "clerk",
         sex: "male",
-        surname: "surname"
+        surname: "surname",
+        image: ""
     }
     const boardClerk: Member ={
         email: "email@email.com",
@@ -81,21 +82,30 @@ describe("Test RecipientsSelector", ()=>{
         phone_no: "1234",
         role: "clerk",
         sex: "male",
-        surname: "surname"
+        surname: "surname",
+        image: ""
     }
     const bscAppAccepted: Application = {
+        applicant_id: "1",
         id: 1, ita_level: "C2", state: "accepted", submission_date: nowStr, type: "BSc",
         last_modified: {attributes: [], member_id: "10", time: nowStr}
     };
     const phdAppNew: Application = {
+        applicant_id: "1",
         id: 2, ita_level: "C2", state: "new", submission_date: nowStr, type: "PhD"
     };
     const interview: Interview = {
             application_id: 1, last_modified: {attributes: [], member_id: "10", time: nowStr}, notes: ""
     };
     const bscAppNew: Application = {
+        applicant_id: "1",
         id: 1, ita_level: "C2", state: "new", submission_date: nowStr, type: "BSc"
     };
+    const applicant: Applicant ={
+        birth_date: "", email: "", how_know_HKN: "", id: "1", name: "", phone_no: "", sex: "male", surname: "",
+        image: ""
+
+    }
     describe("selectMember", ()=>{
         it("check on parameters", ()=>{
             //member_id missing
@@ -124,10 +134,13 @@ describe("Test RecipientsSelector", ()=>{
         });
         it("calls dao.applications.get, dao.applications.getApplicant", ()=>{
             const app_id=1;
+            nDao.applications.getApplicant.mockReturnValueOnce(new Promise((res)=>res(applicant)));
             return rs.selectApplicantFromApplication({application_id: app_id})
                 .then(()=>{
                     expect(nDao.applications.getApplicant.mock.calls[0][0]).toBe(app_id);
                     expect(nDao.applications.get.mock.calls[0][0]).toBe(app_id);
+                    expect(nDao.applications.get.mock.calls[0][1]).toBe(clerk.id);
+
                 });
         });
 
@@ -141,6 +154,7 @@ describe("Test RecipientsSelector", ()=>{
         it("calls dao.interviews.get, dao.applications.get, dao.applications.getApplicant", ()=>{
             const int_id=2;
             nDao.interviews.get.mockReturnValueOnce(new Promise((res)=>res(interview)));
+            nDao.applications.getApplicant.mockReturnValueOnce(new Promise((res)=>res(applicant)));
 
             return rs.selectApplicantFromInterview({interview_id: int_id})
                 .then(()=>{

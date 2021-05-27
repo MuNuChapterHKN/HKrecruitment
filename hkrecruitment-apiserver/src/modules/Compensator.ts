@@ -26,7 +26,7 @@
  */
 
 import {CompensatorDAO} from "./DAO/DAOdefs";
-import {NotificationSubsystem, oneOf} from "./NotificationSubsystem";
+import {NotificationSubsystem} from "./NotificationSubsystem";
 import {Availability, TimeSlot} from "../datatypes/dataTypes";
 import {ConfigManager} from "./ConfigManager";
 import {SlotScheduler} from "./SlotScheduler";
@@ -34,6 +34,7 @@ import {Member, Slot} from "../datatypes/entities";
 import {Application} from "../datatypes/application";
 import {AvailabilityCompensationBroadcasting, AvailabilityCompensationMethod} from "../config/recruitmentConfig";
 import {AvailabilityEvent} from "./PeriodicEvent";
+import {oneOf} from "./utils";
 
 export type compensation_event= "availability_revocation" | "availability_applicant_refusal"
                 | "no_interviewer_confirmation"

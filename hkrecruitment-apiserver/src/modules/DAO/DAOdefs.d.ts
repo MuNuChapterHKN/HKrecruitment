@@ -27,8 +27,8 @@
 
 import {Applicant, Interview, Member, Slot} from "../../datatypes/entities";
 import {Application} from "../../datatypes/application";
-import {Availability} from "../../datatypes/dataTypes";
-import {AvailabilityState} from "../../datatypes/enums";
+import {Availability, TimeSlot} from "../../datatypes/dataTypes";
+import {SlotState} from "../../datatypes/enums";
 
 export interface NotificationDAO{
     members: {
@@ -44,7 +44,7 @@ export interface NotificationDAO{
         get: (id:string)=> Promise<Applicant>;
     },
     applications: {
-        get: (id:number)=> Promise<Application>;
+        get: (id:number, id_applicant: string)=> Promise<Application>;
         getApplicant: (id:number)=> Promise<Applicant>;
     },
     notifications: {
@@ -56,7 +56,41 @@ export interface NotificationDAO{
     }
     [p:string]:unknown;
 }
-export interface SchedulerDAO{}
+export interface SchedulerDAO{
+    slots: {
+        patch: (id:number, params: {state?: SlotState, cal_id?: string})=>Promise<void>;
+        updateMembers: (id: number, newAvl: Availability[])=>Promise<void>;
+        countInDay: (member_id:string, time: string)=>Promise<number>; //getDailySlotMemberDistribution
+        countInWeek: (member_id:string, time: string)=>Promise<number>; //getDaily + aggregazione
+        countConsecutive: (member_id:string, {start: string, end: string})=>Promise<number>; //
+        insert: (slot: Slot)=>Promise<number>;
+        listMembers: (id: number)=>Promise<Member[]>;
+        batchModify: (ts: TimeSlot, new_slots: Slot[])=>Promise
+    },
+    availabilities: {
+        listFromSlot: (slot_id: number)=>Promise<Availability[]>; //da aggiungere
+        update: ({start:string, end:string}, member_id:string, {state:AvailabilityState})=>Promise<void>;
+        listUsableInRange: ({start:string, end:string})=>Promise<Availability[]>;
+        get: ({start:string, end:string}, member_id:string)=>Promise<Availability>;
+    },
+    members: {
+        list: ()=>Promise<Member[]>;
+        partialList: (ids: string[])=>Promise<Member[]>; //decidere se fslotsAndAvailabilitiesare tante get o una nuova query
+        get: (id:string)=>Promise<Member>;
+    },
+    applicants: {
+        listFriends: (id: string)=>Promise<Member[]>;
+        get: (id:string)=>Promise<Applicant>;
+    },
+    applications: {
+        get: (id: number)=>Promise<Application>;
+        listInTimeSlot: (ts: TimeSlot)=>Promise<Application[]>;
+        listFromSlotIds: (slotIds: number[])=>Promise<Application[]>;
+    },
+    time_slots: {
+        listEligible: ({start:string, end:string}, applicant_id: string)=>Promise<{availabilities: Availability[], time_slot: TimeSlot}[]>;
+    }
+}
 
 export type CompensatorDAO = {
     members: {

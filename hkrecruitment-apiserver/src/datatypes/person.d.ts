@@ -8,7 +8,7 @@ import {Gender} from "./enums";
  */
 
 export interface Person {
-  image?: string;
+  image: string;
   name: string;
   surname: string;
   sex: Gender;
