@@ -1,0 +1,214 @@
+{
+  "$schema": "../../src/config/json-schema/messageTemplate.json",
+  "new_application": {
+    "ita": {
+      "subject": "[name surname] Candidatura accettata!",
+      "body": "Car name surname, la tua candidatura è stata accettata!",
+      "fields": [
+        "name",
+        "surname"
+      ],
+      "vocabulary": [
+        {
+          "placeholder": "Car",
+          "female": "Cara",
+          "male": "Caro"
+        }
+      ]
+    },
+    "eng": {
+      "subject": "[name surname] Application accepted!",
+      "body": "Dear name surname, your application has been accepted!",
+      "fields": [
+        "name",
+        "surname"
+      ],
+      "vocabulary": []
+    }
+  },
+  "application_accepted": {
+    "ita": {
+      "subject": "[name surname] Candidatura accettata!",
+      "body": "Car name surname, la tua candidatura è stata accettata!",
+      "fields": [
+        "name",
+        "surname"
+      ],
+      "vocabulary": [
+        {
+          "placeholder": "Car",
+          "female": "Cara",
+          "male": "Caro"
+        }
+      ]
+    },
+    "eng": {
+      "subject": "[name surname] Application accepted!",
+      "body": "Dear name surname, your application has been accepted!",
+      "fields": [
+        "name",
+        "surname"
+      ],
+      "vocabulary": []
+    }
+  },
+  "application_revocated": {
+    "ita": {
+      "subject": "[name surname] Candidatura revocata!",
+      "body": "Car name surname, ci dispiace sapere che hai deciso di cancellare la tua candidatura",
+      "fields": [
+        "name",
+        "surname"
+      ],
+      "vocabulary": [
+        {
+          "placeholder": "Car",
+          "female": "Cara",
+          "male": "Caro"
+        }
+      ]
+    },
+    "eng": {
+      "subject": "[name surname] Application accepted!",
+      "body": "Dear name surname, your application has been accepted!",
+      "fields": [
+        "name",
+        "surname"
+      ],
+      "vocabulary": []
+    }
+  },
+  "require_availability_confirmation": {
+    "ita": {
+      "subject": "[name surname] Conferma la tua disponibilità!",
+      "body": "Gentile HKnuer name surname, conferma la tua disponibilità per start-end!",
+      "fields": [
+        "name",
+        "surname",
+        "start",
+        "end"
+      ],
+      "vocabulary": [
+        {
+          "placeholder": "Car",
+          "female": "Cara",
+          "male": "Caro"
+        }
+      ]
+    },
+    "eng": {
+      "subject": "[name surname] Application accepted!",
+      "body": "Dear name surname, your application has been accepted!",
+      "fields": [
+        "name",
+        "surname"
+      ],
+      "vocabulary": []
+    }
+  },
+  "slot_reserved": {
+    "ita": {
+      "subject": "[name surname] Colloquio pianificato!",
+      "body": "Car name surname, il tuo colloquio è stato fissato per start, trovi i dettagli sulla tua pagina e sull'evento Google Calendar!",
+      "fields": [
+        "name",
+        "surname",
+        "start"
+      ],
+      "vocabulary": [
+        {
+          "placeholder": "Car",
+          "female": "Cara",
+          "male": "Caro"
+        }
+      ]
+    },
+    "eng": {
+      "subject": "[name surname] Application accepted!",
+      "body": "Dear name surname, your application has been accepted!",
+      "fields": [
+        "name",
+        "surname"
+      ],
+      "vocabulary": []
+    }
+  },
+  "interview_member_accepted": {
+    "ita": {
+      "subject": "[name surname] Benvenuto in HKN!",
+      "body": "Car name surname, a seguito del nostro colloquio tenutosi start, abbiamo deciso che saremmo felici se tu ti unissi ad HKN!",
+      "fields": [
+        "name",
+        "surname"
+      ],
+      "vocabulary": [
+        {
+          "placeholder": "Car",
+          "female": "Cara",
+          "male": "Caro"
+        }
+      ]
+    },
+    "eng": {
+      "subject": "[name surname] Application accepted!",
+      "body": "Dear name surname, your application has been accepted!",
+      "fields": [
+        "name",
+        "surname"
+      ],
+      "vocabulary": []
+    }
+  },
+  "interview_mentee_accepted": {
+    "ita": {
+      "subject": "[name surname] Candidatura accettata!",
+      "body": "Car name surname, la tua candidatura è stata accettata!",
+      "fields": [
+        "name",
+        "surname"
+      ],
+      "vocabulary": [
+        {
+          "placeholder": "Car",
+          "female": "Cara",
+          "male": "Caro"
+        }
+      ]
+    },
+    "eng": {
+      "subject": "[name surname] Application accepted!",
+      "body": "Dear name surname, your application has been accepted!",
+      "fields": [
+        "name",
+        "surname"
+      ],
+      "vocabulary": []
+    }
+  },
+  "interview_rejected": {
+    "ita": {
+      "subject": "[name surname] Candidatura accettata!",
+      "body": "Car name surname, la tua candidatura è stata accettata!",
+      "fields": [
+        "name",
+        "surname"
+      ],
+      "vocabulary": [
+        {
+          "placeholder": "Car",
+          "female": "Cara",
+          "male": "Caro"
+        }
+      ]
+    },
+    "eng": {
+      "subject": "[name surname] Application accepted!",
+      "body": "Dear name surname, your application has been accepted!",
+      "fields": [
+        "name",
+        "surname"
+      ],
+      "vocabulary": []
+    }
+  }
+}

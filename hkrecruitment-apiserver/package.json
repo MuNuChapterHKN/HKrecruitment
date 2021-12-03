@@ -1,0 +1,29 @@
+{
+  "name": "hkrecruitment-apiserver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./build/src/index.js",
+    "build": "tsc",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ajv": "^8.1.0",
+    "ajv-formats": "^2.0.2",
+    "fs.promises": "^0.1.2",
+    "googleapis": "^72.0.0",
+    "json-schema-to-typescript": "^10.1.4",
+    "tsc": "^1.20150623.0",
+    "typescript": "^4.2.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.22",
+    "@types/node": "^14.14.41",
+    "jest": "^26.6.3",
+    "ts-jest": "^26.5.4"
+  }
+}

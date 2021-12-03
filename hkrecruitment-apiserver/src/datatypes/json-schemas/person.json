@@ -1,0 +1,15 @@
+{
+    "$schema":"http://json-schema.org/draft-06/schema#",
+    "$id": "https://hknpolito.org/schemas/v1/person.json#",
+    "title": "person",
+    "type":"object",
+    "properties": {
+        "image": {"type":"string", "format": "uri"},
+        "name":{"type":"string"},
+        "surname":{"type":"string"},
+        "sex":{"$ref": "enums.json#/properties/gender"},
+        "email":{"type":"string", "format":"email"},
+        "phone_no":{"type":"string", "maxLength": 15}
+    },
+    "required":["name", "surname", "sex", "email", "phone_no", "image"]
+}
