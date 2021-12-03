@@ -27,7 +27,7 @@
 
 import {GDriveStorage} from "../src/modules/GDriveStorage";
 
-describe("GDriveStorage Test", ()=>{
+describe.skip("GDriveStorage Test", ()=>{
     const storage = new GDriveStorage();
     const folderName="Test Folder (you can safely remove)";
     let folder_id:string;

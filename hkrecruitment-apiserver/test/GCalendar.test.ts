@@ -28,7 +28,7 @@
 import {GCalendar} from "../src/modules/GCalendar";
 import {TimeSlot} from "../src/datatypes/dataTypes";
 
-describe("GCalendar Test", ()=>{
+describe.skip("GCalendar Test", ()=>{
     const cal =new GCalendar();
     const randomId="jnfkjwfjkwfkwwk";
     const startDate=new Date();

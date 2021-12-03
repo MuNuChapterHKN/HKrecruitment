@@ -31,7 +31,7 @@ import {Applicant, Member} from "../src/datatypes/entities";
 import {Application} from "../src/datatypes/application";
 import {NotifierData} from "../src/modules/NotificationSubsystem";
 
-describe("Test BasicMail", ()=>{
+describe.only("Test BasicMail", ()=>{
     it("Has predefined headers after construction", ()=>{
         const m=new BasicMail("from@email.com", "to@email.com");
         expect(m.getHeader("Content-Type")).toBe("text/html; charset=\"UTF-8\"");
@@ -88,7 +88,7 @@ describe("Test BasicMail", ()=>{
     });
 });
 
-describe("Test MailBuilder", ()=>{
+describe.skip("Test MailBuilder", ()=>{
     const templatesPath=process.cwd()+"/test/validationData/mailTemplates.json";
     const templates : MessageTemplates= require(templatesPath);
     // @ts-ignore
