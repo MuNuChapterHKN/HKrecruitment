@@ -1,4 +1,4 @@
 node_modules/
 build/
-hkrecruitment-apiserver/src/modules/GAuth/authInfo
+api/src/modules/GAuth/authInfo
 .idea/
