@@ -1,5 +1,8 @@
 name: CI
-on: [pull_request]
+on:
+  push:
+    branches:
+      - master
 jobs:
   Build-Backend:
     runs-on: ubuntu-latest
