@@ -1,13 +1,12 @@
 import logo from './logo.svg';
 import './App.css';
+import React, { useState, useEffect } from 'react';
+import MyNavbar from './MyNavbar.js';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-      </header>
-    </div>
-  );
+  return <body>
+  <MyNavbar />
+  </body>
+   
 }
 export default App;
