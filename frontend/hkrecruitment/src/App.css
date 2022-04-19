@@ -21,53 +21,28 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: black;
 }
 
 .App-link {
   color: #61dafb;
 }
-.navbar{
-  background-color:#F9F9F9; 
+
+.black{
+  color: white;
+  background-color: #282c34;
+  background: #282c34;
 }
-.navbar-brand{
+
+.pink{
   color: black;
-}
-.HKNlogo{
-  height: 20px;
-  width: 50%;
+  background-color: pink;
+  background: pink;
 }
 .myNavbar{
-  background-color: white;
+  background-color: #F9F9F9;
 }
-.brand{
-  background-color: black;
-  text-align: left;
-}
-.user{
-  background-color: black;
-  text-align: left;
-  height: 66px;
-  align-content: center;
-}
-.slope {
-  height: 0;
-  border-bottom: 66px solid black;
-  border-right: 50px solid white;
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 0;
-}
-.slope2 {
-  height: 0;
-  border-top: 66px solid black;
-  border-left: 50px solid white;
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 0;
-}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
