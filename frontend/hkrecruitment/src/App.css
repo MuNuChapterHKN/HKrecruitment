@@ -39,8 +39,33 @@
   background-color: pink;
   background: pink;
 }
+
+.submitButton{
+  background-color: #00629B !important;
+  background: #00629B !important;
+}
 .myNavbar{
   background-color: #F9F9F9;
+}
+.table {
+  --bs-table-bg: rgba(55,81,113,0.8) !important;
+  --bs-table-accent-bg: transparent;
+  --bs-table-striped-color: white !important;
+  --bs-table-striped-bg: rgba(55,81,113,0.8) !important;
+  --bs-table-active-color: white !important;
+  --bs-table-active-bg: rgba(0, 0, 0, 0.1);
+  --bs-table-hover-color: white !important;
+  --bs-table-hover-bg: rgba(0, 0, 0, 0.075);
+  width: 100%;
+  margin-bottom: 1rem;
+  color: white !important;
+  vertical-align: top;
+  border-color: #dee2e6;
+}
+
+.table > thead {
+  vertical-align: bottom;
+  background-color: rgba(55,81,113,1);
 }
 
 @keyframes App-logo-spin {

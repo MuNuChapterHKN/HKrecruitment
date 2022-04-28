@@ -8,6 +8,7 @@ import { Route } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
 import { Routes } from 'react-router-dom';
 import { useAuth0 } from "@auth0/auth0-react";
+import AvaiabilitiesTable from './AvaiabilitiesTable';
 
 
 
@@ -33,7 +34,7 @@ function App() {
 
 
   return <Routes>
-    <Route path="/" element={<AfterLogin isAuthenticated={isAuthenticated}/>}/>
+    <Route path="/" element={<AfterLogin isAuthenticated={isAuthenticated} user={user}/>}/>
     <Route path="/*" element={<Navigate to="/"/>}/>
     </Routes>
 }
@@ -42,7 +43,9 @@ export default App;
 function AfterLogin(props){
   return <div> <MyNavbar/>
 
-           {props.isAuthenticated && <SignupForm/>}
+           {props.isAuthenticated && !props.user.email.endsWith("@hknpolito.org") && <SignupForm/>}
+           {props.isAuthenticated && props.user.email.endsWith("@hknpolito.org") && <AvaiabilitiesTable/>}
+
   
     </div> 
 }
