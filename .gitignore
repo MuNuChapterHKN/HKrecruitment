@@ -2,3 +2,5 @@ node_modules/
 build/
 api/src/modules/GAuth/authInfo
 .idea/
+/api/.env
+/api/dist/
