@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start-local": "tsc && NODE_ENV=local node --unhandled-rejections=strict ./dist/app.js",
+    "build": "tsoa spec-and-routes && tsc",
+    "start-local": "NODE_ENV=local node ./dist/app.js",
     "dev": "NODE_ENV=local nodemon",
-    "start": "tsc && node --unhandled-rejections=strict ./dist/app.js",
+    "start": "NODE_ENV=production node  ./dist/app.js",
     "debug": "export DEBUG=* && npm run start",
-    "build": "tsc",
     "test": "jest"
   },
   "nodemonConfig": {
@@ -23,18 +23,26 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/sequelize": "^4.28.13",
     "ajv": "^8.1.0",
     "ajv-formats": "^2.0.2",
+    "body-parser": "^1.20.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "express": "^4.17.1",
     "fs.promises": "^0.1.2",
     "googleapis": "^72.0.0",
+    "inversify": "^6.0.1",
+    "inversify-binding-decorators": "^4.0.0",
     "json-schema-to-typescript": "^10.1.4",
+    "multer": "^1.4.4",
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
+    "reflect-metadata": "^0.1.13",
     "sequelize": "^6.19.0",
+    "swagger-ui-express": "^4.4.0",
     "tsc": "^1.20150623.0",
+    "tsoa": "^4.0.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

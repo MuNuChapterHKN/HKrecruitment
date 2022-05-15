@@ -16,7 +16,7 @@ export class ApplicantModel extends Model<ApplicantModelAttributes, ApplicantMod
     declare how_know_HKN: string
 }
 
-export function applicantModel(sequelize, PersonModel) {
+export function applicantModelFactory(sequelize, PersonModel) {
     ApplicantModel.init({
         id: {
             type: DataTypes.STRING,

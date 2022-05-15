@@ -1,16 +1,19 @@
 {
   "compilerOptions": {
-    "target": "ES6",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "target": "es6",
+    "lib": ["es6"],
+    "types": ["reflect-metadata"],
     "module": "commonjs",
+    "moduleResolution": "node",
     "outDir": "./dist",
     "inlineSourceMap": true,
     "esModuleInterop": true
   },
   "exclude": [
     "test",
-    "node_modules",
     "src/modules",
-    "src/datatypes",
     "src/config"
   ]
 }

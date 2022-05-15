@@ -1,13 +1,27 @@
 import {Applicant} from "../datatypes/entities";
+import {ApplicantRepositoryInterface} from "./applicant";
+import {inject, injectable} from "inversify";
+import {ApplicantModel, applicantModelFactory} from "./applicant.model";
+import {personModelFactory, PersonModel} from "../person/personModelFactory";
+import {Sequelize} from "sequelize";
+import {TYPES} from "../ioc/types";
+import {provideSingleton} from "../util";
 
-export function applicantRepository(applicantModel, personModel): {
-    add: (applicant: Applicant) => Promise<Applicant>,
-    getAll: () => Promise<Applicant[]>
-} {
-    const getAll = async () => {
-        const sqlApplicants = await applicantModel.findAll({
+@provideSingleton(ApplicantRepository)
+export class ApplicantRepository implements ApplicantRepositoryInterface {
+    private _applicantModel: { new(): ApplicantModel }
+    private _personModel: { new(): PersonModel }
+
+    constructor(@inject(TYPES.Sequelize) private _sequelize: Sequelize) {
+        this._personModel = personModelFactory(this._sequelize)
+        this._applicantModel = applicantModelFactory(this._sequelize, this._personModel)
+    }
+
+    public async getAll() {
+        // @ts-ignore
+        const sqlApplicants = await this._applicantModel.findAll({
             include: [{
-                model: personModel,
+                model: this._personModel,
                 required: true
             }]
         }).catch((err) => {
@@ -31,8 +45,10 @@ export function applicantRepository(applicantModel, personModel): {
         })
         return applicants
     }
-    const add = async (applicant: Applicant) => {
-        const person = await personModel.create({
+
+    public async add(applicant: Applicant) {
+        // @ts-ignore
+        const person = await this._personModel.create({
             id: applicant.id,
             name: applicant.name,
             surname: applicant.surname,
@@ -45,7 +61,7 @@ export function applicantRepository(applicantModel, personModel): {
             throw err
         })
 
-        const insertedApplicant = await person.createApplicant({
+        return await person.createApplicant({
             id: applicant.id,
             birth_date: applicant.birth_date,
             telegram_uid: applicant.telegram_uid,
@@ -54,11 +70,5 @@ export function applicantRepository(applicantModel, personModel): {
             console.error(err)
             throw err
         })
-
-        return insertedApplicant
-    }
-    return {
-        getAll: getAll,
-        add: add,
     }
 }

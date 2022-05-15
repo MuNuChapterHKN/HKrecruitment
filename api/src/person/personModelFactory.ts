@@ -1,6 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 
-type PersonModelAttributes = {
+export type PersonModelAttributes = {
     id: string,
     name: string,
     surname: string,
@@ -21,7 +21,7 @@ export class PersonModel extends Model<PersonModelAttributes, PersonModelAttribu
 
 }
 
-export function personModel(sequelize) {
+export function personModelFactory(sequelize) {
     PersonModel.init({
         id: {
             type: DataTypes.STRING,

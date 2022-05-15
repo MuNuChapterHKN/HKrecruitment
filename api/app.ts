@@ -1,18 +1,18 @@
 import express from 'express';
+import * as swaggerUi from 'swagger-ui-express';
 import * as http from 'http';
-
+import cors from 'cors';
 if (process.env.NODE_ENV === 'local') {
     require('dotenv').config();
 }
-
-import cors from 'cors';
 import {CommonRoutesConfig} from './src/common/common.routes.config';
-import {ApplicantRoutes} from './src/applicant/applicant.routes.config';
+import {RegisterRoutes} from './build/routes';
+
+import bodyParser from "body-parser";
+
 import debug from 'debug';
-import {applicantRepository} from "./src/applicant/applicant.repository";
-import {mySequelize} from "./src/dbconfig/dbconnector";
-import {applicantModel} from "./src/applicant/applicant.model";
-import {personModel} from "./src/person/person.model";
+import {ErrorHandler} from "./src/ErrorHandler";
+
 
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
@@ -22,15 +22,19 @@ const debugLog: debug.IDebugger = debug('app');
 
 app.use(express.json());
 app.use(cors());
+app.use(
+    bodyParser.urlencoded({
+        extended: true,
+    })
+);
+app.use(bodyParser.json());
 
-const myPersonModel = personModel(mySequelize)
-const myApplicantModel = applicantModel(mySequelize, myPersonModel)
-const myApplicantRepository = applicantRepository(myApplicantModel, myPersonModel)
+RegisterRoutes(app);
+app.use(ErrorHandler.handleError);
 
-app.applicantRepository = myApplicantRepository
+const swaggerDocument = require('../build/swagger.json');
 
-routes.push(new ApplicantRoutes(app));
-
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 const runningMessage = `Server running at http://localhost:${port}`;
 app.get('/health', (req: express.Request, res: express.Response) => {
     res.status(200).send(runningMessage)
