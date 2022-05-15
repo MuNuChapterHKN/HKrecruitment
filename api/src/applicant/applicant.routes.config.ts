@@ -1,7 +1,7 @@
 import {CommonRoutesConfig} from '../common/common.routes.config';
-import pool from '../dbconfig/dbconnector';
-
+import { v4 as uuidv4 } from 'uuid';
 import express from 'express';
+import {Applicant} from "../datatypes/entities";
 
 export class ApplicantRoutes extends CommonRoutesConfig {
     constructor(app: express.Application) {
@@ -11,23 +11,31 @@ export class ApplicantRoutes extends CommonRoutesConfig {
     configureRoutes() {
         this.app.route(`/applicant`)
             .get(async (req: express.Request, res: express.Response) => {
-                console.log(pool);
-                const client = await pool.connect();
-                const sql = 'SELECT t.* FROM public."Applicant" t';
-                await client.query(sql, (err, result) =>{
-                    if(err) {
-                        console.error('Error executing query', err.stack)
-                        res.status(500).send("Server error");
-                    } else {
+                const applicants = await this.app.applicantRepository.getAll()
+                res.status(200).json(applicants);
 
-                        res.status(200).send(result.rows);
-                    }
-                })
-                client.release()
             })
-            .post((req: express.Request, res: express.Response) => {
-                res.status(200).send(`Post to applicant`)
-            });
+            .post(async (req: express.Request, res: express.Response) => {
+                const body = req.body;
+                const applicant: Applicant = {
+                    id: uuidv4(),
+                    birth_date: body.birth_date,
+                    telegram_uid: body.telegram_uid,
+                    how_know_HKN: body.how_know_HKN,
+                    name: body.name,
+                    surname: body.surname,
+                    email: body.email,
+                    phone_no: body.phone_no,
+                    image: body.image,
+                    sex: body.sex,
+                }
+                const outApplicant = await this.app.applicantRepository.add(applicant).catch((err) =>
+                {
+                    console.error(err)
+                    res.status(500).end()
+                })
+                res.status(200).json(outApplicant)
+            })
         return this.app;
     }
 }

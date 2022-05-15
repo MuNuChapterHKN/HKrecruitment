@@ -5,12 +5,14 @@ if (process.env.NODE_ENV === 'local') {
     require('dotenv').config();
 }
 
-import * as winston from 'winston';
-import * as expressWinston from 'express-winston';
 import cors from 'cors';
 import {CommonRoutesConfig} from './src/common/common.routes.config';
 import {ApplicantRoutes} from './src/applicant/applicant.routes.config';
 import debug from 'debug';
+import {applicantRepository} from "./src/applicant/applicant.repository";
+import {mySequelize} from "./src/dbconfig/dbconnector";
+import {applicantModel} from "./src/applicant/applicant.model";
+import {personModel} from "./src/person/person.model";
 
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
@@ -21,21 +23,11 @@ const debugLog: debug.IDebugger = debug('app');
 app.use(express.json());
 app.use(cors());
 
+const myPersonModel = personModel(mySequelize)
+const myApplicantModel = applicantModel(mySequelize, myPersonModel)
+const myApplicantRepository = applicantRepository(myApplicantModel, myPersonModel)
 
-const loggerOptions: expressWinston.LoggerOptions = {
-    transports: [new winston.transports.Console()],
-    format: winston.format.combine(
-        winston.format.json(),
-        winston.format.prettyPrint(),
-        winston.format.colorize({ all: true })
-    ),
-};
-
-if (!process.env.DEBUG) {
-    loggerOptions.meta = false;
-}
-
-app.use(expressWinston.logger(loggerOptions));
+app.applicantRepository = myApplicantRepository
 
 routes.push(new ApplicantRoutes(app));
 
