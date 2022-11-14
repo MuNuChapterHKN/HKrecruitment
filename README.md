@@ -7,6 +7,8 @@ the recruitment process. This repository contains three branches:
 * **reactapp** - tracks the development of the front-end React application
 * **documentation** - track the documentation for both the API server and the React application
 
+Trello for project state https://trello.com/invite/b/T6YYVYW3/ATTI0e7257a02d61a8b4fe54ac88affe746346110847/hkrecruitment
+
 ## Authors
 
 * **Riccardo Zaccone** - *API server* - [HKN Polito](https://hknpolito.org/)
