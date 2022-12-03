@@ -1,0 +1,15 @@
+{
+  "name": "hkrecruitment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev:web": "pnpm --filter frontend dev",
+    "dev:api": "pnpm --filter api start:dev",
+    "dev": "pnpm run dev:web & pnpm run dev:api",
+    "dev:tmux": "tmux new-session -d -s hkrecruitment 'pnpm run dev:web' \\; split-window -h -p 50 'pnpm run dev:api' \\; attach"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

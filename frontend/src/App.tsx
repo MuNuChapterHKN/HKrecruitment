@@ -6,8 +6,7 @@ import { LogoutButton } from "./logout";
 import { Private } from "./Private";
 
 function App() {
-  const { isAuthenticated, user, getAccessTokenWithPopup } = useAuth0();
-  const [accessToken, setAccessToken] = useState("");
+  const { isAuthenticated, user } = useAuth0();
 
   return (
     <div className="App">
@@ -24,24 +23,6 @@ function App() {
       )}
 
       <Private />
-
-      {/* {isAuthenticated && (
-        <button
-          onClick={() => {
-            const audience = import.meta.env.VITE_AUDIENCE;
-            console.log(`Getting access token for audience ${audience}`);
-
-            getAccessTokenWithPopup({
-              audience: import.meta.env.VITE_AUDIENCE,
-              grant_type: "client_credentials",
-            }).then((token) => {
-              setAccessToken(token);
-            });
-          }}
-        >
-          Get Access Token
-        </button>
-      )} */}
     </div>
   );
 }

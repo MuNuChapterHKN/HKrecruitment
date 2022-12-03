@@ -1,0 +1,8 @@
+{
+  "name": "@hkrecruitment/shared",
+  "private": "true",
+  "description": "Shared types and schemas",
+  "devDependencies": {
+    "typescript": "^4.9.3"
+  }
+}
