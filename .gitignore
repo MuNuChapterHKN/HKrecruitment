@@ -5,6 +5,4 @@ api/src/modules/GAuth/authInfo
 /api/.env
 /api/dist/
 
-tmp-*
-
 **/.DS_Store

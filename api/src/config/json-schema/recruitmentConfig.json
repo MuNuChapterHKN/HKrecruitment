@@ -1,0 +1,116 @@
+{
+    "$schema":"http://json-schema.org/draft-06/schema#",
+    "id": "https://hknpolito.org/schemas/v1/recruitmentConfig.json#",
+    "type":"object",
+    "definitions": {
+        "notification_method": {"enum": ["email", "push", "sms", "telegram"]},
+        "availability_compensation_method":{"enum": ["manual_fallback", "trySubstitution", "searchSubstitution", "reAskTimeSlots"]},
+        "availability_compensation_broadcasting":{"enum": ["allInterviewers", "allInterviewersInDay", "leastNBusy"]},
+        "slot_computational_method":{"enum": ["bestFit", "firstFit"]},
+        "compensation_event":{"enum": ["availability_revocation", "application_applicant_refusal",
+                                        "no_interviewer_confirmation"]},
+        "notification_event":{"enum": ["new_application", "application_accepted", "application_revocated",
+            "require_availability_confirmation", "slot_reserved", "interview_member_accepted", "interview_mentee_accepted",
+            "interview_rejected", "availability_not_required", "request_availability", "reAskTimeSlot", "require_manual_slot_compensation"]},
+        "recruitmentConfig":{
+            "type":"object",
+            "properties": {
+                "applicant":{
+                    "type":"object",
+                    "properties":{
+                        "timeslots_num":{"type":"integer", "minimum": 1},
+                        "min_timeslots_chooseAmong":{"type":"integer", "minimum": 1},
+                        "min_hours_before_first_timeslot":{"type":"integer", "minimum": 1},
+                        "can_see_interviewers":{"type":"boolean", "default":false}
+                    },
+                    "required": ["timeslots_num", "min_timeslots_chooseAmong", "min_hours_before_first_timeslot"]
+                },
+                "member":{
+                    "type":"object",
+                    "properties":{
+                        "min_hours_before_interviewer_confirm":{"type":"integer", "minimum": 1},
+                        "max_slots_day":{"type":"integer", "minimum": 1},
+                        "max_slots_week":{"type":"integer", "minimum": 1},
+                        "max_consecutive_slots":{"type":"integer", "minimum": 1},
+                        "reminder_availability_confirmation_hours":{"type":"integer", "minimum": 1},
+                        "metrics_weight":{
+                            "type":"object",
+                            "properties": {
+                                "gender_inequality":{"type":"number", "minimum": 0, "maximum": 1},
+                                "slots_day":{"type":"number", "minimum": 0, "maximum": 1},
+                                "slots_week":{"type":"number", "minimum": 0, "maximum": 1}
+                            },
+                            "required": ["gender_inequality", "slots_day", "slots_week"]
+                        }
+                    },
+                    "required": ["min_hours_before_interviewer_confirm", "max_slots_day", "max_slots_week",
+                        "max_consecutive_slots", "metrics_weight", "reminder_availability_confirmation_hours"]
+                },
+                "compensation":{
+                    "type":"object",
+                    "properties": {
+                        "availability_compensation_strategies":{
+                            "type":"array",
+                            "items": {
+                                "type":"object",
+                                "properties": {
+                                    "strategy": {"$ref": "#/definitions/availability_compensation_method"},
+                                    "broadcasting":{"$ref": "#/definitions/availability_compensation_broadcasting"},
+                                    "N":{"type":"integer", "minimum": 1}
+                                },
+                                "if": {
+                                    "properties":{
+                                        "strategy":{"const": "searchSubstitution"},
+                                        "broadcasting": {"const": "leastNBusy"}
+                                    },
+                                    "required": ["strategy"]
+                                },
+                                "then": {
+                                    "required": ["broadcasting", "N"]}
+                            },
+                            "uniqueItems": true,
+                            "minItems": 1,
+                            "default": [
+                                {
+                                    "strategy": "trySubstitution"
+                                },
+                                {
+                                    "strategy": "searchSubstitution",
+                                    "broadcasting": "allInterviewers"
+                                },
+                                {
+                                    "strategy": "manual_fallback"
+                                }
+                            ]
+                        }
+                    },
+                    "required": ["availability_compensation_strategies"]
+                },
+                "notification_strategies":{
+                    "type":"array",
+                    "items": {
+                        "type":"object",
+                        "properties": {
+                            "event": {"$ref": "#/definitions/notification_event"},
+                            "methods":{
+                                "type":"array",
+                                "items": {"$ref": "#/definitions/notification_method"},
+                                "default": ["email", "push"]
+                            }
+                        },
+                        "required": ["event", "methods"]
+                    },
+                    "uniqueItems": true,
+                    "minItems": 1
+                },
+                "slot_computational_strategy":{"$ref": "#/definitions/slot_computational_method"},
+                "interview_template":{"type":"string", "format": "uri"}
+            },
+            "required": ["slot_computational_strategy", "notification_strategies", "compensation", "member",
+                "applicant", "interview_template"]
+        }
+    },
+    "properties": {
+        "recruitmentConfig": {"$ref": "#/definitions/recruitmentConfig"}
+    }
+}

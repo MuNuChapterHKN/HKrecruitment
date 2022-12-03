@@ -1,0 +1,24 @@
+{
+  "entryFile": "app.ts",
+  "noImplicitAdditionalProperties": "throw-on-extras",
+  "controllerPathGlobs": [
+    "src/**/*controller.ts"
+  ],
+  "spec": {
+    "outputDirectory": "build",
+    "specVersion": 3,
+    "spec": {
+      "servers": [
+        {
+          "url": "https://hkrecruitment-dev-environment.herokuapp.com/",
+          "description": "Dev environment"
+        }
+      ]
+    }
+  },
+  "routes": {
+    "middleware": "express",
+    "routesDir": "build",
+    "iocModule": "src/ioc/ioc"
+  }
+}

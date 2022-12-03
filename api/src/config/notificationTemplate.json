@@ -1,0 +1,39 @@
+{
+  "$schema": "json-schema/notificationTemplate.json",
+  "new_application": {
+    "ita": "Nuova candidatura registrata",
+    "eng": "New application correctly submitted"
+  },
+  "application_accepted": {
+    "ita": "La richiesta di candidatura è stata accettata",
+    "eng": "The application request has been accepted"
+  },
+  "application_revocated": {
+    "ita": "La candidatura è stata cancellata",
+    "eng": "The application has been revocated"
+  },
+  "require_availability_confirmation": {
+    "ita": "Richiesta conferma per la disponibilità",
+    "eng": ""
+  },
+  "slot_reserved": {
+    "ita": "Il colloquio è stato fissato",
+    "eng": "The meeting has been planned"
+  },
+  "interview_member_accepted": {
+    "ita": "La candidatura come membro di HKN è stata accettata",
+    "eng": "The application as HKN member has been accepted"
+  },
+  "interview_mentee_accepted": {
+    "ita": "La candidatura come mentee di HKN è stata accettata",
+    "eng": "The application as HKN mentee has been accepted"
+  },
+  "interview_rejected": {
+    "ita": "La candidatura è stata rifiutata",
+    "eng": "The application has been rejected"
+  },
+  "availability_not_required": {
+    "ita": "La tua disponibilità non è più usata",
+    "eng": "Your availability is not used anymore"
+  }
+}

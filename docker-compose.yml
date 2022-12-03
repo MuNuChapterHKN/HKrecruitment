@@ -1,0 +1,9 @@
+version: '3'
+services:
+  api:
+    build: api/
+    env_file:
+      - api/.env
+    command: 'npm run start-local'
+    ports:
+      - '3000:3000'

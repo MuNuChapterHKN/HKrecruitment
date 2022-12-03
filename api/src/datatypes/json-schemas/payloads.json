@@ -1,0 +1,650 @@
+{
+    "$schema":"http://json-schema.org/draft-06/schema#",
+    "type": "object",
+    "definitions": {
+        "v1MembersInsertRequest": {
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/MembersInsertRequest.json#",
+            "allOf": [
+                {"$ref": "person.json"}
+            ]
+        },
+
+        "v1MembersPatchRequest": {
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/MembersPatchRequest.json#",
+            "properties": {
+                "image": {"type":"string", "format": "uri"},
+                "email":{"type":"string", "format":"email"},
+                "role":{"$ref": "enums.json#/properties/man_role"},
+                "is_expert":{"type":"boolean", "default":false},
+                "is_board":{"type":"boolean", "default": false}
+            },
+            "anyOf": [
+                {"required":["email"]},
+                {"required":["role"]},
+                {"required":["is_expert"]},
+                {"required":["is_board"]},
+                {"required": ["image"]}
+            ]
+        },
+
+        "v1MembersGetByFullNameRequest":{
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/MembersGetByFullNameRequest.json#",
+            "properties": {
+                "id":{"type":"string"},
+                "image":{"type":"string", "format": "uri"},
+                "name":{"type":"string"},
+                "surname":{"type":"string"},
+                "sex":{"$ref": "enums.json#/properties/gender"}
+            },
+            "required": ["id", "image", "name", "surname", "sex"]
+        },
+
+        "v1ApplicantsInsertRequest": {
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/ApplicantsInsertRequest.json#",
+            "allOf":[
+                {"$ref": "person.json"},
+                {
+                    "properties": {
+                        "role":{"$ref": "enums.json#/properties/man_role"},
+                        "is_expert":{"type":"boolean", "default":false},
+                        "is_board":{"type":"boolean", "default": false}
+                    },
+                    "required": ["role", "is_expert", "is_board"]
+                }
+            ],
+            "oneOf": [
+                {
+                    "properties":{
+                        "bsc_application": {"$ref": "entities.json#/properties/bsc_application"}
+                    },
+                    "required": ["bsc_application"]
+                },
+                {
+                    "properties":{
+                        "msc_application": {"$ref": "entities.json#/properties/msc_application"}
+                    },
+                    "required": ["msc_application"]
+                },
+                {
+                    "properties":{
+                        "phd_application": {"$ref": "entities.json#/properties/phd_application"}
+                    },
+                    "required": ["phd_application"]
+                }
+            ]
+        },
+
+        "v1ApplicantsUpdateFriendListRequest": {
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/ApplicantsUpdateFriendListRequest.json#",
+            "properties": {
+                "friends":{
+                    "type":"array",
+                    "items": {"type":"integer", "minimum": 0},
+                    "minItems": 1
+                }
+            },
+            "required": ["friends"]
+        },
+
+        "v1ApplicantsPatchRequest": {
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/ApplicantsPatchRequest.json#",
+            "properties": {
+                "image": {"type":"string", "format": "uri"},
+                "email":{"type":"string", "format":"email"},
+                "birth_date":{"type":"string", "format":"date-time"},
+                "phone_no":{"type":"string", "pattern": "(3[0-9]{8,9})"},
+                "telegram_uid":{"type":"string"}
+            },
+            "anyOf": [
+                {"required":["email"]},
+                {"required":["birth_date"]},
+                {"required":["phone_no"]},
+                {"required":["telegram_uid"]},
+                {"required": ["image"]}
+            ]
+        },
+
+        "v1ApplicantsCheckExistanceResponse":{
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/ApplicantsCheckExistanceResponse.json#",
+            "properties": {
+                "found":{"type":"boolean"}
+            },
+            "required": ["found"]
+        },
+
+        "v1ApplicantsListFriendsResponse": {
+            "type": "object",
+            "$id": "https://hknpolito.org/schemas/v1/ApplicantsListFriendsResponse.json#",
+            "properties": {
+                "friends": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "id": {"type": "string"},
+                            "name": {"type": "string"},
+                            "surname": {"type": "string"}
+                        },
+                        "required": ["id", "name", "surname"]
+                    }
+                }
+            },
+            "required": ["friends"]
+        },
+
+        "v1AvailabilitiesListResponse": {
+            "type": "object",
+            "$id": "https://hknpolito.org/schemas/v1/AvailabilitiesListResponse.json#",
+            "properties": {
+                "member_id": {"type": "string"},
+                "start": {"type": "string", "format": "date-time"},
+                "end": {"type": "string", "format": "date-time"},
+                "availabilities": {
+                    "type": "array",
+                    "items": {"$ref": "dataTypes.json#/properties/availability"}
+                }
+            },
+            "required": ["member_id", "start", "end", "availabilities"]
+        },
+
+        "v1AvailabilitiesInsertRequest": {
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/AvailabilitiesInsertRequest.json#",
+            "properties": {
+                "start":{"type":"string", "format":"date-time"},
+                "end":{"type":"string", "format":"date-time"},
+                "member_id":{"type":"string"}
+            },
+            "required": ["start", "end", "member_id"]
+        },
+
+        "v1TimeSlotsGetSlotsAndAvailabilities": {
+            "type":"array",
+            "$id": "https://hknpolito.org/schemas/v1/TimeSlotsGetSlotsAndAvailabilities.json#",
+            "items": {
+                "type":"object",
+                "properties": {
+                    "time_slot":{"$ref": "dataTypes.json#/properties/time_slot"},
+                    "slots":{
+                        "type":"array",
+                        "items": {"$ref": "entities.json#/properties/slot"},
+                        "uniqueItems": true
+                    },
+                    "availabilities":{
+                        "type":"array",
+                        "items": {"$ref": "dataTypes.json#/properties/availability"},
+                        "uniqueItems": true
+                    }
+                },
+                "required": ["time_slot", "slots", "availabilities"]
+            }
+        },
+
+        "v1SlotsGetTimeSlotsResponse": {
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/SlotsGetTimeSlotsResponse.json#",
+            "properties": {
+                "time_slots":{
+                    "type":"array",
+                    "items": {"$ref": "dataTypes.json#/properties/time_slot"},
+                    "uniqueItems": true
+                }
+            },
+            "required": ["time_slots"]
+        },
+
+        "v1SlotsBatchModifyRequest": {
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/SlotsBatchModifyRequest.json#",
+            "properties": {
+                "time_slot":{"$ref": "dataTypes.json#/properties/time_slot"},
+                "slots":{
+                    "type":"array",
+                    "items": {"$ref": "entities.json#/properties/slot"},
+                    "minItems":1
+                }
+            },
+            "required": ["time_slot", "slots"]
+        },
+
+        "v1SlotsListEligibleResponse": {
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/SlotsListEligibleResponse.json#",
+            "properties": {
+                "chosen_ts":{
+                    "type":"array",
+                    "items": {
+                        "type":"object",
+                        "properties": {
+                            "time_slot":{"$ref": "dataTypes.json#/properties/time_slot"},
+                            "slots":{
+                                "type":"array",
+                                "items": {"$ref": "entities.json#/properties/slot"},
+                                "minItems":1
+                            },
+                            "availabilities":{
+                                "type":"array",
+                                "items": {"$ref": "dataTypes.json#/properties/availability"},
+                                "minItems":1
+                            }
+                        },
+                        "required":["time_slot", "slots", "availabilities"]
+                    },
+                    "minItems":1
+                }
+            },
+            "required": ["chosen_ts"]
+        },
+
+        "v1ApplicationsInsertRequest": {
+            "type": "object",
+            "$id": "https://hknpolito.org/schemas/v1/v1ApplicationsInsertRequest.json#",
+            "properties": {
+                "application": {
+                    "oneOf": [
+                        {"$ref": "entities.json#/properties/bsc_application"},
+                        {"$ref": "entities.json#/properties/msc_application"},
+                        {"$ref": "entities.json#/properties/phd_application"}
+                    ]
+                },
+                "cv_raw": {"type": "array"},
+                "grades_raw": {"type": "array"},
+                "msc_grades_raw": {"type": "array"}
+            },
+            "anyOf": [
+                {"required": ["application", "cv_raw", "grades_raw"]},
+                {"required": ["application", "cv_raw", "msc_grades_raw"]}
+            ]
+        },
+
+        "v1ApplicationsUpdateTimeSlots": {
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/ApplicationsUpdateTimeSlots.json#",
+            "properties": {
+                "time_slots":{
+                    "type":"array",
+                    "items": {"$ref": "dataTypes.json#/properties/time_slot"},
+                    "minItems":1
+                }
+            },
+            "required": ["time_slots"]
+        },
+
+        "v1ApplicationsPatchRequest": {
+            "type": "object",
+            "$id": "https://hknpolito.org/schemas/v1/ApplicationsPatchRequest.json#",
+            "properties": {
+                "state": {"$ref": "enums.json#/properties/application_state"},
+                "notes": {"type": "string"},
+                "customMessage": {
+                    "type": "object",
+                    "properties": {
+                        "subject": {"type": "string"},
+                        "body": {"type": "string"}
+                    }
+                },
+                "additionalText": {"type": "string"}
+            }
+        },
+
+        "v1ApplicationsListResponse": {
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/ApplicationsListResponse.json#",
+            "properties": {
+                "applications":{
+                    "type":"array",
+                    "items": {
+                        "type":"object",
+                        "properties": {
+                            "id":{"type":"integer", "minimum": 0},
+                            "submission_date":{"type":"string", "format":"date-time"},
+                            "state": {"$ref": "enums.json#/properties/application_state"},
+                            "applicant":{
+                                "type":"object",
+                                "properties": {
+                                    "id":{"type":"string"},
+                                    "name":{"type":"string"},
+                                    "surname":{"type":"string"},
+                                    "sex":{"$ref": "enums.json#/properties/gender"}
+                                },
+                                "required": ["id", "name", "surname", "sex"]
+                            },
+                            "slot":{"$ref": "entities.json#/definitions/slot"}
+                        },
+                        "required": ["id", "submission_date", "state", "applicant"]
+                    }
+
+                }
+            },
+            "required": ["applications"]
+        },
+
+        "v1ApplicantsListApplicationsResponse": {
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/ApplicantsListApplicationsResponse.json#",
+            "properties": {
+                "applications":{
+                    "type":"array",
+                    "items": {
+                        "type":"object",
+                        "properties": {
+                            "id":{"type":"integer", "minimum": 0},
+                            "submission_date":{"type":"string", "format":"date-time"},
+                            "state": {"$ref": "enums.json#/properties/application_state"}
+                        },
+                        "required": ["id", "submission_date", "state"]
+                    }
+
+                }
+            },
+            "required": ["applications"]
+        },
+
+        "v1NotificationsReadRequest":{
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/NotificationsReadRequest.json#",
+            "properties": {
+                "member_id":{"type":"string"},
+                "applicant_id":{"type":"string"}
+            },
+            "anyOf": [{"required": ["member_id"]}, {"required": ["applicant_id"]}]
+        },
+
+        "v1NotificationListRequest":{
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/NotificationListRequest.json#",
+            "properties": {
+                "read":{
+                    "type":"array",
+                    "items": {"$ref": "dataTypes.json#/properties/notification"}
+                },
+                "unread":{
+                    "type":"array",
+                    "items": {"$ref": "dataTypes.json#/properties/notification"}
+                }
+            },
+            "required": ["read", "unread"]
+        },
+
+        "v1StudyPathsInsertRequest":{
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/StudyPathsInsertRequest.json#",
+            "properties": {
+                "degree_level":{"$ref": "enums.json#/properties/degree_level"},
+                "study_path": {"type":"string"}
+            },
+            "required": ["degree_level", "study_path"]
+        },
+
+        "v1StudyPathsListResponse":{
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/StudyPathsListResponse.json#",
+            "properties": {
+                "BSc":{
+                    "type":"array",
+                    "items": {"type":"string"}
+                },
+                "MSc":{
+                    "type":"array",
+                    "items": {"type":"string"}
+                },
+                "PhD":{
+                    "type":"array",
+                    "items": {"type":"string"}
+                }
+            },
+            "required": ["BSc", "MSc", "PhD"]
+        },
+
+        "v1StatisticsDailyInterviewSums":{
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/StatisticsDailyInterviewSums.json#",
+            "properties": {
+                "start":{"type":"string", "format":"date-time"},
+                "end":{"type":"string", "format":"date-time"},
+                "stats":{
+                    "type":"array",
+                    "items": {
+                        "type":"object",
+                        "properties": {
+                            "day":{"type":"string", "format": "date-time"},
+                            "daily_stats":{
+                                "type":"array",
+                                "items": {
+                                    "type":"object",
+                                    "properties": {
+                                        "member":{
+                                            "type":"object",
+                                            "properties": {
+                                                "id":{"type":"string"},
+                                                "name":{"type":"string"},
+                                                "surname":{"type":"string"},
+                                                "sex":{"$ref": "enums.json#/properties/gender"},
+                                                "email":{"type":"string", "format":"email"},
+                                                "role":{"$ref": "enums.json#/properties/man_role"},
+                                                "is_expert":{"type":"boolean", "default":false},
+                                                "is_board":{"type":"boolean", "default": false}
+                                            },
+                                            "required": ["id", "name", "surname", "sex", "email", "role", "is_expert", "is_board"]
+                                        },
+                                        "interviews_n":{"type":"integer", "minimum": 0}
+                                    },
+                                    "required": ["member", "interviews_n"]
+                                }
+                            }
+                        },
+                        "required": ["day", "daily_stat"]
+                    }
+                }
+            },
+            "required": ["start", "end", "stats"]
+        },
+
+        "v1StatisticsTsInterviewSums":{
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/StatisticsTsInterviewSums.json#",
+            "properties": {
+                "start":{"type":"string", "format":"date-time"},
+                "end":{"type":"string", "format":"date-time"},
+                "stats":{
+                    "type":"array",
+                    "items": {
+                        "type":"object",
+                        "properties": {
+                            "time_slot":{"type":"string"},
+                            "ts_stats":{
+                                "type":"array",
+                                "items": {
+                                    "type":"object",
+                                    "properties": {
+                                        "member":{
+                                            "type":"object",
+                                            "properties": {
+                                                "id":{"type":"string"},
+                                                "name":{"type":"string"},
+                                                "surname":{"type":"string"},
+                                                "sex":{"$ref": "enums.json#/properties/gender"},
+                                                "email":{"type":"string", "format":"email"},
+                                                "role":{"$ref": "enums.json#/properties/man_role"},
+                                                "is_expert":{"type":"boolean", "default":false},
+                                                "is_board":{"type":"boolean", "default": false}
+                                            },
+                                            "required": ["id", "name", "surname", "sex", "email", "role", "is_expert", "is_board"]
+                                        },
+                                        "interviews_n":{"type":"integer", "minimum": 0}
+                                    },
+                                    "required": ["member", "interviews_n"]
+                                }
+                            }
+                        },
+                        "required": ["day", "daily_stat"]
+                    }
+                }
+            },
+            "required": ["start", "end", "stats"]
+        },
+
+        "v1StatisticsDailyMemberSlotDistr":{
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/StatisticsDailyMemberSlotDistr.json#",
+            "properties": {
+                "start":{"type":"string", "format":"date-time"},
+                "end":{"type":"string", "format":"date-time"},
+                "stats":{
+                    "type":"array",
+                    "items": {
+                        "type":"object",
+                        "properties": {
+                            "day":{"type":"string", "format": "date-time"},
+                            "male":{"type":"integer", "minimum": 0},
+                            "female":{"type":"integer", "minimum": 0}
+                        }
+                    }
+                }
+            },
+            "required": ["start", "end", "stats"]
+        },
+
+        "v1StatisticsTsMemberSlotDistr":{
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/StatisticsTsMemberSlotDistr.json#",
+            "properties": {
+                "start":{"type":"string", "format":"date-time"},
+                "end":{"type":"string", "format":"date-time"},
+                "stats":{
+                    "type":"array",
+                    "items": {
+                        "type":"object",
+                        "properties": {
+                            "time_slot":{"type":"string"},
+                            "ts_stat":{
+                                "type":"object",
+                                "properties": {
+                                    "male":{"type":"integer", "minimum": 0},
+                                    "female":{"type":"integer", "minimum": 0}
+                                }
+                            }
+                        },
+                        "required": ["day", "daily_stat"]
+                    }
+                }
+            },
+            "required": ["start", "end", "stats"]
+        },
+
+        "v1StatisticsApplicantGenderDistr":{
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/StatisticsApplicantGenderDistr.json#",
+            "properties": {
+                "start":{"type":"string", "format":"date-time"},
+                "end":{"type":"string", "format":"date-time"},
+                "stat":{
+                    "type":"object",
+                    "properties": {
+                        "male":{"type":"integer", "minimum": 0},
+                        "female":{"type":"integer", "minimum": 0}
+                    },
+                    "required": ["male", "female"]
+                }
+            },
+            "required": ["start", "end", "stat"]
+        },
+
+        "v1StatisticsMemberAvgResponseTime":{
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/StatisticsMemberAvgResponseTime.json#",
+            "properties": {
+                "start":{"type":"string", "format":"date-time"},
+                "end":{"type":"string", "format":"date-time"},
+                "stats": {
+                    "type": "array",
+                    "items": {
+                        "type":"object",
+                        "properties": {
+                            "member_id": {"type": "string"},
+                            "response_time":{"type":"number", "minimum": 0}
+                        },
+                        "required": ["response_time", "member_id"]
+                    },
+                    "uniqueItems": true
+                }
+            },
+            "required": ["start", "end", "stats"]
+        },
+
+        "v1StatisticsApplicationStateCount":{
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/StatisticsApplicationStateCount.json#",
+            "properties": {
+                "start":{"type":"string", "format":"date-time"},
+                "end":{"type":"string", "format":"date-time"},
+                "stat":{
+                    "type":"object",
+                    "properties": {
+                        "male":{
+                            "type":"object",
+                            "properties": {
+                                "accepted":{"type":"integer", "minimum": 0},
+                                "rejected":{"type":"integer", "minimum": 0},
+                                "refused_by_applicant":{"type":"integer", "minimum": 0}
+                            },
+                            "required": ["accepted", "rejected", "refused_by_applicant"]
+                        },
+                        "female":{
+                            "type":"object",
+                            "properties": {
+                                "accepted":{"type":"integer", "minimum": 0},
+                                "rejected":{"type":"integer", "minimum": 0},
+                                "refused_by_applicant":{"type":"integer", "minimum": 0}
+                            },
+                            "required": ["accepted", "rejected", "refused_by_applicant"]
+                        }
+                    },
+                    "required": ["male", "female"]
+                }
+            },
+            "required": ["start", "end", "stat"]
+        },
+
+        "v1StatisticsInterviewOutcomeCount":{
+            "type":"object",
+            "$id": "https://hknpolito.org/schemas/v1/StatisticsInterviewOutcomeCount.json#",
+            "properties": {
+                "start":{"type":"string", "format":"date-time"},
+                "end":{"type":"string", "format":"date-time"},
+                "stat":{
+                    "type":"object",
+                    "properties": {
+                        "male":{
+                            "type":"object",
+                            "properties": {
+                                "member_accepted":{"type":"integer", "minimum": 0},
+                                "mentee_accepted":{"type":"integer", "minimum": 0},
+                                "rejected":{"type":"integer", "minimum": 0}
+                            },
+                            "required": ["member_accepted", "mentee_accepted", "rejected"]
+                        },
+                        "female":{
+                            "type":"object",
+                            "properties": {
+                                "member_accepted":{"type":"integer", "minimum": 0},
+                                "mentee_accepted":{"type":"integer", "minimum": 0},
+                                "rejected":{"type":"integer", "minimum": 0}
+                            },
+                            "required": ["member_accepted", "mentee_accepted", "rejected"]
+                        }
+                    },
+                    "required": ["male", "female"]
+                }
+            },
+            "required": ["start", "end", "stat"]
+        }
+    }
+}

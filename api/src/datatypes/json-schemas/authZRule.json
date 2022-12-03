@@ -1,0 +1,35 @@
+{
+    "$schema":"http://json-schema.org/draft-06/schema#",
+    "id": "https://hknpolito.org/schemas/v1/authZRule.json#",
+    "type":"object",
+    "definitions": {
+        "authZRule":{
+            "type":"object",
+            "title": "basicAuthZRule",
+            "properties": {
+                "action":{"type":"string"},
+                "accept":{
+                    "type":"array",
+                    "items": {"type":"object"}
+                },
+                "deny":{
+                    "type":"array",
+                    "items": {"type":"object"}
+                }
+            },
+            "anyOf": [
+                {"required": ["action", "accept"]},
+                {"required": ["action", "deny"]}
+            ]
+            }
+    },
+    "properties": {
+        "authZRules":{
+            "type":"array",
+            "items": {"$ref": "#/definitions/authZRule"},
+            "uniqueItems": true,
+            "minItems":1
+        },
+        "authZRule":{"$ref": "#/definitions/authZRule"}
+    }
+}

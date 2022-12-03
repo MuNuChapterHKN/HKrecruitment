@@ -1,0 +1,47 @@
+{
+    "$schema": "./json-schema/recruitmentConfig.json",
+    "recruitmentConfig": {
+        "applicant": {
+            "timeslots_num": 3,
+            "min_hours_before_first_timeslot": 48,
+            "min_timeslots_chooseAmong": 10
+        },
+        "member": {
+            "max_consecutive_slots": 2,
+            "max_slots_day": 3,
+            "max_slots_week": 5,
+            "min_hours_before_interviewer_confirm": 6,
+            "metrics_weight": {
+                "gender_inequality": 0.2,
+                "slots_day": 0.5,
+                "slots_week": 0.3
+            },
+            "reminder_availability_confirmation_hours": 1
+        },
+        "compensation": {
+            "availability_compensation_strategies": [
+                {
+                    "strategy": "trySubstitution"
+                },
+                {
+                    "strategy": "searchSubstitution",
+                    "broadcasting": "allInterviewers"
+                },
+                {
+                    "strategy": "manual_fallback"
+                }
+            ]
+        },
+        "notification_strategies": [
+            {
+                "event": "application_accepted",
+                "methods": [
+                    "email",
+                    "push"
+                ]
+            }
+        ],
+        "slot_computational_strategy": "bestFit",
+        "interview_template": "http:"
+    }
+}
