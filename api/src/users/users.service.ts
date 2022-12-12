@@ -35,4 +35,12 @@ export class UsersService {
   async update(user: User): Promise<User> {
     return this.userRepository.save(user);
   }
+
+  async getRoleForOauthId(oauthId: string): Promise<string|null> {
+    const user = await this.userRepository.findOne({
+      where: { oauthId },
+      select: ['role'],
+    })
+    return user?.role;
+  }
 }

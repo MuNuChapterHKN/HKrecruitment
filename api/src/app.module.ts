@@ -4,8 +4,11 @@ import configuration from './configuration';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { AuthenticationModule } from './authentication/authentication.module';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { JwtGuard } from './authentication/jwt-guard.guard';
+import { AuthorizationModule } from './authorization/authorization.module';
+import { TimerInterceptor } from './timer/timer.interceptor';
+import { AuthorizationGuard } from './authorization/authorization.guard';
 
 @Module({
   imports: [
@@ -23,11 +26,20 @@ import { JwtGuard } from './authentication/jwt-guard.guard';
     }),
     UsersModule,
     AuthenticationModule,
+    AuthorizationModule,
   ],
   providers: [
     {
       provide: APP_GUARD,
       useClass: JwtGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AuthorizationGuard
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TimerInterceptor
     }
   ]
 })

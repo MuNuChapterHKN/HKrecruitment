@@ -19,16 +19,17 @@
       "typeorm": "typeorm-ts-node-commonjs"
    },
    "dependencies": {
+      "@fastify/static": "^6.6.0",
       "@hkrecruitment/shared": "workspace:*",
       "@nestjs/common": "^9.0.0",
       "@nestjs/config": "^2.2.0",
       "@nestjs/core": "^9.0.0",
       "@nestjs/passport": "^9.0.0",
       "@nestjs/platform-express": "^9.0.0",
+      "@nestjs/platform-fastify": "^9.2.1",
       "@nestjs/swagger": "^6.1.3",
       "@nestjs/typeorm": "^9.0.1",
       "@types/js-yaml": "^4.0.5",
-      "express-oauth2-jwt-bearer": "^1.2.0",
       "@types/passport-jwt": "^3.0.7",
       "joi": "^17.7.0",
       "js-yaml": "^4.1.0",

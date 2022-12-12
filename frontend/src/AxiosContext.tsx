@@ -20,6 +20,7 @@ export const AxiosProvider = ({ children }: PropsWithChildren) => {
           grant_type: "client_credentials",
         });
         config.headers!.Authorization = `Bearer ${token}`;
+        console.log("Access token: ", token);
         return config;
       });
     } else {
