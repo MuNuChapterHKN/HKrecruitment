@@ -1,8 +1,7 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './configuration';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { auth } from 'express-oauth2-jwt-bearer';
 import { UsersModule } from './users/users.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { APP_GUARD } from '@nestjs/core';
@@ -32,24 +31,4 @@ import { JwtGuard } from './authentication/jwt-guard.guard';
     }
   ]
 })
-export class AppModule implements NestModule {
-  private readonly config: {
-    issuer_url: string;
-    audience: string;
-  };
-
-  constructor(private readonly configService: ConfigService) {
-    this.config = this.configService.get('auth0');
-  }
-
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(
-        auth({
-          audience: this.config.audience,
-          issuerBaseURL: this.config.issuer_url,
-        }),
-      )
-      .forRoutes('*');
-  }
-}
+export class AppModule {}

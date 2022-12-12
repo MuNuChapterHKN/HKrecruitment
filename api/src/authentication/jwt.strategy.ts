@@ -9,7 +9,7 @@ interface Auth0Config {
   audience: string;
 }
 
-const authConfig = (configService: ConfigService): Auth0Config => configService.get<Auth0Config>("AUTH0");
+const authConfig = (configService: ConfigService): Auth0Config => configService.get<Auth0Config>("auth0");
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {

@@ -61,6 +61,7 @@ importers:
       '@nestjs/typeorm': 9.0.1_y35eg2ubdzamw4yabeyff6xsia
       '@types/js-yaml': 4.0.5
       '@types/passport-jwt': 3.0.7
+      express-oauth2-jwt-bearer: 1.2.0
       joi: 17.7.0
       js-yaml: 4.1.0
       jwks-rsa: 3.0.0
