@@ -3,9 +3,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './configuration';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
-import { AuthenticationModule } from './authentication/authentication.module';
-import { APP_GUARD } from '@nestjs/core';
-import { JwtGuard } from './authentication/jwt-guard.guard';
 
 @Module({
   imports: [
@@ -22,13 +19,6 @@ import { JwtGuard } from './authentication/jwt-guard.guard';
       inject: [ConfigService],
     }),
     UsersModule,
-    AuthenticationModule,
   ],
-  providers: [
-    {
-      provide: APP_GUARD,
-      useClass: JwtGuard,
-    }
-  ]
 })
 export class AppModule {}
