@@ -36,12 +36,12 @@ export class AppModule implements NestModule {
     consumer
       .apply(
         auth({
-          // issuerBaseURL: this.config.issuer_url,
-          // audience: this.config.audience,
-          audience: 'http://hkrecruitment.org',
-          issuerBaseURL: `https://dev-c8roocdl763ll5qf.eu.auth0.com/`,
+          audience: this.config.audience,
+          issuerBaseURL: this.config.issuer_url,
         }),
       )
       .forRoutes('*');
+
+    console.log(this.config);
   }
 }
