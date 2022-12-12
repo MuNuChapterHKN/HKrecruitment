@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev:shared": "pnpm --filter shared dev",
     "dev:web": "pnpm --filter frontend dev",
     "dev:api": "pnpm --filter api start:dev",
-    "dev": "pnpm run dev:web & pnpm run dev:api",
-    "dev:tmux": "tmux new-session -d -s hkrecruitment 'pnpm run dev:web' \\; split-window -h -p 50 'pnpm run dev:api' \\; attach"
+    "dev": "pnpm run --stream dev:web & pnpm run --stream dev:api & pnpm run --stream dev:shared",
+    "dev:tmux": "tmux new-session -d -s hkrecruitment 'pnpm run --stream dev:web' \\; split-window -v -p 50 'pnpm run --stream dev:api' \\; split-window -h -p 50 'pnpm run --stream dev:shared' \\; attach"
   },
   "keywords": [],
   "author": "",

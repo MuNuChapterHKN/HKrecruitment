@@ -3,7 +3,10 @@ build/
 api/src/modules/GAuth/authInfo
 .idea/
 /api/.env
-/api/dist/
+/api/config/*.yaml
+/**/dist
+/**/*.tsbuildinfo
+.vscode
 
 tmp-*
 
