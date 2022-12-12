@@ -11,7 +11,7 @@ export const Private = () => {
 
   const callApi = async () => {
     try {
-      const response = await axios.get("/api/private");
+      const response = await axios.get("/users");
       return response.data;
     } catch (error) {
       console.error(error);
@@ -20,9 +20,20 @@ export const Private = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      callApi().then((response) => setMessage(response.message));
+      callApi().then((response) =>
+        setMessage(JSON.stringify(response, null, 2))
+      );
     }
   }, [isAuthenticated]);
 
-  return <div>{message}</div>;
+  return (
+    <>
+      {!!message && (
+        <div>
+          <h3>Private data</h3>
+          <pre>{message}</pre>
+        </div>
+      )}
+    </>
+  );
 };
