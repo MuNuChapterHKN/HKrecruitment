@@ -41,7 +41,5 @@ export class AppModule implements NestModule {
         }),
       )
       .forRoutes('*');
-
-    console.log(this.config);
   }
 }
