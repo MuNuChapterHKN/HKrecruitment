@@ -1,4 +1,4 @@
-import { Role } from '@hkrecruitment/shared/dist';
+import { Role } from '@hkrecruitment/shared';
 
 export type AuthenticatedRequest = Request & {
   user: {

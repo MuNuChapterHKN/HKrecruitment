@@ -5,8 +5,9 @@ import { createUserSchema, Role, updateUserSchema } from '@hkrecruitment/shared'
 import { CreateUserDto } from './create-user.dto';
 import { UpdateUserDto } from './update-user.dto';
 import { JoiValidate } from '../joi-validation/joi-validate.decorator';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiForbiddenResponse, ApiNotFoundResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { AuthenticatedRequest } from 'src/authorization/authenticated-request.types';
+import * as Joi from 'joi';
 
 @ApiBearerAuth()
 @ApiTags('users')
@@ -14,11 +15,14 @@ import { AuthenticatedRequest } from 'src/authorization/authenticated-request.ty
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @ApiUnauthorizedResponse()
   @Get()
   async findAll(): Promise<User[]> {
     return this.usersService.findAll();
   }
 
+  @ApiNotFoundResponse()
+  @ApiUnauthorizedResponse()
   @Get(':oauthId')
   async findByOauthId(@Param('oauthId') oauthId: string): Promise<User> {
     const result = await this.usersService.findByOauthId(oauthId);
@@ -28,8 +32,10 @@ export class UsersController {
     return result;
   }
 
+  @ApiBadRequestResponse()
+  @ApiForbiddenResponse()
   @Post()
-  @JoiValidate(createUserSchema)
+  @JoiValidate(createUserSchema.append({ oauthId: Joi.string().required() }))
   create(@Body() user: CreateUserDto, @Req() req: AuthenticatedRequest): Promise<User> {
     if (req.user.sub !== user.oauthId) {
       throw new ForbiddenException('User cannot create another user');
@@ -37,6 +43,9 @@ export class UsersController {
     return this.usersService.create({...user, role: Role.None});
   }
 
+  @ApiNotFoundResponse()
+  @ApiBadRequestResponse()
+  @ApiForbiddenResponse()
   @Patch(':oauthId')
   @JoiValidate(updateUserSchema)
   async update(@Param('oauthId') oauthId: string, @Body() updateUser: UpdateUserDto): Promise<User> {
@@ -50,6 +59,8 @@ export class UsersController {
     });
   }
 
+  @ApiNotFoundResponse()
+  @ApiForbiddenResponse()
   @Delete(':oauthId')
   async delete(@Param('oauthId') oauthId: string): Promise<User> {
     const user = await this.usersService.findByOauthId(oauthId);

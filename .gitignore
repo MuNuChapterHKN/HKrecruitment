@@ -11,3 +11,6 @@ api/src/modules/GAuth/authInfo
 tmp-*
 
 **/.DS_Store
+
+.*
+!.gitignore

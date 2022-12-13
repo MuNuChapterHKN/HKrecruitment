@@ -1,14 +1,5 @@
 import * as Joi from "joi";
-import { string } from "joi";
-
-export enum Role {
-  None = "none",
-  Applicant = "applicant",
-  Member = "member",
-  Clerk = "clerk",
-  Supervisor = "supervisor",
-  Admin = "admin",
-}
+import { Role } from "./user-auth"
 
 export interface Person {
   oauthId: string;
@@ -22,7 +13,6 @@ export interface Person {
 }
 
 export const createUserSchema = Joi.object<Person>({
-  oauthId: Joi.string().required(),
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
   sex: Joi.string().required(),

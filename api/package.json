@@ -19,6 +19,7 @@
       "typeorm": "typeorm-ts-node-commonjs"
    },
    "dependencies": {
+      "@casl/ability": "^6.3.3",
       "@fastify/static": "^6.6.0",
       "@hkrecruitment/shared": "workspace:*",
       "@nestjs/common": "^9.0.0",

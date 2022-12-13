@@ -3,16 +3,12 @@
   "private": "true",
   "type": "commonjs",
   "description": "Shared types and schemas",
-  "main": "dist/index.js",
-  "types": "dist/index.d.js",
-  "scripts": {
-    "build": "tsc",
-    "dev": "tsc -w"
-  },
+  "main": "src/index.js",
   "devDependencies": {
     "typescript": "^4.9.3"
   },
   "dependencies": {
+    "@casl/ability": "^6.3.3",
     "joi": "^17.7.0"
   }
 }
