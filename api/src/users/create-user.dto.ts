@@ -17,12 +17,12 @@ export class CreateUserDto implements Partial<Person> {
   @ApiProperty()
   email: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   phone_no?: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   telegramId?: string;
 
-  @ApiProperty({ enum: Role })
+  @ApiProperty({ enum: Role, required: false })
   role?: Role
 }

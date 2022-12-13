@@ -1,5 +1,14 @@
 import * as Joi from "joi";
-import { Role } from "./user-auth"
+import { Action, ApplyAbilities } from "./abilities";
+
+export enum Role {
+  None = "none",
+  Applicant = "applicant",
+  Member = "member",
+  Clerk = "clerk",
+  Supervisor = "supervisor",
+  Admin = "admin",
+}
 
 export interface Person {
   oauthId: string;
@@ -38,3 +47,29 @@ export const updateUserSchema = Joi.object<Person>({
     .valid("none", "applicant", "member", "clerk", "supervisor", "admin")
     .optional(),
 });
+
+export const applyAbilitesOnPerson: ApplyAbilities = (
+  user,
+  { can, cannot }
+) => {
+  can(Action.Read, "Person", { oauthId: user.sub });
+  can(
+    Action.Create,
+    "Person",
+    ["oauthId", "firstName", "lastName", "sex", "email", "phone_no", "telegramId"],
+    { oauthId: user.sub }
+  );
+  // can(
+  //   Action.Update,
+  //   "Person",
+  //   ["firstName", "lastName", "sex", "phone_no", "telegramId"],
+  //   { oauthId: user.sub }
+  // );
+  can(Action.Delete, "Person", { oauthId: user.sub });
+
+  if (user.role === Role.Admin) {
+    can(Action.Manage, "Person"); // Admin can do anything on any user
+  }
+
+  cannot(Action.Update, "Person", ["oauthId"]); // No one can update oauthId
+};

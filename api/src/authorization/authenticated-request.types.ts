@@ -1,8 +1,6 @@
-import { Role } from '@hkrecruitment/shared';
+import { AppAbility, UserAuth } from '@hkrecruitment/shared';
 
 export type AuthenticatedRequest = Request & {
-  user: {
-    sub: string;
-    role: Role;
-  };
+  user: UserAuth;
+  ability: AppAbility;
 };
