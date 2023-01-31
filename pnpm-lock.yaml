@@ -5,15 +5,6 @@ importers:
   .:
     specifiers: {}
 
-  .casl_learning:
-    specifiers:
-      '@casl/ability': ^6.3.3
-      ts-node: 10.7.0
-    dependencies:
-      '@casl/ability': 6.3.3
-    devDependencies:
-      ts-node: 10.7.0
-
   api:
     specifiers:
       '@casl/ability': ^6.3.3
@@ -41,7 +32,6 @@ importers:
       eslint: ^8.0.1
       eslint-config-prettier: ^8.3.0
       eslint-plugin-prettier: ^4.0.0
-      extra: link:@casl/ability/extra
       jest: 28.1.3
       joi: ^17.7.0
       js-yaml: ^4.1.0
@@ -50,7 +40,6 @@ importers:
       passport-jwt: ^4.0.0
       pg: ^8.4.0
       prettier: ^2.3.2
-      prisma: ^4.7.1
       reflect-metadata: ^0.1.13
       rimraf: ^3.0.2
       rxjs: ^7.2.0
@@ -77,7 +66,6 @@ importers:
       '@nestjs/typeorm': 9.0.1_y35eg2ubdzamw4yabeyff6xsia
       '@types/js-yaml': 4.0.5
       '@types/passport-jwt': 3.0.7
-      extra: link:@casl/ability/extra
       joi: 17.7.0
       js-yaml: 4.1.0
       jwks-rsa: 3.0.0
@@ -104,7 +92,6 @@ importers:
       eslint-plugin-prettier: 4.2.1_nrhoyyjffvfyk4vtlt5destxgm
       jest: 28.1.3_p2pvtibqqduefcbmb3gxha6ifa
       prettier: 2.8.0
-      prisma: 4.7.1
       source-map-support: 0.5.21
       supertest: 6.3.2
       ts-jest: 28.0.8_7juzc6xa7or7ixjucqve24xyoa
@@ -1397,11 +1384,6 @@ packages:
       node-fetch: 2.6.7
     transitivePeerDependencies:
       - encoding
-
-  /@prisma/engines/4.7.1:
-    resolution: {integrity: sha512-zWabHosTdLpXXlMefHmnouhXMoTB1+SCbUU3t4FCmdrtIOZcarPKU3Alto7gm/pZ9vHlGOXHCfVZ1G7OIrSbog==}
-    requiresBuild: true
-    dev: true
 
   /@sideway/address/4.1.4:
     resolution: {integrity: sha512-7vwq+rOHVWjyXxVlR76Agnvhy8I9rpzjosTESvmhNeXOXdZZB15Fl+TI9x1SiHZH5Jv2wTGduSxFDIaq0m3DUw==}
@@ -5122,15 +5104,6 @@ packages:
       react-is: 18.2.0
     dev: true
 
-  /prisma/4.7.1:
-    resolution: {integrity: sha512-CCQP+m+1qZOGIZlvnL6T3ZwaU0LAleIHYFPN9tFSzjs/KL6vH9rlYbGOkTuG9Q1s6Ki5D0LJlYlW18Z9EBUpGg==}
-    engines: {node: '>=14.17'}
-    hasBin: true
-    requiresBuild: true
-    dependencies:
-      '@prisma/engines': 4.7.1
-    dev: true
-
   /process-nextick-args/2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}
 
@@ -5928,35 +5901,6 @@ packages:
       semver: 7.3.8
       typescript: 4.5.2
       webpack: 5.75.0
-    dev: true
-
-  /ts-node/10.7.0:
-    resolution: {integrity: sha512-TbIGS4xgJoX2i3do417KSaep1uRAW/Lu+WAL2doDHC0D6ummjirVOXU5/7aiZotbQ5p1Zp9tP7U6cYhA0O7M8A==}
-    hasBin: true
-    peerDependencies:
-      '@swc/core': '>=1.2.50'
-      '@swc/wasm': '>=1.2.50'
-      '@types/node': '*'
-      typescript: '>=2.7'
-    peerDependenciesMeta:
-      '@swc/core':
-        optional: true
-      '@swc/wasm':
-        optional: true
-    dependencies:
-      '@cspotcode/source-map-support': 0.7.0
-      '@tsconfig/node10': 1.0.9
-      '@tsconfig/node12': 1.0.11
-      '@tsconfig/node14': 1.0.3
-      '@tsconfig/node16': 1.0.3
-      acorn: 8.8.1
-      acorn-walk: 8.2.0
-      arg: 4.1.3
-      create-require: 1.1.1
-      diff: 4.0.2
-      make-error: 1.3.6
-      v8-compile-cache-lib: 3.0.1
-      yn: 3.1.1
     dev: true
 
   /ts-node/10.7.0_7lgrp6ny656ifyohyk3emjmisu:

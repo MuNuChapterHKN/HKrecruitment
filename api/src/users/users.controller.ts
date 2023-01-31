@@ -9,12 +9,12 @@ import {
   Patch,
   Post,
   Req,
-  UseGuards,
 } from '@nestjs/common';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
 import {
   Action,
+  AppAbility,
   canContinue,
   createUserSchema,
   Role,
@@ -34,17 +34,19 @@ import {
 import { AuthenticatedRequest } from 'src/authorization/authenticated-request.types';
 import * as Joi from 'joi';
 import { CheckPolicies } from 'src/authorization/check-policies.decorator';
+import { Ability } from 'src/authorization/ability.decorator';
 
 @ApiBearerAuth()
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @ApiUnauthorizedResponse()
   @Get()
-  async findAll(): Promise<User[]> {
-    return this.usersService.findAll();
+  async findAll(@Ability() ability: AppAbility): Promise<User[]> {
+    const users = await this.usersService.findAll();
+    return users.filter(u => canContinue(ability, Action.Read, u, "Person"));
   }
 
   @ApiNotFoundResponse()
@@ -53,14 +55,18 @@ export class UsersController {
   @CheckPolicies((ability) => ability.can(Action.Read, 'Person'))
   async findByOauthId(
     @Param('oauthId') oauthId: string,
-    @Req() req: AuthenticatedRequest,
+    @Ability() ability: AppAbility,
   ): Promise<User> {
-    // TODO: filter using ability
-    const result = await this.usersService.findByOauthId(oauthId);
-    if (result === null) {
+    const user = await this.usersService.findByOauthId(oauthId);
+    if (user === null) {
       throw new NotFoundException();
     }
-    return result;
+
+    if (!canContinue(ability, Action.Read, user, 'Person')) {
+      throw new ForbiddenException();
+    }
+
+    return user;
   }
 
   @ApiBadRequestResponse()
@@ -86,11 +92,17 @@ export class UsersController {
   async update(
     @Param('oauthId') oauthId: string,
     @Body() updateUser: UpdateUserDto,
+    @Ability() ability: AppAbility,
   ): Promise<User> {
     const user = await this.usersService.findByOauthId(oauthId);
     if (user === null) {
       throw new NotFoundException();
     }
+
+    if (!canContinue(ability, Action.Update, { ...updateUser, oauthId }, "Person")) {
+      throw new ForbiddenException();
+    }
+
     return this.usersService.update({
       ...user,
       ...updateUser,
@@ -100,11 +112,16 @@ export class UsersController {
   @ApiNotFoundResponse()
   @ApiForbiddenResponse()
   @Delete(':oauthId')
-  async delete(@Param('oauthId') oauthId: string): Promise<User> {
+  async delete(@Param('oauthId') oauthId: string, @Ability() ability: AppAbility): Promise<User> {
     const user = await this.usersService.findByOauthId(oauthId);
     if (user === null) {
       throw new NotFoundException();
     }
+
+    if (!canContinue(ability, Action.Delete, user, "Person")) {
+      throw new ForbiddenException();
+    }
+
     return this.usersService.delete(user);
   }
 }
