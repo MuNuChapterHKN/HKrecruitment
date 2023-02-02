@@ -7,7 +7,7 @@ import moment from 'moment';
 
 
 function AvaiabilitiesTable(props) {
-    let start= "08.00";
+    let start= "2014-09-08T08:02:17";
     let duration= 45;
 let end="20.00";
 
@@ -39,7 +39,7 @@ row.unshift(moment(start).format('hh:mm'));
     return <Container fluid>
         <Row>
             <Col></Col>
-            <Col xxl={8}>
+            <Col md={8}>
                 <Table striped bordered  hover >
                     <thead>
                         <tr>
