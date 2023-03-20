@@ -1,5 +1,5 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
-import { Person, Role } from "@hkrecruitment/shared";
+import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Person, Role } from '@hkrecruitment/shared';
 
 @Entity()
 export class User implements Person {
@@ -25,5 +25,5 @@ export class User implements Person {
   telegramId?: string;
 
   @Column()
-  role: Role
+  role: Role;
 }

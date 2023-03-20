@@ -1,4 +1,10 @@
-import { AbilityBuilder, AbilityClass, createMongoAbility, PureAbility, subject } from "@casl/ability";
+import {
+  AbilityBuilder,
+  AbilityClass,
+  createMongoAbility,
+  PureAbility,
+  subject,
+} from "@casl/ability";
 import { applyAbilitesOnPerson, Person, Role } from "./person";
 
 export interface UserAuth {
@@ -14,7 +20,7 @@ export enum Action {
   Delete = "delete",
 }
 type SubjectsTypes = Partial<Person>;
-type SubjectNames = 'Person';
+type SubjectNames = "Person";
 export type Subjects = SubjectsTypes | SubjectNames;
 
 export type AppAbility = PureAbility<[Action, Subjects]>;
@@ -34,7 +40,15 @@ export const abilityForUser = (user: UserAuth): AppAbility => {
   return build();
 };
 
-export const canContinue = (ability: AppAbility, Action: Action, subjectObj: SubjectsTypes, subjectName: SubjectNames): boolean => {
+export const checkAbility = (
+  ability: AppAbility,
+  Action: Action,
+  subjectObj: SubjectsTypes,
+  subjectName: SubjectNames
+): boolean => {
   const subj = subject(subjectName, subjectObj);
-  return ability.can(Action, subj) && Object.keys(subject).every(field => ability.can(Action, subj, field));
-}
+  return (
+    ability.can(Action, subj) &&
+    Object.keys(subject).every((field) => ability.can(Action, subj, field))
+  );
+};

@@ -1,5 +1,5 @@
-import { Person, Role } from "@hkrecruitment/shared";
-import { ApiProperty } from "@nestjs/swagger";
+import { Person, Role } from '@hkrecruitment/shared';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto implements Partial<Person> {
   @ApiProperty()
@@ -24,5 +24,5 @@ export class CreateUserDto implements Partial<Person> {
   telegramId?: string;
 
   @ApiProperty({ enum: Role, required: false })
-  role?: Role
+  role?: Role;
 }

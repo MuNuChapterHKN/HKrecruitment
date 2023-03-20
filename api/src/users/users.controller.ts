@@ -15,7 +15,7 @@ import { UsersService } from './users.service';
 import {
   Action,
   AppAbility,
-  canContinue,
+  checkAbility,
   createUserSchema,
   Role,
   updateUserSchema,
@@ -40,18 +40,21 @@ import { Ability } from 'src/authorization/ability.decorator';
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
 
   @ApiUnauthorizedResponse()
   @Get()
   async findAll(@Ability() ability: AppAbility): Promise<User[]> {
     const users = await this.usersService.findAll();
-    return users.filter(u => canContinue(ability, Action.Read, u, "Person"));
+    return users.filter((u) => checkAbility(ability, Action.Read, u, 'Person'));
   }
 
   @ApiNotFoundResponse()
   @ApiUnauthorizedResponse()
   @Get(':oauthId')
+  @JoiValidate({
+    param: Joi.string().required(),
+  })
   @CheckPolicies((ability) => ability.can(Action.Read, 'Person'))
   async findByOauthId(
     @Param('oauthId') oauthId: string,
@@ -62,7 +65,7 @@ export class UsersController {
       throw new NotFoundException();
     }
 
-    if (!canContinue(ability, Action.Read, user, 'Person')) {
+    if (!checkAbility(ability, Action.Read, user, 'Person')) {
       throw new ForbiddenException();
     }
 
@@ -72,13 +75,15 @@ export class UsersController {
   @ApiBadRequestResponse()
   @ApiForbiddenResponse()
   @Post()
-  @JoiValidate(createUserSchema.append({ oauthId: Joi.string().required() }))
+  @JoiValidate({
+    body: createUserSchema.append({ oauthId: Joi.string().required() }),
+  })
   create(
     @Body() user: CreateUserDto,
     @Req() req: AuthenticatedRequest,
   ): Promise<User> {
     const ability = req.ability;
-    if (!canContinue(ability, Action.Create, user, 'Person')) {
+    if (!checkAbility(ability, Action.Create, user, 'Person')) {
       throw new ForbiddenException();
     }
     return this.usersService.create({ ...user, role: Role.None });
@@ -88,7 +93,10 @@ export class UsersController {
   @ApiBadRequestResponse()
   @ApiForbiddenResponse()
   @Patch(':oauthId')
-  @JoiValidate(updateUserSchema)
+  @JoiValidate({
+    body: updateUserSchema,
+    param: Joi.string().required(),
+  })
   async update(
     @Param('oauthId') oauthId: string,
     @Body() updateUser: UpdateUserDto,
@@ -99,7 +107,14 @@ export class UsersController {
       throw new NotFoundException();
     }
 
-    if (!canContinue(ability, Action.Update, { ...updateUser, oauthId }, "Person")) {
+    if (
+      !checkAbility(
+        ability,
+        Action.Update,
+        { ...updateUser, oauthId },
+        'Person',
+      )
+    ) {
       throw new ForbiddenException();
     }
 
@@ -112,13 +127,19 @@ export class UsersController {
   @ApiNotFoundResponse()
   @ApiForbiddenResponse()
   @Delete(':oauthId')
-  async delete(@Param('oauthId') oauthId: string, @Ability() ability: AppAbility): Promise<User> {
+  @JoiValidate({
+    param: Joi.string().required(),
+  })
+  async delete(
+    @Param('oauthId') oauthId: string,
+    @Ability() ability: AppAbility,
+  ): Promise<User> {
     const user = await this.usersService.findByOauthId(oauthId);
     if (user === null) {
       throw new NotFoundException();
     }
 
-    if (!canContinue(ability, Action.Delete, user, "Person")) {
+    if (!checkAbility(ability, Action.Delete, user, 'Person')) {
       throw new ForbiddenException();
     }
 

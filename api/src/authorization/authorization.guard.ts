@@ -30,7 +30,11 @@ export class AuthorizationGuard implements CanActivate {
     const ability = abilityForUser(context.switchToHttp().getRequest().user);
     context.switchToHttp().getRequest().ability = ability;
 
-    const handlers = this.reflector.get<PolicyHandler[]>(CHECK_POLICIES_KEY, context.getHandler()) ?? [];
+    const handlers =
+      this.reflector.get<PolicyHandler[]>(
+        CHECK_POLICIES_KEY,
+        context.getHandler(),
+      ) ?? [];
     return handlers.every((handler) => handler(ability));
   }
 }

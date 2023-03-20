@@ -35,12 +35,12 @@ import { AuthorizationGuard } from './authorization/authorization.guard';
     },
     {
       provide: APP_GUARD,
-      useClass: AuthorizationGuard
+      useClass: AuthorizationGuard,
     },
     {
       provide: APP_INTERCEPTOR,
-      useClass: TimerInterceptor
-    }
-  ]
+      useClass: TimerInterceptor,
+    },
+  ],
 })
 export class AppModule {}

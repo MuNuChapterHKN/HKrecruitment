@@ -14,7 +14,7 @@ export class UsersService {
     return this.userRepository.find();
   }
 
-  async findByOauthId(oauthId: string): Promise<User|null> {
+  async findByOauthId(oauthId: string): Promise<User | null> {
     const matches = await this.userRepository.findBy({ oauthId });
     return matches.length > 0 ? matches[0] : null;
   }
@@ -36,11 +36,11 @@ export class UsersService {
     return this.userRepository.save(user);
   }
 
-  async getRoleForOauthId(oauthId: string): Promise<string|null> {
+  async getRoleForOauthId(oauthId: string): Promise<string | null> {
     const user = await this.userRepository.findOne({
       where: { oauthId },
       select: ['role'],
-    })
+    });
     return user?.role;
   }
 }
