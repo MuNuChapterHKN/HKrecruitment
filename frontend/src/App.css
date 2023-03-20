@@ -1,47 +1,78 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+.App {
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
 }
 
-@keyframes logo-spin {
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: black;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.black {
+  color: white;
+  background-color: #282c34;
+  background: #282c34;
+}
+
+.pink {
+  color: black;
+  background-color: pink;
+  background: pink;
+}
+
+.submitButton {
+  background-color: #00629b !important;
+  background: #00629b !important;
+}
+.myNavbar {
+  background-color: #f9f9f9;
+}
+.table {
+  --bs-table-bg: rgba(55, 81, 113, 0.8) !important;
+  --bs-table-accent-bg: transparent;
+  --bs-table-striped-color: white !important;
+  --bs-table-striped-bg: rgba(55, 81, 113, 0.8) !important;
+  --bs-table-active-color: white !important;
+  --bs-table-active-bg: rgba(0, 0, 0, 0.1);
+  --bs-table-hover-color: white !important;
+  --bs-table-hover-bg: rgba(0, 0, 0, 0.075);
+  width: 100%;
+  margin-bottom: 1rem;
+  color: white !important;
+  vertical-align: top;
+  border-color: #dee2e6;
+}
+
+.table > thead {
+  vertical-align: bottom;
+  background-color: rgba(55, 81, 113, 1);
+}
+
+@keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
   }
   to {
     transform: rotate(360deg);
   }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
-
-/* pre are left aligned by default and have 1rem horizontal padding */
-pre {
-  text-align: left;
-  max-width: 90%;
 }

@@ -8,6 +8,9 @@ api/src/modules/GAuth/authInfo
 /**/*.tsbuildinfo
 .vscode
 
+/fontend_tmp
+/frontend_tmp/**
+
 tmp-*
 
 **/.DS_Store

@@ -56,7 +56,15 @@ export const applyAbilitesOnPerson: ApplyAbilities = (
   can(
     Action.Create,
     "Person",
-    ["oauthId", "firstName", "lastName", "sex", "email", "phone_no", "telegramId"],
+    [
+      "oauthId",
+      "firstName",
+      "lastName",
+      "sex",
+      "email",
+      "phone_no",
+      "telegramId",
+    ],
     { oauthId: user.sub }
   );
   // can(
