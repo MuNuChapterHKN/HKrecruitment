@@ -8,7 +8,7 @@ import moment from "moment";
 import { createUserSchema } from "@hkrecruitment/shared";
 
 function AvaiabilitiesTable(props) {
-  let start = "08.00";
+  let start = "2014-09-08T08:02:17";
   let duration = 45;
   let end = "20.00";
 
@@ -151,7 +151,7 @@ function AvaiabilitiesTable(props) {
     <Container fluid>
       <Row>
         <Col></Col>
-        <Col xxl={8}>
+        <Col md={8}>
           <Table striped bordered hover>
             <thead>
               <tr>
