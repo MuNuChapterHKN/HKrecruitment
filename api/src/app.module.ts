@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import configuration from './configuration';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { AuthenticationModule } from './authentication/authentication.module';
@@ -14,14 +13,20 @@ import { AuthorizationGuard } from './authorization/authorization.guard';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [configuration],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        ...configService.get<TypeOrmModuleOptions>('database'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      }),
+      useFactory: (configService: ConfigService) =>
+        ({
+          type: configService.get('DATABASE_TYPE'),
+          host: configService.get('DATABASE_HOST'),
+          port: configService.get('DATABASE_PORT'),
+          username: configService.get('DATABASE_USERNAME'),
+          password: configService.get('DATABASE_PASSWORD'),
+          database: configService.get('DATABASE_NAME'),
+          synchronize: configService.get('DATABASE_SYNCHRONIZE'),
+          entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        } as TypeOrmModuleOptions),
       inject: [ConfigService],
     }),
     UsersModule,
