@@ -1,5 +1,5 @@
 import * as Joi from "joi";
-// import { Slot, TimeSlot } from "./slot";
+// import { TimeSlot } from "./slot";
 
 export enum ApplicationState {
   New = "new",
@@ -28,7 +28,6 @@ export interface Application {
   notes?: string;
   cv: string; // Link to cv
   // availability: TimeSlot[];
-  // selected_slot?: Slot;
   itaLevel: LangLevel;
 }
 
@@ -59,41 +58,30 @@ export interface PhdApplication extends Application {
 /* Validation schemas */
 
 const BaseApplication = Joi.object<Application>({
-  id: Joi.string().required(),
   submission: Joi.date().required(),
   state: Joi.string().valid(Object.values(ApplicationState)).required(),
   lastModified: Joi.date().required(),
   notes: Joi.string().optional(),
-  cv: Joi.string().required(),
+  cv: Joi.string().uri().required(),
   itaLevel: Joi.string().valid(Object.values(LangLevel)).required(),
 
   // availability: Joi.array().items(Joi.object<TimeSlot>({
   //     start: Joi.date().required(),
   //     end: Joi.date().required(),
   // })).required(),
-  // selectedSlot: Joi.object<Slot>({
-  //     state: Joi.string()
-  //         .valid("free", "assigned", "reserved", "rejected")
-  //         .required(),
-  //     calId: Joi.string().required(),
-  //     timeSlot: Joi.object<TimeSlot>({
-  //         start: Joi.date().required(),
-  //         end: Joi.date().required(),
-  //     }).required(),
-  // }).optional(),
 });
 
-export const createBscApplication = (
+const createBscApplication = (
   BaseApplication as Joi.ObjectSchema<BscApplication>
 ).keys({
   studyPath: Joi.string().required(),
   academicYear: Joi.number().required(),
   cfu: Joi.number().required(),
-  grades: Joi.string().required(),
+  grades: Joi.string().uri().required(),
   gradesAvg: Joi.number().required(),
 });
 
-export const createMscApplication = (
+const createMscApplication = (
   BaseApplication as Joi.ObjectSchema<MscApplication>
 ).keys({
   bscStudyPath: Joi.string().optional(),
@@ -102,12 +90,23 @@ export const createMscApplication = (
   mscGradesAvg: Joi.number().required(),
   academicYear: Joi.number().required(),
   cfu: Joi.number().required(),
-  grades: Joi.string().required(),
+  grades: Joi.string().uri().required(),
 });
 
-export const createPhdApplication = (
+const createPhdApplication = (
   BaseApplication as Joi.ObjectSchema<PhdApplication>
 ).keys({
   mscStudyPath: Joi.string().required(),
   phdDescription: Joi.string().required(),
+});
+
+export const createApplicationSchema = Joi.alternatives(
+  createBscApplication,
+  createMscApplication,
+  createPhdApplication
+);
+
+export const updateApplicationSchema = Joi.object<Application>({
+  notes: Joi.string().optional(),
+  state: Joi.string().valid(Object.values(ApplicationState)).optional(),
 });
