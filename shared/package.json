@@ -1,0 +1,18 @@
+{
+  "name": "@hkrecruitment/shared",
+  "private": "true",
+  "type": "commonjs",
+  "description": "Shared types and schemas",
+  "main": "src/index",
+  "scripts": {
+    "format": "prettier --write \"src/**/*.ts\""
+  },
+  "devDependencies": {
+    "typescript": "^4.9.3",
+    "prettier": "^2.8.5"
+  },
+  "dependencies": {
+    "@casl/ability": "^6.3.3",
+    "joi": "^17.7.0"
+  }
+}

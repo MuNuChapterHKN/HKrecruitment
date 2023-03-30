@@ -1,79 +1,73 @@
-<img src="https://hknpolito.org/wp-content/uploads/2018/05/hkn_logo_blu.png" width="100">
+<p align="center">
+  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
+</p>
 
-# HKRecruitment - API server
-HKRecruitment is the platform used by HKN Polito to handle
-the recruitment process. This software implements the server
-side of the application, in form of endpoints for the RESTful APIs
-described in the documentation.
+[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
+[circleci-url]: https://circleci.com/gh/nestjs/nest
 
-## Getting Started
+  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
+    <p align="center">
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
+<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
+<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
+<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
+<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
+<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
+  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
+    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
+  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
+</p>
+  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
+  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+## Description
 
-### Prerequisites
+[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-This project requires you to have Node JS installed and npm.
+## Installation
 
-### Installing
-
-To set up the project simply give this command on the project root directory:
-
-```
-npm install
-```
-
-To actually compile the project, because it is written in TypeScript, you will need
-to give this command on the project root directory:
-
-```
-npm build
-```
-
-Finally, to start the program, give this command on the project root directory:
-
-```
-npm start
+```bash
+$ npm install
 ```
 
-## Running the tests
+## Running the app
 
-To run the tests, simply run
+```bash
+# development
+$ npm run start
 
-```
-npm test
-```
+# watch mode
+$ npm run start:dev
 
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
+# production mode
+$ npm run start:prod
 ```
 
-### And coding style tests
+## Test
 
-Explain what these tests test and why
+```bash
+# unit tests
+$ npm run test
 
+# e2e tests
+$ npm run test:e2e
+
+# test coverage
+$ npm run test:cov
 ```
-Give an example
-```
 
-## Build with
-* [Typescript](https://www.typescriptlang.org/) - This project is written entirely in Typescript
-* [AJV](https://ajv.js.org/) - JSON schema validator used for core entities and requests/responses
-* [json-schema-to-typescript](https://www.npmjs.com/package/json-schema-to-typescript) - To obtain Typescript types from json-schemas
-* [googleapis](https://googleapis.github.io/) - Google RESTful APIs used to integrate the system with GSuite services
+## Support
 
-## Versioning
+Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags).
+## Stay in touch
 
-## Authors
-
-* **Riccardo Zaccone** - *Initial work* - [HKN Polito](https://hknpolito.org/)
-* **Arianna Ravera** - *Initial work* - [HKN Polito](https://hknpolito.org/)
+- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
+- Website - [https://nestjs.com](https://nestjs.com/)
+- Twitter - [@nestframework](https://twitter.com/nestframework)
 
 ## License
-HKRecruitment is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. See the [COPYING](COPYING) file for details.
 
+Nest is [MIT licensed](LICENSE).
