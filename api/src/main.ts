@@ -11,7 +11,9 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter(),
   );
+
   app.enableCors();
+  app.setGlobalPrefix('v1');
 
   const config = new DocumentBuilder()
     .setTitle('HKRecruitment API')
