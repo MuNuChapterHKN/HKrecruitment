@@ -33,6 +33,7 @@
       "@nestjs/typeorm": "^9.0.1",
       "@types/js-yaml": "^4.0.5",
       "@types/passport-jwt": "^3.0.7",
+      "class-transformer": "^0.5.1",
       "joi": "^17.7.0",
       "js-yaml": "^4.1.0",
       "jwks-rsa": "^3.0.0",

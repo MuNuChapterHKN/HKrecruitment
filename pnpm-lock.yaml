@@ -29,6 +29,7 @@ importers:
       '@types/supertest': ^2.0.11
       '@typescript-eslint/eslint-plugin': ^5.0.0
       '@typescript-eslint/parser': ^5.0.0
+      class-transformer: ^0.5.1
       eslint: ^8.0.1
       eslint-config-prettier: ^8.3.0
       eslint-plugin-prettier: ^4.0.0
@@ -39,7 +40,7 @@ importers:
       passport: ^0.6.0
       passport-jwt: ^4.0.0
       pg: ^8.4.0
-      prettier: ^2.3.2
+      prettier: ^2.8.5
       reflect-metadata: ^0.1.13
       rimraf: ^3.0.2
       rxjs: ^7.2.0
@@ -56,16 +57,17 @@ importers:
       '@casl/ability': 6.3.3
       '@fastify/static': 6.6.0
       '@hkrecruitment/shared': link:../shared
-      '@nestjs/common': 9.2.1_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 9.2.1_zjqyf46x76hyng3zndsldtoema
       '@nestjs/config': 2.2.0_zgn5mu6qrgzh2mkt2kmizzegr4
       '@nestjs/core': 9.2.1_tuv4y6h3m23xb7odf2gtnrhr3e
       '@nestjs/passport': 9.0.0_6o47igfla2pj7yzh7agpvpttka
       '@nestjs/platform-express': 9.2.1_hjcqpoaebdr7gdo5hgc22hthbe
       '@nestjs/platform-fastify': 9.2.1_ikxpgcebo3djgwayhrp6upsvza
-      '@nestjs/swagger': 6.1.3_msprghgtrmqoraddow4lmr54ka
+      '@nestjs/swagger': 6.1.3_v3ygpa75b6adhm57jtzsbqcedy
       '@nestjs/typeorm': 9.0.1_y35eg2ubdzamw4yabeyff6xsia
       '@types/js-yaml': 4.0.5
       '@types/passport-jwt': 3.0.7
+      class-transformer: 0.5.1
       joi: 17.7.0
       js-yaml: 4.1.0
       jwks-rsa: 3.0.0
@@ -89,9 +91,9 @@ importers:
       '@typescript-eslint/parser': 5.45.0_kobv54wr2sqljopxonyssrcrhy
       eslint: 8.29.0
       eslint-config-prettier: 8.5.0_eslint@8.29.0
-      eslint-plugin-prettier: 4.2.1_nrhoyyjffvfyk4vtlt5destxgm
+      eslint-plugin-prettier: 4.2.1_v36czzc3ibpriad2xqdhvzb4y4
       jest: 28.1.3_p2pvtibqqduefcbmb3gxha6ifa
-      prettier: 2.8.0
+      prettier: 2.8.7
       source-map-support: 0.5.21
       supertest: 6.3.2
       ts-jest: 28.0.8_7juzc6xa7or7ixjucqve24xyoa
@@ -105,12 +107,11 @@ importers:
       '@auth0/auth0-react': ^1.12.0
       '@hkrecruitment/shared': workspace:*
       '@popperjs/core': ^2.11.6
-      '@types/react': ^18.0.28
-      '@types/react-dom': ^18.0.11
       '@vitejs/plugin-react': ^3.1.0
       bootstrap: ^5.2.3
       moment: ^2.29.3
       moment-timezone: ^0.5.34
+      prettier: ^2.8.5
       prop-types: ^15.7.0
       react: ^18.2.0
       react-bootstrap: ^2.2.3
@@ -125,20 +126,19 @@ importers:
       '@auth0/auth0-react': 1.12.0_biqbaboplfbrettd7655fr4n2y
       '@hkrecruitment/shared': link:../shared
       '@popperjs/core': 2.11.6
-      '@types/react': 18.0.28
-      '@types/react-dom': 18.0.11
       bootstrap: 5.2.3_@popperjs+core@2.11.6
       moment: 2.29.4
       moment-timezone: 0.5.41
       prop-types: 15.8.1
       react: 18.2.0
-      react-bootstrap: 2.7.2_zula6vjvt3wdocc4mwcxqa6nzi
+      react-bootstrap: 2.7.2_biqbaboplfbrettd7655fr4n2y
       react-dom: 18.2.0_react@18.2.0
       react-moment: 1.1.3_mmavuqf6ek6upnyryxchoaliru
       react-router-dom: 6.9.0_biqbaboplfbrettd7655fr4n2y
       web-vitals: 2.1.4
     devDependencies:
       '@vitejs/plugin-react': 3.1.0_vite@4.2.1
+      prettier: 2.8.7
       typescript: 4.9.3
       vite: 4.2.1
       vite-plugin-html: 3.2.0_vite@4.2.1
@@ -147,11 +147,13 @@ importers:
     specifiers:
       '@casl/ability': ^6.3.3
       joi: ^17.7.0
+      prettier: ^2.8.5
       typescript: ^4.9.3
     dependencies:
       '@casl/ability': 6.3.3
       joi: 17.7.0
     devDependencies:
+      prettier: 2.8.7
       typescript: 4.9.3
 
 packages:
@@ -1405,7 +1407,7 @@ packages:
       - webpack-cli
     dev: true
 
-  /@nestjs/common/9.2.1_yzt46al3aifnexifjjdb4dxxja:
+  /@nestjs/common/9.2.1_zjqyf46x76hyng3zndsldtoema:
     resolution: {integrity: sha512-nZuo3oDsSSlC5mti/M2aCWTEIfHPGDXmBwWgPeCpRbrNz3IWd109rkajll+yxgidVjznAdBS9y00JkAVJblNYw==}
     peerDependencies:
       cache-manager: <=5
@@ -1421,6 +1423,7 @@ packages:
       class-validator:
         optional: true
     dependencies:
+      class-transformer: 0.5.1
       iterare: 1.2.1
       reflect-metadata: 0.1.13
       rxjs: 7.5.7
@@ -1434,7 +1437,7 @@ packages:
       reflect-metadata: ^0.1.13
       rxjs: ^6.0.0 || ^7.2.0
     dependencies:
-      '@nestjs/common': 9.2.1_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 9.2.1_zjqyf46x76hyng3zndsldtoema
       dotenv: 16.0.1
       dotenv-expand: 8.0.3
       lodash: 4.17.21
@@ -1461,7 +1464,7 @@ packages:
       '@nestjs/websockets':
         optional: true
     dependencies:
-      '@nestjs/common': 9.2.1_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 9.2.1_zjqyf46x76hyng3zndsldtoema
       '@nestjs/platform-express': 9.2.1_hjcqpoaebdr7gdo5hgc22hthbe
       '@nuxtjs/opencollective': 0.3.2
       fast-safe-stringify: 2.1.1
@@ -1475,7 +1478,7 @@ packages:
     transitivePeerDependencies:
       - encoding
 
-  /@nestjs/mapped-types/1.2.0_n3ccvzwmui2f6jwh4xeqysew6i:
+  /@nestjs/mapped-types/1.2.0_u7xskdvcoecg5rkgejmv6hp5nq:
     resolution: {integrity: sha512-NTFwPZkQWsArQH8QSyFWGZvJ08gR+R4TofglqZoihn/vU+ktHEJjMqsIsADwb7XD97DhiD+TVv5ac+jG33BHrg==}
     peerDependencies:
       '@nestjs/common': ^7.0.8 || ^8.0.0 || ^9.0.0
@@ -1488,7 +1491,8 @@ packages:
       class-validator:
         optional: true
     dependencies:
-      '@nestjs/common': 9.2.1_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 9.2.1_zjqyf46x76hyng3zndsldtoema
+      class-transformer: 0.5.1
       reflect-metadata: 0.1.13
     dev: false
 
@@ -1498,7 +1502,7 @@ packages:
       '@nestjs/common': ^8.0.0 || ^9.0.0
       passport: ^0.4.0 || ^0.5.0 || ^0.6.0
     dependencies:
-      '@nestjs/common': 9.2.1_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 9.2.1_zjqyf46x76hyng3zndsldtoema
       passport: 0.6.0
     dev: false
 
@@ -1508,7 +1512,7 @@ packages:
       '@nestjs/common': ^9.0.0
       '@nestjs/core': ^9.0.0
     dependencies:
-      '@nestjs/common': 9.2.1_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 9.2.1_zjqyf46x76hyng3zndsldtoema
       '@nestjs/core': 9.2.1_tuv4y6h3m23xb7odf2gtnrhr3e
       body-parser: 1.20.1
       cors: 2.8.5
@@ -1535,7 +1539,7 @@ packages:
       '@fastify/formbody': 7.3.0
       '@fastify/middie': 8.0.0
       '@fastify/static': 6.6.0
-      '@nestjs/common': 9.2.1_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 9.2.1_zjqyf46x76hyng3zndsldtoema
       '@nestjs/core': 9.2.1_tuv4y6h3m23xb7odf2gtnrhr3e
       fastify: 4.10.2
       light-my-request: 5.6.1
@@ -1575,7 +1579,7 @@ packages:
       - chokidar
     dev: true
 
-  /@nestjs/swagger/6.1.3_msprghgtrmqoraddow4lmr54ka:
+  /@nestjs/swagger/6.1.3_v3ygpa75b6adhm57jtzsbqcedy:
     resolution: {integrity: sha512-H9C/yRgLFb5QrAt6iGrYmIX9X7Q0zXkgZaTNUATljUBra+RCWrEUbLHBcGjTAOtcIyGV/vmyCLv68YSVcZoE0Q==}
     peerDependencies:
       '@fastify/static': ^6.0.0
@@ -1587,9 +1591,9 @@ packages:
         optional: true
     dependencies:
       '@fastify/static': 6.6.0
-      '@nestjs/common': 9.2.1_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 9.2.1_zjqyf46x76hyng3zndsldtoema
       '@nestjs/core': 9.2.1_tuv4y6h3m23xb7odf2gtnrhr3e
-      '@nestjs/mapped-types': 1.2.0_n3ccvzwmui2f6jwh4xeqysew6i
+      '@nestjs/mapped-types': 1.2.0_u7xskdvcoecg5rkgejmv6hp5nq
       js-yaml: 4.1.0
       lodash: 4.17.21
       path-to-regexp: 3.2.0
@@ -1613,7 +1617,7 @@ packages:
       '@nestjs/platform-express':
         optional: true
     dependencies:
-      '@nestjs/common': 9.2.1_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 9.2.1_zjqyf46x76hyng3zndsldtoema
       '@nestjs/core': 9.2.1_tuv4y6h3m23xb7odf2gtnrhr3e
       '@nestjs/platform-express': 9.2.1_hjcqpoaebdr7gdo5hgc22hthbe
       tslib: 2.4.1
@@ -1628,7 +1632,7 @@ packages:
       rxjs: ^7.2.0
       typeorm: ^0.3.0
     dependencies:
-      '@nestjs/common': 9.2.1_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 9.2.1_zjqyf46x76hyng3zndsldtoema
       '@nestjs/core': 9.2.1_tuv4y6h3m23xb7odf2gtnrhr3e
       reflect-metadata: 0.1.13
       rxjs: 7.5.7
@@ -1934,12 +1938,6 @@ packages:
 
   /@types/range-parser/1.2.4:
     resolution: {integrity: sha512-EEhsLsD6UsDM1yFhAvy0Cjr6VwmpMWqFBCb9w07wVugF7w9nfajxLuVmngTIpgS6svCnm6Vaw+MZhoDCKnOfsw==}
-
-  /@types/react-dom/18.0.11:
-    resolution: {integrity: sha512-O38bPbI2CWtgw/OoQoY+BRelw7uysmXbWvw3nLWO21H1HSh+GOlqPuXshJfjmpNlKiiSDG9cc1JZAaMmVdcTlw==}
-    dependencies:
-      '@types/react': 18.0.28
-    dev: false
 
   /@types/react-transition-group/4.4.5:
     resolution: {integrity: sha512-juKD/eiSM3/xZYzjuzH6ZwpP+/lejltmiS3QEzV/vmb/Q8+HfDmxu+Baga8UEMGBqV88Nbg4l2hY/K2DkyaLLA==}
@@ -2761,6 +2759,9 @@ packages:
     resolution: {integrity: sha512-cOU9usZw8/dXIXKtwa8pM0OTJQuJkxMN6w30csNRUerHfeQ5R6U3kkU/FtJeIf3M202OHfY2U8ccInBG7/xogA==}
     dev: true
 
+  /class-transformer/0.5.1:
+    resolution: {integrity: sha512-SQa1Ws6hUbfC98vKGxZH3KFY0Y1lm5Zm0SY8XX9zbK7FJCyVEac3ATW0RIpwzW+oOfmHE5PMPufDG9hCfoEOMw==}
+
   /classnames/2.3.2:
     resolution: {integrity: sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==}
     dev: false
@@ -3260,7 +3261,7 @@ packages:
       eslint: 8.29.0
     dev: true
 
-  /eslint-plugin-prettier/4.2.1_nrhoyyjffvfyk4vtlt5destxgm:
+  /eslint-plugin-prettier/4.2.1_v36czzc3ibpriad2xqdhvzb4y4:
     resolution: {integrity: sha512-f/0rXLXUt0oFYs8ra4w49wYZBG5GKZpAYsJSm6rnYL5uVDjd+zowwMwVZHnAjf4edNrKpCDYfXDgmRE/Ak7QyQ==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -3273,7 +3274,7 @@ packages:
     dependencies:
       eslint: 8.29.0
       eslint-config-prettier: 8.5.0_eslint@8.29.0
-      prettier: 2.8.0
+      prettier: 2.8.7
       prettier-linter-helpers: 1.0.0
     dev: true
 
@@ -5491,8 +5492,8 @@ packages:
       fast-diff: 1.2.0
     dev: true
 
-  /prettier/2.8.0:
-    resolution: {integrity: sha512-9Lmg8hTFZKG0Asr/kW9Bp8tJjRVluO8EJQVfY2T7FMw9T5jy4I/Uvx0Rca/XWf50QQ1/SS48+6IJWnrb+2yemA==}
+  /prettier/2.8.7:
+    resolution: {integrity: sha512-yPngTo3aXUUmyuTjeTUT75txrf+aMh9FiD7q9ZE/i6r0bPb22g4FsE6Y338PQX1bmfy08i9QQCB7/rcUAVntfw==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true
@@ -5603,7 +5604,7 @@ packages:
       iconv-lite: 0.4.24
       unpipe: 1.0.0
 
-  /react-bootstrap/2.7.2_zula6vjvt3wdocc4mwcxqa6nzi:
+  /react-bootstrap/2.7.2_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-WDSln+mG4RLLFO01stkj2bEx/3MF4YihK9D/dWnHaSxOiQZLbhhlf95D2Jb20X3t2m7vMxRe888FVrfLJoGmmA==}
     peerDependencies:
       '@types/react': '>=16.14.8'
@@ -5616,7 +5617,6 @@ packages:
       '@babel/runtime': 7.21.0
       '@restart/hooks': 0.4.9_react@18.2.0
       '@restart/ui': 1.6.2_biqbaboplfbrettd7655fr4n2y
-      '@types/react': 18.0.28
       '@types/react-transition-group': 4.4.5
       classnames: 2.3.2
       dom-helpers: 5.2.1
