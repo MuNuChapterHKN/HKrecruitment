@@ -6,6 +6,7 @@ import {
   subject,
 } from "@casl/ability";
 import { applyAbilitesOnPerson, Person, Role } from "./person";
+import { Application, applyAbilitiesOnApplication } from "./application";
 
 export interface UserAuth {
   sub: string;
@@ -19,8 +20,8 @@ export enum Action {
   Update = "update",
   Delete = "delete",
 }
-type SubjectsTypes = Partial<Person>;
-type SubjectNames = "Person";
+type SubjectsTypes = Partial<Person> | Partial<Application>;
+type SubjectNames = "Person" | "Application";
 export type Subjects = SubjectsTypes | SubjectNames;
 
 export type AppAbility = PureAbility<[Action, Subjects]>;
@@ -35,6 +36,7 @@ export const abilityForUser = (user: UserAuth): AppAbility => {
   const builder = new AbilityBuilder<AppAbility>(createMongoAbility);
 
   applyAbilitesOnPerson(user, builder);
+  applyAbilitiesOnApplication(user, builder);
 
   const { build } = builder;
   return build();

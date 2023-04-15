@@ -1,3 +1,5 @@
+import { Action, ApplyAbilities } from "./abilities";
+import { Role } from "./person";
 import * as Joi from "joi";
 // import { TimeSlot } from "./slot";
 
@@ -49,7 +51,7 @@ export interface MscApplication {
   bscGradesAvg: number;
   mscStudyPath: string;
   mscGradesAvg: number;
-  academicYear: number;
+  mscAcademicYear: number;
   grades: string; // Link to grades
   cfu: number;
 }
@@ -74,8 +76,8 @@ const BaseApplication = Joi.object<Application>({
 
 const createBscApplication = Joi.object<BscApplication>({
   bscStudyPath: Joi.string().max(255).required(),
-  bscAcademicYear: Joi.number().integer().min(1).max(3).required(),
   bscGradesAvg: Joi.number().min(18).max(30).required(),
+  bscAcademicYear: Joi.number().integer().min(1).max(3).required(),
   cfu: Joi.number().integer().min(48).max(180).required(),
   grades: Joi.string().uri().required(),
 });
@@ -85,7 +87,7 @@ const createMscApplication = Joi.object<MscApplication>({
   bscGradesAvg: Joi.number().min(18).max(30).optional(),
   mscStudyPath: Joi.string().required(),
   mscGradesAvg: Joi.number().min(18).max(30).required(),
-  academicYear: Joi.number().integer().min(1).max(2).required(),
+  mscAcademicYear: Joi.number().integer().min(1).max(2).required(),
   cfu: Joi.number().integer().min(20).max(120).required(),
   grades: Joi.string().uri().required(),
 });
@@ -125,3 +127,32 @@ export const updateApplicationSchema = Joi.object<Application>({
     .valid(...Object.values(ApplicationState))
     .optional(),
 });
+
+export const applyAbilitiesOnApplication: ApplyAbilities = (
+  user,
+  { can, cannot }
+) => {
+  if (user.role === Role.Admin) {
+    can(Action.Manage, "Application"); // Admin can do anything on any application
+  } else if (user.role === Role.Applicant) {
+    can(Action.Read, "Application", { applicantId: user.sub });
+
+    can(Action.Create, "Application", [
+      "type",
+      "notes",
+      "cv",
+      "itaLevel",
+      "bscApplication",
+      "mscApplication",
+      "phdApplication",
+    ]);
+
+    can(Action.Update, "Application", ["state"], { applicantId: user.sub });
+  } else if (user.role !== Role.None) {
+    // Every other authenticated user can read and update applications
+    can(Action.Read, "Application");
+    can(Action.Update, "Application", ["state", "notes"]);
+  }
+
+  cannot(Action.Delete, "Application"); // No one can delete applications
+};
