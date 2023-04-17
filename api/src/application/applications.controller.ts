@@ -34,6 +34,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
   ApiConflictResponse,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { AuthenticatedRequest } from 'src/authorization/authenticated-request.types';
 import * as Joi from 'joi';
@@ -53,16 +54,29 @@ export class ApplicationsController {
   @Get()
   @ApiUnauthorizedResponse()
   @ApiForbiddenResponse()
-  // @JoiValidate({
-  // TODO: This currently doesn't work: it says "Validation of query failed: \"query\" must be of type object""
-  // query: Joi.object().optional().keys({
-  //   submittedFrom: Joi.date().iso().optional(),
-  //   submittedUntil: Joi.date().iso().optional(),
-  //   state: Joi.string()
-  //     .valid(...Object.values(ApplicationState))
-  //     .optional(),
-  // }).label('query'),
-  // })
+  @ApiQuery({
+    name: 'submittedFrom',
+    required: false,
+    type: 'string',
+  })
+  @ApiQuery({
+    name: 'submittedUntil',
+    required: false,
+    type: 'string',
+  })
+  @ApiQuery({
+    name: 'state',
+    required: false,
+    type: 'string',
+    enum: Object.values(ApplicationState),
+  })
+  @JoiValidate({
+    query: {
+      submittedFrom: Joi.date().iso().optional(),
+      submittedUntil: Joi.date().iso().optional(),
+      state: Joi.string(),
+    },
+  })
   async listApplications(
     @Ability() ability: AppAbility,
     @Query('submittedFrom') submittedFrom?: string, // start date for time period
@@ -82,6 +96,7 @@ export class ApplicationsController {
   }
 
   // TODO: Move this to applicants.controller.ts
+  // TODO: decide if we need an applicant controller
   // @Get('applicants/:applicant_id/applications')
   // @ApiForbiddenResponse()
   // async listApplicationsOfApplicant(
