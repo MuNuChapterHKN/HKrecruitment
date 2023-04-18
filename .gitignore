@@ -8,6 +8,8 @@ api/src/modules/GAuth/authInfo
 /**/*.tsbuildinfo
 .vscode
 
+pnpm-lock.yaml
+
 /fontend_tmp
 /frontend_tmp/**
 
