@@ -4,14 +4,14 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import AvaiabilitiesCell from "./AvaiabilitiesCell";
 import moment from "moment";
-
+import { useState, useEffect } from "react";
 import { createUserSchema } from "@hkrecruitment/shared";
+import React from "react";
 
 function AvaiabilitiesTable(props) {
-  let start = "2014-09-08T08:02:17";
-  let duration = 45;
+  let start = "2014-09-08T08:00:00";
+  let step = 45;
   let end = "20.00";
-
   let fill = [
     [
       "persona1, persona2,...",
@@ -142,11 +142,11 @@ function AvaiabilitiesTable(props) {
       "persona1, persona2,...",
     ],
   ];
-
+  let timestamp = moment(start);
   for (let row of fill) {
-    row.unshift(moment(start).format("hh:mm"));
+    row.unshift(timestamp.format("HH:mm"));
+    timestamp = timestamp.add(step, "m");
   }
-
   return (
     <Container fluid>
       <Row>
@@ -168,9 +168,7 @@ function AvaiabilitiesTable(props) {
               {fill.map((names, index) => (
                 <tr key={index}>
                   {names.map((name, index) => (
-                    <td key={index} className="name">
-                      <AvaiabilitiesCell name={name} />
-                    </td>
+                      <AvaiabilitiesCell key={index} name={name} />
                   ))}
                 </tr>
               ))}
