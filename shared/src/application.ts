@@ -118,7 +118,7 @@ export const createApplicationSchema = BaseApplication.keys({
   .options({
     stripUnknown: true,
     abortEarly: false,
-    presence: "required", // TODO: Check .required() on other Schemas
+    presence: "required",
   });
 
 export const updateApplicationSchema = Joi.object<Application>({
@@ -126,6 +126,10 @@ export const updateApplicationSchema = Joi.object<Application>({
   state: Joi.string()
     .valid(...Object.values(ApplicationState))
     .optional(),
+}).options({
+  stripUnknown: true,
+  abortEarly: false,
+  presence: "required",
 });
 
 export const applyAbilitiesOnApplication: ApplyAbilities = (

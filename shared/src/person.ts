@@ -48,8 +48,7 @@ export const updateUserSchema = Joi.object<Person>({
     .optional(),
 });
 
-// TODO: Fix typo "Abilites"
-export const applyAbilitesOnPerson: ApplyAbilities = (
+export const applyAbilitiesOnPerson: ApplyAbilities = (
   user,
   { can, cannot }
 ) => {
