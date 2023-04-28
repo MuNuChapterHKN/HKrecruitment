@@ -6,6 +6,7 @@
       "prebuild": "rimraf dist",
       "build": "nest build",
       "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+      "format-check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
       "start": "ts-node src/index.ts",
       "start:dev": "nest start --watch",
       "start:debug": "nest start --debug --watch",
@@ -74,7 +75,8 @@
          "json",
          "ts"
       ],
-      "rootDir": "src",
+      "rootDir": ".",
+      "modulePaths": ["<rootDir>"],
       "testRegex": ".*\\.spec\\.ts$",
       "transform": {
          "^.+\\.(t|j)s$": "ts-jest"

@@ -21,7 +21,8 @@
     "format:shared": "pnpm --filter shared format",
     "format:web": "pnpm --filter frontend format",
     "format:api": "pnpm --filter api format",
-    "format": "pnpm format:shared && pnpm format:web && pnpm format:api"
+    "format": "pnpm format:shared && pnpm format:web && pnpm format:api",
+    "format-check": "pnpm --filter shared format-check && pnpm --filter frontend format-check && pnpm --filter api format-check"
   },
   "keywords": [],
   "author": "",

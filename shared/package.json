@@ -5,7 +5,8 @@
   "description": "Shared types and schemas",
   "main": "src/index",
   "scripts": {
-    "format": "prettier --write \"src/**/*.ts\""
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format-check": "prettier --check \"src/**/*.ts\""
   },
   "devDependencies": {
     "typescript": "^4.9.3",
