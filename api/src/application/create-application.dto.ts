@@ -24,8 +24,8 @@ class CreateBscApplicationDto extends BscApplication {
   @ApiProperty()
   cfu: number;
 
-  @ApiProperty()
-  grades: string;
+  @ApiProperty({ type: 'string', format: 'binary' })
+  grades: any;
 }
 
 class CreateMscApplicationDto extends MscApplication {
@@ -47,8 +47,8 @@ class CreateMscApplicationDto extends MscApplication {
   @ApiProperty()
   cfu: number;
 
-  @ApiProperty()
-  grades: string;
+  @ApiProperty({ type: 'string', format: 'binary' })
+  grades: any;
 }
 
 class CreatePhdApplicationDto extends PhdApplication {
@@ -66,8 +66,8 @@ export class CreateApplicationDto implements Partial<Application> {
   @ApiProperty({ required: false })
   notes?: string;
 
-  @ApiProperty({ format: 'uri' })
-  cv: string;
+  @ApiProperty({ type: 'string', format: 'binary' })
+  cv: any;
 
   @ApiProperty({ enum: LangLevel })
   itaLevel: LangLevel;

@@ -30,7 +30,7 @@ export interface Application {
   id: number;
   state: ApplicationState;
   notes?: string;
-  cv: string; // Link to cv
+  cv: any; // CV file
   itaLevel: LangLevel;
 
   bscApplication?: BscApplication;
@@ -42,7 +42,7 @@ export interface BscApplication {
   bscStudyPath: string;
   bscAcademicYear: number;
   bscGradesAvg: number;
-  grades: string; // Link to grades
+  grades: any; // Grades file
   cfu: number;
 }
 
@@ -52,7 +52,7 @@ export interface MscApplication {
   mscStudyPath: string;
   mscGradesAvg: number;
   mscAcademicYear: number;
-  grades: string; // Link to grades
+  grades: any; // Grades file
   cfu: number;
 }
 
@@ -68,7 +68,7 @@ const BaseApplication = Joi.object<Application>({
     .valid(...Object.values(ApplicationType))
     .required(),
   notes: Joi.string().optional(),
-  cv: Joi.string().uri().required(),
+  // cv: Joi.string().uri().required(),
   itaLevel: Joi.string()
     .valid(...Object.values(LangLevel))
     .required(),
@@ -79,7 +79,7 @@ const createBscApplication = Joi.object<BscApplication>({
   bscGradesAvg: Joi.number().min(18).max(30).required(),
   bscAcademicYear: Joi.number().integer().min(1).max(3).required(),
   cfu: Joi.number().integer().min(48).max(180).required(),
-  grades: Joi.string().uri().required(),
+  // grades: Joi.string().uri().required(),
 });
 
 const createMscApplication = Joi.object<MscApplication>({
@@ -89,7 +89,7 @@ const createMscApplication = Joi.object<MscApplication>({
   mscGradesAvg: Joi.number().min(18).max(30).required(),
   mscAcademicYear: Joi.number().integer().min(1).max(2).required(),
   cfu: Joi.number().integer().min(20).max(120).required(),
-  grades: Joi.string().uri().required(),
+  // grades: Joi.string().uri().required(),
 });
 
 const createPhdApplication = Joi.object<PhdApplication>({

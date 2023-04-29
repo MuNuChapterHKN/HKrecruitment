@@ -32,6 +32,8 @@
       "@types/js-yaml": "^4.0.5",
       "@types/passport-jwt": "^3.0.7",
       "class-transformer": "^0.5.1",
+      "google-auth-library": "^8.7.0",
+      "googleapis": "^118.0.0",
       "joi": "^17.7.0",
       "js-yaml": "^4.1.0",
       "jwks-rsa": "^3.0.0",
