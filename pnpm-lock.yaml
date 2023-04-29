@@ -39,7 +39,7 @@ importers:
       passport: ^0.6.0
       passport-jwt: ^4.0.0
       pg: ^8.4.0
-      prettier: ^2.3.2
+      prettier: ^2.8.5
       reflect-metadata: ^0.1.13
       rimraf: ^3.0.2
       rxjs: ^7.2.0
@@ -89,9 +89,9 @@ importers:
       '@typescript-eslint/parser': 5.45.0_kobv54wr2sqljopxonyssrcrhy
       eslint: 8.29.0
       eslint-config-prettier: 8.5.0_eslint@8.29.0
-      eslint-plugin-prettier: 4.2.1_nrhoyyjffvfyk4vtlt5destxgm
+      eslint-plugin-prettier: 4.2.1_z4e7pqx2qoin2pj6jsaylo3v54
       jest: 28.1.3_p2pvtibqqduefcbmb3gxha6ifa
-      prettier: 2.8.0
+      prettier: 2.8.8
       source-map-support: 0.5.21
       supertest: 6.3.2
       ts-jest: 28.0.8_7juzc6xa7or7ixjucqve24xyoa
@@ -105,12 +105,11 @@ importers:
       '@auth0/auth0-react': ^1.12.0
       '@hkrecruitment/shared': workspace:*
       '@popperjs/core': ^2.11.6
-      '@types/react': ^18.0.28
-      '@types/react-dom': ^18.0.11
       '@vitejs/plugin-react': ^3.1.0
       bootstrap: ^5.2.3
       moment: ^2.29.3
       moment-timezone: ^0.5.34
+      prettier: ^2.8.5
       prop-types: ^15.7.0
       react: ^18.2.0
       react-bootstrap: ^2.2.3
@@ -125,20 +124,19 @@ importers:
       '@auth0/auth0-react': 1.12.0_biqbaboplfbrettd7655fr4n2y
       '@hkrecruitment/shared': link:../shared
       '@popperjs/core': 2.11.6
-      '@types/react': 18.0.28
-      '@types/react-dom': 18.0.11
       bootstrap: 5.2.3_@popperjs+core@2.11.6
       moment: 2.29.4
       moment-timezone: 0.5.41
       prop-types: 15.8.1
       react: 18.2.0
-      react-bootstrap: 2.7.2_zula6vjvt3wdocc4mwcxqa6nzi
+      react-bootstrap: 2.7.2_biqbaboplfbrettd7655fr4n2y
       react-dom: 18.2.0_react@18.2.0
       react-moment: 1.1.3_mmavuqf6ek6upnyryxchoaliru
       react-router-dom: 6.9.0_biqbaboplfbrettd7655fr4n2y
       web-vitals: 2.1.4
     devDependencies:
       '@vitejs/plugin-react': 3.1.0_vite@4.2.1
+      prettier: 2.8.8
       typescript: 4.9.3
       vite: 4.2.1
       vite-plugin-html: 3.2.0_vite@4.2.1
@@ -147,11 +145,13 @@ importers:
     specifiers:
       '@casl/ability': ^6.3.3
       joi: ^17.7.0
+      prettier: ^2.8.5
       typescript: ^4.9.3
     dependencies:
       '@casl/ability': 6.3.3
       joi: 17.7.0
     devDependencies:
+      prettier: 2.8.8
       typescript: 4.9.3
 
 packages:
@@ -1935,12 +1935,6 @@ packages:
   /@types/range-parser/1.2.4:
     resolution: {integrity: sha512-EEhsLsD6UsDM1yFhAvy0Cjr6VwmpMWqFBCb9w07wVugF7w9nfajxLuVmngTIpgS6svCnm6Vaw+MZhoDCKnOfsw==}
 
-  /@types/react-dom/18.0.11:
-    resolution: {integrity: sha512-O38bPbI2CWtgw/OoQoY+BRelw7uysmXbWvw3nLWO21H1HSh+GOlqPuXshJfjmpNlKiiSDG9cc1JZAaMmVdcTlw==}
-    dependencies:
-      '@types/react': 18.0.28
-    dev: false
-
   /@types/react-transition-group/4.4.5:
     resolution: {integrity: sha512-juKD/eiSM3/xZYzjuzH6ZwpP+/lejltmiS3QEzV/vmb/Q8+HfDmxu+Baga8UEMGBqV88Nbg4l2hY/K2DkyaLLA==}
     dependencies:
@@ -3260,7 +3254,7 @@ packages:
       eslint: 8.29.0
     dev: true
 
-  /eslint-plugin-prettier/4.2.1_nrhoyyjffvfyk4vtlt5destxgm:
+  /eslint-plugin-prettier/4.2.1_z4e7pqx2qoin2pj6jsaylo3v54:
     resolution: {integrity: sha512-f/0rXLXUt0oFYs8ra4w49wYZBG5GKZpAYsJSm6rnYL5uVDjd+zowwMwVZHnAjf4edNrKpCDYfXDgmRE/Ak7QyQ==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -3273,7 +3267,7 @@ packages:
     dependencies:
       eslint: 8.29.0
       eslint-config-prettier: 8.5.0_eslint@8.29.0
-      prettier: 2.8.0
+      prettier: 2.8.8
       prettier-linter-helpers: 1.0.0
     dev: true
 
@@ -5491,8 +5485,8 @@ packages:
       fast-diff: 1.2.0
     dev: true
 
-  /prettier/2.8.0:
-    resolution: {integrity: sha512-9Lmg8hTFZKG0Asr/kW9Bp8tJjRVluO8EJQVfY2T7FMw9T5jy4I/Uvx0Rca/XWf50QQ1/SS48+6IJWnrb+2yemA==}
+  /prettier/2.8.8:
+    resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true
@@ -5603,7 +5597,7 @@ packages:
       iconv-lite: 0.4.24
       unpipe: 1.0.0
 
-  /react-bootstrap/2.7.2_zula6vjvt3wdocc4mwcxqa6nzi:
+  /react-bootstrap/2.7.2_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-WDSln+mG4RLLFO01stkj2bEx/3MF4YihK9D/dWnHaSxOiQZLbhhlf95D2Jb20X3t2m7vMxRe888FVrfLJoGmmA==}
     peerDependencies:
       '@types/react': '>=16.14.8'
@@ -5616,7 +5610,6 @@ packages:
       '@babel/runtime': 7.21.0
       '@restart/hooks': 0.4.9_react@18.2.0
       '@restart/ui': 1.6.2_biqbaboplfbrettd7655fr4n2y
-      '@types/react': 18.0.28
       '@types/react-transition-group': 4.4.5
       classnames: 2.3.2
       dom-helpers: 5.2.1
