@@ -2,6 +2,7 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
+import { AppAbility, Role, abilityForUser } from '@hkrecruitment/shared';
 
 @Injectable()
 export class UsersService {
@@ -36,11 +37,14 @@ export class UsersService {
     return this.userRepository.save(user);
   }
 
-  async getRoleForOauthId(oauthId: string): Promise<string | null> {
+  async getRoleAndAbilityForOauthId(
+    oauthId: string,
+  ): Promise<[Role, AppAbility]> {
     const user = await this.userRepository.findOne({
       where: { oauthId },
       select: ['role'],
     });
-    return user?.role;
+    const role = user?.role ?? Role.None;
+    return [role, abilityForUser({ sub: oauthId, role })];
   }
 }

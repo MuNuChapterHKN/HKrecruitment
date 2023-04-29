@@ -19,15 +19,13 @@ export class AuthorizationGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const role =
-      (await this.usersService.getRoleForOauthId(
-        context.switchToHttp().getRequest().user.sub,
-      )) ?? 'none';
+    const [role, ability] = await this.usersService.getRoleAndAbilityForOauthId(
+      context.switchToHttp().getRequest().user.sub,
+    );
     context.switchToHttp().getRequest().user.role = role;
     this.logger.log(
       `user.sub: ${context.switchToHttp().getRequest().user.sub} -> ${role}}`,
     );
-    const ability = abilityForUser(context.switchToHttp().getRequest().user);
     context.switchToHttp().getRequest().ability = ability;
 
     const handlers =
