@@ -23,9 +23,6 @@ export class AuthorizationGuard implements CanActivate {
       context.switchToHttp().getRequest().user.sub,
     );
     context.switchToHttp().getRequest().user.role = role;
-    this.logger.log(
-      `user.sub: ${context.switchToHttp().getRequest().user.sub} -> ${role}}`,
-    );
     context.switchToHttp().getRequest().ability = ability;
 
     const handlers =

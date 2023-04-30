@@ -12,7 +12,7 @@
       "start:debug": "nest start --debug --watch",
       "start:prod": "node dist/api/src/main",
       "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-      "test": "jest",
+      "test": "jest -i",
       "test:watch": "jest --watch",
       "test:cov": "jest --coverage",
       "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
@@ -47,6 +47,8 @@
       "webpack": "^5.75.0"
    },
    "devDependencies": {
+      "@automock/jest": "^1.0.1",
+      "@golevelup/ts-jest": "^0.3.6",
       "@nestjs/cli": "^9.0.0",
       "@nestjs/schematics": "^9.0.0",
       "@nestjs/testing": "^9.0.0",
@@ -76,7 +78,9 @@
          "ts"
       ],
       "rootDir": ".",
-      "modulePaths": ["<rootDir>"],
+      "modulePaths": [
+         "<rootDir>"
+      ],
       "testRegex": ".*\\.spec\\.ts$",
       "transform": {
          "^.+\\.(t|j)s$": "ts-jest"

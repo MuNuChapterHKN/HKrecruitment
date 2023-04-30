@@ -16,8 +16,7 @@ export class UsersService {
   }
 
   async findByOauthId(oauthId: string): Promise<User | null> {
-    const matches = await this.userRepository.findBy({ oauthId });
-    return matches.length > 0 ? matches[0] : null;
+    return this.userRepository.findOne({ where: { oauthId } });
   }
 
   async delete(user: User): Promise<User> {

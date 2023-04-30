@@ -1,8 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { AuthorizationGuard } from './authorization.guard';
 import { Reflector } from '@nestjs/core';
 import { UsersService } from 'src/users/users.service';
 import { Role, abilityForUser } from '@hkrecruitment/shared';
+import { ExecutionContext } from '@nestjs/common';
+import { TestBed } from '@automock/jest';
+import { createMock } from '@golevelup/ts-jest';
 
 describe('AuthorizationGuard', () => {
   let reflector: Reflector;
@@ -10,53 +12,40 @@ describe('AuthorizationGuard', () => {
   let authorizationGuard: AuthorizationGuard;
 
   beforeEach(async () => {
-    // mock reflector
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        AuthorizationGuard,
-        {
-          provide: Reflector,
-          useValue: {
-            get: jest.fn(),
-          },
-        },
-        {
-          provide: UsersService,
-          useValue: {
-            getRoleAndAbilityForOauthId: jest.fn(),
-          },
-        },
-      ],
-    }).compile();
+    const { unit, unitRef } = TestBed.create(AuthorizationGuard).compile();
 
-    reflector = module.get<Reflector>(Reflector);
-    usersService = module.get<UsersService>(UsersService);
-    authorizationGuard = module.get<AuthorizationGuard>(AuthorizationGuard);
+    reflector = unitRef.get(Reflector);
+    usersService = unitRef.get(UsersService);
+    authorizationGuard = unit;
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should allow access if no policies are defined', async () => {
-    const context = {
-      getHandler: jest.fn(),
-      switchToHttp: jest.fn().mockReturnThis(),
-      getRequest: jest.fn(() => ({ user: {} })),
-    };
+    const context = createMock<ExecutionContext>({
+      switchToHttp: () => ({
+        getRequest: () => ({ user: {} }),
+      }),
+    });
     jest
       .spyOn(usersService, 'getRoleAndAbilityForOauthId')
       .mockResolvedValue([
         Role.None,
         abilityForUser({ sub: 'test', role: Role.None }),
       ]);
-    const canActivate = await authorizationGuard.canActivate(context as any);
+    const canActivate = await authorizationGuard.canActivate(context);
     expect(canActivate).toBe(true);
   });
 
   it('should allow access if all policies are fulfilled', async () => {
     const mockUser = {};
-    const context = {
-      getHandler: jest.fn(),
-      switchToHttp: jest.fn().mockReturnThis(),
-      getRequest: jest.fn(() => ({ user: mockUser })),
-    };
+    const context = createMock<ExecutionContext>({
+      switchToHttp: () => ({
+        getRequest: () => ({ user: mockUser }),
+      }),
+    });
     const handler = jest.fn(() => true);
     jest.spyOn(reflector, 'get').mockReturnValue([handler]);
     const mockAbility = abilityForUser({ sub: 'test', role: Role.None });
@@ -64,7 +53,7 @@ describe('AuthorizationGuard', () => {
       .spyOn(usersService, 'getRoleAndAbilityForOauthId')
       .mockResolvedValue([Role.None, mockAbility]);
 
-    const canActivate = await authorizationGuard.canActivate(context as any);
+    const canActivate = await authorizationGuard.canActivate(context);
     expect(canActivate).toBe(true);
     expect(mockUser).toHaveProperty('role', Role.None);
 
