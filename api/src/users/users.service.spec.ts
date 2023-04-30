@@ -1,11 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
 import { TestBed } from '@automock/jest';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { createMock } from '@golevelup/ts-jest';
-import { Action, Role } from '@hkrecruitment/shared';
+import { Role, abilityForUser } from '@hkrecruitment/shared';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -105,7 +104,7 @@ describe('UsersService', () => {
       mockUser.role = Role.Admin;
       jest.spyOn(model, 'findOne').mockResolvedValue(mockUser as any);
 
-      const [role, ability] = await service.getRoleAndAbilityForOauthId('test');
+      const [role, _] = await service.getRoleAndAbilityForOauthId('test');
       expect(role).toBe(Role.Admin);
       expect(model.findOne).toHaveBeenCalledTimes(1);
       expect(model.findOne).toHaveBeenCalledWith({
@@ -123,3 +122,124 @@ describe('UsersService', () => {
     expect(model.findOne).toHaveBeenCalledTimes(1);
   });
 });
+
+// mock data for e2e testing
+export const mockUsers: User[] = [
+  {
+    oauthId: 'oauthId1',
+    firstName: 'John',
+    lastName: 'Doe',
+    sex: 'Male',
+    email: 'john.doe@example.com',
+    phone_no: '+1234567890',
+    telegramId: '@johndoe',
+    role: Role.Admin,
+  },
+  {
+    oauthId: 'oauthId2',
+    firstName: 'Jane',
+    lastName: 'Doe',
+    sex: 'Female',
+    email: 'jane.doe@example.com',
+    role: Role.Supervisor,
+  },
+  {
+    oauthId: 'oauthId3',
+    firstName: 'Bob',
+    lastName: 'Smith',
+    sex: 'Does not identify',
+    email: 'bob.smith@example.com',
+    phone_no: '+1357908642',
+    role: Role.Clerk,
+  },
+  {
+    oauthId: 'oauthId4',
+    firstName: 'Alice',
+    lastName: 'Jones',
+    sex: 'Female',
+    email: 'alice.jones@example.com',
+    role: Role.Member,
+  },
+  {
+    oauthId: 'oauthId5',
+    firstName: 'David',
+    lastName: 'Lee',
+    sex: 'Male',
+    email: 'david.lee@example.com',
+    telegramId: '@davidlee',
+    role: Role.Clerk,
+  },
+  {
+    oauthId: 'oauthId6',
+    firstName: 'Sarah',
+    lastName: 'Kim',
+    sex: 'Not specified',
+    email: 'sarah.kim@example.com',
+    phone_no: '+0123456789',
+    role: Role.Applicant,
+  },
+  {
+    oauthId: 'oauthId7',
+    firstName: 'James',
+    lastName: 'Chen',
+    sex: 'Male',
+    email: 'james.chen@example.com',
+    phone_no: '+5678901234',
+    telegramId: '@jameschen',
+    role: Role.Member,
+  },
+  {
+    oauthId: 'oauthId8',
+    firstName: 'Olivia',
+    lastName: 'Brown',
+    sex: 'Female',
+    email: 'olivia.brown@example.com',
+    role: Role.Clerk,
+  },
+  {
+    oauthId: 'oauthId9',
+    firstName: 'William',
+    lastName: 'Taylor',
+    sex: 'Male',
+    email: 'william.taylor@example.com',
+    telegramId: '@williamtaylor',
+    role: Role.Applicant,
+  },
+  {
+    oauthId: 'oauthId10',
+    firstName: 'Emma',
+    lastName: 'Garcia',
+    sex: 'Female',
+    email: 'emma.garcia@example.com',
+    phone_no: '+1234567890',
+    role: Role.Admin,
+  },
+];
+// mock service for e2e testing
+export const mockUsersService = {
+  findAll: () => mockUsers,
+  findByOauthId: (oauthId: string) => {
+    return mockUsers.find((user) => user.oauthId === oauthId) ?? null;
+  },
+  delete: (user: User) => {
+    return user;
+  },
+  create: (user: User) => {
+    if (mockUsers.find((u) => u.oauthId === user.oauthId))
+      throw new Error('User already exists');
+    mockUsers.push(user);
+    return user;
+  },
+  update: (user: User) => {
+    return user;
+  },
+  getRoleAndAbilityForOauthId: (oauthId: string) => {
+    const user = mockUsers.find((user) => user.oauthId === oauthId);
+    if (user)
+      return [
+        user.role,
+        abilityForUser({ sub: user.oauthId, role: user.role }),
+      ];
+    return [Role.None, abilityForUser({ sub: oauthId, role: Role.None })];
+  },
+};
