@@ -54,11 +54,7 @@ import { CreateApplicationDto } from './create-application.dto';
 import { UpdateApplicationDto } from './update-application.dto';
 import { plainToClass } from 'class-transformer';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { GDriveStorage } from 'src/google/GDrive/GDriveStorage';
-import { UsersService } from 'src/users/users.service';
-
-// TODO: Move to a config file? (maybe a file not in the .gitignore?)
-const MAX_UPLOAD_SIZE = 1024 * 1024 * 4; // 4MB
+import { ApplicationFiles } from './application-types';
 
 @ApiBearerAuth()
 @ApiTags('applications')
@@ -66,8 +62,9 @@ const MAX_UPLOAD_SIZE = 1024 * 1024 * 4; // 4MB
 export class ApplicationsController {
   constructor(
     private readonly applicationsService: ApplicationsService,
-    private readonly usersService: UsersService,
   ) {}
+
+  static MAX_UPLOAD_SIZE = 1024 * 1024 * 4; // 4MB
 
   @Get()
   @ApiUnauthorizedResponse()
@@ -170,7 +167,7 @@ export class ApplicationsController {
       ],
       {
         limits: {
-          fileSize: MAX_UPLOAD_SIZE,
+          fileSize: ApplicationsController.MAX_UPLOAD_SIZE,
         },
         fileFilter: (
           req: Request,
@@ -193,13 +190,11 @@ export class ApplicationsController {
   @Post('/')
   async createApplication(
     @UploadedFiles()
-    files: {
-      cv: Express.Multer.File[];
-      grades?: Express.Multer.File[];
-    },
+    files: ApplicationFiles,
     @Body() application: CreateApplicationDto,
     @Req() req: AuthenticatedRequest,
   ): Promise<Application> {
+
     if (!files || !files.cv) {
       throw new UnprocessableEntityException('CV file is required');
     }
@@ -219,12 +214,6 @@ export class ApplicationsController {
 
     // Get the user unique identifier from the request
     const applicantId = req.user.sub;
-    const today = new Date();
-
-    // Get applicant full name
-    const applicant = await this.usersService.findByOauthId(applicantId);
-    if (!applicant) throw new NotFoundException('Applicant not found'); // Just in case
-    const applicantFullName = `${applicant.firstName} ${applicant.lastName}`;
 
     // An applicant can have only one application with (state != finalized || state != refused_by_applicant)
     const hasActiveApplication =
@@ -232,43 +221,9 @@ export class ApplicationsController {
         applicantId,
       );
     if (hasActiveApplication)
-      throw new ConflictException('Your already have a pending application');
+      throw new ConflictException('Applicant already has a pending application');
 
-    // Save files to Google Drive
-    try {
-      const storage = new GDriveStorage();
-      const applicationsFolder = await storage.getFolderByName('applications');
-      const formattedDatetime = today.toLocaleString('en-US', {
-        hour12: false,
-      });
-      const fileName = `${application.type}_${applicantFullName}_${formattedDatetime}`;
-      // TODO: Create a folder for each applicant? Give it a unique name
-      // Save CV
-      await storage.insertFile(
-        `CV_${fileName}`,
-        files.cv[0].buffer,
-        applicationsFolder,
-      );
-      // Save grades
-      if (files.grades) {
-        await storage.insertFile(
-          `Grades_${fileName}`,
-          files.grades[0].buffer,
-          applicationsFolder,
-        );
-      }
-    } catch (err) {
-      console.log(err);
-      throw new InternalServerErrorException();
-    }
-
-    // TODO: Create an Interview and set application.interview_id
-    application.submission = today;
-    application.state = ApplicationState.New;
-    application.applicantId = applicantId;
-
-    // return await this.applicationsService.createApplication(application);
-    return null;
+    return await this.applicationsService.createApplication(application, files, applicantId);
   }
 
   @Patch(':application_id')

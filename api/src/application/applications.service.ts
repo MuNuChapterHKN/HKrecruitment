@@ -1,17 +1,22 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between, Not, In } from 'typeorm';
 import { Application } from './application.entity';
+import { GDriveStorage } from '../google/GDrive/GDriveStorage';
 import {
   CreateApplicationDto,
   flattenApplication,
 } from './create-application.dto';
+import { ApplicationState, ApplicationType } from '@hkrecruitment/shared';
+import { UsersService } from 'src/users/users.service';
+import { ApplicationFiles } from './application-types';
 
 @Injectable()
 export class ApplicationsService {
   constructor(
     @InjectRepository(Application)
     private readonly applicationRepository: Repository<Application>,
+    private readonly usersService: UsersService,
   ) {}
 
   async findAll(): Promise<Application[]> {
@@ -62,8 +67,59 @@ export class ApplicationsService {
 
   async createApplication(
     application: CreateApplicationDto,
+    files: ApplicationFiles,
+    applicantId: string,
   ): Promise<Application> {
-    return this.applicationRepository.save(flattenApplication(application));
+    
+    // Get applicant full name
+    const applicant = await this.usersService.findByOauthId(applicantId);
+    if (!applicant) throw new NotFoundException('Applicant not found');
+    const applicantFullName = `${applicant.firstName}_${applicant.lastName}`;
+    const today = new Date();
+
+    // TODO: Create an Interview and set application.interview_id
+    application.submission = today;
+    application.state = ApplicationState.New;
+    application.applicantId = applicantId;
+
+    const storage = new GDriveStorage();
+    let gradesFileId = null;
+    let cvFileId = null;
+
+    // Save files to Google Drive
+    try {
+      const applicationsFolder = await storage.getFolderByName('applications');
+      const formattedDatetime = today.toLocaleString('en-US', {
+        hour12: false,
+      });
+      const fileName = `${application.type}_${applicantFullName}_${formattedDatetime}`;
+      // TODO: Create a folder for each applicant? Give it a unique name
+      
+      // Save CV
+      cvFileId = await storage.insertFile(
+        `CV_${fileName}`,
+        files.cv[0].buffer,
+        applicationsFolder,
+      );
+      application.cv = cvFileId;
+      
+      // Save grades
+      if (files.grades) {
+        const applicationType = application.type === ApplicationType.BSC ? 'bscApplication' : 'mscApplication';
+        gradesFileId = await storage.insertFile(
+          `Grades_${fileName}`,
+          files.grades[0].buffer,
+          applicationsFolder,
+        );
+        application[applicationType].grades = gradesFileId;
+      }
+      return this.applicationRepository.save(flattenApplication(application));
+    } catch (err) {
+      // Delete files from Google Drive
+      if (cvFileId) await storage.deleteItem(cvFileId);
+      if (gradesFileId) await storage.deleteItem(gradesFileId);
+      throw new InternalServerErrorException();
+    }
   }
 
   async updateApplication(application: Application): Promise<Application> {
