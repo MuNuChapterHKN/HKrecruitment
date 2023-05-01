@@ -168,7 +168,7 @@ function AvaiabilitiesTable(props) {
               {fill.map((names, index) => (
                 <tr key={index}>
                   {names.map((name, index) => (
-                      <AvaiabilitiesCell key={index} name={name} />
+                    <AvaiabilitiesCell key={index} name={name} />
                   ))}
                 </tr>
               ))}

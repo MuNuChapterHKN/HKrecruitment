@@ -1,4 +1,9 @@
-import { ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between, Not, In } from 'typeorm';
 import { Application } from './application.entity';
@@ -70,7 +75,6 @@ export class ApplicationsService {
     files: ApplicationFiles,
     applicantId: string,
   ): Promise<Application> {
-    
     // Get applicant full name
     const applicant = await this.usersService.findByOauthId(applicantId);
     if (!applicant) throw new NotFoundException('Applicant not found');
@@ -94,7 +98,7 @@ export class ApplicationsService {
       });
       const fileName = `${application.type}_${applicantFullName}_${formattedDatetime}`;
       // TODO: Create a folder for each applicant? Give it a unique name
-      
+
       // Save CV
       cvFileId = await storage.insertFile(
         `CV_${fileName}`,
@@ -102,10 +106,13 @@ export class ApplicationsService {
         applicationsFolder,
       );
       application.cv = cvFileId;
-      
+
       // Save grades
       if (files.grades) {
-        const applicationType = application.type === ApplicationType.BSC ? 'bscApplication' : 'mscApplication';
+        const applicationType =
+          application.type === ApplicationType.BSC
+            ? 'bscApplication'
+            : 'mscApplication';
         gradesFileId = await storage.insertFile(
           `Grades_${fileName}`,
           files.grades[0].buffer,

@@ -60,9 +60,7 @@ import { ApplicationFiles } from './application-types';
 @ApiTags('applications')
 @Controller('applications')
 export class ApplicationsController {
-  constructor(
-    private readonly applicationsService: ApplicationsService,
-  ) {}
+  constructor(private readonly applicationsService: ApplicationsService) {}
 
   static MAX_UPLOAD_SIZE = 1024 * 1024 * 4; // 4MB
 
@@ -194,7 +192,6 @@ export class ApplicationsController {
     @Body() application: CreateApplicationDto,
     @Req() req: AuthenticatedRequest,
   ): Promise<Application> {
-
     if (!files || !files.cv) {
       throw new UnprocessableEntityException('CV file is required');
     }
@@ -221,9 +218,15 @@ export class ApplicationsController {
         applicantId,
       );
     if (hasActiveApplication)
-      throw new ConflictException('Applicant already has a pending application');
+      throw new ConflictException(
+        'Applicant already has a pending application',
+      );
 
-    return await this.applicationsService.createApplication(application, files, applicantId);
+    return await this.applicationsService.createApplication(
+      application,
+      files,
+      applicantId,
+    );
   }
 
   @Patch(':application_id')
