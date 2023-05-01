@@ -15,7 +15,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 19
 
       - uses: pnpm/action-setup@v2
         name: Install pnpm
@@ -44,5 +44,5 @@ jobs:
       - name: Check fomatting
         run: pnpm run format-check
 
-      - name: Backend tests
+      - name: Run tests
         run: pnpm test
