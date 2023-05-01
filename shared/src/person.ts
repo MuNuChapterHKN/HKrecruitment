@@ -25,7 +25,9 @@ export const createUserSchema = Joi.object<Person>({
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
   sex: Joi.string().required(),
-  email: Joi.string().email().required(),
+  email: Joi.string()
+    .email({ tlds: { allow: false } })
+    .required(),
   phone_no: Joi.string()
     .regex(/^\+?[0-9]{8,15}$/)
     .optional(),
