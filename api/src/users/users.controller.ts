@@ -78,15 +78,24 @@ export class UsersController {
   @JoiValidate({
     body: createUserSchema.append({ oauthId: Joi.string().required() }),
   })
-  create(
+  async create(
     @Body() user: CreateUserDto,
-    @Req() req: AuthenticatedRequest,
+    @Ability() ability: AppAbility,
   ): Promise<User> {
-    const ability = req.ability;
     if (!checkAbility(ability, Action.Create, user, 'Person')) {
       throw new ForbiddenException();
     }
-    return this.usersService.create({ ...user, role: Role.None });
+    const existingUser = await this.usersService.findByOauthId(user.oauthId);
+    if (!!existingUser) {
+      throw new ForbiddenException('User already exists');
+    }
+    const defaultRole = user.email.endsWith('@hknpolito.org')
+      ? Role.Member
+      : Role.Applicant;
+    return this.usersService.create({
+      ...user,
+      role: !!user.role ? user.role : defaultRole,
+    });
   }
 
   @ApiNotFoundResponse()
@@ -115,8 +124,7 @@ export class UsersController {
         { ...updateUser, oauthId },
         'Person',
       ) ||
-      (Object.keys(updateUser).find((key) => key === 'role') &&
-        !req.roleChangeChecker(user.role, updateUser.role))
+      (!!updateUser.role && !req.roleChangeChecker(user.role, updateUser.role))
     ) {
       throw new ForbiddenException();
     }

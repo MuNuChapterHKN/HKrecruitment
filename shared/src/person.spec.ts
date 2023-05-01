@@ -2,7 +2,7 @@ import {
   Person,
   Role,
   applyAbilitiesForPerson,
-  getRoleChangeAbility,
+  getRoleChangeChecker,
   createUserSchema,
 } from "./person";
 import { createMockAbility } from "./abilities.spec";
@@ -216,10 +216,10 @@ describe("Person", () => {
 
   describe("checkRoleChange", () => {
     it("should allow admin to change any role, except admin", () => {
-      expect(getRoleChangeAbility(Role.Admin)(Role.Member, Role.Clerk)).toBe(
+      expect(getRoleChangeChecker(Role.Admin)(Role.Member, Role.Clerk)).toBe(
         true
       );
-      expect(getRoleChangeAbility(Role.Admin)(Role.Admin, Role.Clerk)).toBe(
+      expect(getRoleChangeChecker(Role.Admin)(Role.Admin, Role.Clerk)).toBe(
         false
       );
     });
@@ -232,7 +232,7 @@ describe("Person", () => {
         Role.Clerk,
         Role.Supervisor,
       ]) {
-        expect(getRoleChangeAbility(role)(Role.Member, Role.Clerk)).toBe(false);
+        expect(getRoleChangeChecker(role)(Role.Member, Role.Clerk)).toBe(false);
       }
     });
 
@@ -245,10 +245,10 @@ describe("Person", () => {
         Role.Admin,
       ]) {
         expect(
-          getRoleChangeAbility(Role.Supervisor)(role, Role.Applicant)
+          getRoleChangeChecker(Role.Supervisor)(role, Role.Applicant)
         ).toBe(false);
         expect(
-          getRoleChangeAbility(Role.Supervisor)(Role.Applicant, role)
+          getRoleChangeChecker(Role.Supervisor)(Role.Applicant, role)
         ).toBe(false);
       }
     });

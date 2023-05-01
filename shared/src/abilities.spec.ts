@@ -1,8 +1,4 @@
-import {
-  AbilityBuilder,
-  createMongoAbility,
-  defineAbility,
-} from "@casl/ability";
+import { AbilityBuilder, createMongoAbility } from "@casl/ability";
 import { Action, AppAbility, checkAbility } from "./abilities";
 import { Person, Role } from "./person";
 
@@ -11,7 +7,11 @@ export const createMockAbility = (
 ): AppAbility => {
   const builder = new AbilityBuilder<AppAbility>(createMongoAbility);
   abilityFun(builder);
-  return builder.build();
+
+  const ability = builder.build();
+  jest.spyOn(ability, "can");
+  jest.spyOn(ability, "cannot");
+  return ability;
 };
 
 describe("checkAbilities", () => {

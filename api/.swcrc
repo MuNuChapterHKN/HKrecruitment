@@ -16,7 +16,11 @@
       "decoratorMetadata": true
     },
     "keepClassNames": true,
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "paths": {
+      "@hkrecruitment/shared": ["../shared/src"],
+      "@hkrecruitment/shared/*": ["../shared/src/*"]
+    }
   },
   "minify": false
 }

@@ -24,11 +24,6 @@ export class UsersService {
   }
 
   async create(user: User): Promise<User> {
-    // add user to database if it doesn't exist
-    const existingUser = await this.findByOauthId(user.oauthId);
-    if (existingUser) {
-      throw new ForbiddenException('User already exists');
-    }
     return this.userRepository.save(user);
   }
 

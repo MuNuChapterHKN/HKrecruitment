@@ -91,12 +91,14 @@ export const applyAbilitiesForPerson: ApplyAbilities = (
   }
 };
 
+export type RoleChangeChecker = (prevRole: Role, nextRole: Role) => boolean;
 /**
  * Given the role of an acting user, check if the role is allowed to change
  * the role of the target user, given prev and next role.
  */
-export const getRoleChangeAbility =
-  (actingRole: Role) => (prevRole: Role, nextRole: Role) => {
+export const getRoleChangeChecker =
+  (actingRole: Role): RoleChangeChecker =>
+  (prevRole, nextRole) => {
     if (prevRole === nextRole) {
       return true; // but why did you pass it
     }

@@ -68,21 +68,6 @@ describe('UsersService', () => {
       expect(await service.create(mockUser)).toBe(mockUser);
       expect(model.save).toHaveBeenCalledTimes(1);
       expect(model.save).toHaveBeenCalledWith(mockUser);
-      expect(model.findOne).toHaveBeenCalledTimes(1);
-    });
-
-    it('should throw error if user with that oauthId already exists', async () => {
-      const mockUser = new User();
-      mockUser.oauthId = 'test';
-      jest.spyOn(model, 'findOne').mockResolvedValue(mockUser);
-
-      const newUser = new User();
-      newUser.oauthId = 'test';
-      await expect(service.create(newUser)).rejects.toThrowError(
-        'User already exists',
-      );
-      expect(model.findOne).toHaveBeenCalledTimes(1);
-      expect(model.save).toHaveBeenCalledTimes(0);
     });
   });
 
