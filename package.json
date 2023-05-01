@@ -8,25 +8,17 @@
     "dev:api": "pnpm --filter api start:dev",
     "dev": "pnpm run --stream dev:web & pnpm run --stream dev:api",
     "dev:tmux": "tmux new-session -d -s hkrecruitment 'pnpm run dev:web' \\; split-window -h -p 50 'pnpm run dev:api' \\; attach",
-    "build:web": "pnpm --filter frontend build",
-    "build:api": "pnpm --filter api prebuild && pnpm --filter api build",
-    "build": "pnpm run build:web && pnpm run build:api",
+    "build": "pnpm --filter frontend build && pnpm --filter api build",
     "preview:web": "pnpm --filter frontend preview",
     "preview:api": "pnpm --filter api start:prod",
     "preview": "pnpm run --stream preview:web & pnpm run --stream preview:api",
     "preview:tmux": "tmux new-session -d -s hkrecruitment 'pnpm run preview:web' \\; split-window -h -p 50 'pnpm run preview:api' \\; attach",
-    "clean:web": "pnpm --filter frontend clean",
-    "clean:api": "pnpm --filter api clean",
-    "clean": "pnpm run clean:web && pnpm run clean:api",
-    "format:shared": "pnpm --filter shared format",
-    "format:web": "pnpm --filter frontend format",
-    "format:api": "pnpm --filter api format",
-    "format": "pnpm format:shared && pnpm format:web && pnpm format:api"
+    "clean": "pnpm --filter frontend clean && pnpm --filter api clean",
+    "format": "pnpm --filter shared format & pnpm --filter frontend format & pnpm --filter api format",
+    "format-check": "pnpm --filter shared format-check && pnpm --filter frontend format-check && pnpm --filter api format-check",
+    "test": "pnpm --filter api test && pnpm --filter shared test"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "eslint-config-react-app": "^7.0.1"
-  }
+  "license": "ISC"
 }

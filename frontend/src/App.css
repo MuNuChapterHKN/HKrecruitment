@@ -23,8 +23,8 @@
   font-size: calc(10px + 2vmin);
   color: black;
 }
-.active{
-  background:green !important;
+.active {
+  background: green !important;
   color: white;
 }
 
