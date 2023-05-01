@@ -95,31 +95,28 @@ export const applyAbilitiesForPerson: ApplyAbilities = (
  * Given the role of an acting user, check if the role is allowed to change
  * the role of the target user, given prev and next role.
  */
-export const checkRoleChange = (
-  actingRole: Role,
-  prevRole: Role,
-  nextRole: Role
-): boolean => {
-  if (prevRole === nextRole) {
-    return true; // but why did you pass it
-  }
+export const getRoleChangeAbility =
+  (actingRole: Role) => (prevRole: Role, nextRole: Role) => {
+    if (prevRole === nextRole) {
+      return true; // but why did you pass it
+    }
 
-  if (prevRole === Role.Applicant) {
-    return false; // Applicants accounts can't be upgraded
-  }
+    if (prevRole === Role.Applicant) {
+      return false; // Applicants accounts can't be upgraded
+    }
 
-  if (nextRole === Role.Applicant) {
-    return false; // Accounts can't be downgraded to applicant
-  }
+    if (nextRole === Role.Applicant) {
+      return false; // Accounts can't be downgraded to applicant
+    }
 
-  if (nextRole === Role.None) {
-    return false; // Role.None is not a valid role
-  }
+    if (nextRole === Role.None) {
+      return false; // Role.None is not a valid role
+    }
 
-  switch (actingRole) {
-    case Role.Admin:
-      return prevRole !== Role.Admin; // Admin can't change own role or downgrade other admins
-    default:
-      return false;
-  }
-};
+    switch (actingRole) {
+      case Role.Admin:
+        return prevRole !== Role.Admin; // Admin can't change own role or downgrade other admins
+      default:
+        return false;
+    }
+  };

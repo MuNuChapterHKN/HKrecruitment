@@ -16,7 +16,6 @@ import {
   Action,
   AppAbility,
   checkAbility,
-  checkRoleChange,
   createUserSchema,
   Role,
   updateUserSchema,
@@ -117,7 +116,7 @@ export class UsersController {
         'Person',
       ) ||
       (Object.keys(updateUser).find((key) => key === 'role') &&
-        !checkRoleChange(req.user.role, user.role, updateUser.role))
+        !req.roleChangeChecker(user.role, updateUser.role))
     ) {
       throw new ForbiddenException();
     }

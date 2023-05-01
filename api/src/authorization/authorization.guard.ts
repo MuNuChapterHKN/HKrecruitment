@@ -1,4 +1,4 @@
-import { abilityForUser } from '@hkrecruitment/shared';
+import { abilityForUser, getRoleChangeAbility } from '@hkrecruitment/shared';
 import {
   CanActivate,
   ExecutionContext,
@@ -24,6 +24,8 @@ export class AuthorizationGuard implements CanActivate {
     );
     context.switchToHttp().getRequest().user.role = role;
     context.switchToHttp().getRequest().ability = ability;
+    context.switchToHttp().getRequest().roleChangeChecker =
+      getRoleChangeAbility(role);
 
     const handlers =
       this.reflector.get<PolicyHandler[]>(

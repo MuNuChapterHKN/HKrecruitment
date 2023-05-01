@@ -2,7 +2,7 @@ import {
   Person,
   Role,
   applyAbilitiesForPerson,
-  checkRoleChange,
+  getRoleChangeAbility,
   createUserSchema,
 } from "./person";
 import { createMockAbility } from "./abilities.spec";
@@ -214,10 +214,14 @@ describe("Person", () => {
     it("should allow admins to update role, except to Role.None", () => {});
   });
 
-  describe("checkRuleChange", () => {
+  describe("checkRoleChange", () => {
     it("should allow admin to change any role, except admin", () => {
-      expect(checkRoleChange(Role.Admin, Role.Member, Role.Clerk)).toBe(true);
-      expect(checkRoleChange(Role.Admin, Role.Admin, Role.Clerk)).toBe(false);
+      expect(getRoleChangeAbility(Role.Admin)(Role.Member, Role.Clerk)).toBe(
+        true
+      );
+      expect(getRoleChangeAbility(Role.Admin)(Role.Admin, Role.Clerk)).toBe(
+        false
+      );
     });
 
     it("should not allow non-admins to change role", () => {
@@ -228,7 +232,7 @@ describe("Person", () => {
         Role.Clerk,
         Role.Supervisor,
       ]) {
-        expect(checkRoleChange(role, Role.Member, Role.Clerk)).toBe(false);
+        expect(getRoleChangeAbility(role)(Role.Member, Role.Clerk)).toBe(false);
       }
     });
 
@@ -240,12 +244,12 @@ describe("Person", () => {
         Role.Supervisor,
         Role.Admin,
       ]) {
-        expect(checkRoleChange(Role.Supervisor, role, Role.Applicant)).toBe(
-          false
-        );
-        expect(checkRoleChange(Role.Supervisor, Role.Applicant, role)).toBe(
-          false
-        );
+        expect(
+          getRoleChangeAbility(Role.Supervisor)(role, Role.Applicant)
+        ).toBe(false);
+        expect(
+          getRoleChangeAbility(Role.Supervisor)(Role.Applicant, role)
+        ).toBe(false);
       }
     });
   });
