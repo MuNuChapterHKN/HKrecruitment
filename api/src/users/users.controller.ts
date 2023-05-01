@@ -16,6 +16,7 @@ import {
   Action,
   AppAbility,
   checkAbility,
+  checkRoleChange,
   createUserSchema,
   Role,
   updateUserSchema,
@@ -101,6 +102,7 @@ export class UsersController {
     @Param('oauthId') oauthId: string,
     @Body() updateUser: UpdateUserDto,
     @Ability() ability: AppAbility,
+    @Req() req: AuthenticatedRequest,
   ): Promise<User> {
     const user = await this.usersService.findByOauthId(oauthId);
     if (user === null) {
@@ -113,7 +115,9 @@ export class UsersController {
         Action.Update,
         { ...updateUser, oauthId },
         'Person',
-      )
+      ) ||
+      (Object.keys(updateUser).find((key) => key === 'role') &&
+        !checkRoleChange(req.user.role, user.role, updateUser.role))
     ) {
       throw new ForbiddenException();
     }

@@ -70,14 +70,56 @@ export const applyAbilitiesForPerson: ApplyAbilities = (
   can(
     Action.Update,
     "Person",
-    ["firstName", "lastName", "sex", "phone_no", "telegramId"],
+    ["firstName", "lastName", "sex", "phone_no", "telegramId", "oauthId"],
     { oauthId: user.sub }
   );
   can(Action.Delete, "Person", { oauthId: user.sub });
 
   if (user.role === Role.Admin) {
-    can(Action.Manage, "Person"); // Admin can do anything on any user
+    can(Action.Read, "Person");
+    can(Action.Update, "Person", [
+      "firstName",
+      "lastName",
+      "sex",
+      "role",
+      "email",
+      "phone_no",
+      "telegramId",
+      "role",
+    ]);
+    can(Action.Delete, "Person");
+  }
+};
+
+/**
+ * Given the role of an acting user, check if the role is allowed to change
+ * the role of the target user, given prev and next role.
+ */
+export const checkRoleChange = (
+  actingRole: Role,
+  prevRole: Role,
+  nextRole: Role
+): boolean => {
+  if (prevRole === nextRole) {
+    return true; // but why did you pass it
   }
 
-  cannot(Action.Update, "Person", ["oauthId"]); // No one can update oauthId
+  if (prevRole === Role.Applicant) {
+    return false; // Applicants accounts can't be upgraded
+  }
+
+  if (nextRole === Role.Applicant) {
+    return false; // Accounts can't be downgraded to applicant
+  }
+
+  if (nextRole === Role.None) {
+    return false; // Role.None is not a valid role
+  }
+
+  switch (actingRole) {
+    case Role.Admin:
+      return prevRole !== Role.Admin; // Admin can't change own role or downgrade other admins
+    default:
+      return false;
+  }
 };

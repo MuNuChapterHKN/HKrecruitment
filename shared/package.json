@@ -7,7 +7,8 @@
   "scripts": {
     "format": "prettier --write \"src/**/*.ts\"",
     "format-check": "prettier --check \"src/**/*.ts\"",
-    "test": "jest -i --verbose"
+    "test": "jest -i --verbose",
+    "test:cov": "jest -i --verbose --coverage"
   },
   "devDependencies": {
     "@swc/core": "^1.3.56",

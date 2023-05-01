@@ -2,10 +2,11 @@ import {
   Person,
   Role,
   applyAbilitiesForPerson,
+  checkRoleChange,
   createUserSchema,
 } from "./person";
 import { createMockAbility } from "./abilities.spec";
-import { Action, UserAuth } from "./abilities";
+import { Action, UserAuth, checkAbility } from "./abilities";
 
 describe("Person", () => {
   describe("createUserSchema", () => {
@@ -91,27 +92,161 @@ describe("Person", () => {
     });
   });
 
-  //   describe("applyAbilitiesOnPerson", () => {
-  //     const mockAbilityForPerson = (user: UserAuth) =>
-  //       createMockAbility((builder) => {
-  //         applyAbilitiesForPerson(user, builder);
-  //       });
-  //     it("should allow to read own person", () => {
-  //       const mockAbility = mockAbilityForPerson({
-  //         role: Role.Applicant,
-  //         sub: "123",
-  //       });
+  describe("applyAbilitiesOnPerson", () => {
+    const mockAbilityForPerson = (user: UserAuth) =>
+      createMockAbility((builder) => {
+        applyAbilitiesForPerson(user, builder);
+      });
+    it("should allow to read own person", () => {
+      const mockAbility = mockAbilityForPerson({
+        role: Role.Applicant,
+        sub: "123",
+      });
 
-  //       const person: Person = {
-  //         firstName: "John",
-  //         lastName: "Doe",
-  //         email: "test@example.com",
-  //         oauthId: "123",
-  //         sex: "F",
-  //         role: Role.Applicant,
-  //       };
+      const person: Person = {
+        firstName: "John",
+        lastName: "Doe",
+        email: "test@example.com",
+        oauthId: "123",
+        sex: "F",
+        role: Role.Applicant,
+      };
 
-  //       expect(mockAbility.can(Action.Read, person)).toBe(true);
-  //     });
-  //   });
+      expect(checkAbility(mockAbility, Action.Read, person, "Person")).toBe(
+        true
+      );
+    });
+
+    it("should not allow to read other person to non-admins", () => {
+      const mockAbility = mockAbilityForPerson({
+        role: Role.Applicant,
+        sub: "123",
+      });
+
+      const person: Person = {
+        firstName: "John",
+        lastName: "Doe",
+        email: "",
+        oauthId: "321",
+        sex: "F",
+        role: Role.Applicant,
+      };
+
+      expect(checkAbility(mockAbility, Action.Read, person, "Person")).toBe(
+        false
+      );
+    });
+
+    it("should allow to create own person", () => {
+      const mockAbility = mockAbilityForPerson({
+        role: Role.Applicant,
+        sub: "123",
+      });
+
+      const person: Partial<Person> = {
+        firstName: "John",
+        lastName: "Doe",
+        email: "test@example.com",
+        oauthId: "123",
+        sex: "F",
+      };
+
+      expect(checkAbility(mockAbility, Action.Create, person, "Person")).toBe(
+        true
+      );
+    });
+
+    it("should not allow to create other person to anyone", () => {
+      const mockAbilityAdmin = mockAbilityForPerson({
+        role: Role.Admin,
+        sub: "123",
+      });
+
+      const mockAbilityApplicant = mockAbilityForPerson({
+        role: Role.Applicant,
+        sub: "123",
+      });
+
+      const person: Partial<Person> = {
+        firstName: "John",
+        lastName: "Doe",
+        email: "test@example.com",
+        oauthId: "321",
+        sex: "F",
+      };
+
+      expect(
+        checkAbility(mockAbilityAdmin, Action.Create, person, "Person")
+      ).toBe(false);
+
+      expect(
+        checkAbility(mockAbilityApplicant, Action.Create, person, "Person")
+      ).toBe(false);
+    });
+
+    it("should allow to update own person", () => {
+      const mockAbility = mockAbilityForPerson({
+        role: Role.Applicant,
+        sub: "123",
+      });
+
+      const person: Partial<Person> = {
+        firstName: "John",
+        lastName: "Doe",
+        sex: "F",
+        phone_no: undefined,
+        telegramId: undefined,
+        oauthId: "123",
+      };
+
+      expect(checkAbility(mockAbility, Action.Update, person, "Person")).toBe(
+        true
+      );
+    });
+
+    // TODO: implement these tests
+    it("should not allow to update own role to non-admins", () => {});
+
+    it("should not allow to update own email to non-admins", () => {});
+
+    it("should allow admins to update any person", () => {});
+
+    it("should allow admins to update role, except to Role.None", () => {});
+  });
+
+  describe("checkRuleChange", () => {
+    it("should allow admin to change any role, except admin", () => {
+      expect(checkRoleChange(Role.Admin, Role.Member, Role.Clerk)).toBe(true);
+      expect(checkRoleChange(Role.Admin, Role.Admin, Role.Clerk)).toBe(false);
+    });
+
+    it("should not allow non-admins to change role", () => {
+      for (const role of [
+        Role.None,
+        Role.Applicant,
+        Role.Member,
+        Role.Clerk,
+        Role.Supervisor,
+      ]) {
+        expect(checkRoleChange(role, Role.Member, Role.Clerk)).toBe(false);
+      }
+    });
+
+    it("should not allow anyone to downgrade role to Applicant or to upgrade Applicant to another role", () => {
+      for (const role of [
+        Role.None,
+        Role.Member,
+        Role.Clerk,
+        Role.Supervisor,
+        Role.Admin,
+      ]) {
+        expect(checkRoleChange(Role.Supervisor, role, Role.Applicant)).toBe(
+          false
+        );
+        expect(checkRoleChange(Role.Supervisor, Role.Applicant, role)).toBe(
+          false
+        );
+      }
+    });
+  });
 });
