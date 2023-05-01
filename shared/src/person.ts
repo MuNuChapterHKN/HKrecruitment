@@ -25,7 +25,7 @@ export const createUserSchema = Joi.object<Person>({
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
   sex: Joi.string().required(),
-  email: Joi.string().required(),
+  email: Joi.string().email().required(),
   phone_no: Joi.string()
     .regex(/^\+?[0-9]{8,15}$/)
     .optional(),
@@ -48,7 +48,7 @@ export const updateUserSchema = Joi.object<Person>({
     .optional(),
 });
 
-export const applyAbilitesOnPerson: ApplyAbilities = (
+export const applyAbilitiesForPerson: ApplyAbilities = (
   user,
   { can, cannot }
 ) => {
@@ -67,17 +67,58 @@ export const applyAbilitesOnPerson: ApplyAbilities = (
     ],
     { oauthId: user.sub }
   );
-  // can(
-  //   Action.Update,
-  //   "Person",
-  //   ["firstName", "lastName", "sex", "phone_no", "telegramId"],
-  //   { oauthId: user.sub }
-  // );
+  can(
+    Action.Update,
+    "Person",
+    ["firstName", "lastName", "sex", "phone_no", "telegramId", "oauthId"],
+    { oauthId: user.sub }
+  );
   can(Action.Delete, "Person", { oauthId: user.sub });
 
   if (user.role === Role.Admin) {
-    can(Action.Manage, "Person"); // Admin can do anything on any user
+    can(Action.Read, "Person");
+    can(Action.Update, "Person", [
+      "firstName",
+      "lastName",
+      "sex",
+      "role",
+      "email",
+      "phone_no",
+      "telegramId",
+      "role",
+    ]);
+    can(Action.Delete, "Person");
   }
-
-  cannot(Action.Update, "Person", ["oauthId"]); // No one can update oauthId
 };
+
+export type RoleChangeChecker = (prevRole: Role, nextRole: Role) => boolean;
+/**
+ * Given the role of an acting user, check if the role is allowed to change
+ * the role of the target user, given prev and next role.
+ */
+export const getRoleChangeChecker =
+  (actingRole: Role): RoleChangeChecker =>
+  (prevRole, nextRole) => {
+    if (prevRole === nextRole) {
+      return true; // but why did you pass it
+    }
+
+    if (prevRole === Role.Applicant) {
+      return false; // Applicants accounts can't be upgraded
+    }
+
+    if (nextRole === Role.Applicant) {
+      return false; // Accounts can't be downgraded to applicant
+    }
+
+    if (nextRole === Role.None) {
+      return false; // Role.None is not a valid role
+    }
+
+    switch (actingRole) {
+      case Role.Admin:
+        return prevRole !== Role.Admin; // Admin can't change own role or downgrade other admins
+      default:
+        return false;
+    }
+  };

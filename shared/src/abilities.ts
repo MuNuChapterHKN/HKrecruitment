@@ -5,7 +5,7 @@ import {
   PureAbility,
   subject,
 } from "@casl/ability";
-import { applyAbilitesOnPerson, Person, Role } from "./person";
+import { applyAbilitiesForPerson, Person, Role } from "./person";
 
 export interface UserAuth {
   sub: string;
@@ -34,7 +34,7 @@ export type ApplyAbilities = (
 export const abilityForUser = (user: UserAuth): AppAbility => {
   const builder = new AbilityBuilder<AppAbility>(createMongoAbility);
 
-  applyAbilitesOnPerson(user, builder);
+  applyAbilitiesForPerson(user, builder);
 
   const { build } = builder;
   return build();
@@ -42,13 +42,13 @@ export const abilityForUser = (user: UserAuth): AppAbility => {
 
 export const checkAbility = (
   ability: AppAbility,
-  Action: Action,
+  action: Action,
   subjectObj: SubjectsTypes,
   subjectName: SubjectNames
 ): boolean => {
   const subj = subject(subjectName, subjectObj);
   return (
-    ability.can(Action, subj) &&
-    Object.keys(subject).every((field) => ability.can(Action, subj, field))
+    ability.can(action, subj) &&
+    Object.keys(subj).every((field) => ability.can(action, subj, field))
   );
 };

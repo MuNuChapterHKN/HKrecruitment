@@ -1,4 +1,4 @@
-import { abilityForUser } from '@hkrecruitment/shared';
+import { abilityForUser, getRoleChangeChecker } from '@hkrecruitment/shared';
 import {
   CanActivate,
   ExecutionContext,
@@ -19,16 +19,13 @@ export class AuthorizationGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const role =
-      (await this.usersService.getRoleForOauthId(
-        context.switchToHttp().getRequest().user.sub,
-      )) ?? 'none';
-    context.switchToHttp().getRequest().user.role = role;
-    this.logger.log(
-      `user.sub: ${context.switchToHttp().getRequest().user.sub} -> ${role}}`,
+    const [role, ability] = await this.usersService.getRoleAndAbilityForOauthId(
+      context.switchToHttp().getRequest().user.sub,
     );
-    const ability = abilityForUser(context.switchToHttp().getRequest().user);
+    context.switchToHttp().getRequest().user.role = role;
     context.switchToHttp().getRequest().ability = ability;
+    context.switchToHttp().getRequest().roleChangeChecker =
+      getRoleChangeChecker(role);
 
     const handlers =
       this.reflector.get<PolicyHandler[]>(
