@@ -45,4 +45,4 @@ jobs:
         run: pnpm run format-check
 
       - name: Backend tests
-        run: pnpm --filter api test
+        run: pnpm test

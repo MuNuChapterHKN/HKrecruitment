@@ -25,7 +25,7 @@ export const createUserSchema = Joi.object<Person>({
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
   sex: Joi.string().required(),
-  email: Joi.string().required(),
+  email: Joi.string().email().required(),
   phone_no: Joi.string()
     .regex(/^\+?[0-9]{8,15}$/)
     .optional(),
@@ -48,7 +48,7 @@ export const updateUserSchema = Joi.object<Person>({
     .optional(),
 });
 
-export const applyAbilitesOnPerson: ApplyAbilities = (
+export const applyAbilitiesForPerson: ApplyAbilities = (
   user,
   { can, cannot }
 ) => {
@@ -67,12 +67,12 @@ export const applyAbilitesOnPerson: ApplyAbilities = (
     ],
     { oauthId: user.sub }
   );
-  // can(
-  //   Action.Update,
-  //   "Person",
-  //   ["firstName", "lastName", "sex", "phone_no", "telegramId"],
-  //   { oauthId: user.sub }
-  // );
+  can(
+    Action.Update,
+    "Person",
+    ["firstName", "lastName", "sex", "phone_no", "telegramId"],
+    { oauthId: user.sub }
+  );
   can(Action.Delete, "Person", { oauthId: user.sub });
 
   if (user.role === Role.Admin) {
