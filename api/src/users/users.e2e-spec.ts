@@ -4,7 +4,7 @@ import { createApp, getAccessToken, getSub } from 'test/app.e2e-spec';
 import { CreateUserDto } from './create-user.dto';
 import { UsersService } from './users.service';
 import { Person, Role } from '@hkrecruitment/shared';
-import { mockUsers } from './users.service.spec';
+import { UpdateUserDto } from './update-user.dto';
 
 describe('UsersController (e2e)', () => {
   let app: INestApplication;
@@ -177,6 +177,129 @@ describe('UsersController (e2e)', () => {
       const userInDb = await usersService.findByOauthId(createUserDto.oauthId);
       expect(userInDb).toBeDefined();
       expect(userInDb).toMatchObject(expectedUser);
+    });
+  });
+
+  describe('PATCH /users/:oauthId', () => {
+    beforeEach(async () => {
+      await mockUsers.forEach(async (u) => await usersService.create(u));
+    });
+
+    it('should allow updating themselves for applicants', async () => {
+      const updateUserDto: UpdateUserDto = {
+        firstName: 'Updated',
+        phone_no: '1234567890',
+      };
+      const expectedUser = {
+        ...mockUsers[1],
+        ...updateUserDto,
+      };
+
+      await request(app.getHttpServer())
+        .patch(`/users/${getSub(newApplicantToken)}`)
+        .set('Authorization', `Bearer ${newApplicantToken}`)
+        .send(updateUserDto)
+        .expect(200)
+        .expect((res) => expect(res.body).toMatchObject(expectedUser));
+
+      const userInDb = await usersService.findByOauthId(
+        getSub(newApplicantToken),
+      );
+      expect(userInDb).toMatchObject(expectedUser);
+    });
+
+    it("should not allow updating other users' info for applicants", async () => {
+      const updateUserDto: UpdateUserDto = {
+        firstName: 'Updated',
+      };
+
+      await request(app.getHttpServer())
+        .patch(`/users/${getSub(newMemberToken)}`)
+        .set('Authorization', `Bearer ${newApplicantToken}`)
+        .send(updateUserDto)
+        .expect(403);
+
+      const userInDb = await usersService.findByOauthId(getSub(newMemberToken));
+      expect(userInDb).toMatchObject(mockUsers[2]);
+    });
+
+    it('should not allow updating own role for applicants', async () => {
+      const updateUserDto: UpdateUserDto = {
+        role: Role.Member,
+      };
+
+      await request(app.getHttpServer())
+        .patch(`/users/${getSub(newApplicantToken)}`)
+        .set('Authorization', `Bearer ${newApplicantToken}`)
+        .send(updateUserDto)
+        .expect(403);
+
+      const userInDb = await usersService.findByOauthId(
+        getSub(newApplicantToken),
+      );
+      expect(userInDb).toMatchObject(mockUsers[1]);
+    });
+
+    it('should allow updating role of others for admin', async () => {
+      const updateUserDto: UpdateUserDto = {
+        role: Role.Clerk,
+      };
+
+      await request(app.getHttpServer())
+        .patch(`/users/${getSub(newMemberToken)}`)
+        .set('Authorization', `Bearer ${knownSuperuser}`)
+        .send(updateUserDto)
+        .expect(200)
+        .expect((res) =>
+          expect(res.body).toMatchObject({
+            ...mockUsers[2],
+            ...updateUserDto,
+          }),
+        );
+
+      const userInDb = await usersService.findByOauthId(getSub(newMemberToken));
+      expect(userInDb).toMatchObject({
+        ...mockUsers[2],
+        ...updateUserDto,
+      });
+    });
+  });
+
+  describe('DELETE /users/:oauthId', () => {
+    beforeEach(async () => {
+      await mockUsers.forEach(async (u) => await usersService.create(u));
+    });
+
+    it('should allow deleting themselves for applicants', async () => {
+      await request(app.getHttpServer())
+        .delete(`/users/${getSub(newApplicantToken)}`)
+        .set('Authorization', `Bearer ${newApplicantToken}`)
+        .expect(200);
+
+      const userInDb = await usersService.findByOauthId(
+        getSub(newApplicantToken),
+      );
+      expect(userInDb).toBeNull();
+    });
+
+    it('should not allow deleting other users to applicant', async () => {
+      await request(app.getHttpServer())
+        .delete(`/users/${getSub(newMemberToken)}`)
+        .set('Authorization', `Bearer ${newApplicantToken}`)
+        .expect(403);
+
+      const userInDb = await usersService.findByOauthId(getSub(newMemberToken));
+      expect(userInDb).toMatchObject(mockUsers[2]);
+    });
+
+    it('should allow deleting anyone to admin', async () => {
+      await request(app.getHttpServer())
+        .delete(`/users/${getSub(newMemberToken)}`)
+        .set('Authorization', `Bearer ${knownSuperuser}`)
+        .expect(200);
+
+      const userInDb = await usersService.findByOauthId(getSub(newMemberToken));
+      expect(userInDb).toBeNull();
     });
   });
 });
