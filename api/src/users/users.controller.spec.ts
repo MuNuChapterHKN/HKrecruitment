@@ -4,7 +4,6 @@ import { UsersService } from './users.service';
 import { TestBed } from '@automock/jest';
 import { createMockAbility } from '@hkrecruitment/shared/abilities.spec';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
-import { CannotAttachTreeChildrenEntityError } from 'typeorm';
 import { CreateUserDto } from './create-user.dto';
 import { AuthenticatedRequest } from 'src/authorization/authenticated-request.types';
 import { createMock } from '@golevelup/ts-jest';

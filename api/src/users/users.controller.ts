@@ -22,7 +22,7 @@ import {
 } from '@hkrecruitment/shared';
 import { CreateUserDto } from './create-user.dto';
 import { UpdateUserDto } from './update-user.dto';
-import { JoiValidate } from '../joi-validation/joi-validate.decorator';
+import { JoiValidate } from 'src/joi-validation/joi-validate.decorator';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
