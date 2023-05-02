@@ -80,6 +80,7 @@ export const applyAbilitiesForPerson: ApplyAbilities = (
   if (user.role === Role.Admin) {
     can(Action.Read, "Person");
     can(Action.Update, "Person", [
+      "oauthId", // be careful when checking abilities on person, always override the provided oauthId with the one in the param
       "firstName",
       "lastName",
       "sex",

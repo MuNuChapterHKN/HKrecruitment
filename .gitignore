@@ -17,4 +17,6 @@ tmp-*
 !.gitignore
 !**/.swcrc
 
+**/*.sqlite
+
 coverage/

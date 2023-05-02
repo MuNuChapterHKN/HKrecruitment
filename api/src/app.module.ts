@@ -4,7 +4,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { ApplicationsModule } from './application/applications.module';
 import { AuthenticationModule } from './authentication/authentication.module';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_GUARD } from '@nestjs/core';
 import { JwtGuard } from './authentication/jwt-guard.guard';
 import { AuthorizationModule } from './authorization/authorization.module';
 import { AuthorizationGuard } from './authorization/authorization.guard';
@@ -12,7 +12,7 @@ import { AuthorizationGuard } from './authorization/authorization.guard';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true,
+      ignoreEnvFile: true,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

@@ -22,7 +22,7 @@ import {
 } from '@hkrecruitment/shared';
 import { CreateUserDto } from './create-user.dto';
 import { UpdateUserDto } from './update-user.dto';
-import { JoiValidate } from '../joi-validation/joi-validate.decorator';
+import { JoiValidate } from 'src/joi-validation/joi-validate.decorator';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -89,6 +89,7 @@ export class UsersController {
     if (!!existingUser) {
       throw new ForbiddenException('User already exists');
     }
+    // TODO: check if email sent in body matches email used to authenticate on auth0
     const defaultRole = user.email.endsWith('@hknpolito.org')
       ? Role.Member
       : Role.Applicant;

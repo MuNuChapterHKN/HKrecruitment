@@ -46,7 +46,17 @@ jobs:
 
       - name: Test building
         run: pnpm run build && pnpm run clean
-      - name: Run shared module tests
+      - name: Run shared unit tests
         run: pnpm --filter shared test
-      - name: Run api tests
+      - name: Run api unit tests
         run: pnpm --filter api test
+      - name: Run api e2e tests
+        env:
+          DATABASE_TYPE: sqlite
+          DATABASE_NAME: ":memory:"
+          DATABASE_SYNCHRONIZE: true
+          AUTH0_ISSUER_URL: ${{ secrets.TEST_AUTH0_ISSUER_URL }}
+          AUTH0_AUDIENCE: ${{ secrets.TEST_AUTH0_AUDIENCE }}
+          AUTH0_CLIENT_ID: ${{ secrets.TEST_AUTH0_CLIENT_ID }}
+          AUTH0_CLIENT_SECRET: ${{ secrets.TEST_AUTH0_CLIENT_SECRET }}
+        run: pnpm --filter api test:e2e

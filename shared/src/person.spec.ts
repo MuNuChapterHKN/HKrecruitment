@@ -209,9 +209,37 @@ describe("Person", () => {
 
     it("should not allow to update own email to non-admins", () => {});
 
-    it("should allow admins to update any person", () => {});
+    it("should allow admins to update any person", () => {
+      const mockAbility = mockAbilityForPerson({
+        role: Role.Admin,
+        sub: "123",
+      });
 
-    it("should allow admins to update role, except to Role.None", () => {});
+      const person: Partial<Person> = {
+        firstName: "John",
+        lastName: "Doe",
+      };
+
+      expect(checkAbility(mockAbility, Action.Update, person, "Person")).toBe(
+        true
+      );
+    });
+
+    it("should allow admins to update role, except to Role.None", () => {
+      const mockAbility = mockAbilityForPerson({
+        role: Role.Admin,
+        sub: "123",
+      });
+
+      const person: Partial<Person> = {
+        oauthId: "321",
+        role: Role.Clerk,
+      };
+
+      expect(checkAbility(mockAbility, Action.Update, person, "Person")).toBe(
+        true
+      );
+    });
   });
 
   describe("checkRoleChange", () => {
