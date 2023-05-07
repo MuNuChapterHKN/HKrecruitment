@@ -22,7 +22,7 @@ import {
 } from '@hkrecruitment/shared';
 import { CreateUserDto } from './create-user.dto';
 import { UpdateUserDto } from './update-user.dto';
-import { JoiValidate } from '../joi-validation/joi-validate.decorator';
+import { JoiValidate } from 'src/joi-validation/joi-validate.decorator';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -78,15 +78,25 @@ export class UsersController {
   @JoiValidate({
     body: createUserSchema.append({ oauthId: Joi.string().required() }),
   })
-  create(
+  async create(
     @Body() user: CreateUserDto,
-    @Req() req: AuthenticatedRequest,
+    @Ability() ability: AppAbility,
   ): Promise<User> {
-    const ability = req.ability;
     if (!checkAbility(ability, Action.Create, user, 'Person')) {
       throw new ForbiddenException();
     }
-    return this.usersService.create({ ...user, role: Role.None });
+    const existingUser = await this.usersService.findByOauthId(user.oauthId);
+    if (!!existingUser) {
+      throw new ForbiddenException('User already exists');
+    }
+    // TODO: check if email sent in body matches email used to authenticate on auth0
+    const defaultRole = user.email.endsWith('@hknpolito.org')
+      ? Role.Member
+      : Role.Applicant;
+    return this.usersService.create({
+      ...user,
+      role: !!user.role ? user.role : defaultRole,
+    });
   }
 
   @ApiNotFoundResponse()
@@ -101,6 +111,7 @@ export class UsersController {
     @Param('oauthId') oauthId: string,
     @Body() updateUser: UpdateUserDto,
     @Ability() ability: AppAbility,
+    @Req() req: AuthenticatedRequest,
   ): Promise<User> {
     const user = await this.usersService.findByOauthId(oauthId);
     if (user === null) {
@@ -113,7 +124,8 @@ export class UsersController {
         Action.Update,
         { ...updateUser, oauthId },
         'Person',
-      )
+      ) ||
+      (!!updateUser.role && !req.roleChangeChecker(user.role, updateUser.role))
     ) {
       throw new ForbiddenException();
     }
