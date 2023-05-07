@@ -61,10 +61,10 @@ export class BscApplication extends Application {
   @Column({ name: 'bsc_grades_avg', nullable: true })
   bscGradesAvg: number;
 
-  @Column({ nullable: true }) // name: 'bsc_cfu',
+  @Column({ nullable: true })
   cfu: number;
 
-  @Column({ nullable: true, length: 255 }) // name: 'bsc_grades',
+  @Column({ nullable: true, length: 255 })
   grades: string;
 }
 
@@ -78,12 +78,6 @@ export class MscApplication extends Application {
 
   @Column({ name: 'msc_academic_year', nullable: true })
   mscAcademicYear: number;
-
-  // @Column({ name: 'msc_cfu', nullable: true })
-  // cfu: number;
-
-  // @Column({ name: 'msc_grades', nullable: true })
-  // grades: string;
 }
 
 @ChildEntity()

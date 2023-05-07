@@ -84,6 +84,9 @@
       "collectCoverageFrom": [
          "**/*.(t|j)s"
       ],
+      "moduleNameMapper": {
+         "^@mocks/(.*)$": "<rootDir>/mocks/$1"
+       },
       "coverageDirectory": "../coverage",
       "testEnvironment": "node"
    }

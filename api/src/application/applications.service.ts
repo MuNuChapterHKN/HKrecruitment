@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between, Not, In } from 'typeorm';
 import { Application } from './application.entity';
@@ -8,7 +12,7 @@ import {
   flattenApplication,
 } from './create-application.dto';
 import { ApplicationState, ApplicationType } from '@hkrecruitment/shared';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
 import { ApplicationFiles } from './application-types';
 
 @Injectable()
@@ -18,6 +22,8 @@ export class ApplicationsService {
     private readonly applicationRepository: Repository<Application>,
     private readonly usersService: UsersService,
   ) {}
+
+  static APPLICATIONS_FOLDER = 'applications'; // Google Drive folder name
 
   async findAll(): Promise<Application[]> {
     return this.applicationRepository.find();
@@ -70,7 +76,6 @@ export class ApplicationsService {
     files: ApplicationFiles,
     applicantId: string,
   ): Promise<Application> {
-    
     // Get applicant full name
     const applicant = await this.usersService.findByOauthId(applicantId);
     if (!applicant) throw new NotFoundException('Applicant not found');
@@ -88,13 +93,15 @@ export class ApplicationsService {
 
     // Save files to Google Drive
     try {
-      const applicationsFolder = await storage.getFolderByName('applications');
+      const applicationsFolder = await storage.getFolderByName(
+        ApplicationsService.APPLICATIONS_FOLDER,
+      );
       const formattedDatetime = today.toLocaleString('en-US', {
         hour12: false,
       });
       const fileName = `${application.type}_${applicantFullName}_${formattedDatetime}`;
       // TODO: Create a folder for each applicant? Give it a unique name
-      
+
       // Save CV
       cvFileId = await storage.insertFile(
         `CV_${fileName}`,
@@ -102,10 +109,13 @@ export class ApplicationsService {
         applicationsFolder,
       );
       application.cv = cvFileId;
-      
+
       // Save grades
       if (files.grades) {
-        const applicationType = application.type === ApplicationType.BSC ? 'bscApplication' : 'mscApplication';
+        const applicationType =
+          application.type === ApplicationType.BSC
+            ? 'bscApplication'
+            : 'mscApplication';
         gradesFileId = await storage.insertFile(
           `Grades_${fileName}`,
           files.grades[0].buffer,
@@ -113,8 +123,11 @@ export class ApplicationsService {
         );
         application[applicationType].grades = gradesFileId;
       }
-      return this.applicationRepository.save(flattenApplication(application));
+      return await this.applicationRepository.save(
+        flattenApplication(application),
+      );
     } catch (err) {
+      console.log('Error caught: ', err);
       // Delete files from Google Drive
       if (cvFileId) await storage.deleteItem(cvFileId);
       if (gradesFileId) await storage.deleteItem(gradesFileId);

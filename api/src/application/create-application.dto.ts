@@ -86,13 +86,13 @@ export class CreateApplicationDto implements Partial<Application> {
 
   /* Internal fields */
 
-  state: ApplicationState;
+  state?: ApplicationState;
 
-  submission: Date;
+  submission?: Date;
 
-  lastModified: Date;
+  lastModified?: Date;
 
-  applicantId: string;
+  applicantId?: string;
 }
 
 export function flattenApplication(
