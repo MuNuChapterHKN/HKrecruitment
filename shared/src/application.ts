@@ -3,6 +3,28 @@ import { Role } from "./person";
 import * as Joi from "joi";
 // import { TimeSlot } from "./slot";
 
+export const applicationsConfig = {
+  BSC: {
+    MIN_GRADE: 18,
+    MAX_GRADE: 30,
+    MIN_CFU: 48,
+    MAX_CFU: 180,
+    MIN_ACADEMIC_YEAR: 1,
+    MAX_ACADEMIC_YEAR: 3,
+  },
+  MSC: {
+    MIN_GRADE: 18,
+    MAX_GRADE: 30,
+    MIN_CFU: 20,
+    MAX_CFU: 120,
+    MIN_ACADEMIC_YEAR: 1,
+    MAX_ACADEMIC_YEAR: 2,
+  },
+  PHD: {
+    DESC_LENGTH: 255,
+  },
+};
+
 export enum ApplicationState {
   New = "new",
   Accepted = "accepted",
@@ -31,6 +53,7 @@ export interface Application {
   state: ApplicationState;
   notes?: string;
   cv: any; // CV file
+  grades?: any; // Grades file
   itaLevel: LangLevel;
 
   bscApplication?: BscApplication;
@@ -42,7 +65,6 @@ export interface BscApplication {
   bscStudyPath: string;
   bscAcademicYear: number;
   bscGradesAvg: number;
-  grades: any; // Grades file
   cfu: number;
 }
 
@@ -52,7 +74,6 @@ export interface MscApplication {
   mscStudyPath: string;
   mscGradesAvg: number;
   mscAcademicYear: number;
-  grades: any; // Grades file
   cfu: number;
 }
 
@@ -68,7 +89,6 @@ const BaseApplication = Joi.object<Application>({
     .valid(...Object.values(ApplicationType))
     .required(),
   notes: Joi.string().optional(),
-  // cv: Joi.string().uri().required(),
   itaLevel: Joi.string()
     .valid(...Object.values(LangLevel))
     .required(),
@@ -76,25 +96,50 @@ const BaseApplication = Joi.object<Application>({
 
 const createBscApplication = Joi.object<BscApplication>({
   bscStudyPath: Joi.string().max(255).required(),
-  bscGradesAvg: Joi.number().min(18).max(30).required(),
-  bscAcademicYear: Joi.number().integer().min(1).max(3).required(),
-  cfu: Joi.number().integer().min(48).max(180).required(),
-  // grades: Joi.string().uri().required(),
+  bscGradesAvg: Joi.number()
+    .min(applicationsConfig.BSC.MIN_GRADE)
+    .max(applicationsConfig.BSC.MAX_GRADE)
+    .required(),
+  bscAcademicYear: Joi.number()
+    .integer()
+    .min(applicationsConfig.BSC.MIN_ACADEMIC_YEAR)
+    .max(applicationsConfig.BSC.MAX_ACADEMIC_YEAR)
+    .required(),
+  cfu: Joi.number()
+    .integer()
+    .min(applicationsConfig.BSC.MIN_CFU)
+    .max(applicationsConfig.BSC.MAX_CFU)
+    .required(),
 });
 
 const createMscApplication = Joi.object<MscApplication>({
   bscStudyPath: Joi.string().optional(),
-  bscGradesAvg: Joi.number().min(18).max(30).optional(),
+  bscGradesAvg: Joi.number()
+    .min(applicationsConfig.BSC.MIN_GRADE)
+    .max(applicationsConfig.BSC.MAX_GRADE)
+    .optional(),
   mscStudyPath: Joi.string().required(),
-  mscGradesAvg: Joi.number().min(18).max(30).required(),
-  mscAcademicYear: Joi.number().integer().min(1).max(2).required(),
-  cfu: Joi.number().integer().min(20).max(120).required(),
-  // grades: Joi.string().uri().required(),
+  mscGradesAvg: Joi.number()
+    .min(applicationsConfig.MSC.MIN_GRADE)
+    .max(applicationsConfig.MSC.MAX_GRADE)
+    .required(),
+  mscAcademicYear: Joi.number()
+    .integer()
+    .min(applicationsConfig.MSC.MIN_ACADEMIC_YEAR)
+    .max(applicationsConfig.MSC.MAX_ACADEMIC_YEAR)
+    .required(),
+  cfu: Joi.number()
+    .integer()
+    .min(applicationsConfig.MSC.MIN_CFU)
+    .max(applicationsConfig.MSC.MAX_CFU)
+    .required(),
 });
 
 const createPhdApplication = Joi.object<PhdApplication>({
   mscStudyPath: Joi.string().required(),
-  phdDescription: Joi.string().max(255).required(),
+  phdDescription: Joi.string()
+    .max(applicationsConfig.PHD.DESC_LENGTH)
+    .required(),
 });
 
 export const createApplicationSchema = BaseApplication.keys({
@@ -144,7 +189,6 @@ export const applyAbilitiesOnApplication: ApplyAbilities = (
     can(Action.Create, "Application", [
       "type",
       "notes",
-      "cv",
       "itaLevel",
       "bscApplication",
       "mscApplication",
@@ -155,7 +199,7 @@ export const applyAbilitiesOnApplication: ApplyAbilities = (
   } else if (user.role !== Role.None) {
     // Every other authenticated user can read and update applications
     can(Action.Read, "Application");
-    can(Action.Update, "Application", ["state", "notes"]);
+    can(Action.Update, "Application", ["state", "notes"], {});
   }
 
   cannot(Action.Delete, "Application"); // No one can delete applications

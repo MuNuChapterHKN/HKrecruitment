@@ -46,11 +46,15 @@ export const checkAbility = (
   ability: AppAbility,
   action: Action,
   subjectObj: SubjectsTypes,
-  subjectName: SubjectNames
+  subjectName: SubjectNames,
+  conditions: String[] = []
 ): boolean => {
   const subj = subject(subjectName, subjectObj);
+
   return (
     ability.can(action, subj) &&
-    Object.keys(subj).every((field) => ability.can(action, subj, field))
+    Object.keys(subj)
+      .filter((field) => !conditions.includes(field))
+      .every((field) => ability.can(action, subj, field))
   );
 };
