@@ -10,6 +10,9 @@ import {
   MscApplication,
   PhdApplication,
 } from 'src/application/application.entity';
+import { UpdateApplicationDto } from 'src/application/update-application.dto';
+
+export const testDate = new Date(2023, 0, 1);
 
 export const baseFile = {
   encoding: '7bit',
@@ -105,6 +108,11 @@ export const mockCreatePhdApplicationDTO = {
     phdDescription: mockPhdApplication.phdDescription,
   },
 } as CreateApplicationDto;
+
+export const updateApplicationDTO = {
+  notes: 'Notes',
+  state: ApplicationState.Accepted,
+} as UpdateApplicationDto;
 
 export const applicant = {
   firstName: 'John',

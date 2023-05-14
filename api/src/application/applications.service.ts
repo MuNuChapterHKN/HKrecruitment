@@ -136,6 +136,8 @@ export class ApplicationsService {
   }
 
   async updateApplication(application: Application): Promise<Application> {
-    return this.applicationRepository.save(application);
+    return await this.applicationRepository.save(
+      flattenApplication(application),
+    );
   }
 }

@@ -19,6 +19,7 @@ import {
   applicantId,
   folderId,
   today,
+  testDate,
 } from '@mocks/data';
 import { flattenApplication } from './create-application.dto';
 import { InternalServerErrorException } from '@nestjs/common';
@@ -42,8 +43,6 @@ jest.mock('../google/GDrive/GDriveStorage', () => {
 describe('ApplicationsService', () => {
   let applicationService: ApplicationsService;
   let usersService: UsersService;
-
-  const testDate = new Date(2023, 0, 1);
 
   /************* Test setup ************/
 
@@ -306,8 +305,7 @@ describe('ApplicationsService', () => {
           applicationFiles,
           applicantId,
         ),
-      ).rejects.toEqual(new InternalServerErrorException());
-
+      ).rejects.toThrow(InternalServerErrorException);
       expect(usersService.findByOauthId).toHaveBeenCalledTimes(1);
       expect(usersService.findByOauthId).toHaveBeenCalledWith(applicantId);
 

@@ -169,7 +169,7 @@ export class ApplicationsController {
         fileFilter: (
           req: Request,
           file: Express.Multer.File,
-          callback: Function,
+          callback: (error: Error, acceptFile: boolean) => void,
         ) => {
           if (file.mimetype !== 'application/pdf')
             return callback(
@@ -186,9 +186,9 @@ export class ApplicationsController {
   )
   @Post('/')
   async createApplication(
-    @UploadedFiles()
-    files: ApplicationFiles,
+    @UploadedFiles() files: ApplicationFiles,
     @Body() application: CreateApplicationDto,
+    @Ability() ability: AppAbility,
     @Req() req: AuthenticatedRequest,
   ): Promise<Application> {
     if (!files || !files.cv) {
@@ -196,15 +196,13 @@ export class ApplicationsController {
     }
 
     if (
-      // @ts-ignore
-      req.body.type !== ApplicationType.PHD &&
+      application.type !== ApplicationType.PHD &&
       files.grades === undefined
     ) {
       // grades are required for non-phd applications
       throw new UnprocessableEntityException('Grades file is required');
     }
 
-    const ability = req.ability;
     if (!checkAbility(ability, Action.Create, application, 'Application'))
       throw new ForbiddenException();
 
@@ -239,6 +237,7 @@ export class ApplicationsController {
   async updateApplication(
     @Param('application_id') applicationId: number,
     @Body() updateApplication: UpdateApplicationDto,
+    @Ability() ability: AppAbility,
     @Req() req: AuthenticatedRequest,
   ): Promise<ApplicationResponseDto> {
     const application = await this.applicationsService.findByApplicationId(
@@ -246,8 +245,15 @@ export class ApplicationsController {
     );
     if (application === null) throw new NotFoundException();
 
-    const ability = req.ability;
-    if (!checkAbility(ability, Action.Update, application, 'Application'))
+    const appToCheck = {
+      ...updateApplication,
+      applicantId: application.applicantId,
+    };
+    if (
+      !checkAbility(ability, Action.Update, appToCheck, 'Application', [
+        'applicantId',
+      ])
+    )
       throw new ForbiddenException();
 
     // Applicants can only update status to "refused_by_applicant"

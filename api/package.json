@@ -98,7 +98,7 @@
          "**/*.(t|j)s"
       ],
       "moduleNameMapper": {
-         "^@mocks/(.*)$": "<rootDir>/mocks/$1"
+         "^@mocks/(.*)$": "<rootDir>/src/mocks/$1"
        },
       "coverageDirectory": "../coverage",
       "testEnvironment": "node"
