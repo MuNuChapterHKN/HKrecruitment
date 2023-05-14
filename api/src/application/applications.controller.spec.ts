@@ -5,7 +5,6 @@ import {
   Action,
   ApplicationState,
   ApplicationType,
-  LangLevel,
   Role,
 } from '@hkrecruitment/shared';
 import { TestBed } from '@automock/jest';
@@ -34,20 +33,19 @@ describe('ApplicationController', () => {
   let controller: ApplicationsController;
   let service: ApplicationsService;
 
+  /************* Test setup ************/
+
+  beforeAll(() => {
+    jest
+      .spyOn(global, 'Date')
+      .mockImplementation(() => testDate as unknown as string);
+  });
+
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(ApplicationsController).compile();
 
     controller = unit;
     service = unitRef.get(ApplicationsService);
-  });
-
-  beforeAll(() => {
-    jest.useFakeTimers();
-    jest.setSystemTime(testDate);
-  });
-
-  afterAll(() => {
-    jest.useRealTimers();
   });
 
   it('should be defined', () => {

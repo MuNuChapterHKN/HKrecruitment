@@ -47,12 +47,9 @@ describe('ApplicationsService', () => {
   /************* Test setup ************/
 
   beforeAll(() => {
-    jest.useFakeTimers();
-    jest.setSystemTime(testDate);
-  });
-
-  afterAll(() => {
-    jest.useRealTimers();
+    jest
+      .spyOn(global, 'Date')
+      .mockImplementation(() => testDate as unknown as string);
   });
 
   beforeEach(async () => {
