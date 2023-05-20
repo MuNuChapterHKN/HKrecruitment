@@ -7,11 +7,26 @@ import moment from "moment";
 import { useState, useEffect } from "react";
 import { createUserSchema } from "@hkrecruitment/shared";
 import React from "react";
+import { getApplicants, getUsers } from "./ApiRequests";
 
 function AvaiabilitiesTable(props) {
-  let start = "2014-09-08T08:00:00";
-  let step = 45;
-  let end = "20.00";
+  const start = "2014-09-08T08:00:00";
+  const step = 45;
+  const end = "20.00";
+
+  const [applications, setApplications] = useState(null);
+  const [users, setUsers] = useState(null);
+
+  getApplicants().then((data) => setApplications(data));
+  getUsers().then((data) => setUsers(data));
+
+  useEffect(() => {
+    if (applications !== null && users !== null) {
+      console.log(applications);
+      console.log(users);
+    }
+  }, [applications, users]);
+
   let fill = [
     [
       "persona1, persona2,...",
