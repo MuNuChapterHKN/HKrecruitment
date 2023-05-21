@@ -11,7 +11,6 @@ import {
 import { createMockAbility } from "./abilities.spec";
 import { Action, UserAuth, checkAbility } from "./abilities";
 import { Role } from "./person";
-import { subject } from "@casl/ability";
 
 describe("Application", () => {
   const mockApplication: Partial<Application> = {

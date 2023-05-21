@@ -1,7 +1,6 @@
-import { Person, Role } from "person";
-import { TimeSlot } from "timeslot";
+import { Action, ApplyAbilities } from "./abilities";
+import { Person, Role } from "./person";
 import * as Joi from "joi";
-import { Action, ApplyAbilities } from "abilities";
 
 export enum AvailabilityState {
   Subscribed = "subscribed",
@@ -16,7 +15,7 @@ export enum AvailabilityType {
 
 export interface Availability {
   state: AvailabilityState;
-  timeSlot: TimeSlot;
+  timeSlotId: number;
   member: Person;
   // assignedAt?: Date;
   // confirmedAt?: Date;
@@ -25,14 +24,15 @@ export interface Availability {
 
 /* Validation schemas */
 
-const updateAvailabilitySchema = Joi.object<Availability>({
+export const updateAvailabilitySchema = Joi.object<Availability>({
   state: Joi.string()
     .valid(...Object.values(AvailabilityType))
     .required(),
-  timeSlot: Joi.object<TimeSlot>({
-    start: Joi.date().required(),
-    end: Joi.date().required(),
-  }).required(),
+  timeSlotId: Joi.number().positive().required(),
+}).options({
+  stripUnknown: true,
+  abortEarly: false,
+  presence: "required",
 });
 
 /* Abilities */
@@ -43,10 +43,9 @@ export const applyAbilitiesOnAvailability: ApplyAbilities = (
 ) => {
   switch (user.role) {
     case Role.Admin:
-      // Admin can do anything on any availability
+    case Role.Supervisor:
       can(Action.Manage, "Availability");
       break;
-    case Role.Supervisor:
     case Role.Member:
     case Role.Clerk:
       can(Action.Read, "Availability");

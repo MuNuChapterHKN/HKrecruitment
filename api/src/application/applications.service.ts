@@ -64,6 +64,7 @@ export class ApplicationsService {
       conditions['submission'] = Between(submittedFrom, submittedUntil);
     // Add state condition when "state" is specified
     if (state) conditions['state'] = state;
+    // TODO: Retrieve slot
     return await this.applicationRepository.findBy(conditions);
   }
 

@@ -7,7 +7,8 @@ import {
 } from "@casl/ability";
 import { applyAbilitiesForPerson, Person, Role } from "./person";
 import { Application, applyAbilitiesOnApplication } from "./application";
-import { applyAbilitiesOnAvailability, Availability } from "avaliability";
+import { applyAbilitiesOnAvailability, Availability } from "./availability";
+import { TimeSlot } from "./timeslot";
 
 export interface UserAuth {
   sub: string;
@@ -24,8 +25,9 @@ export enum Action {
 type SubjectsTypes =
   | Partial<Person>
   | Partial<Application>
-  | Partial<Availability>;
-type SubjectNames = "Person" | "Application" | "Availability";
+  | Partial<Availability>
+  | Partial<TimeSlot>;
+type SubjectNames = "Person" | "Application" | "Availability" | "TimeSlot";
 export type Subjects = SubjectsTypes | SubjectNames;
 
 export type AppAbility = PureAbility<[Action, Subjects]>;
