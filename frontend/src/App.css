@@ -23,7 +23,7 @@
   font-size: calc(10px + 2vmin);
   color: black;
 }
-.active  {
+.active {
   background: green !important;
   color: white !important;
 }
@@ -62,7 +62,7 @@
   --bs-table-hover-bg: rgba(0, 0, 0, 0.075);
   width: 100%;
   margin-bottom: 1rem;
-  color: white important! ;
+  color: white important!;
   vertical-align: top;
   border-color: #dee2e6;
 }
