@@ -1,5 +1,3 @@
-import React from "react";
-
 async function apiRequest(endpoint: string, how: string, params?: any) {
   debugger;
   const body = how === "GET" ? undefined : JSON.stringify(params);
@@ -14,6 +12,19 @@ export async function getApplicants() {
 
 export async function getUsers() {
   return await apiRequest("/v1/users", "GET");
+}
+
+// Supposizioni
+
+export async function getInterviewsByDates(startDate: string, endDate: string) {
+  return await apiRequest(
+    `/v1/interviews?startDate=${startDate}&endDate=${endDate}}`,
+    "GET"
+  );
+}
+
+export async function getInterviewsByDate(date: string) {
+  return await apiRequest(`/v1/interviews?date=${date}`, "GET");
 }
 
 /*

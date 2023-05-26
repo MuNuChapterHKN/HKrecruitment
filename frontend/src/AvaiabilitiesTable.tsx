@@ -7,26 +7,45 @@ import moment from "moment";
 import { useState, useEffect } from "react";
 import { createUserSchema } from "@hkrecruitment/shared";
 import React from "react";
-import { getApplicants, getUsers } from "./ApiRequests";
+import { getApplicants, getUsers, getInterviewsByDates } from "./ApiRequests";
 
 function AvaiabilitiesTable(props) {
-  const start = "2014-09-08T08:00:00";
+  //const start = "2014-09-08T08:00:00";
   const step = 45;
-  const end = "20.00";
+  //const end = "20.00";
 
-  const [applications, setApplications] = useState(null);
-  const [users, setUsers] = useState(null);
+  /* Abbiamo queste entità
+   * - application (id, applicantId, submission, state, lastModified, notes, cv, itaLevel)
+   *     - bscapplication (bscStudyPath, bscAcademicYear, bscGradesAvg, cfu, grades)
+   *     - mscapplication (mscStudyPath, mscGradesAvg, mscAcademicYear)
+   *     - phdapplication (phdDescription)
+   * - user (oauthId, firstName, lastName, sex, email, phone_no, telegramId, role)
+   */
 
-  getApplicants().then((data) => setApplications(data));
-  getUsers().then((data) => setUsers(data));
+  // All'apertura di questa pagina, viene impostata la data ad oggi
+
+  const [startDate, setStartDate] = useState(new Date());
+
+  // Suppongo che interviews restituisca un array di colloqui fissati in un certo periodo, ciascuno con data e ora
+  const [interviews, setInterviews] = useState(null);
 
   useEffect(() => {
-    if (applications !== null && users !== null) {
-      console.log(applications);
-      console.log(users);
+    if (startDate !== null) {
+      setInterviews(
+        getInterviewsByDates(startDate.getDate(), startDate.getDate() + 7)
+      );
     }
-  }, [applications, users]);
+  }, [startDate]);
 
+  // Crea una matrice 16x7 a partire dalle interviste
+  let fill = [[], []];
+  if (interviews !== null) {
+    for (let interview in interviews.sort()) {
+      // TO-DO
+    }
+  }
+
+  /*
   let fill = [
     [
       "persona1, persona2,...",
@@ -162,6 +181,9 @@ function AvaiabilitiesTable(props) {
     row.unshift(timestamp.format("HH:mm"));
     timestamp = timestamp.add(step, "m");
   }
+
+  */
+
   return (
     <Container fluid>
       <Row>
