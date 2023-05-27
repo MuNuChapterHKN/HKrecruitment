@@ -1,7 +1,7 @@
-import { Person, Role } from "person";
-import { TimeSlot } from "timeslot";
+import { Action, ApplyAbilities } from "./abilities";
+import { Person, Role } from "./person";
+import { TimeSlot } from "./timeslot";
 import * as Joi from "joi";
-import { Action, ApplyAbilities } from "abilities";
 
 export enum AvailabilityState {
   Subscribed = "subscribed",
