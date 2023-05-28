@@ -59,11 +59,15 @@ export class ApplicationsService {
     state: string,
   ): Promise<Application[]> {
     const conditions = {};
+
     // Add time range condition if both dates are specified
     if (submittedFrom && submittedUntil)
       conditions['submission'] = Between(submittedFrom, submittedUntil);
+
     // Add state condition when "state" is specified
     if (state) conditions['state'] = state;
+
+    // Retrieve applications
     return await this.applicationRepository.findBy(conditions);
   }
 

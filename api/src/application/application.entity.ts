@@ -14,7 +14,7 @@ import {
 // import { TimeSlot } from '@hkrecruitment/shared/slot';
 
 @Entity()
-@TableInheritance({ column: { type: 'varchar', name: 'type_orm' } }) // TypeORM column to discriminate child entities
+@TableInheritance({ column: 'type' }) // TypeORM column to discriminate child entities
 export class Application implements ApplicationInterface {
   @PrimaryGeneratedColumn('increment')
   id: number;
@@ -50,7 +50,7 @@ export class Application implements ApplicationInterface {
   itaLevel: LangLevel;
 }
 
-@ChildEntity()
+@ChildEntity(ApplicationType.BSC)
 export class BscApplication extends Application {
   @Column({ name: 'bsc_study_path', nullable: true })
   bscStudyPath: string;
@@ -68,7 +68,7 @@ export class BscApplication extends Application {
   grades: string;
 }
 
-@ChildEntity()
+@ChildEntity(ApplicationType.MSC)
 export class MscApplication extends Application {
   @Column({ name: 'msc_study_path', nullable: true })
   mscStudyPath: string;
@@ -80,7 +80,7 @@ export class MscApplication extends Application {
   mscAcademicYear: number;
 }
 
-@ChildEntity()
+@ChildEntity(ApplicationType.PHD)
 export class PhdApplication extends Application {
   @Column({ name: 'phd_description', nullable: true })
   phdDescription: string;
