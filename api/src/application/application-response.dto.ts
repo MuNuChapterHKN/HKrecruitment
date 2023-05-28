@@ -4,17 +4,7 @@ import {
   ApplicationType,
   LangLevel,
 } from '@hkrecruitment/shared';
-import { Exclude, Expose, Type } from 'class-transformer';
-import { BscApplication } from './application.entity';
-// import { ApplicantDto } from "../applicant/ApplicantDto"
-
-class BscApplicationExpose {
-  @Expose() bscStudyPath: string;
-  @Expose() bscAcademicYear: number;
-  @Expose() bscGradesAvg: number;
-  @Expose() cfu: number;
-  @Expose() grades: string;
-}
+import { Exclude, Expose } from 'class-transformer';
 
 @Exclude()
 export class ApplicationResponseDto implements Partial<Application> {

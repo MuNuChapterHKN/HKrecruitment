@@ -106,10 +106,17 @@ describe('ApplicationController', () => {
         mockMscApplication.id,
       );
       const expectedApp = {
+        ...mockMscApplication,
         id: mockMscApplication.id,
         state: mockMscApplication.state,
         submission: undefined,
+        phdDescription: undefined,
+        bscAcademicYear: undefined,
+        bscGradesAvg: undefined,
+        bscStudyPath: undefined,
+        cfu: undefined,
       } as ApplicationResponseDto;
+      delete expectedApp['notes'];
       expect(result).toEqual(expectedApp);
       expect(service.findByApplicationId).toHaveBeenCalledTimes(1);
       expect(service.findByApplicationId).toHaveBeenCalledWith(
@@ -303,10 +310,16 @@ describe('ApplicationController', () => {
       const updateApplicationDTO = { notes: 'Nothing special here' };
       const mockReq = createMock<AuthenticatedRequest>();
       const expectedApplication = {
+        ...mockBscApplication,
         id: mockBscApplication.id,
         state: mockBscApplication.state,
         submission: undefined,
+        mscAcademicYear: undefined,
+        mscGradesAvg: undefined,
+        mscStudyPath: undefined,
+        phdDescription: undefined,
       } as ApplicationResponseDto;
+      delete expectedApplication['notes'];
       const mockedApplication = { ...mockBscApplication, applicantId: '1' };
       jest
         .spyOn(service, 'findByApplicationId')
