@@ -1,4 +1,4 @@
-import { TimeSlot } from "timeslot";
+import { TimeSlot } from "./timeslot";
 
 export enum SlotState {
   Free = "free",
