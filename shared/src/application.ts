@@ -1,7 +1,6 @@
 import { Action, ApplyAbilities } from "./abilities";
 import { Role } from "./person";
 import * as Joi from "joi";
-// import { TimeSlot } from "./slot";
 
 export const applicationsConfig = {
   BSC: {
@@ -55,7 +54,7 @@ export interface Application {
   cv: any; // CV file
   grades?: any; // Grades file
   itaLevel: LangLevel;
-
+  // TODO: Add slot
   bscApplication?: BscApplication;
   mscApplication?: MscApplication;
   phdApplication?: PhdApplication;
@@ -176,6 +175,8 @@ export const updateApplicationSchema = Joi.object<Application>({
   abortEarly: false,
   presence: "required",
 });
+
+/* Abilities */
 
 export const applyAbilitiesOnApplication: ApplyAbilities = (
   user,

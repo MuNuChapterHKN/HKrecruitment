@@ -98,7 +98,7 @@ export class CreateApplicationDto implements Partial<Application> {
 export function flattenApplication(
   application: CreateApplicationDto,
 ): Application {
-  let newApplication: Application = {
+  const newApplication: Application = {
     ...application,
     ...application.bscApplication,
     ...application.mscApplication,

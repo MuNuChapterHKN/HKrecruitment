@@ -13,6 +13,16 @@ import {
 import { UpdateApplicationDto } from 'src/application/update-application.dto';
 
 export const testDate = new Date(2023, 0, 1);
+export const testDateTimeStart = new Date(2023, 0, 1, 10, 30, 0);
+export const testDateTime10Minutes = new Date(2023, 0, 1, 10, 40, 0);
+export const testDateTime3Hours = new Date(2023, 0, 1, 13, 30, 0);
+export const testDateTimeEnd = new Date(2023, 0, 1, 11, 30, 0);
+
+export const mockTimeSlot = {
+  start: testDateTimeStart,
+  end: testDateTimeEnd,
+  id: 1,
+};
 
 export const baseFile = {
   encoding: '7bit',

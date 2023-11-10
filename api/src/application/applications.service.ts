@@ -66,7 +66,6 @@ export class ApplicationsService {
 
     // Add state condition when "state" is specified
     if (state) conditions['state'] = state;
-
     // Retrieve applications
     return await this.applicationRepository.findBy(conditions);
   }
