@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
+import { ApplicationsModule } from './application/applications.module';
+import { TimeSlotsModule } from './timeslots/timeslots.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtGuard } from './authentication/jwt-guard.guard';
@@ -29,6 +31,8 @@ import { AuthorizationGuard } from './authorization/authorization.guard';
       inject: [ConfigService],
     }),
     UsersModule,
+    ApplicationsModule,
+    TimeSlotsModule,
     AuthenticationModule,
     AuthorizationModule,
   ],

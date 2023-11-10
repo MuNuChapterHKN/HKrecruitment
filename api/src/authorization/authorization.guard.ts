@@ -1,4 +1,4 @@
-import { abilityForUser, getRoleChangeChecker } from '@hkrecruitment/shared';
+import { getRoleChangeChecker } from '@hkrecruitment/shared';
 import {
   CanActivate,
   ExecutionContext,

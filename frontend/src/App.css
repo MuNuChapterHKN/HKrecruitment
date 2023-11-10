@@ -23,6 +23,10 @@
   font-size: calc(10px + 2vmin);
   color: black;
 }
+.active {
+  background: green !important;
+  color: white !important;
+}
 
 .App-link {
   color: #61dafb;
@@ -48,17 +52,17 @@
   background-color: #f9f9f9;
 }
 .table {
-  --bs-table-bg: rgba(55, 81, 113, 0.8) !important;
+  --bs-table-bg: rgba(55, 81, 113, 0.8) !important  ;
   --bs-table-accent-bg: transparent;
   --bs-table-striped-color: white !important;
-  --bs-table-striped-bg: rgba(55, 81, 113, 0.8) !important;
+  --bs-table-striped-bg: rgba(55, 81, 113, 0.8) !important ;
   --bs-table-active-color: white !important;
   --bs-table-active-bg: rgba(0, 0, 0, 0.1);
-  --bs-table-hover-color: white !important;
+  --bs-table-hover-color: white !important ;
   --bs-table-hover-bg: rgba(0, 0, 0, 0.075);
   width: 100%;
   margin-bottom: 1rem;
-  color: white !important;
+  color: white important!;
   vertical-align: top;
   border-color: #dee2e6;
 }

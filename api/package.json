@@ -33,6 +33,9 @@
       "@nestjs/typeorm": "^9.0.1",
       "@types/js-yaml": "^4.0.5",
       "@types/passport-jwt": "^3.0.7",
+      "class-transformer": "^0.5.1",
+      "google-auth-library": "^8.7.0",
+      "googleapis": "^118.0.0",
       "dotenv": "^16.0.3",
       "joi": "^17.7.0",
       "js-yaml": "^4.1.0",
@@ -46,6 +49,7 @@
       "webpack": "^5.75.0"
    },
    "devDependencies": {
+      "@types/multer": "^1.4.7",
       "@automock/jest": "^1.0.1",
       "@golevelup/ts-jest": "^0.3.6",
       "@nestjs/cli": "^9.0.0",
@@ -93,6 +97,10 @@
       "collectCoverageFrom": [
          "**/*.(t|j)s"
       ],
+      "moduleNameMapper": {
+         "^@mocks/(.*)$": "<rootDir>/src/mocks/$1"
+       },
+      "coverageDirectory": "../coverage",
       "testEnvironment": "node"
    }
 }

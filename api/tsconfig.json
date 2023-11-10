@@ -1,10 +1,10 @@
 {
-   "compilerOptions": {
-      "module": "commonjs",
+  "compilerOptions": {
+    "module": "commonjs",
     "declaration": true,
     "removeComments": true,
-      "emitDecoratorMetadata": true,
-      "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "target": "es2017",
     "sourceMap": true,
@@ -18,8 +18,15 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@hkrecruitment/shared": ["../shared/src"],
-      "@hkrecruitment/shared/*": ["../shared/src/*"]
+      "@hkrecruitment/shared": [
+        "../shared/src"
+      ],
+      "@hkrecruitment/shared/*": [
+        "../shared/src/*"
+      ],
+      "@mocks/*": [
+        "src/mocks/*"
+      ],
     }
-   }
+  }
 }

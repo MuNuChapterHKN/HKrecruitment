@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@casl/ability": "^6.3.3",
+    "@joi/date": "^2.1.0",
     "joi": "^17.7.0"
   },
   "jest": {

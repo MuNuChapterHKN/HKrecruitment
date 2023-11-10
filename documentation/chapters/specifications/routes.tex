@@ -1,0 +1,88 @@
+% GET /applications
+
+\subsection{\texttt{\textcolor{blue}{GET} /v1/applications}}
+
+Returns a list of all applications. 
+If any query parameters are provided, applications are filtered accordingly. 
+The response includes only applications and their details that are authorized for the requesting user. 
+
+\subsubsection{Query Parameters}
+\begin{itemize}
+    \item \textbf{submittedFrom} [Date] (optional): Start date of the time period for filtering applications.
+    \item \textbf{submittedUntil} [Date] (optional) : End date of the time period for filtering applications.
+    \item \textbf{state} [ApplicationState] (optional): Retrieve only applications with this state. 
+\end{itemize}
+
+\subsubsection{Path Variables}
+None
+
+\subsubsection{Request Body}
+None
+
+\subsubsection{Response Body}
+Array of \textbf{ApplicationResponseDto} objects.
+
+% GET /applications/:application_id
+
+\subsection{\texttt{\textcolor{blue}{GET} /v1/applications/:application\_id }}
+
+Returns the details of a specific application identified by its ID.
+
+\subsubsection{Query Parameters}
+None
+
+\subsubsection{Path Variables}
+\begin{itemize}
+    \item \textbf{application\_id} [Integer]: The ID of the application to retrieve.
+\end{itemize}
+
+\subsubsection{Request Body}
+None
+
+\subsubsection{Response Body}
+An \textbf{ApplicationResponseDto} object representing the application details.
+
+% POST /applications
+
+\subsection{\texttt{\textcolor{blue}{POST} /v1/applications}}
+
+Submits a new application for the logged-in user. 
+The newly created application state is set to \textbf{ApplicationState.New}.
+% TODO: A new Interview is created and associated to the application.
+The operation will fail if the applicant already has a pending application.
+
+\subsubsection{Query Parameters}
+None
+
+\subsubsection{Path Variables}
+None
+
+\subsubsection{Request Body}
+A \textbf{CreateApplicationDto} object.
+The body of the request must be encoded as \textbf{multipart/form-data}.
+The "cv" and the optional "grades" files must be uploaded respectively as two fields with name "cv" and "grades".
+
+\subsubsection{Response Body}
+The newly created \textbf{Application} object.
+
+% PATCH /v1/applications/:application_id
+
+\subsection{\texttt{\textcolor{blue}{PATCH} /v1/applications/:application\_id}}
+
+Updates the details of an existing application identified by its ID. 
+If the user is an applicant, they can only update the application state to \textbf{ApplicationState.RefusedByApplicant}.
+Other registered users can update the application state and notes.
+
+\subsubsection{Query Parameters}
+None
+
+\subsubsection{Path Variables}
+\begin{itemize}
+    \item \textbf{application\_id} [Integer]: The ID of the application to update.
+\end{itemize}
+
+\subsubsection{Request Body}
+A \textbf{UpdateApplicationDto} object.
+
+\subsubsection{Response Body}
+An \textbf{ApplicationResponseDto} object representing the updated application.

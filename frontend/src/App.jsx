@@ -10,6 +10,10 @@ import { useAuth0 } from "@auth0/auth0-react";
 import AvaiabilitiesTable from "./AvaiabilitiesTable";
 
 function App() {
+  function parseJwt(token) {
+    return JSON.parse(Buffer.from(token.split(".")[1], "base64").toString());
+  }
+
   const {
     isLoading,
     isAuthenticated,
@@ -20,22 +24,34 @@ function App() {
     getAccessTokenSilently,
   } = useAuth0();
 
+  const [accessToken, setAccessToken] = useState("");
+
   useEffect(() => {
     if (isAuthenticated) {
       getAccessTokenSilently({
         audience: import.meta.env.VITE_AUTH0_AUDIENCE,
         grant_type: "client_credentials",
       }).then((token) => {
-        console.log(`Token: ${token}`);
+        setAccessToken(parseJwt(token));
       });
     }
   }, [isAuthenticated]);
+
+  if (accessToken === "") {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Routes>
       <Route
         path="/"
-        element={<AfterLogin isAuthenticated={isAuthenticated} user={user} />}
+        element={
+          <AfterLogin
+            isAuthenticated={isAuthenticated}
+            user={user}
+            token={accessToken}
+          />
+        }
       />
       <Route path="/*" element={<Navigate to="/" />} />
     </Routes>
@@ -51,7 +67,7 @@ function AfterLogin(props) {
       {props.isAuthenticated &&
         !props.user.email.endsWith("@hknpolito.org") && <SignupForm />}
       {props.isAuthenticated && props.user.email.endsWith("@hknpolito.org") && (
-        <AvaiabilitiesTable />
+        <AvaiabilitiesTable token={props.accessToken} />
       )}
     </div>
   );

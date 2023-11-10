@@ -6,7 +6,9 @@ dotenv.config({ path: '.env' });
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
   app.enableCors();
+  app.setGlobalPrefix('v1');
 
   const config = new DocumentBuilder()
     .setTitle('HKRecruitment API')
