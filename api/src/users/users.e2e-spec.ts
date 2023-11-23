@@ -1,5 +1,5 @@
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
+import request from 'supertest';
 import { createApp, getAccessToken, getSub } from 'test/app.e2e-spec';
 import { CreateUserDto } from './create-user.dto';
 import { UsersService } from './users.service';
@@ -56,9 +56,13 @@ describe('UsersController (e2e)', () => {
     await app.close();
   });
 
+  const insertMockUsers = async () => {
+    await Promise.all(mockUsers.map(async (u) => await usersService.create(u)));
+  };
+
   describe('GET /users', () => {
     beforeEach(async () => {
-      await mockUsers.forEach(async (u) => await usersService.create(u));
+      await insertMockUsers();
     });
 
     it('should return all users for admin', async () => {
@@ -84,7 +88,7 @@ describe('UsersController (e2e)', () => {
 
   describe('GET /users/:oauthId', () => {
     beforeEach(async () => {
-      await mockUsers.forEach(async (u) => await usersService.create(u));
+      await insertMockUsers();
     });
 
     it('should allow reading any user for admin', async () => {
@@ -182,7 +186,7 @@ describe('UsersController (e2e)', () => {
 
   describe('PATCH /users/:oauthId', () => {
     beforeEach(async () => {
-      await mockUsers.forEach(async (u) => await usersService.create(u));
+      await insertMockUsers();
     });
 
     it('should allow updating themselves for applicants', async () => {
@@ -267,7 +271,7 @@ describe('UsersController (e2e)', () => {
 
   describe('DELETE /users/:oauthId', () => {
     beforeEach(async () => {
-      await mockUsers.forEach(async (u) => await usersService.create(u));
+      await insertMockUsers();
     });
 
     it('should allow deleting themselves for applicants', async () => {

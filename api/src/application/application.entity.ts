@@ -19,7 +19,7 @@ export class Application implements ApplicationInterface {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @Column()
+  @Column({ type: 'simple-enum' })
   type: ApplicationType;
 
   @Column('varchar', { length: 64, name: 'applicant_id' })
@@ -28,7 +28,7 @@ export class Application implements ApplicationInterface {
   @Column()
   submission: Date;
 
-  @Column()
+  @Column({ type: 'simple-enum' })
   state: ApplicationState;
 
   @Column({ name: 'last_modified', nullable: true })
@@ -46,7 +46,7 @@ export class Application implements ApplicationInterface {
   // @Column({ "name": "interview_id" })
   // interviewId: number;
 
-  @Column({ name: 'ita_level' })
+  @Column({ type: 'simple-enum', name: 'ita_level' })
   itaLevel: LangLevel;
 }
 

@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn,  } from 'typeorm';
 import { Person, Role } from '@hkrecruitment/shared';
 
 @Entity()
@@ -24,6 +24,6 @@ export class User implements Person {
   @Column({ nullable: true })
   telegramId?: string;
 
-  @Column()
+  @Column({ type: "simple-enum", enum: Role })
   role: Role;
 }
