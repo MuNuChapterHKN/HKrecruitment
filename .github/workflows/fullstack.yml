@@ -72,8 +72,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
-      - name: Checkout
-        uses: actions/checkout@v3
 
       - name: Check fomatting
         run: pnpm run format-check
@@ -112,8 +110,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
-      - name: Checkout
-        uses: actions/checkout@v3
 
       - name: Test building
         run: pnpm run build && pnpm run clean
