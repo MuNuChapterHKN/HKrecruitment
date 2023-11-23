@@ -5,7 +5,7 @@ on:
   - pull_request
 
 jobs:
-  test:
+  setup:
     runs-on: ubuntu-latest
 
     steps:
@@ -41,15 +41,41 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+  check-format:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Check fomatting
         run: pnpm run format-check
 
+  build:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Test building
         run: pnpm run build && pnpm run clean
+
+  unit:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Run shared unit tests
         run: pnpm --filter shared test
       - name: Run api unit tests
         run: pnpm --filter api test
+
+  e2e:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Run api e2e tests
         env:
           DATABASE_TYPE: sqlite
