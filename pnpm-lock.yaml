@@ -19,6 +19,9 @@ importers:
       '@hkrecruitment/shared':
         specifier: workspace:*
         version: link:../shared
+      '@joi/date':
+        specifier: ^2.1.0
+        version: 2.1.0
       '@nestjs/common':
         specifier: ^9.0.0
         version: 9.2.1(class-transformer@0.5.1)(reflect-metadata@0.1.13)(rxjs@7.5.7)
