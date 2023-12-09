@@ -1,5 +1,4 @@
 import { Action, ApplyAbilities } from "./abilities";
-import { Role } from "./person";
 import DateExtension from "@joi/date";
 import * as Joi from "joi";
 const JoiDate = Joi.extend(DateExtension);

@@ -1,5 +1,6 @@
+import { TimeSlot, createTimeSlotSchema } from "./timeslot";
 import { Action, ApplyAbilities } from "./abilities";
-import { Person, Role } from "./person";
+import { Person, Role, createUserSchema } from "./person";
 import * as Joi from "joi";
 
 export enum AvailabilityState {
@@ -14,21 +15,33 @@ export enum AvailabilityType {
 }
 
 export interface Availability {
+  id: number;
   state: AvailabilityState;
-  timeSlotId: number;
-  member: Person;
-  // assignedAt?: Date;
-  // confirmedAt?: Date;
-  // cancelledAt?: Date;
+  lastModified: Date;
+  timeSlot: TimeSlot;
+  user: Person;
 }
 
 /* Validation schemas */
 
-export const updateAvailabilitySchema = Joi.object<Availability>({
+export const insertAvailabilitySchema = Joi.object<Availability>({
   state: Joi.string()
     .valid(...Object.values(AvailabilityType))
     .required(),
-  timeSlotId: Joi.number().positive().required(),
+  lastModified: Joi.date().required(),
+  //timeSlot: Joi.object(createTimeSlotSchema).required(),
+  //user: Joi.object(createUserSchema).required(),
+}).options({
+  stripUnknown: true,
+  abortEarly: false,
+  presence: "required",
+});
+
+export const updateAvailabilitySchema = Joi.object<Availability>({
+  id: Joi.number().positive().integer().required(),
+  state: Joi.string()
+    .valid(...Object.values(AvailabilityType))
+    .required(),
 }).options({
   stripUnknown: true,
   abortEarly: false,
