@@ -12,7 +12,7 @@ import {
 } from 'src/application/application.entity';
 import { UpdateApplicationDto } from 'src/application/update-application.dto';
 
-export const testDate = new Date(2023, 0, 1);
+export const testDate = new Date(2023, 0, 1, 10, 0, 0);
 export const testDateTimeStart = new Date(2023, 0, 1, 10, 30, 0);
 export const testDateTime10Minutes = new Date(2023, 0, 1, 10, 40, 0);
 export const testDateTime3Hours = new Date(2023, 0, 1, 13, 30, 0);
@@ -155,4 +155,4 @@ export const applicationFiles = {
 export const applicantId = 'abc123';
 export const folderId = 'folder_abc123';
 export const fileId = 'file_abc123';
-export const today = '1/1/2023, 24:00:00';
+export const today = '1/1/2023, 10:00:00';

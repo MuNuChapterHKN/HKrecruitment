@@ -23,8 +23,8 @@ import { Availability } from './availability.entity';
 import Joi from 'joi';
 
 @ApiBearerAuth()
-@ApiTags('timeslots')
-@Controller('timeslots')
+@ApiTags('availability')
+@Controller('availability')
 export class AvailabilityController {
   constructor(private readonly availabilityService: AvailabilityService) {}
 

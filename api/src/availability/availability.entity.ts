@@ -8,7 +8,7 @@ import {
 import {
   Availability as AvailabilityInterface,
   AvailabilityState,
-} from '@hkrecruitment/shared/availability';
+} from '../../../shared/src/availability';
 import { User } from 'src/users/user.entity';
 import { TimeSlot } from 'src/timeslots/timeslot.entity';
 

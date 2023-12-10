@@ -204,7 +204,7 @@ describe('ApplicationsService', () => {
       const applicantId = 'abc123';
       const folderId = 'folder_abc123';
       const fileId = 'file_abc123';
-      const today = '1/1/2023, 24:00:00';
+      const today = '1/1/2023, 10:00:00';
       let mockApplication, mockCreateApplicationDTO;
       switch (applicationType) {
         case ApplicationType.BSC:
