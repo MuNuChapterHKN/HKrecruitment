@@ -1,6 +1,6 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import MyNavbar from "./MyNavbar";
 import SignupForm from "./SignupForm";
 import { Route } from "react-router-dom";
@@ -36,10 +36,6 @@ function App() {
       });
     }
   }, [isAuthenticated]);
-
-  if (accessToken === "") {
-    return <div>Loading...</div>;
-  }
 
   return (
     <Routes>
