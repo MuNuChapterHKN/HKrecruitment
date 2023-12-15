@@ -22,7 +22,7 @@ export class InterviewService {
   }
 
   async create(interview: CreateInterviewDto, application: Application, timeslot: TimeSlot): Promise<Interview> {
-    return await this.interviewRepository.save(interview);
+    return await this.interviewRepository.save({...interview, application, timeslot});
   }
 
   async update(interview: Interview): Promise<Interview> {

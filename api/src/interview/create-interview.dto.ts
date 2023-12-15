@@ -4,6 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 
 export class CreateInterviewDto implements Partial<Interview> {
+  
   @ApiProperty()
   notes: string;
 
@@ -12,6 +13,9 @@ export class CreateInterviewDto implements Partial<Interview> {
 
   @ApiProperty()
   id_timeslot: number;
+
+  @ApiProperty()
+  id_application: number;
 
   @ApiProperty()
   interviewer_1: User;

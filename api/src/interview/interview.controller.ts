@@ -12,6 +12,8 @@ import {
 } from '@nestjs/common';
 import { Interview } from './interview.entity';  
 import { InterviewService } from './interview.Service';
+import { TimeSlotsService } from '../timeslots/timeslots.service';
+import { ApplicationsService } from '../application/applications.service';
 import { CreateInterviewDto } from './create-interview.dto';
 import { UpdateInterviewDto } from './update-interview.dto';
 import {
@@ -38,7 +40,11 @@ import { Ability } from 'src/authorization/ability.decorator';
 @Controller('interview')
 
 export class InterviewController {
-  constructor(private readonly interviewService: InterviewService) {}
+  constructor(
+    private readonly interviewService: InterviewService,
+    private readonly timeSlotService: TimeSlotsService,
+    private readonly applicationService: ApplicationsService
+    ) {}
 
   @ApiNotFoundResponse()
   @ApiBadRequestResponse()
@@ -109,16 +115,25 @@ export class InterviewController {
   @JoiValidate({
     body: createInterviewSchema,
   })
+  @CheckPolicies((ability) => ability.can(Action.Create, 'Interview'))
   async create(
     @Body() interview: CreateInterviewDto,
     @Ability() ability: AppAbility,
     @Req() req: AuthenticatedRequest,
   ): Promise<Interview> {
-    if (!checkAbility(ability, Action.Create, interview, 'Interview')){
-      throw new ForbiddenException()};
-    return this.interviewService.create({
-
-    });
+      const timeslot = await this.timeSlotService.findById(interview.id_timeslot)
+      if (timeslot === null) {
+        throw new NotFoundException();
+      }
+      const application = await this.applicationService.findByApplicationId(interview.id_application)
+      if (application === null) {
+        throw new NotFoundException();
+      }
+    return this.interviewService.create(
+      interview,
+      application,
+      timeslot
+    );
   }
 }
    
