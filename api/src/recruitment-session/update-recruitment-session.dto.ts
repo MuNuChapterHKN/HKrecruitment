@@ -1,8 +1,12 @@
-import { RecruitmentSession, RecruitmentSessionState } from '@hkrecruitment/shared/recruitment-session';
+import {
+  RecruitmentSession,
+  RecruitmentSessionState,
+} from '@hkrecruitment/shared/recruitment-session';
 import { ApiProperty } from '@nestjs/swagger';
 
-
-export class UpdateRecruitmentSessionDto implements Partial<RecruitmentSession> {
+export class UpdateRecruitmentSessionDto
+  implements Partial<RecruitmentSession>
+{
   @ApiProperty({ required: false })
   state?: RecruitmentSessionState;
 

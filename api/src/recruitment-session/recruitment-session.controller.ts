@@ -1,30 +1,35 @@
 import {
-    Body,
-    Controller,
-    BadRequestException,
-    NotFoundException,
-    ConflictException,
-    Param,
-    Post,
-    Delete,
-    Req,
-    Patch,
-    ForbiddenException,
-  } from '@nestjs/common';
+  Body,
+  Controller,
+  BadRequestException,
+  NotFoundException,
+  ConflictException,
+  Param,
+  Post,
+  Delete,
+  Req,
+  Patch,
+  ForbiddenException,
+} from '@nestjs/common';
 import { RecruitmentSessionService } from './recruitment-session.service';
-import { createRecruitmentSessionSchema, RecruitmentSession, RecruitmentSessionState, updateRecruitmentSessionSchema } from '@hkrecruitment/shared/recruitment-session';
-import { Action, AppAbility, checkAbility } from "@hkrecruitment/shared"
+import {
+  createRecruitmentSessionSchema,
+  RecruitmentSession,
+  RecruitmentSessionState,
+  updateRecruitmentSessionSchema,
+} from '@hkrecruitment/shared/recruitment-session';
+import { Action, AppAbility, checkAbility } from '@hkrecruitment/shared';
 import { JoiValidate } from '../joi-validation/joi-validate.decorator';
 import {
-    ApiBadRequestResponse,
-    ApiBearerAuth,
-    ApiForbiddenResponse,
-    ApiNotFoundResponse,
-    ApiCreatedResponse,
-    ApiOkResponse,
-    ApiTags,
-    ApiConflictResponse,
-    ApiNoContentResponse,
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+  ApiConflictResponse,
+  ApiNoContentResponse,
 } from '@nestjs/swagger';
 import { CheckPolicies } from 'src/authorization/check-policies.decorator';
 import { CreateRecruitmentSessionDto } from './create-recruitment-session.dto';
@@ -39,64 +44,138 @@ import { RecruitmentSessionResponseDto } from './recruitment-session-response.dt
 @ApiTags('recruitment-session')
 @Controller('recruitment-session')
 export class RecruitmentSessionController {
-    constructor(private readonly recruitmentSessionService: RecruitmentSessionService) {}
-  
-    // CREATE NEW RECRUITMENT SESSION
-    @ApiBadRequestResponse()
-    @ApiForbiddenResponse()
-    @ApiConflictResponse({
-      description: 'The recruitment session cannot be created', //
-    })
-    @ApiCreatedResponse()
-    @JoiValidate({
-      body: createRecruitmentSessionSchema,
-    })
-    @CheckPolicies((ability) => ability.can(Action.Create, 'RecruitmentSession'))
-    @Post()
-    async createRecruitmentSession(@Body() rSess: CreateRecruitmentSessionDto): Promise<RecruitmentSession> {
-        return this.recruitmentSessionService.createRecruitmentSession({...rSess});
-    }
+  constructor(
+    private readonly recruitmentSessionService: RecruitmentSessionService,
+  ) {}
 
-    // UPDATE A RECRUITMENT SESSION
-    @Patch(':session_id')
-    @ApiBadRequestResponse()
-    @ApiForbiddenResponse()
-    @ApiOkResponse()
-    @JoiValidate({
-      param: Joi.number().positive().integer().required().label('session_id'),
-      body: updateRecruitmentSessionSchema,
-    })
-    async updateRecruitmentSession(
-      @Param('session_id') sessionId: number,
-      @Body() updateRecruitmentSession: UpdateRecruitmentSessionDto,
-      @Ability() ability: AppAbility,
-      @Req() req: AuthenticatedRequest,
-    ): Promise<RecruitmentSessionResponseDto> {
-      const session = await this.recruitmentSessionService.findRecruitmentSessionById(sessionId);
-      
-      if (session === null) throw new NotFoundException();
-  
-      const sessionToCheck = {
-        ...updateRecruitmentSession,
-        sessionId: session.id,
-      };
-      if (
-        !checkAbility(ability, Action.Update, sessionToCheck, 'RecruitmentSession', [
-          'applicantId',
-        ])
-      )
-        throw new ForbiddenException();
-  
-      const updatedRecruitmentSession = await this.recruitmentSessionService.updateRecruitmentSession(
-        {
-          ...session,
-          ...updateRecruitmentSession,
-          lastModified: new Date(),
-        },
+  // CREATE NEW RECRUITMENT SESSION
+  @ApiBadRequestResponse()
+  @ApiForbiddenResponse()
+  @ApiConflictResponse({
+    description: 'The recruitment session cannot be created', //
+  })
+  @ApiCreatedResponse()
+  @JoiValidate({
+    body: createRecruitmentSessionSchema,
+  })
+  @CheckPolicies((ability) => ability.can(Action.Create, 'RecruitmentSession'))
+  @Post()
+  async createRecruitmentSession(
+    @Body() recruitmentSession: CreateRecruitmentSessionDto,
+  ): Promise<RecruitmentSession> {
+    // there should be only one active recruitment session at a time
+    const hasActiveRecruitmentSession =
+      await this.recruitmentSessionService.findActiveRecruitmentSession();
+    if (hasActiveRecruitmentSession)
+      throw new ConflictException(
+        'There is already an active recruitment session',
       );
-  
-      return plainToClass(RecruitmentSessionResponseDto, updatedRecruitmentSession);
-    }
 
+    return this.recruitmentSessionService.createRecruitmentSession({
+      ...recruitmentSession,
+    });
+  }
 
+  // UPDATE A RECRUITMENT SESSION
+  @Patch(':session_id')
+  @ApiBadRequestResponse()
+  @ApiForbiddenResponse()
+  @ApiOkResponse()
+  @JoiValidate({
+    param: Joi.number().positive().integer().required().label('session_id'),
+    body: updateRecruitmentSessionSchema,
+  })
+  async updateRecruitmentSession(
+    @Param('session_id') sessionId: number,
+    @Body() updateRecruitmentSession: UpdateRecruitmentSessionDto,
+    @Ability() ability: AppAbility,
+    @Req() req: AuthenticatedRequest,
+  ): Promise<RecruitmentSessionResponseDto> {
+    const recruitmentSession =
+      await this.recruitmentSessionService.findRecruitmentSessionById(
+        sessionId,
+      );
+
+    if (recruitmentSession === null) throw new NotFoundException();
+
+    const sessionToCheck = {
+      ...updateRecruitmentSession,
+      sessionId: recruitmentSession.id,
+    };
+    if (
+      !checkAbility(
+        ability,
+        Action.Update,
+        sessionToCheck,
+        'RecruitmentSession',
+        ['applicantId'],
+      )
+    )
+      throw new ForbiddenException();
+
+    const updatedRecruitmentSession =
+      await this.recruitmentSessionService.updateRecruitmentSession({
+        ...recruitmentSession,
+        ...updateRecruitmentSession,
+        lastModified: new Date(),
+      });
+
+    return plainToClass(
+      RecruitmentSessionResponseDto,
+      updatedRecruitmentSession,
+    );
+  }
+
+  // DELETE A RECRUITMENT SESSION BY START & END DATE
+  @ApiBadRequestResponse()
+  @ApiForbiddenResponse()
+  @ApiNotFoundResponse()
+  @ApiOkResponse()
+  @ApiNoContentResponse()
+  @CheckPolicies((ability) => ability.can(Action.Delete, 'RecruitmentSession'))
+  // @Delete('/:time_slot_id')
+  // @JoiValidate({
+  //   param: Joi.number().positive().integer().required().label('time_slot_id'),
+  // })
+  async deleteTimeSlotByStartEnd(
+    @Param('start') startDate: Date,
+    @Param('end') endDate: Date,
+  ): Promise<RecruitmentSession> {
+    const toRemove =
+      await this.recruitmentSessionService.findRecruitmentSessionByStartEndDate(
+        startDate,
+        endDate,
+      );
+    if (!toRemove) throw new NotFoundException('Recruitment session not found');
+    return await this.recruitmentSessionService.deletRecruitmentSession(
+      toRemove,
+    );
+  }
+
+  // DELETE A RECRUITMENT SESSION
+  @ApiBadRequestResponse()
+  @ApiForbiddenResponse()
+  @ApiNotFoundResponse()
+  @ApiOkResponse()
+  @ApiNoContentResponse()
+  @CheckPolicies((ability) => ability.can(Action.Delete, 'RecruitmentSession'))
+  @Delete('/:recruitment_session_id')
+  @JoiValidate({
+    param: Joi.number().positive().integer().required().label('time_slot_id'),
+  })
+  async deleteTimeSlotById(
+    @Param('recruitment_session_id') recruitmentSessionId: number,
+  ): Promise<RecruitmentSession> {
+    // check if it exists
+    const toRemove =
+      await this.recruitmentSessionService.findRecruitmentSessionById(
+        recruitmentSessionId,
+      );
+    if (!toRemove) throw new NotFoundException('Recruitment session not found');
+
+    // delete it
+    return await this.recruitmentSessionService.deletRecruitmentSession(
+      toRemove,
+    );
+  }
 }

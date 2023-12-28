@@ -1,6 +1,8 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { RecruitmentSession as RecruitmentSessionInterface, RecruitmentSessionState } from '@hkrecruitment/shared/src/recruitment-session'
-
+import {
+  RecruitmentSession as RecruitmentSessionInterface,
+  RecruitmentSessionState,
+} from '@hkrecruitment/shared/src/recruitment-session';
 
 @Entity()
 export class RecruitmentSession implements RecruitmentSessionInterface {
@@ -10,21 +12,21 @@ export class RecruitmentSession implements RecruitmentSessionInterface {
   @Column()
   state: RecruitmentSessionState;
 
-  @Column()
+  @Column({ name: 'slot_duration' })
   slotDuration: number;
 
-  @Column()
+  @Column({ name: 'interview_start' })
   interviewStart: Date;
 
-  @Column()
+  @Column({ name: 'interview_end' })
   interviewEnd: Date;
 
   @Column()
   days: [Date];
 
-  @Column()
+  @Column({ name: 'created_at' })
   createdAt: Date;
 
-  @Column()
+  @Column({ name: 'last_modified' })
   lastModified: Date;
 }
