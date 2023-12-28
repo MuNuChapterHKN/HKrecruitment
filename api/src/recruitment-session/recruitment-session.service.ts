@@ -15,11 +15,14 @@ export class RecruitmentSessionService {
   async createRecruitmentSession(
     recruitmentSession: CreateRecruitmentSessionDto,
   ): Promise<RecruitmentSession> {
-    let rs = await this.recruitmentSessionRepository.save(recruitmentSession);
-    rs.state = RecruitmentSessionState.Active;
     let now = new Date();
-    rs.createdAt = now;
-    rs.lastModified = now;
+    const rs = {
+      ...recruitmentSession,
+      state: RecruitmentSessionState.Active,
+      createdAt: now,
+      lastModified: now,
+    } as RecruitmentSession;
+    await this.recruitmentSessionRepository.save(rs);
     return rs;
   }
 
@@ -37,19 +40,9 @@ export class RecruitmentSessionService {
     });
   }
 
-  async findRecruitmentSessionByStartEndDate(
-    start: Date,
-    end: Date,
-  ): Promise<RecruitmentSession> {
-    return await this.recruitmentSessionRepository.findOne({
-      where: { interviewStart: start, interviewEnd: end },
-    });
-  }
-
   async deletRecruitmentSession(
     recruitmentSession: RecruitmentSession,
   ): Promise<RecruitmentSession> {
-    // let toRemove = await this.findRecruitmentSessionByStartEndDate(start, end);
     return await this.recruitmentSessionRepository.remove(recruitmentSession);
   }
 
@@ -57,20 +50,5 @@ export class RecruitmentSessionService {
     recruitmentSession: RecruitmentSession,
   ): Promise<RecruitmentSession> {
     return await this.recruitmentSessionRepository.save(recruitmentSession);
-  }
-
-  // udpate state active with respect to current date
-  async updateAllStates() {
-    let now: number = new Date().getTime();
-    let list: RecruitmentSession[] =
-      await this.recruitmentSessionRepository.find({
-        where: { state: RecruitmentSessionState.Active },
-      });
-    list.forEach((recruitmentSession) => {
-      if (now >= recruitmentSession.interviewEnd.getTime()) {
-        recruitmentSession.state = RecruitmentSessionState.Concluded;
-        this.updateRecruitmentSession(recruitmentSession);
-      }
-    });
   }
 }

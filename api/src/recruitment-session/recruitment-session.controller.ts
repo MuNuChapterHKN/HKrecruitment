@@ -126,32 +126,6 @@ export class RecruitmentSessionController {
     );
   }
 
-  // DELETE A RECRUITMENT SESSION BY START & END DATE
-  @ApiBadRequestResponse()
-  @ApiForbiddenResponse()
-  @ApiNotFoundResponse()
-  @ApiOkResponse()
-  @ApiNoContentResponse()
-  @CheckPolicies((ability) => ability.can(Action.Delete, 'RecruitmentSession'))
-  // @Delete('/:time_slot_id')
-  // @JoiValidate({
-  //   param: Joi.number().positive().integer().required().label('time_slot_id'),
-  // })
-  async deleteTimeSlotByStartEnd(
-    @Param('start') startDate: Date,
-    @Param('end') endDate: Date,
-  ): Promise<RecruitmentSession> {
-    const toRemove =
-      await this.recruitmentSessionService.findRecruitmentSessionByStartEndDate(
-        startDate,
-        endDate,
-      );
-    if (!toRemove) throw new NotFoundException('Recruitment session not found');
-    return await this.recruitmentSessionService.deletRecruitmentSession(
-      toRemove,
-    );
-  }
-
   // DELETE A RECRUITMENT SESSION
   @ApiBadRequestResponse()
   @ApiForbiddenResponse()
