@@ -2,8 +2,6 @@ import { testDate } from '@mocks/data';
 import { AvailabilityController } from './availability.controller';
 import { AvailabilityService } from './availability.service';
 import { TestBed } from '@automock/jest';
-import { createMockAbility } from '@hkrecruitment/shared/abilities.spec';
-import { Action } from '@hkrecruitment/shared';
 
 describe('AvailabilityController', () => {
   let controller: AvailabilityController;
