@@ -28,7 +28,6 @@ export const insertAvailabilitySchema = Joi.object<Availability>({
   state: Joi.string()
     .valid(...Object.values(AvailabilityType))
     .required(),
-  lastModified: Joi.date().required(),
   //timeSlot: Joi.object(createTimeSlotSchema).required(),
   //user: Joi.object(createUserSchema).required(),
 }).options({

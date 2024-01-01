@@ -1,7 +1,18 @@
-import { Body, Controller, Delete, Param, Patch, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  ForbiddenException,
+  NotFoundException,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { AvailabilityService } from './availability.service';
 import {
   Action,
+  checkAbility,
   insertAvailabilitySchema,
   updateAvailabilitySchema,
 } from '@hkrecruitment/shared';
@@ -28,39 +39,38 @@ import Joi from 'joi';
 export class AvailabilityController {
   constructor(private readonly availabilityService: AvailabilityService) {}
 
-  @ApiBadRequestResponse()
-  @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   @ApiOkResponse()
-  @ApiNoContentResponse()
+  @ApiForbiddenResponse()
   @ApiBadGatewayResponse()
   async listAvailabilities(): Promise<Availability[]> {
     const matches = await this.availabilityService.listAvailabilities();
+    if (matches.length == 0) {
+      throw new NotFoundException();
+    }
     return matches;
   }
 
-  @ApiBadRequestResponse()
-  @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   @ApiOkResponse()
-  @ApiNoContentResponse()
   @ApiBadGatewayResponse()
+  @ApiBadRequestResponse()
+  @ApiForbiddenResponse()
   @JoiValidate({
     param: Joi.number().positive().integer().required(),
   })
   async findAvailabilityById(id: number): Promise<Availability> {
-    const matches = await this.availabilityService.findAvailabilityById(id);
-    return matches;
+    const match = await this.availabilityService.findAvailabilityById(id);
+    if (!match) {
+      throw new NotFoundException();
+    }
+    return match;
   }
 
+  @ApiCreatedResponse()
   @ApiBadRequestResponse()
   @ApiForbiddenResponse()
-  @ApiNotFoundResponse()
-  @ApiOkResponse()
-  @ApiNoContentResponse()
   @ApiBadGatewayResponse()
-  @ApiConflictResponse()
-  @ApiCreatedResponse()
   @CheckPolicies((ability) => ability.can(Action.Create, 'Availability'))
   @Post()
   @JoiValidate({
@@ -70,49 +80,64 @@ export class AvailabilityController {
     const res = await this.availabilityService.createAvailability(body);
     if (res.identifiers.length > 0) {
       return true;
+    } else {
+      throw new ForbiddenException();
     }
-    return false;
   }
 
+  @ApiNotFoundResponse()
+  @ApiNoContentResponse()
   @ApiBadRequestResponse()
   @ApiForbiddenResponse()
-  @ApiNotFoundResponse()
-  @ApiOkResponse()
-  @ApiNoContentResponse()
   @ApiBadGatewayResponse()
-  @ApiConflictResponse()
-  @ApiCreatedResponse()
   @CheckPolicies((ability) => ability.can(Action.Create, 'Availability'))
   @Patch()
   @JoiValidate({
     body: updateAvailabilitySchema,
   })
   async updateAvailability(@Body() body: Availability): Promise<boolean> {
-    const res = await this.availabilityService.updateAvailability(body);
-    if (res.affected != undefined && res.affected != null && res.affected > 0) {
-      return true;
+    const test = await this.findAvailabilityById(body.id);
+    if (test) {
+      const res = await this.availabilityService.updateAvailability(body);
+      if (
+        res.affected != undefined &&
+        res.affected != null &&
+        res.affected > 0
+      ) {
+        return true;
+      } else {
+        throw new ForbiddenException();
+      }
+    } else {
+      throw new NotFoundException();
     }
-    return false;
   }
 
+  @ApiNotFoundResponse()
+  @ApiNoContentResponse()
   @ApiBadRequestResponse()
   @ApiForbiddenResponse()
-  @ApiNotFoundResponse()
-  @ApiOkResponse()
-  @ApiNoContentResponse()
   @ApiBadGatewayResponse()
-  @ApiConflictResponse()
-  @ApiCreatedResponse()
   @CheckPolicies((ability) => ability.can(Action.Create, 'Availability'))
   @Delete()
   @JoiValidate({
     param: Joi.number().positive().integer().required(),
   })
   async deleteAvailability(@Param() id: number): Promise<boolean> {
-    const res = await this.availabilityService.deleteAvailability(id);
-    if (res.affected != undefined && res.affected != null && res.affected > 0) {
-      return true;
+    const test = await this.findAvailabilityById(id);
+    if (test) {
+      const res = await this.availabilityService.deleteAvailability(id);
+      if (
+        res.affected != undefined &&
+        res.affected != null &&
+        res.affected > 0
+      ) {
+        return true;
+      } else {
+        throw new ForbiddenException();
+      }
+    } else {
+      throw new NotFoundException();
     }
-    return false;
   }
 }

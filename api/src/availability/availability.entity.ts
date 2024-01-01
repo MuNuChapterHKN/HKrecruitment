@@ -18,7 +18,7 @@ export class Availability implements AvailabilityInterface {
   id: number;
   @Column()
   state: AvailabilityState;
-  @Column()
+  @Column({ name: 'last_modified' })
   lastModified: Date;
   @OneToOne(() => TimeSlot)
   timeSlot: TimeSlot;
