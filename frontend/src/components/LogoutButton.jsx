@@ -13,7 +13,11 @@ const LogoutButton = () => {
     });
   };
 
-  return <Button variant="outline-light" onClick={handleLogout}>Log Out</Button>;
+  return (
+    <Button variant="outline-light" onClick={handleLogout}>
+      Log Out
+    </Button>
+  );
 };
 
 export default LogoutButton;
