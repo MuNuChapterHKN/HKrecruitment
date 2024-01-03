@@ -25,7 +25,8 @@ function App() {
       <HKNavbar />
       <PageLayout>
         <Alert variant="warning">
-          <strong>Note:</strong> all of this is work-in-progress, stuff <u>will</u> change!
+          <strong>Note:</strong> all of this is work-in-progress, stuff{" "}
+          <u>will</u> change!
         </Alert>
         {isLoading ? (
           <LoadingSpinner />
