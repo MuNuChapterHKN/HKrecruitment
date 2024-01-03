@@ -1,70 +1,55 @@
-import "./App.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import React, { useEffect, useState } from "react";
-import MyNavbar from "./MyNavbar";
-import SignupForm from "./SignupForm";
-import { Route } from "react-router-dom";
-import { Navigate } from "react-router-dom";
-import { Routes } from "react-router-dom";
+import React from "react";
+import { Route, Routes } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-import AvaiabilitiesTable from "./AvaiabilitiesTable";
+
+import Alert from "react-bootstrap/Alert";
+
+import HKNavbar from "./components/HKNavbar";
+import PageLayout from "./components/PageLayout";
+import LoadingSpinner from "./components/LoadingSpinner";
+import AuthGuard from "./components/AuthGuard";
+
+import HomePage from "./pages/HomePage";
+import ApplyPage from "./pages/ApplyPage";
+import AvailabilitiesPage from "./pages/AvailabilitiesPage";
+import DebugPage from "./pages/DebugPage";
+import NotFoundPage from "./pages/NotFoundPage";
+
+import "./App.css";
 
 function App() {
-  function parseJwt(token) {
-    return JSON.parse(Buffer.from(token.split(".")[1], "base64").toString());
-  }
-
-  const {
-    isLoading,
-    isAuthenticated,
-    error,
-    user,
-    loginWithRedirect,
-    logout,
-    getAccessTokenSilently,
-  } = useAuth0();
-
-  const [accessToken, setAccessToken] = useState("");
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      getAccessTokenSilently({
-        audience: import.meta.env.VITE_AUTH0_AUDIENCE,
-        grant_type: "client_credentials",
-      }).then((token) => {
-        setAccessToken(parseJwt(token));
-      });
-    }
-  }, [isAuthenticated]);
+  const { isLoading } = useAuth0();
 
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <AfterLogin
-            isAuthenticated={isAuthenticated}
-            user={user}
-            token={accessToken}
-          />
-        }
-      />
-      <Route path="/*" element={<Navigate to="/" />} />
-    </Routes>
+    <>
+      <HKNavbar />
+      <PageLayout>
+        <Alert variant="warning">
+          <strong>Note:</strong> all of this is work-in-progress, stuff <u>will</u> change!
+        </Alert>
+        {isLoading ? (
+          <LoadingSpinner />
+        ) : (
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route
+              path="/apply"
+              element={<AuthGuard component={ApplyPage} />}
+            />
+            <Route
+              path="/availabilities"
+              element={<AuthGuard component={AvailabilitiesPage} />}
+            />
+            <Route
+              path="/debug"
+              element={<AuthGuard component={DebugPage} />}
+            />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        )}
+      </PageLayout>
+    </>
   );
 }
+
 export default App;
-
-function AfterLogin(props) {
-  return (
-    <div>
-      {" "}
-      <MyNavbar />
-      {props.isAuthenticated &&
-        !props.user.email.endsWith("@hknpolito.org") && <SignupForm />}
-      {props.isAuthenticated && props.user.email.endsWith("@hknpolito.org") && (
-        <AvaiabilitiesTable token={props.accessToken} />
-      )}
-    </div>
-  );
-}

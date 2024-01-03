@@ -2,12 +2,12 @@ import Table from "react-bootstrap/Table";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import AvaiabilitiesCell from "./AvaiabilitiesCell";
+import AvaiabilitiesCell from "./AvailabilitiesCell";
 import moment from "moment";
 import { useState, useEffect } from "react";
 import { createUserSchema } from "@hkrecruitment/shared";
 import React from "react";
-import { getApplicants, getUsers, getInterviewsByDates } from "./ApiRequests";
+// import { getApplicants, getUsers, getInterviewsByDates } from "../services/API";
 
 function AvaiabilitiesTable(props) {
   //const start = "2014-09-08T08:00:00";
@@ -29,13 +29,13 @@ function AvaiabilitiesTable(props) {
   // Suppongo che interviews restituisca un array di colloqui fissati in un certo periodo, ciascuno con data e ora
   const [interviews, setInterviews] = useState(null);
 
-  useEffect(() => {
-    if (startDate !== null) {
-      setInterviews(
-        getInterviewsByDates(startDate.getDate(), startDate.getDate() + 7)
-      );
-    }
-  }, [startDate]);
+  // useEffect(() => {
+  //   if (startDate !== null) {
+  //     setInterviews(
+  //       getInterviewsByDates(startDate.getDate(), startDate.getDate() + 7)
+  //     );
+  //   }
+  // }, [startDate]);
 
   // Crea una matrice 16x7 a partire dalle interviste
   let fill = [[], []];

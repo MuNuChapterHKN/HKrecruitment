@@ -1,82 +1,13 @@
-.App {
-  text-align: center;
+:root {
+  --hkblue: #061e33;
+  --hkwhite: #ffffff;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+  background-color: var(--hkblue);
+  color: var(--hkwhite);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: black;
-}
-.active {
-  background: green !important;
-  color: white !important;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-.black {
-  color: white;
-  background-color: #282c34;
-  background: #282c34;
-}
-
-.pink {
-  color: black;
-  background-color: pink;
-  background: pink;
-}
-
-.submitButton {
-  background-color: #00629b !important;
-  background: #00629b !important;
-}
-.myNavbar {
-  background-color: #f9f9f9;
-}
-.table {
-  --bs-table-bg: rgba(55, 81, 113, 0.8) !important  ;
-  --bs-table-accent-bg: transparent;
-  --bs-table-striped-color: white !important;
-  --bs-table-striped-bg: rgba(55, 81, 113, 0.8) !important ;
-  --bs-table-active-color: white !important;
-  --bs-table-active-bg: rgba(0, 0, 0, 0.1);
-  --bs-table-hover-color: white !important ;
-  --bs-table-hover-bg: rgba(0, 0, 0, 0.075);
-  width: 100%;
-  margin-bottom: 1rem;
-  color: white important!;
-  vertical-align: top;
-  border-color: #dee2e6;
-}
-
-.table > thead {
-  vertical-align: bottom;
-  background-color: rgba(55, 81, 113, 1);
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+a {
+  color: var(--hkwhite);
 }
