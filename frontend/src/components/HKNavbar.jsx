@@ -45,10 +45,10 @@ const HKNavbar = () => {
             ) : !isAuthenticated ? (
               <LoginButton />
             ) : (
-              <>
+              <div id="profile-nav-dropdown">
                 <NavDropdown
                   title={
-                    <Image
+                    <Image className="me-2 border"
                       fluid
                       alt="Picture"
                       src={user.picture}
@@ -57,12 +57,13 @@ const HKNavbar = () => {
                       roundedCircle
                     />
                   }
+
                 >
-                  <NavDropdown.ItemText>{user.name}</NavDropdown.ItemText>
+                  <NavDropdown.ItemText>{user.name ? user.name : user.email}</NavDropdown.ItemText>
                   <NavDropdown.Divider />
                   <LogoutButton />
                 </NavDropdown>
-              </>
+              </div>
             )}
           </Col>
         </Navbar>
