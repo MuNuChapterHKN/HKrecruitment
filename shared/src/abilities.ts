@@ -9,8 +9,8 @@ import { applyAbilitiesForPerson, Person, Role } from "./person";
 import { Application, applyAbilitiesOnApplication } from "./application";
 import { applyAbilitiesOnAvailability, Availability } from "./availability";
 import { TimeSlot } from "./timeslot";
-import { RecruitmentSession } from "recruitment-session";
-import { applyAbilitiesOnRecruitmentSession } from "recruitment-session";
+import { RecruitmentSession } from "./recruitment-session";
+import { applyAbilitiesOnRecruitmentSession } from "./recruitment-session";
 
 export interface UserAuth {
   sub: string;
