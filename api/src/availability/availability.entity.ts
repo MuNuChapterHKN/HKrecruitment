@@ -22,9 +22,9 @@ export class Availability implements AvailabilityInterface {
   @Column({ name: 'last_modified' })
   lastModified: Date;
   @Column({ name: 'time_slot' })
-  @ManyToOne(() => TimeSlot, (timeSlot) => timeSlot.availabilities)
+  @ManyToOne(() => TimeSlot)
   timeSlot: TimeSlot;
-  @ManyToOne(() => User, (user) => user.availabilities)
+  @ManyToOne(() => User)
   @JoinColumn()
   user: User;
 }

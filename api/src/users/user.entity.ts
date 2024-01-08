@@ -27,7 +27,4 @@ export class User implements Person {
 
   @Column()
   role: Role;
-
-  @OneToMany(() => Availability, (availability) => availability.user)
-  availabilities: Availability[];
 }

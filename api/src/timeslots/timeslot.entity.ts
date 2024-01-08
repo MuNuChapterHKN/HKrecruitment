@@ -12,7 +12,4 @@ export class TimeSlot implements TimeSlotInterface {
 
   @Column()
   end: Date;
-
-  @OneToMany(() => Availability, (availability) => availability.timeSlot)
-  availabilities: Availability[];
 }
