@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { TimeSlot as TimeSlotInterface } from '@hkrecruitment/shared';
+import { Availability } from 'src/availability/availability.entity';
 
 @Entity()
 export class TimeSlot implements TimeSlotInterface {
@@ -11,4 +12,7 @@ export class TimeSlot implements TimeSlotInterface {
 
   @Column()
   end: Date;
+
+  @OneToMany(() => Availability, (availability) => availability.timeSlot)
+  availabilities: Availability[];
 }

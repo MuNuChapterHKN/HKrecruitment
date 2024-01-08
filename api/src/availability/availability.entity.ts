@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -20,9 +21,10 @@ export class Availability implements AvailabilityInterface {
   state: AvailabilityState;
   @Column({ name: 'last_modified' })
   lastModified: Date;
-  @OneToOne(() => TimeSlot)
+  @Column({ name: 'time_slot' })
+  @ManyToOne(() => TimeSlot, (timeSlot) => timeSlot.availabilities)
   timeSlot: TimeSlot;
-  @OneToOne(() => User)
+  @ManyToOne(() => User, (user) => user.availabilities)
   @JoinColumn()
   user: User;
 }
