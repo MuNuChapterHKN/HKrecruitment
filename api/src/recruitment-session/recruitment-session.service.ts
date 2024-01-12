@@ -21,7 +21,7 @@ export class RecruitmentSessionService {
       state: RecruitmentSessionState.Active,
       createdAt: now,
       lastModified: now,
-    } as RecruitmentSession;
+    } as unknown as RecruitmentSession;
     await this.recruitmentSessionRepository.save(rs);
     return rs;
   }

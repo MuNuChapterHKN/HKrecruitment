@@ -21,8 +21,8 @@ export class RecruitmentSession implements RecruitmentSessionInterface {
   @Column({ name: 'interview_end' })
   interviewEnd: Date;
 
-  @Column()
-  days: [Date];
+  @Column({array:true})
+  days: Date[];
 
   @Column({ name: 'created_at' })
   createdAt: Date;

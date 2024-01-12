@@ -17,7 +17,7 @@ export interface RecruitmentSession {
   slotDuration: number;
   interviewStart: Date;
   interviewEnd: Date;
-  days: [Date];
+  days: Date[];
   createdAt: Date;
   lastModified: Date;
 }
