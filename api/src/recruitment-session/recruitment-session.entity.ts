@@ -12,21 +12,21 @@ export class RecruitmentSession implements RecruitmentSessionInterface {
   @Column()
   state: RecruitmentSessionState;
 
-  @Column({ name: 'slot_duration' })
+  @Column('int', { name: 'slot_duration' })
   slotDuration: number;
 
-  @Column({ name: 'interview_start' })
+  @Column('date', { name: 'interview_start' })
   interviewStart: Date;
 
-  @Column({ name: 'interview_end' })
+  @Column('date', { name: 'interview_end' })
   interviewEnd: Date;
 
   @Column('date', { array: true })
   days: Date[];
 
-  @Column({ name: 'created_at' })
+  @Column('date', { name: 'created_at' })
   createdAt: Date;
 
-  @Column({ name: 'last_modified' })
+  @Column('date', { name: 'last_modified' })
   lastModified: Date;
 }
