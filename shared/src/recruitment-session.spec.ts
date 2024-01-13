@@ -12,7 +12,7 @@ describe("RecruitmentSession", () => {
     const mockRecSess: Partial<RecruitmentSession> = {
       state: RecruitmentSessionState.Active,
       slotDuration: 5,
-      interviewStart: new Date("15:20"),
+      interviewStart: "15:20" as unknown as Date,
       interviewEnd: new Date("16:30"),
       days: [new Date("2024-12-23"), new Date("2024-12-23")],
       lastModified: new Date("2023-10-20 15:10"),
