@@ -26,10 +26,10 @@ export interface RecruitmentSession {
 
 export const createRecruitmentSessionSchema = Joi.object<RecruitmentSession>({
   state: Joi.string().valid("active", "concluded").required(),
-  slotDuration: Joi.number().integer(),
+  slotDuration: Joi.number().integer().optional(),
   interviewStart: JoiDate.date().format("HH:mm").required(),
   interviewEnd: JoiDate.date().format("HH:mm").required(),
-  days: Joi.array().items(JoiDate.date().format("YYYY-MM-DD")),
+  days: Joi.array().items(JoiDate.date().format("YYYY-MM-DD")).optional(),
   lastModified: JoiDate.date().format("YYYY-MM-DD HH:mm").required(),
 }).options({
   stripUnknown: true,
@@ -39,7 +39,7 @@ export const createRecruitmentSessionSchema = Joi.object<RecruitmentSession>({
 
 export const updateRecruitmentSessionSchema = Joi.object<RecruitmentSession>({
   state: Joi.string().valid("active", "concluded").optional(),
-  slotDuration: Joi.number().integer(),
+  slotDuration: Joi.number().integer().optional(),
   interviewStart: JoiDate.date().format("YYYY-MM-DD HH:mm").optional(),
   interviewEnd: JoiDate.date().format("YYYY-MM-DD HH:mm").optional(),
   days: Joi.array().items(JoiDate.date().format("YYYY-MM-DD")).optional(),
