@@ -13,7 +13,7 @@ describe("RecruitmentSession", () => {
       state: RecruitmentSessionState.Active,
       slotDuration: 5,
       interviewStart: "15:20" as unknown as Date,
-      interviewEnd: new Date("16:30"),
+      interviewEnd: "16:30" as unknown as Date,
       days: [new Date("2024-12-23"), new Date("2024-12-23")],
       lastModified: new Date("2023-10-20 15:10"),
     };
