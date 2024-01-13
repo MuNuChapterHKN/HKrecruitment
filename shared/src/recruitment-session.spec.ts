@@ -21,7 +21,7 @@ describe("RecruitmentSession", () => {
     it("should allow a valid recruitment session", () => {
       expect(
         createRecruitmentSessionSchema.validate(mockRecSess)
-      ).not.toHaveProperty("erroe");
+      ).not.toHaveProperty("error");
     });
 
     it("should allow to not set optional fields", () => {
@@ -65,7 +65,7 @@ describe("RecruitmentSession", () => {
       expect(error.message).toMatch(/.+interviewEnd.+ is required/);
     });
 
-    it("CONTROLLA", () => {
+    it("should require last modified", () => {
       const session: Partial<RecruitmentSession> = {
         ...mockRecSess,
         lastModified: undefined,
