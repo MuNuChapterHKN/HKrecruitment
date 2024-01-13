@@ -6,13 +6,14 @@ import {
 } from "./recruitment-session";
 import { createMockAbility } from "./abilities.spec";
 import { Action, UserAuth, checkAbility } from "./abilities";
+import { expression } from "joi";
 
-describe("RecruitmentSession", () => {
+describe("Recruitment Session", () => {
   describe("createRecruitmentSessionSchema", () => {
     const mockRecSess: Partial<RecruitmentSession> = {
       state: RecruitmentSessionState.Active,
       slotDuration: 5,
-      interviewStart: "15:20" as unknown as Date,
+      interviewStart: "11:55" as unknown as Date,
       interviewEnd: "16:30" as unknown as Date,
       days: [new Date("2024-12-23"), new Date("2024-12-23")],
       lastModified: new Date("2023-10-20 15:10"),
@@ -73,6 +74,10 @@ describe("RecruitmentSession", () => {
       const { error } = createRecruitmentSessionSchema.validate(session);
       expect(error).toBeDefined();
       expect(error.message).toMatch(/.+lastModified.+ is required/);
+    });
+
+    it("check interview start type: should be 11:55", () => {
+      expect(mockRecSess.interviewStart).toMatch("11:55");
     });
   });
 });
