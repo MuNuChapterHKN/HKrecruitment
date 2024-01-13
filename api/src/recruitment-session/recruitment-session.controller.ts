@@ -137,7 +137,7 @@ export class RecruitmentSessionController {
   @JoiValidate({
     param: Joi.number().positive().integer().required().label('time_slot_id'),
   })
-  async deleteTimeSlotById(
+  async deleteRecruitmentSessionById(
     @Param('recruitment_session_id') recruitmentSessionId: number,
   ): Promise<RecruitmentSession> {
     // check if it exists
