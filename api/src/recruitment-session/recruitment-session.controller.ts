@@ -10,6 +10,7 @@ import {
   Req,
   Patch,
   ForbiddenException,
+  Get,
 } from '@nestjs/common';
 import { RecruitmentSessionService } from './recruitment-session.service';
 import {
@@ -30,6 +31,7 @@ import {
   ApiTags,
   ApiConflictResponse,
   ApiNoContentResponse,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { CheckPolicies } from 'src/authorization/check-policies.decorator';
 import { CreateRecruitmentSessionDto } from './create-recruitment-session.dto';
@@ -39,6 +41,7 @@ import { Ability } from 'src/authorization/ability.decorator';
 import { AuthenticatedRequest } from 'src/authorization/authenticated-request.types';
 import { plainToClass } from 'class-transformer';
 import { RecruitmentSessionResponseDto } from './recruitment-session-response.dto';
+import { User } from 'src/users/user.entity';
 
 @ApiBearerAuth()
 @ApiTags('recruitment-session')
@@ -47,6 +50,27 @@ export class RecruitmentSessionController {
   constructor(
     private readonly recruitmentSessionService: RecruitmentSessionService,
   ) {}
+
+  // FIND ACTIVE RECRUITMENT SESSION
+  @ApiNotFoundResponse()
+  @ApiUnauthorizedResponse()
+  @Get()
+  @CheckPolicies((ability) => ability.can(Action.Read, 'RecruitmentSession'))
+  async findActive(
+    @Ability() ability: AppAbility,
+  ): Promise<RecruitmentSession> {
+    const recruitmentSession =
+      await this.recruitmentSessionService.findActiveRecruitmentSession();
+    if (recruitmentSession === null) {
+      throw new NotFoundException();
+    }
+
+    if (!checkAbility(ability, Action.Read, recruitmentSession, 'Person')) {
+      throw new ForbiddenException();
+    }
+
+    return recruitmentSession;
+  }
 
   // CREATE NEW RECRUITMENT SESSION
   @ApiBadRequestResponse()

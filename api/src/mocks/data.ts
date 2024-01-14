@@ -11,6 +11,7 @@ import {
   PhdApplication,
 } from 'src/application/application.entity';
 import { UpdateApplicationDto } from 'src/application/update-application.dto';
+import { RecruitmentSessionState } from '@hkrecruitment/shared/recruitment-session';
 
 export const testDate = new Date(2023, 0, 1);
 export const testDateTimeStart = new Date(2023, 0, 1, 10, 30, 0);
@@ -22,6 +23,25 @@ export const mockTimeSlot = {
   start: testDateTimeStart,
   end: testDateTimeEnd,
   id: 1,
+};
+
+export const testInterviewStart = '11:55' as unknown as Date;
+export const testInterviewEnd = '20:35' as unknown as Date;
+export const testDay1 = '2024-10-20' as unknown as Date;
+export const testDay2 = '2024-10-21' as unknown as Date;
+export const testDay3 = '2024-10-22' as unknown as Date;
+export const testDateCreatedAt = '2024-9-10' as unknown as Date;
+export const testDateLastModified = '2024-9-12' as unknown as Date;
+
+export const mockRecruitmentSession = {
+  id: 1,
+  state: RecruitmentSessionState.Active,
+  slotDuration: 50,
+  interviewStart: testInterviewStart,
+  interviewEnd: testInterviewEnd,
+  days: [testDay1, testDay2, testDay3],
+  createdAt: testDateCreatedAt,
+  lastModified: testDateLastModified,
 };
 
 export const baseFile = {
