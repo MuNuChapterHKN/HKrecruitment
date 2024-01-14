@@ -42,7 +42,8 @@ describe('Recruitment Session Service', () => {
         .spyOn(mockedRepository, 'remove')
         .mockResolvedValue(mockRecruitmentSession);
       const result = recruitmentSessionService.deletRecruitmentSession(
-        mockRecruitmentSession,
+        // perché non prende "await"
+        mockRecruitmentSession, // nonostante la funzione nel service sia async ??
       );
       expect(result).toEqual([mockRecruitmentSession]);
       expect(mockedRepository.find).toHaveBeenCalledTimes(1);
