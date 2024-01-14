@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Availability } from './availability.entity';
+import { CreateAvailabilityDto } from './create-availability.dto';
 
 @Injectable()
 export class AvailabilityService {
@@ -21,18 +22,21 @@ export class AvailabilityService {
     return matches.length > 0 ? matches[0] : null;
   }
 
-  async createAvailability(availability: Availability): Promise<InsertResult> {
-    return await this.availabilityRepository.insert(availability);
+  async createAvailability(
+    availability: CreateAvailabilityDto,
+  ): Promise<Availability> {
+    return await this.availabilityRepository.save(availability);
   }
 
-  async updateAvailability(availability: Availability): Promise<UpdateResult> {
-    return await this.availabilityRepository.update(
-      availability.id,
-      availability,
-    );
+  async updateAvailability(
+    oldAvailability: Availability,
+    newAvailability: Availability,
+  ): Promise<Availability> {
+    await this.availabilityRepository.remove(oldAvailability);
+    return await this.availabilityRepository.save(newAvailability);
   }
 
-  async deleteAvailability(id: number): Promise<DeleteResult> {
-    return await this.availabilityRepository.delete(id);
+  async deleteAvailability(availability: Availability): Promise<Availability> {
+    return await this.availabilityRepository.remove(availability);
   }
 }

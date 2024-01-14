@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -12,7 +11,6 @@ import {
 import { AvailabilityService } from './availability.service';
 import {
   Action,
-  checkAbility,
   insertAvailabilitySchema,
   updateAvailabilitySchema,
 } from '@hkrecruitment/shared';
@@ -25,13 +23,13 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiTags,
-  ApiConflictResponse,
   ApiNoContentResponse,
   ApiBadGatewayResponse,
 } from '@nestjs/swagger';
 import { CheckPolicies } from 'src/authorization/check-policies.decorator';
 import { Availability } from './availability.entity';
 import Joi from 'joi';
+import { CreateAvailabilityDto } from './create-availability.dto';
 
 @ApiBearerAuth()
 @ApiTags('availability')
@@ -76,10 +74,12 @@ export class AvailabilityController {
   @JoiValidate({
     body: insertAvailabilitySchema,
   })
-  async createAvailability(@Body() body: Availability): Promise<boolean> {
+  async createAvailability(
+    @Body() body: CreateAvailabilityDto,
+  ): Promise<Availability> {
     const res = await this.availabilityService.createAvailability(body);
-    if (res.identifiers.length > 0) {
-      return true;
+    if (res) {
+      return res;
     } else {
       throw new ForbiddenException();
     }
@@ -95,16 +95,12 @@ export class AvailabilityController {
   @JoiValidate({
     body: updateAvailabilitySchema,
   })
-  async updateAvailability(@Body() body: Availability): Promise<boolean> {
+  async updateAvailability(@Body() body: Availability): Promise<Availability> {
     const test = await this.findAvailabilityById(body.id);
     if (test) {
-      const res = await this.availabilityService.updateAvailability(body);
-      if (
-        res.affected != undefined &&
-        res.affected != null &&
-        res.affected > 0
-      ) {
-        return true;
+      const res = await this.availabilityService.updateAvailability(test, body);
+      if (res) {
+        return res;
       } else {
         throw new ForbiddenException();
       }
@@ -123,16 +119,12 @@ export class AvailabilityController {
   @JoiValidate({
     param: Joi.number().positive().integer().required(),
   })
-  async deleteAvailability(@Param() id: number): Promise<boolean> {
+  async deleteAvailability(@Param() id: number): Promise<Availability> {
     const test = await this.findAvailabilityById(id);
     if (test) {
-      const res = await this.availabilityService.deleteAvailability(id);
-      if (
-        res.affected != undefined &&
-        res.affected != null &&
-        res.affected > 0
-      ) {
-        return true;
+      const res = await this.availabilityService.deleteAvailability(test);
+      if (res) {
+        return res;
       } else {
         throw new ForbiddenException();
       }

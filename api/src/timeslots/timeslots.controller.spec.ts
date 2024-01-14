@@ -1,10 +1,5 @@
 import { TestBed } from '@automock/jest';
-import {
-  mockTimeSlot,
-  testDate,
-  testDateTimeEnd,
-  testDateTimeStart,
-} from '@mocks/data';
+import { mockTimeSlot, testDateTimeEnd, testDateTimeStart } from '@mocks/data';
 import { TimeSlotsController } from './timeslots.controller';
 import { TimeSlotsService } from './timeslots.service';
 import { testDateTime10Minutes } from '@mocks/data';

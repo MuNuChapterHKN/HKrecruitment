@@ -1,4 +1,4 @@
-import { testDate } from '@mocks/data';
+import { mockAvailability, testDate } from '@mocks/data';
 import { AvailabilityController } from './availability.controller';
 import { AvailabilityService } from './availability.service';
 import { TestBed } from '@automock/jest';
@@ -25,5 +25,55 @@ describe('AvailabilityController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
     expect(service).toBeDefined();
+  });
+
+  // CRUD OPERATIONS
+
+  describe('createAvailability', () => {
+    it('should allow creating a valid availability', async () => {
+      const availability = {
+        state: mockAvailability.state,
+        lastModified: mockAvailability.lastModified,
+        timeSlot: mockAvailability.timeSlot,
+        user: mockAvailability.user,
+      };
+
+      jest
+        .spyOn(service, 'createAvailability')
+        .mockResolvedValue(mockAvailability);
+
+      const result = await controller.createAvailability(availability);
+
+      expect(result).toEqual(mockAvailability);
+    });
+  });
+
+  // Read an availability
+  describe('findAvailabilityById', () => {
+    it('should allow finding an availability by id', async () => {
+      jest
+        .spyOn(service, 'findAvailabilityById')
+        .mockResolvedValue(mockAvailability);
+
+      const result = await controller.findAvailabilityById(mockAvailability.id);
+
+      expect(result).toEqual(mockAvailability);
+    });
+  });
+
+  // Delete an availability
+  describe('deleteAvailability', () => {
+    it('should allow deleting an availability', async () => {
+      jest
+        .spyOn(service, 'findAvailabilityById')
+        .mockResolvedValue(mockAvailability);
+      jest
+        .spyOn(service, 'deleteAvailability')
+        .mockResolvedValue(mockAvailability);
+
+      await expect(
+        controller.deleteAvailability(mockAvailability.id),
+      ).resolves.toEqual(mockAvailability);
+    });
   });
 });

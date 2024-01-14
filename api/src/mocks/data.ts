@@ -4,6 +4,7 @@ import {
   ApplicationState,
   LangLevel,
   Role,
+  AvailabilityState,
 } from '@hkrecruitment/shared';
 import {
   BscApplication,
@@ -156,3 +157,11 @@ export const applicantId = 'abc123';
 export const folderId = 'folder_abc123';
 export const fileId = 'file_abc123';
 export const today = '1/1/2023, 10:00:00';
+
+export const mockAvailability = {
+  id: 1,
+  state: AvailabilityState.Confirmed,
+  lastModified: new Date(),
+  timeSlot: mockTimeSlot,
+  user: applicant,
+};

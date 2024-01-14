@@ -15,7 +15,6 @@ export enum AvailabilityType {
 }
 
 export interface Availability {
-  id: number;
   state: AvailabilityState;
   lastModified: Date;
   timeSlot: TimeSlot;
@@ -37,7 +36,6 @@ export const insertAvailabilitySchema = Joi.object<Availability>({
 });
 
 export const updateAvailabilitySchema = Joi.object<Availability>({
-  id: Joi.number().positive().integer().required(),
   state: Joi.string()
     .valid(...Object.values(AvailabilityType))
     .required(),
