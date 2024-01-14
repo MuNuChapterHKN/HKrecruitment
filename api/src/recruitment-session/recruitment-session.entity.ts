@@ -9,7 +9,7 @@ export class RecruitmentSession implements RecruitmentSessionInterface {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @Column('enum')
+  @Column()
   state: RecruitmentSessionState;
 
   @Column('int', { name: 'slot_duration' })
