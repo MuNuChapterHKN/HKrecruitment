@@ -65,7 +65,14 @@ export class RecruitmentSessionController {
       throw new NotFoundException();
     }
 
-    if (!checkAbility(ability, Action.Read, recruitmentSession, 'Person')) {
+    if (
+      !checkAbility(
+        ability,
+        Action.Read,
+        recruitmentSession,
+        'RecruitmentSession',
+      )
+    ) {
       throw new ForbiddenException();
     }
 
