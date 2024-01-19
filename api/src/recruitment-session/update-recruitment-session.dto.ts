@@ -21,7 +21,4 @@ export class UpdateRecruitmentSessionDto
 
   @ApiProperty({ required: false })
   days?: [Date];
-
-  @ApiProperty({ required: false })
-  lastModified?: Date;
 }
