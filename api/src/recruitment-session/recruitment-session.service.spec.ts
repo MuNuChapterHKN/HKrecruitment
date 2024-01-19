@@ -37,16 +37,15 @@ describe('Recruitment Session Service', () => {
   });
 
   describe('deleteRecruitmentSession', () => {
-    it('should remove the specified recruitment session from the database', () => {
+    it('should remove the specified recruitment session from the database', async () => {
       jest
         .spyOn(mockedRepository, 'remove')
         .mockResolvedValue(mockRecruitmentSession);
-      const result = recruitmentSessionService.deletRecruitmentSession(
-        // perché non prende "await"
-        mockRecruitmentSession, // nonostante la funzione nel service sia async ??
+      const result = await recruitmentSessionService.deletRecruitmentSession(
+        mockRecruitmentSession,
       );
-      expect(result).toEqual([mockRecruitmentSession]);
-      expect(mockedRepository.find).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(mockRecruitmentSession);
+      expect(mockedRepository.remove).toHaveBeenCalledTimes(1);
     });
   });
 });
