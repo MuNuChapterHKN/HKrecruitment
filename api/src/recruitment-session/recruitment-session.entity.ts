@@ -2,7 +2,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import {
   RecruitmentSession as RecruitmentSessionInterface,
   RecruitmentSessionState,
-} from '@hkrecruitment/shared/src/recruitment-session';
+} from '@hkrecruitment/shared';
 
 @Entity()
 export class RecruitmentSession implements RecruitmentSessionInterface {
