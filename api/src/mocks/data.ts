@@ -12,6 +12,8 @@ import {
 } from 'src/application/application.entity';
 import { UpdateApplicationDto } from 'src/application/update-application.dto';
 import { RecruitmentSessionState } from '@hkrecruitment/shared/recruitment-session';
+import { CreateRecruitmentSessionDto } from 'src/recruitment-session/create-recruitment-session.dto';
+import { UpdateRecruitmentSessionDto } from 'src/recruitment-session/update-recruitment-session.dto';
 
 export const testDate = new Date(2023, 0, 1);
 export const testDateTimeStart = new Date(2023, 0, 1, 10, 30, 0);
@@ -43,6 +45,20 @@ export const mockRecruitmentSession = {
   createdAt: testDateCreatedAt,
   lastModified: testDateLastModified,
 };
+
+export const mockCreateRecruitmentSessionDto = {
+  slotDuration: 50,
+  interviewStart: testInterviewStart,
+  interviewEnd: testInterviewEnd,
+  days: [testDay1, testDay2, testDay3],
+} as CreateRecruitmentSessionDto;
+
+export const mockUpdateRecruitmentSessionDto = {
+  slotDuration: 50,
+  interviewStart: testInterviewStart,
+  interviewEnd: testInterviewEnd,
+  days: [testDay1, testDay2, testDay3],
+} as UpdateRecruitmentSessionDto;
 
 export const baseFile = {
   encoding: '7bit',
