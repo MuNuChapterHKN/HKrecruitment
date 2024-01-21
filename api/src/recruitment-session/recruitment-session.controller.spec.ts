@@ -1,7 +1,7 @@
 import { createMockAbility } from '@hkrecruitment/shared/abilities.spec';
 import { RecruitmentSessionController } from './recruitment-session.controller';
 import { RecruitmentSessionService } from './recruitment-session.service';
-import { Action, RecruitmentSessionState, Role } from '@hkrecruitment/shared';
+import { Action, RecruitmentSessionState } from '@hkrecruitment/shared';
 import { TestBed } from '@automock/jest';
 import { RecruitmentSessionResponseDto } from './recruitment-session-response.dto';
 import { RecruitmentSession } from './recruitment-session.entity';
@@ -12,16 +12,10 @@ import {
   testDate,
 } from '@mocks/data';
 import {
-  BadRequestException,
   ConflictException,
-  Delete,
   ForbiddenException,
   NotFoundException,
-  UnprocessableEntityException,
 } from '@nestjs/common';
-import { createMock } from '@golevelup/ts-jest';
-import { AuthenticatedRequest } from 'src/authorization/authenticated-request.types';
-import { CreateRecruitmentSessionDto } from './create-recruitment-session.dto';
 import { UpdateRecruitmentSessionDto } from './update-recruitment-session.dto';
 
 describe('RecruitmentSessionController', () => {
