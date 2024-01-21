@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RecruitmentSession } from './recruitment-session.entity';
 import { CreateRecruitmentSessionDto } from './create-recruitment-session.dto';
-import { RecruitmentSessionState } from '@hkrecruitment/shared/recruitment-session';
+import { RecruitmentSessionState } from '@hkrecruitment/shared';
 
 @Injectable()
 export class RecruitmentSessionService {
