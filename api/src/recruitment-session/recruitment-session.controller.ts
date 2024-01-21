@@ -118,11 +118,11 @@ export class RecruitmentSessionController {
     param: Joi.number().positive().integer().required().label('session_id'),
     body: updateRecruitmentSessionSchema,
   })
+  @CheckPolicies((ability) => ability.can(Action.Update, 'RecruitmentSession'))
   async updateRecruitmentSession(
     @Param('session_id') sessionId: number,
     @Body() updateRecruitmentSession: UpdateRecruitmentSessionDto,
     @Ability() ability: AppAbility,
-    @Req() req: AuthenticatedRequest, // # TODO: USE THIS param?
   ): Promise<RecruitmentSessionResponseDto> {
     const recruitmentSession =
       await this.recruitmentSessionService.findRecruitmentSessionById(
