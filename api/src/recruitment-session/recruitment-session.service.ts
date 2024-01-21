@@ -51,4 +51,11 @@ export class RecruitmentSessionService {
   ): Promise<RecruitmentSession> {
     return await this.recruitmentSessionRepository.save(recruitmentSession);
   }
+
+  async sessionHasPendingInterviews(
+    recruitmentSession: RecruitmentSession,
+  ): Promise<boolean> {
+    throw new Error('Method not implemented.');
+    // TODO: Return true if recruitmentSession.interviews > 0
+  }
 }

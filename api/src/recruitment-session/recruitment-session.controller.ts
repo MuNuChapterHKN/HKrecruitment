@@ -120,7 +120,7 @@ export class RecruitmentSessionController {
     @Param('session_id') sessionId: number,
     @Body() updateRecruitmentSession: UpdateRecruitmentSessionDto,
     @Ability() ability: AppAbility,
-    @Req() req: AuthenticatedRequest,
+    @Req() req: AuthenticatedRequest, // # TODO: USE THIS param?
   ): Promise<RecruitmentSessionResponseDto> {
     const recruitmentSession =
       await this.recruitmentSessionService.findRecruitmentSessionById(
@@ -144,12 +144,18 @@ export class RecruitmentSessionController {
     )
       throw new ForbiddenException();
 
+    // TODO: CAN'T SET A RECRUITMENT SESSION TO ACTIVE IF THERE IS ALREADY AN ACTIVE ONE
+    // TODO: CAN'T SET A RECRUITMENT SESSION TO INACTIVE IF THERE ISN'T AN ACTIVE ONE
+    // TODO: CAN'T SET A RECRUITMENT SESSION TO INACTIVE IF THERE ARE INTERVIEWS SCHEDULED FOR IT
+
     const updatedRecruitmentSession =
       await this.recruitmentSessionService.updateRecruitmentSession({
         ...recruitmentSession,
         ...updateRecruitmentSession,
         lastModified: new Date(),
       });
+
+    // #TODO: CAN'T EDIT A REC SESSION IF IT'S NOT ACTIVE
 
     return plainToClass(
       RecruitmentSessionResponseDto,
@@ -166,19 +172,35 @@ export class RecruitmentSessionController {
   @CheckPolicies((ability) => ability.can(Action.Delete, 'RecruitmentSession'))
   @Delete('/:recruitment_session_id')
   @JoiValidate({
-    param: Joi.number().positive().integer().required().label('time_slot_id'),
+    param: Joi.number()
+      .positive()
+      .integer()
+      .required()
+      .label('recruitment_session_id'),
   })
   async deleteRecruitmentSessionById(
     @Param('recruitment_session_id') recruitmentSessionId: number,
   ): Promise<RecruitmentSession> {
-    // check if it exists
+    // Check if recruitment session exists
     const toRemove =
       await this.recruitmentSessionService.findRecruitmentSessionById(
         recruitmentSessionId,
       );
     if (!toRemove) throw new NotFoundException('Recruitment session not found');
 
-    // delete it
+    // Check if recruitment session has pending interviews
+    if (toRemove.state !== RecruitmentSessionState.Concluded) {
+      const hasPendingInterviews =
+        await this.recruitmentSessionService.sessionHasPendingInterviews(
+          toRemove,
+        );
+      if (hasPendingInterviews)
+        throw new BadRequestException(
+          "Recruitment session can't be deleted because it has pending interviews",
+        );
+    }
+
+    // Delete recruitment session
     return await this.recruitmentSessionService.deletRecruitmentSession(
       toRemove,
     );
