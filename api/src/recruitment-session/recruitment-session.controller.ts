@@ -7,7 +7,6 @@ import {
   Param,
   Post,
   Delete,
-  Req,
   Patch,
   ForbiddenException,
   Get,
@@ -38,10 +37,8 @@ import { CreateRecruitmentSessionDto } from './create-recruitment-session.dto';
 import { UpdateRecruitmentSessionDto } from './update-recruitment-session.dto';
 import * as Joi from 'joi';
 import { Ability } from 'src/authorization/ability.decorator';
-import { AuthenticatedRequest } from 'src/authorization/authenticated-request.types';
 import { plainToClass } from 'class-transformer';
 import { RecruitmentSessionResponseDto } from './recruitment-session-response.dto';
-import { User } from 'src/users/user.entity';
 
 @ApiBearerAuth()
 @ApiTags('recruitment-session')
