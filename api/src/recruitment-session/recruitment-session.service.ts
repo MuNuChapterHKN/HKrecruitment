@@ -56,6 +56,6 @@ export class RecruitmentSessionService {
     recruitmentSession: RecruitmentSession,
   ): Promise<boolean> {
     throw new Error('Method not implemented.');
-    // TODO: Return true if recruitmentSession.interviews > 0
+    // TODO: Return true if recruitmentSession.interviews > 0 where interviw date is in the future
   }
 }

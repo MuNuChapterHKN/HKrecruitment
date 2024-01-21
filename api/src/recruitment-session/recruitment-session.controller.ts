@@ -111,6 +111,8 @@ export class RecruitmentSessionController {
   @Patch(':session_id')
   @ApiBadRequestResponse()
   @ApiForbiddenResponse()
+  @ApiConflictResponse()
+  @ApiNotFoundResponse()
   @ApiOkResponse()
   @JoiValidate({
     param: Joi.number().positive().integer().required().label('session_id'),
@@ -144,9 +146,29 @@ export class RecruitmentSessionController {
     )
       throw new ForbiddenException();
 
-    // TODO: CAN'T SET A RECRUITMENT SESSION TO ACTIVE IF THERE IS ALREADY AN ACTIVE ONE
-    // TODO: CAN'T SET A RECRUITMENT SESSION TO INACTIVE IF THERE ISN'T AN ACTIVE ONE
-    // TODO: CAN'T SET A RECRUITMENT SESSION TO INACTIVE IF THERE ARE INTERVIEWS SCHEDULED FOR IT
+    if (updateRecruitmentSession.hasOwnProperty('state')) {
+      // There should be only one active recruitment session at a time
+      if (updateRecruitmentSession.state === RecruitmentSessionState.Active) {
+        const currentlyActiveRecruitmentSession =
+          await this.recruitmentSessionService.findActiveRecruitmentSession();
+        if (currentlyActiveRecruitmentSession)
+          throw new ConflictException(
+            'There is already an active recruitment session',
+          );
+      } else if (
+        updateRecruitmentSession.state === RecruitmentSessionState.Concluded
+      ) {
+        // Recruitment session can't be set to concluded if it has pending interviews
+        const hasPendingInterviews =
+          await this.recruitmentSessionService.sessionHasPendingInterviews(
+            recruitmentSession,
+          );
+        if (hasPendingInterviews)
+          throw new ConflictException(
+            "Recruitment session can't be set to inactive because it has pending interviews",
+          );
+      }
+    }
 
     const updatedRecruitmentSession =
       await this.recruitmentSessionService.updateRecruitmentSession({
