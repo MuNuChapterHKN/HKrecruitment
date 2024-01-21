@@ -15,7 +15,7 @@ export class RecruitmentSessionService {
   async createRecruitmentSession(
     recruitmentSession: CreateRecruitmentSessionDto,
   ): Promise<RecruitmentSession> {
-    let now = new Date();
+    const now = new Date();
     const rs = {
       ...recruitmentSession,
       state: RecruitmentSessionState.Active,
