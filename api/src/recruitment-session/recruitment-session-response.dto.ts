@@ -10,4 +10,5 @@ export class RecruitmentSessionResponseDto
 {
   @Expose() id: number;
   @Expose() createdAt: Date;
+  @Expose() state: RecruitmentSessionState;
 }

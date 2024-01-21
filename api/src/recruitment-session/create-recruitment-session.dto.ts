@@ -13,6 +13,6 @@ export class CreateRecruitmentSessionDto
   @ApiProperty()
   interviewEnd: Date;
 
-  @ApiProperty()
-  days: [Date];
+  @ApiProperty({ isArray: true })
+  days: Date[];
 }

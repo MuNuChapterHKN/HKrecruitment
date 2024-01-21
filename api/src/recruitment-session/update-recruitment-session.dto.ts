@@ -19,6 +19,6 @@ export class UpdateRecruitmentSessionDto
   @ApiProperty({ required: false })
   interviewEnd?: Date;
 
-  @ApiProperty({ required: false })
-  days?: [Date];
+  @ApiProperty({ required: false, isArray: true })
+  days?: Date[];
 }
