@@ -1,4 +1,4 @@
-import { RecruitmentSession } from '@hkrecruitment/shared/recruitment-session';
+import { RecruitmentSession } from '@hkrecruitment/shared';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateRecruitmentSessionDto
