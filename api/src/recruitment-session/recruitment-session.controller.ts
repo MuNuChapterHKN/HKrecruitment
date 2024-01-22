@@ -16,8 +16,10 @@ import {
   RecruitmentSession,
   RecruitmentSessionState,
   updateRecruitmentSessionSchema,
-} from '@hkrecruitment/shared/recruitment-session';
-import { Action, AppAbility, checkAbility } from '@hkrecruitment/shared';
+  Action,
+  AppAbility,
+  checkAbility,
+} from '@hkrecruitment/shared';
 import { JoiValidate } from '../joi-validation/joi-validate.decorator';
 import {
   ApiBadRequestResponse,
