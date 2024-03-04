@@ -15,8 +15,8 @@ describe("Recruitment Session", () => {
       slotDuration: 5,
       interviewStart: "11:55" as unknown as Date,
       interviewEnd: "16:30" as unknown as Date,
-      days: [new Date("2024-12-23"), new Date("2024-12-23")],
-      lastModified: new Date("2023-10-20 15:10"),
+      days: ["2024-12-23" as unknown as Date, "2024-12-23" as unknown as Date],
+      lastModified: "2023-10-20 15:10" as unknown as Date,
     };
 
     it("should allow a valid recruitment session", () => {
