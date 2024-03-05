@@ -14,6 +14,7 @@ import { UpdateApplicationDto } from 'src/application/update-application.dto';
 import { RecruitmentSessionState } from '@hkrecruitment/shared/recruitment-session';
 import { CreateRecruitmentSessionDto } from 'src/recruitment-session/create-recruitment-session.dto';
 import { UpdateRecruitmentSessionDto } from 'src/recruitment-session/update-recruitment-session.dto';
+import { RecruitmentSession } from 'src/recruitment-session/recruitment-session.entity';
 
 export const testDate = new Date(2023, 0, 1);
 export const testDateTimeStart = new Date(2023, 0, 1, 10, 30, 0);
@@ -44,7 +45,7 @@ export const mockRecruitmentSession = {
   days: [testDay1, testDay2, testDay3],
   createdAt: testDateCreatedAt,
   lastModified: testDateLastModified,
-};
+} as RecruitmentSession;
 
 export const mockCreateRecruitmentSessionDto = {
   slotDuration: 50,
