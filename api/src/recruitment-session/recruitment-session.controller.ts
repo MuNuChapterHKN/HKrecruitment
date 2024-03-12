@@ -59,7 +59,7 @@ export class RecruitmentSessionController {
   ): Promise<RecruitmentSessionResponseDto> {
     const recruitmentSession =
       await this.recruitmentSessionService.findActiveRecruitmentSession()[0];
-    if (recruitmentSession === null) {
+    if (recruitmentSession.length === 0) {
       throw new NotFoundException();
     }
 
@@ -67,7 +67,7 @@ export class RecruitmentSessionController {
       !checkAbility(
         ability,
         Action.Read,
-        recruitmentSession,
+        recruitmentSession[0],
         'RecruitmentSession',
       )
     ) {
@@ -95,7 +95,7 @@ export class RecruitmentSessionController {
     // there should be only one active recruitment session at a time
     const hasActiveRecruitmentSession =
       await this.recruitmentSessionService.findActiveRecruitmentSession();
-    if (hasActiveRecruitmentSession)
+    if (hasActiveRecruitmentSession.length)
       throw new ConflictException(
         'There is already an active recruitment session',
       );
