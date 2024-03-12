@@ -146,7 +146,7 @@ describe('RecruitmentSessionController', () => {
       const mockAbility = createMockAbility(({ can }) => {
         can(Action.Update, 'RecruitmentSession');
       });
-      jest.spyOn(service, 'findRecruitmentSessionById').mockResolvedValue(null);
+      jest.spyOn(service, 'findRecruitmentSessionById').mockResolvedValue([]);
       const result = controller.updateRecruitmentSession(
         mockRecruitmentSession.id,
         mockUpdateRecruitmentSessionDto,
