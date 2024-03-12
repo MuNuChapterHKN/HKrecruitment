@@ -109,7 +109,7 @@ describe('Recruitment Session Service', () => {
       jest
         .spyOn(mockedRepository, 'remove')
         .mockResolvedValue(mockRecruitmentSession);
-      const result = await recruitmentSessionService.deletRecruitmentSession(
+      const result = await recruitmentSessionService.deleteRecruitmentSession(
         mockRecruitmentSession,
       );
       expect(result).toEqual(mockRecruitmentSession);

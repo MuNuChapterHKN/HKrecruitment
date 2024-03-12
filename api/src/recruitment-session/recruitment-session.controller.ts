@@ -56,9 +56,9 @@ export class RecruitmentSessionController {
   @CheckPolicies((ability) => ability.can(Action.Read, 'RecruitmentSession'))
   async findActive(
     @Ability() ability: AppAbility,
-  ): Promise<RecruitmentSession> {
+  ): Promise<RecruitmentSessionResponseDto> {
     const recruitmentSession =
-      await this.recruitmentSessionService.findActiveRecruitmentSession();
+      await this.recruitmentSessionService.findActiveRecruitmentSession()[0];
     if (recruitmentSession === null) {
       throw new NotFoundException();
     }
@@ -125,7 +125,7 @@ export class RecruitmentSessionController {
     const recruitmentSession =
       await this.recruitmentSessionService.findRecruitmentSessionById(
         sessionId,
-      );
+      )[0];
 
     if (recruitmentSession === null) throw new NotFoundException();
 
@@ -147,7 +147,7 @@ export class RecruitmentSessionController {
       // There should be only one active recruitment session at a time
       if (updateRecruitmentSession.state === RecruitmentSessionState.Active) {
         const currentlyActiveRecruitmentSession =
-          await this.recruitmentSessionService.findActiveRecruitmentSession();
+          await this.recruitmentSessionService.findActiveRecruitmentSession()[0];
         if (
           currentlyActiveRecruitmentSession &&
           currentlyActiveRecruitmentSession.id !== recruitmentSession.id // It's ok to set 'Active' to the (already) active recruitment session
@@ -206,7 +206,7 @@ export class RecruitmentSessionController {
     const toRemove =
       await this.recruitmentSessionService.findRecruitmentSessionById(
         recruitmentSessionId,
-      );
+      )[0];
     if (!toRemove) throw new NotFoundException('Recruitment session not found');
 
     // Check if recruitment session has pending interviews
@@ -223,7 +223,7 @@ export class RecruitmentSessionController {
 
     // Delete recruitment session
     const deletedRecruitmentSession =
-      await this.recruitmentSessionService.deletRecruitmentSession(toRemove);
+      await this.recruitmentSessionService.deleteRecruitmentSession(toRemove);
 
     return plainToClass(
       RecruitmentSessionResponseDto,

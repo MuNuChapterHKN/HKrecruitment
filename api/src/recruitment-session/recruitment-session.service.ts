@@ -42,7 +42,7 @@ export class RecruitmentSessionService {
     });
   }
 
-  async deletRecruitmentSession(
+  async deleteRecruitmentSession(
     recruitmentSession: RecruitmentSession,
   ): Promise<RecruitmentSession> {
     return await this.recruitmentSessionRepository.remove(recruitmentSession);
