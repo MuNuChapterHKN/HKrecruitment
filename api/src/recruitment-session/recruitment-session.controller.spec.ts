@@ -315,7 +315,7 @@ describe('RecruitmentSessionController', () => {
     });
 
     it('should throw a NotFoundException if the recruitment session does not exist', async () => {
-      jest.spyOn(service, 'findRecruitmentSessionById').mockResolvedValue(null);
+      jest.spyOn(service, 'findRecruitmentSessionById').mockResolvedValue([]);
       const result = controller.deleteRecruitmentSession(
         mockRecruitmentSession.id,
       );
