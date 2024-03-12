@@ -81,7 +81,7 @@ export class RecruitmentSessionController {
   @ApiBadRequestResponse()
   @ApiForbiddenResponse()
   @ApiConflictResponse({
-    description: 'The recruitment session cannot be created', //
+    description: 'The recruitment session cannot be created',
   })
   @ApiCreatedResponse()
   @JoiValidate({
@@ -125,13 +125,13 @@ export class RecruitmentSessionController {
     const recruitmentSession =
       await this.recruitmentSessionService.findRecruitmentSessionById(
         sessionId,
-      )[0];
+      );
 
-    if (recruitmentSession === null) throw new NotFoundException();
+    if (recruitmentSession.length === 0) throw new NotFoundException();
 
     const sessionToCheck = {
       ...updateRecruitmentSession,
-      sessionId: recruitmentSession.id,
+      sessionId: recruitmentSession[0].id,
     };
     if (
       !checkAbility(
@@ -150,7 +150,7 @@ export class RecruitmentSessionController {
           await this.recruitmentSessionService.findActiveRecruitmentSession()[0];
         if (
           currentlyActiveRecruitmentSession &&
-          currentlyActiveRecruitmentSession.id !== recruitmentSession.id // It's ok to set 'Active' to the (already) active recruitment session
+          currentlyActiveRecruitmentSession.id !== recruitmentSession[0].id // It's ok to set 'Active' to the (already) active recruitment session
         )
           throw new ConflictException(
             'There is already an active recruitment session',
@@ -161,7 +161,7 @@ export class RecruitmentSessionController {
         // Recruitment session can't be set to concluded if it has pending interviews
         const hasPendingInterviews =
           await this.recruitmentSessionService.sessionHasPendingInterviews(
-            recruitmentSession,
+            recruitmentSession[0],
           );
         if (hasPendingInterviews)
           throw new ConflictException(
@@ -172,7 +172,7 @@ export class RecruitmentSessionController {
 
     const updatedRecruitmentSession =
       await this.recruitmentSessionService.updateRecruitmentSession({
-        ...recruitmentSession,
+        ...recruitmentSession[0],
         ...updateRecruitmentSession,
         lastModified: new Date(),
       });
