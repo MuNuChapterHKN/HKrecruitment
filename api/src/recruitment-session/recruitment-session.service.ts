@@ -30,15 +30,15 @@ export class RecruitmentSessionService {
     return await this.recruitmentSessionRepository.find();
   }
 
-  async findRecruitmentSessionById(id: number): Promise<RecruitmentSession> {
-    return await this.recruitmentSessionRepository.findOne({ where: { id } });
+  async findRecruitmentSessionById(id: number): Promise<RecruitmentSession[]> {
+    return await this.recruitmentSessionRepository.findBy({ id });
   }
 
   // Modifit here if you want to assume to have more than a Recruitment Session
   // active at the same time. Tests assume there is only one now.
-  async findActiveRecruitmentSession(): Promise<RecruitmentSession> {
-    return await this.recruitmentSessionRepository.findOne({
-      where: { state: RecruitmentSessionState.Active },
+  async findActiveRecruitmentSession(): Promise<RecruitmentSession[]> {
+    return await this.recruitmentSessionRepository.findBy({
+      state: RecruitmentSessionState.Active,
     });
   }
 
