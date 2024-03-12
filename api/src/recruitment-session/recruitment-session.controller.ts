@@ -58,7 +58,7 @@ export class RecruitmentSessionController {
     @Ability() ability: AppAbility,
   ): Promise<RecruitmentSessionResponseDto> {
     const recruitmentSession =
-      await this.recruitmentSessionService.findActiveRecruitmentSession()[0];
+      await this.recruitmentSessionService.findActiveRecruitmentSession();
     if (recruitmentSession.length === 0) {
       throw new NotFoundException();
     }
@@ -74,7 +74,7 @@ export class RecruitmentSessionController {
       throw new ForbiddenException();
     }
 
-    return recruitmentSession;
+    return recruitmentSession[0];
   }
 
   // CREATE NEW RECRUITMENT SESSION
