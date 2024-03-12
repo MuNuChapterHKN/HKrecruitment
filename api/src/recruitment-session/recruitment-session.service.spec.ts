@@ -55,7 +55,7 @@ describe('Recruitment Session Service', () => {
   });
 
   describe('findById', () => {
-    it('should return an application by id', async () => {
+    it('should return a recruitment session by id', async () => {
       const recruitmentSessionID = 1;
       jest
         .spyOn(mockedRepository, 'findBy')
@@ -64,7 +64,7 @@ describe('Recruitment Session Service', () => {
         recruitmentSessionID,
       );
 
-      expect(result).toEqual(mockRecruitmentSession);
+      expect(result[0]).toEqual(mockRecruitmentSession);
       expect(mockedRepository.findBy).toHaveBeenCalledTimes(1);
       expect(mockedRepository.findBy).toHaveBeenLastCalledWith({
         id: recruitmentSessionID,
@@ -78,7 +78,7 @@ describe('Recruitment Session Service', () => {
         recruitmentSessionID,
       );
 
-      expect(result).toBeNull();
+      expect(result).toEqual([]);
       expect(mockedRepository.findBy).toHaveBeenCalledTimes(1);
       expect(mockedRepository.findBy).toHaveBeenLastCalledWith({
         id: recruitmentSessionID,
@@ -96,7 +96,7 @@ describe('Recruitment Session Service', () => {
       const result =
         await recruitmentSessionService.findActiveRecruitmentSession();
 
-      expect(result).toEqual(mockRecruitmentSession);
+      expect(result).toEqual([mockRecruitmentSession]);
       expect(mockedRepository.findBy).toHaveBeenCalledTimes(1);
       expect(mockedRepository.findBy).toHaveBeenCalledWith({
         state: activeState,
