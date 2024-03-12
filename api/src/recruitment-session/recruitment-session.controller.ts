@@ -147,10 +147,10 @@ export class RecruitmentSessionController {
       // There should be only one active recruitment session at a time
       if (updateRecruitmentSession.state === RecruitmentSessionState.Active) {
         const currentlyActiveRecruitmentSession =
-          await this.recruitmentSessionService.findActiveRecruitmentSession()[0];
+          await this.recruitmentSessionService.findActiveRecruitmentSession();
         if (
-          currentlyActiveRecruitmentSession &&
-          currentlyActiveRecruitmentSession.id !== recruitmentSession[0].id // It's ok to set 'Active' to the (already) active recruitment session
+          currentlyActiveRecruitmentSession.length &&
+          currentlyActiveRecruitmentSession[0].id !== recruitmentSession[0].id // It's ok to set 'Active' to the (already) active recruitment session
         )
           throw new ConflictException(
             'There is already an active recruitment session',
@@ -206,14 +206,15 @@ export class RecruitmentSessionController {
     const toRemove =
       await this.recruitmentSessionService.findRecruitmentSessionById(
         recruitmentSessionId,
-      )[0];
-    if (!toRemove) throw new NotFoundException('Recruitment session not found');
+      );
+    if (toRemove.length === 0)
+      throw new NotFoundException('Recruitment session not found');
 
     // Check if recruitment session has pending interviews
-    if (toRemove.state !== RecruitmentSessionState.Concluded) {
+    if (toRemove[0].state !== RecruitmentSessionState.Concluded) {
       const hasPendingInterviews =
         await this.recruitmentSessionService.sessionHasPendingInterviews(
-          toRemove,
+          toRemove[0],
         );
       if (hasPendingInterviews)
         throw new ConflictException(
@@ -223,7 +224,9 @@ export class RecruitmentSessionController {
 
     // Delete recruitment session
     const deletedRecruitmentSession =
-      await this.recruitmentSessionService.deleteRecruitmentSession(toRemove);
+      await this.recruitmentSessionService.deleteRecruitmentSession(
+        toRemove[0],
+      );
 
     return plainToClass(
       RecruitmentSessionResponseDto,
