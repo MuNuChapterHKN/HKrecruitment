@@ -1,7 +1,7 @@
 import {
   RecruitmentSession,
   RecruitmentSessionState,
-} from '@hkrecruitment/shared/recruitment-session';
+} from '@hkrecruitment/shared';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateRecruitmentSessionDto
