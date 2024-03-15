@@ -14,9 +14,9 @@
       "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
       "test": "jest -i --verbose",
       "test:watch": "jest --watch",
-      "test:cov": "jest --coverage",
+      "test:cov": "jest -i --verbose --coverage",
       "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-      "test:e2e": "jest --verbose --config ./test/jest-e2e.json",
+      "test:e2e": "jest --verbose --config ./test/jest-e2e.json --coverage",
       "typeorm": "typeorm-ts-node-commonjs",
       "clean": "rimraf dist"
    },
@@ -98,10 +98,20 @@
       "collectCoverageFrom": [
          "**/*.(t|j)s"
       ],
+      "coveragePathIgnorePatterns": [
+         "node_modules/",
+         "coverage*/",
+         "test/",
+         "dist/",
+         ".module.",
+         "google/",
+         "main.ts",
+         ".eslintrc.js"
+      ],
       "moduleNameMapper": {
          "^@mocks/(.*)$": "<rootDir>/src/mocks/$1"
       },
-      "coverageDirectory": "../coverage",
+      "coverageDirectory": "../coverage/api",
       "testEnvironment": "node"
    }
 }
