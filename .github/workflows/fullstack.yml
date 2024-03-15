@@ -52,10 +52,10 @@ jobs:
         run: pnpm run build && pnpm run clean
 
       - name: Run shared unit tests
-        run: pnpm --filter shared test:cov
+        run: pnpm --filter shared test:cov > shared_unit.txt &
 
       - name: Run api unit tests
-        run: pnpm --filter api test:cov
+        run: pnpm --filter api test:cov > api_unit.txt &
 
       - name: Run api e2e tests
         env:
@@ -66,7 +66,19 @@ jobs:
           AUTH0_AUDIENCE: ${{ secrets.TEST_AUTH0_AUDIENCE }}
           AUTH0_CLIENT_ID: ${{ secrets.TEST_AUTH0_CLIENT_ID }}
           AUTH0_CLIENT_SECRET: ${{ secrets.TEST_AUTH0_CLIENT_SECRET }}
-        run: pnpm --filter api test-e2e:cov
+        run: pnpm --filter api test-e2e:cov > api_e2e.txt &
+
+      - name: Wait for tests to finish
+        run: wait
+
+      - name: Shared unit tests output
+        run: cat shared_unit.txt
+      
+      - name: Api unit tests output
+        run: cat api_unit.txt
+
+      - name: Api e2e tests output
+        run: cat api_e2e.txt
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
