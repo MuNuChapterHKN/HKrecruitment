@@ -51,13 +51,13 @@ jobs:
       - name: Test building
         run: pnpm run build && pnpm run clean
 
-      - name: Run shared unit tests
-        run: pnpm --filter shared test:cov > shared_unit.txt &
+      # - name: Run shared unit tests
+      #   run: pnpm --filter shared test:cov > shared_unit.txt &
 
-      - name: Run api unit tests
-        run: pnpm --filter api test:cov > api_unit.txt &
+      # - name: Run api unit tests
+      #   run: pnpm --filter api test:cov > api_unit.txt &
 
-      - name: Run api e2e tests
+      - name: Start all tests
         env:
           DATABASE_TYPE: sqlite
           DATABASE_NAME: ":memory:"
@@ -66,7 +66,11 @@ jobs:
           AUTH0_AUDIENCE: ${{ secrets.TEST_AUTH0_AUDIENCE }}
           AUTH0_CLIENT_ID: ${{ secrets.TEST_AUTH0_CLIENT_ID }}
           AUTH0_CLIENT_SECRET: ${{ secrets.TEST_AUTH0_CLIENT_SECRET }}
-        run: pnpm --filter api test-e2e:cov > api_e2e.txt &
+        run: |
+          pnpm --filter shared test:cov > shared_unit.txt &
+          pnpm --filter api test:cov > api_unit.txt &
+          pnpm --filter api test-e2e:cov > api_e2e.txt
+
 
       - name: Wait for tests to finish
         run: wait
