@@ -66,10 +66,10 @@ jobs:
           AUTH0_AUDIENCE: ${{ secrets.TEST_AUTH0_AUDIENCE }}
           AUTH0_CLIENT_ID: ${{ secrets.TEST_AUTH0_CLIENT_ID }}
           AUTH0_CLIENT_SECRET: ${{ secrets.TEST_AUTH0_CLIENT_SECRET }}
-        run: |
-          pnpm --filter shared test:cov > shared_unit.txt &
-          pnpm --filter api test:cov > api_unit.txt &
-          pnpm --filter api test-e2e:cov > api_e2e.txt
+        run:
+          sh -c "pnpm --filter shared test:cov > shared_unit.txt" &
+          sh -c "pnpm --filter api test:cov > api_unit.txt" &
+          sh -c "pnpm --filter api test-e2e:cov > api_e2e.txt" &
 
 
       - name: Wait for tests to finish
