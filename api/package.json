@@ -16,7 +16,8 @@
       "test:watch": "jest --watch",
       "test:cov": "jest -i --verbose --coverage",
       "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-      "test:e2e": "jest --verbose --config ./test/jest-e2e.json --coverage",
+      "test-e2e": "jest --verbose --config ./test/jest-e2e.json",
+      "test-e2e:cov": "jest --verbose --config ./test/jest-e2e.json --coverage --coverageDirectory=../coverage/api-e2e",
       "typeorm": "typeorm-ts-node-commonjs",
       "clean": "rimraf dist"
    },

@@ -3,12 +3,10 @@ name: Test
 on:
   push:
     branches: 
-      - main
-      - dev
+      - '*'
   pull_request:
     branches:
-      - main
-      - dev
+      - '*'
 
 jobs:
   tests:
@@ -16,14 +14,14 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v3
         name: Install pnpm
         id: pnpm-install
         with:
@@ -36,7 +34,7 @@ jobs:
         run: |
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         name: Setup pnpm cache
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
@@ -55,19 +53,9 @@ jobs:
 
       - name: Run shared unit tests
         run: pnpm --filter shared test:cov
-      - name: Upload shared test coverage report
-        uses: actions/upload-artifact@v3
-        with:
-          name: shared-report
-          path: ./coverage/shared/lcov.info
 
       - name: Run api unit tests
         run: pnpm --filter api test:cov
-      - name: Upload api unit test coverage report
-        uses: actions/upload-artifact@v3
-        with:
-          name: api-unit-report
-          path: ./coverage/api/lcov.info
 
       - name: Run api e2e tests
         env:
@@ -78,25 +66,7 @@ jobs:
           AUTH0_AUDIENCE: ${{ secrets.TEST_AUTH0_AUDIENCE }}
           AUTH0_CLIENT_ID: ${{ secrets.TEST_AUTH0_CLIENT_ID }}
           AUTH0_CLIENT_SECRET: ${{ secrets.TEST_AUTH0_CLIENT_SECRET }}
-        run: pnpm --filter api test:e2e
-      - name: Upload api E2E test coverage report
-        uses: actions/upload-artifact@v3
-        with:
-          name: api-e2e-report
-          path: ./coverage/api/lcov.info
-
-  sonarcloud:
-    name: SonarCloud Analysis
-    runs-on: ubuntu-latest
-    needs: [tests]
-    steps:
-
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
+        run: pnpm --filter api test-e2e:cov
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
