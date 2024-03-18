@@ -5,14 +5,12 @@ import {
   ForbiddenException,
   NotFoundException,
   Param,
-  Patch,
   Post,
 } from '@nestjs/common';
 import { AvailabilityService } from './availability.service';
 import {
   Action,
   insertAvailabilitySchema,
-  updateAvailabilitySchema,
 } from '@hkrecruitment/shared';
 import { JoiValidate } from '../joi-validation/joi-validate.decorator';
 import {
@@ -21,7 +19,6 @@ import {
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiCreatedResponse,
-  ApiOkResponse,
   ApiTags,
   ApiNoContentResponse,
   ApiBadGatewayResponse,
@@ -36,34 +33,6 @@ import { CreateAvailabilityDto } from './create-availability.dto';
 @Controller('availability')
 export class AvailabilityController {
   constructor(private readonly availabilityService: AvailabilityService) {}
-
-  @ApiNotFoundResponse()
-  @ApiOkResponse()
-  @ApiForbiddenResponse()
-  @ApiBadGatewayResponse()
-  async listAvailabilities(): Promise<Availability[]> {
-    const matches = await this.availabilityService.listAvailabilities();
-    if (matches.length == 0) {
-      throw new NotFoundException();
-    }
-    return matches;
-  }
-
-  @ApiNotFoundResponse()
-  @ApiOkResponse()
-  @ApiBadGatewayResponse()
-  @ApiBadRequestResponse()
-  @ApiForbiddenResponse()
-  @JoiValidate({
-    param: Joi.number().positive().integer().required(),
-  })
-  async findAvailabilityById(id: number): Promise<Availability> {
-    const match = await this.availabilityService.findAvailabilityById(id);
-    if (!match) {
-      throw new NotFoundException();
-    }
-    return match;
-  }
 
   @ApiCreatedResponse()
   @ApiBadRequestResponse()
@@ -82,30 +51,6 @@ export class AvailabilityController {
       return res;
     } else {
       throw new ForbiddenException();
-    }
-  }
-
-  @ApiNotFoundResponse()
-  @ApiNoContentResponse()
-  @ApiBadRequestResponse()
-  @ApiForbiddenResponse()
-  @ApiBadGatewayResponse()
-  @CheckPolicies((ability) => ability.can(Action.Create, 'Availability'))
-  @Patch()
-  @JoiValidate({
-    body: updateAvailabilitySchema,
-  })
-  async updateAvailability(@Body() body: Availability): Promise<Availability> {
-    const test = await this.findAvailabilityById(body.id);
-    if (test) {
-      const res = await this.availabilityService.updateAvailability(test, body);
-      if (res) {
-        return res;
-      } else {
-        throw new ForbiddenException();
-      }
-    } else {
-      throw new NotFoundException();
     }
   }
 
