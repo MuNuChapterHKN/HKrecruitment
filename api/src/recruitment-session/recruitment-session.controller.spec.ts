@@ -76,22 +76,25 @@ describe('RecruitmentSessionController', () => {
   });
 
   describe('createRecruitmentSession', () => {
-    // it('should create a recruitment session', async () => {
-    //   const expectedRecruitmentSession = {
-    //     ...mockRecruitmentSession,
-    //   } as RecruitmentSessionResponseDto;
-    //   jest
-    //     .spyOn(service, 'createRecruitmentSession')
-    //     .mockResolvedValue(mockRecruitmentSession);
-    //   const result = await controller.createRecruitmentSession(
-    //     mockCreateRecruitmentSessionDto,
-    //   );
-    //   expect(result).toEqual(expectedRecruitmentSession);
-    //   expect(service.createRecruitmentSession).toHaveBeenCalledTimes(1);
-    //   expect(service.createRecruitmentSession).toHaveBeenCalledWith(
-    //     mockCreateRecruitmentSessionDto,
-    //   );
-    // });
+    it('should create a recruitment session', async () => {
+      const expectedRecruitmentSession = {
+        ...mockRecruitmentSession,
+      } as RecruitmentSessionResponseDto;
+      jest
+        .spyOn(service, 'createRecruitmentSession')
+        .mockResolvedValue(mockRecruitmentSession);
+      jest
+        .spyOn(service, 'findActiveRecruitmentSession')
+        .mockResolvedValue([]);
+      const result = await controller.createRecruitmentSession(
+        mockCreateRecruitmentSessionDto,
+      );
+      expect(result).toEqual(expectedRecruitmentSession);
+      expect(service.createRecruitmentSession).toHaveBeenCalledTimes(1);
+      expect(service.createRecruitmentSession).toHaveBeenCalledWith(
+        mockCreateRecruitmentSessionDto,
+      );
+    });
 
     it('should throw a ConflictException if there is already an active recruitment session', async () => {
       jest
