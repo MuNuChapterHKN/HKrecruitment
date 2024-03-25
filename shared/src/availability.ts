@@ -4,9 +4,9 @@ import { Person, Role } from "./person";
 import * as Joi from "joi";
 
 export enum AvailabilityState {
-  Subscribed = "subscribed",
-  Confirmed = "confirmed",
-  Cancelled = "cancelled",
+  Free = "free",
+  Interviewing = "interviewing",
+  Recovering = "recovering",
 }
 
 export enum AvailabilityType {
