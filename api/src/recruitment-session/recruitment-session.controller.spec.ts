@@ -83,9 +83,7 @@ describe('RecruitmentSessionController', () => {
       jest
         .spyOn(service, 'createRecruitmentSession')
         .mockResolvedValue(mockRecruitmentSession);
-      jest
-        .spyOn(service, 'findActiveRecruitmentSession')
-        .mockResolvedValue([]);
+      jest.spyOn(service, 'findActiveRecruitmentSession').mockResolvedValue([]);
       const result = await controller.createRecruitmentSession(
         mockCreateRecruitmentSessionDto,
       );

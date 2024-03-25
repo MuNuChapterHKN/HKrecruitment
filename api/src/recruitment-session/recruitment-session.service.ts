@@ -22,8 +22,7 @@ export class RecruitmentSessionService {
       createdAt: now,
       lastModified: now,
     } as unknown as RecruitmentSession;
-    await this.recruitmentSessionRepository.save(rs);
-    return rs;
+    return await this.recruitmentSessionRepository.save(rs);
   }
 
   async findAllRecruitmentSessions(): Promise<RecruitmentSession[]> {
@@ -34,7 +33,7 @@ export class RecruitmentSessionService {
     return await this.recruitmentSessionRepository.findBy({ id });
   }
 
-  // Modifit here if you want to assume to have more than a Recruitment Session
+  // Modify here if you want to assume to have more than a Recruitment Session
   // active at the same time. Tests assume there is only one now.
   async findActiveRecruitmentSession(): Promise<RecruitmentSession[]> {
     return await this.recruitmentSessionRepository.findBy({
