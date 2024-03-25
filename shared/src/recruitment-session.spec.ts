@@ -3,6 +3,7 @@ import {
   RecruitmentSessionState,
   createRecruitmentSessionSchema,
   applyAbilitiesOnRecruitmentSession,
+  updateRecruitmentSessionSchema,
 } from "./recruitment-session";
 import { createMockAbility } from "./abilities.spec";
 import { Action, UserAuth, checkAbility } from "./abilities";
@@ -13,9 +14,9 @@ describe("Recruitment Session", () => {
     const mockRecSess: Partial<RecruitmentSession> = {
       state: RecruitmentSessionState.Active,
       slotDuration: 5,
-      interviewStart: "11:55" as unknown as Date,
-      interviewEnd: "16:30" as unknown as Date,
-      days: ["2024-12-23" as unknown as Date, "2024-12-23" as unknown as Date],
+      interviewStart: "2024-10-05 11:55" as unknown as Date,
+      interviewEnd: "2024-10-29 16:30" as unknown as Date,
+      days: ["2024-10-23" as unknown as Date, "2024-10-20" as unknown as Date],
       lastModified: "2023-10-20 15:10" as unknown as Date,
     };
 
@@ -78,6 +79,25 @@ describe("Recruitment Session", () => {
 
     it("check interview start type: should be 11:55", () => {
       expect(mockRecSess.interviewStart).toMatch("11:55");
+    });
+  });
+
+  describe("updateRecruitmentSessionSchema", () => {
+    it("should allow a valild update", () => {
+      const mockUpdate: Partial<RecruitmentSession> = {
+        state: RecruitmentSessionState.Concluded,
+        interviewEnd: "2023-10-26 19:30" as unknown as Date,
+      };
+      expect(
+        updateRecruitmentSessionSchema.validate(mockUpdate)
+      ).not.toHaveProperty("error");
+    });
+
+    it("should allow not to set optional fields", () => {
+      const mockUpdate: Partial<RecruitmentSession> = {};
+      expect(
+        updateRecruitmentSessionSchema.validate(mockUpdate)
+      ).not.toHaveProperty("error");
     });
   });
 });
