@@ -1,6 +1,6 @@
-import { TimeSlot, createTimeSlotSchema } from "./timeslot";
+import { TimeSlot } from "./timeslot";
 import { Action, ApplyAbilities } from "./abilities";
-import { Person, Role, createUserSchema } from "./person";
+import { Person, Role } from "./person";
 import * as Joi from "joi";
 
 export enum AvailabilityState {
@@ -15,6 +15,7 @@ export enum AvailabilityType {
 }
 
 export interface Availability {
+  id: number;
   state: AvailabilityState;
   lastModified: Date;
   timeSlot: TimeSlot;
@@ -23,22 +24,8 @@ export interface Availability {
 
 /* Validation schemas */
 
-export const insertAvailabilitySchema = Joi.object<Availability>({
-  state: Joi.string()
-    .valid(...Object.values(AvailabilityType))
-    .required(),
-  //timeSlot: Joi.object(createTimeSlotSchema).required(),
-  //user: Joi.object(createUserSchema).required(),
-}).options({
-  stripUnknown: true,
-  abortEarly: false,
-  presence: "required",
-});
-
-export const updateAvailabilitySchema = Joi.object<Availability>({
-  state: Joi.string()
-    .valid(...Object.values(AvailabilityType))
-    .required(),
+export const insertAvailabilitySchema = Joi.object({
+  timeSlotId: Joi.number().required(),
 }).options({
   stripUnknown: true,
   abortEarly: false,
@@ -58,13 +45,12 @@ export const applyAbilitiesOnAvailability: ApplyAbilities = (
       break;
     case Role.Member:
     case Role.Clerk:
+      can(Action.Create, "Availability");
       can(Action.Read, "Availability");
-      can(Action.Update, "Availability", { userId: user.sub });
+      can(Action.Delete, "Availability");
+      cannot(Action.Update, "Availability");
       break;
     case Role.Applicant:
-      can(Action.Read, "Availability", { userId: user.sub });
-      can(Action.Update, "Availability", { userId: user.sub });
-      break;
     default:
       cannot(Action.Manage, "Availability");
   }
