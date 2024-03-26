@@ -56,7 +56,7 @@ export class RecruitmentSessionController {
   @CheckPolicies((ability) => ability.can(Action.Read, 'RecruitmentSession'))
   async findActive(
     @Ability() ability: AppAbility,
-  ): Promise<RecruitmentSession> {
+  ): Promise<RecruitmentSessionResponseDto> {
     const recruitmentSession =
       await this.recruitmentSessionService.findActiveRecruitmentSession();
     if (recruitmentSession === null) {
@@ -81,7 +81,7 @@ export class RecruitmentSessionController {
   @ApiBadRequestResponse()
   @ApiForbiddenResponse()
   @ApiConflictResponse({
-    description: 'The recruitment session cannot be created', //
+    description: 'The recruitment session cannot be created',
   })
   @ApiCreatedResponse()
   @JoiValidate({
@@ -95,7 +95,7 @@ export class RecruitmentSessionController {
     // there should be only one active recruitment session at a time
     const hasActiveRecruitmentSession =
       await this.recruitmentSessionService.findActiveRecruitmentSession();
-    if (hasActiveRecruitmentSession)
+    if (hasActiveRecruitmentSession != null)
       throw new ConflictException(
         'There is already an active recruitment session',
       );
@@ -149,7 +149,7 @@ export class RecruitmentSessionController {
         const currentlyActiveRecruitmentSession =
           await this.recruitmentSessionService.findActiveRecruitmentSession();
         if (
-          currentlyActiveRecruitmentSession &&
+          currentlyActiveRecruitmentSession != null &&
           currentlyActiveRecruitmentSession.id !== recruitmentSession.id // It's ok to set 'Active' to the (already) active recruitment session
         )
           throw new ConflictException(
@@ -172,7 +172,7 @@ export class RecruitmentSessionController {
 
     const updatedRecruitmentSession =
       await this.recruitmentSessionService.updateRecruitmentSession({
-        ...recruitmentSession,
+        ...recruitmentSession[0],
         ...updateRecruitmentSession,
         lastModified: new Date(),
       });
@@ -207,7 +207,8 @@ export class RecruitmentSessionController {
       await this.recruitmentSessionService.findRecruitmentSessionById(
         recruitmentSessionId,
       );
-    if (!toRemove) throw new NotFoundException('Recruitment session not found');
+    if (toRemove === null)
+      throw new NotFoundException('Recruitment session not found');
 
     // Check if recruitment session has pending interviews
     if (toRemove.state !== RecruitmentSessionState.Concluded) {
@@ -223,7 +224,7 @@ export class RecruitmentSessionController {
 
     // Delete recruitment session
     const deletedRecruitmentSession =
-      await this.recruitmentSessionService.deletRecruitmentSession(toRemove);
+      await this.recruitmentSessionService.deleteRecruitmentSession(toRemove);
 
     return plainToClass(
       RecruitmentSessionResponseDto,
