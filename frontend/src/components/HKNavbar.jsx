@@ -48,15 +48,7 @@ const HKNavbar = () => {
               <div id="profile-nav-dropdown">
                 <NavDropdown
                   title={
-                    <Image
-                      className="me-2 border"
-                      fluid
-                      alt="Picture"
-                      src={user.picture}
-                      width="60"
-                      height="60"
-                      roundedCircle
-                    />
+                    <i class="bi bi-person-circle fs-4 me-2"></i>
                   }
                 >
                   <NavDropdown.ItemText>
