@@ -83,7 +83,9 @@ describe('RecruitmentSessionController', () => {
       jest
         .spyOn(service, 'createRecruitmentSession')
         .mockResolvedValue(mockRecruitmentSession);
-      jest.spyOn(service, 'findActiveRecruitmentSession').mockResolvedValue(null);
+      jest
+        .spyOn(service, 'findActiveRecruitmentSession')
+        .mockResolvedValue(null);
       const result = await controller.createRecruitmentSession(
         mockCreateRecruitmentSessionDto,
       );
@@ -139,7 +141,7 @@ describe('RecruitmentSessionController', () => {
       expect(service.updateRecruitmentSession).toHaveBeenCalledTimes(1);
       expect(service.updateRecruitmentSession).toHaveBeenCalledWith({
         ...mockUpdateRecruitmentSessionDto,
-        lastModified: testDate
+        lastModified: testDate,
       });
     });
 
