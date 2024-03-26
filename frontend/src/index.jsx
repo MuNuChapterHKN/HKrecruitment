@@ -4,7 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { Auth0ProviderWithNavigate } from "./Auth0ProviderWithNavigate";
 import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import 'bootstrap-icons/font/bootstrap-icons.css';
+import "bootstrap-icons/font/bootstrap-icons.css";
 import App from "./App";
 
 ReactDOM.createRoot(document.getElementById("root")).render(

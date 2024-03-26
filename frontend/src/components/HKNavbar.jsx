@@ -47,9 +47,7 @@ const HKNavbar = () => {
             ) : (
               <div id="profile-nav-dropdown">
                 <NavDropdown
-                  title={
-                    <i class="bi bi-person-circle fs-4 me-2"></i>
-                  }
+                  title={<i class="bi bi-person-circle fs-4 me-2"></i>}
                 >
                   <NavDropdown.ItemText>
                     {user.name ? user.name : user.email}
