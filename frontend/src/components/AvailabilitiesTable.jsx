@@ -9,7 +9,7 @@ import { createUserSchema } from "@hkrecruitment/shared";
 import React from "react";
 // import { getApplicants, getUsers, getInterviewsByDates } from "../services/API";
 
-function AvaiabilitiesTable(props) {
+function AvailabilitiesTable(props) {
   //const start = "2014-09-08T08:00:00";
   const step = 45;
   //const end = "20.00";
@@ -218,4 +218,4 @@ function AvaiabilitiesTable(props) {
   );
 }
 
-export default AvaiabilitiesTable;
+export default AvailabilitiesTable;
