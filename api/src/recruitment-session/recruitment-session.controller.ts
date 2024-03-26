@@ -59,7 +59,7 @@ export class RecruitmentSessionController {
   ): Promise<RecruitmentSessionResponseDto> {
     const recruitmentSession =
       await this.recruitmentSessionService.findActiveRecruitmentSession();
-    if (recruitmentSession.length === 0) {
+    if (recruitmentSession === null) {
       throw new NotFoundException();
     }
 
@@ -67,14 +67,14 @@ export class RecruitmentSessionController {
       !checkAbility(
         ability,
         Action.Read,
-        recruitmentSession[0],
+        recruitmentSession,
         'RecruitmentSession',
       )
     ) {
       throw new ForbiddenException();
     }
 
-    return recruitmentSession[0];
+    return recruitmentSession;
   }
 
   // CREATE NEW RECRUITMENT SESSION
@@ -95,7 +95,7 @@ export class RecruitmentSessionController {
     // there should be only one active recruitment session at a time
     const hasActiveRecruitmentSession =
       await this.recruitmentSessionService.findActiveRecruitmentSession();
-    if (hasActiveRecruitmentSession.length)
+    if (hasActiveRecruitmentSession != null)
       throw new ConflictException(
         'There is already an active recruitment session',
       );
@@ -127,11 +127,11 @@ export class RecruitmentSessionController {
         sessionId,
       );
 
-    if (recruitmentSession.length === 0) throw new NotFoundException();
+    if (recruitmentSession === null) throw new NotFoundException();
 
     const sessionToCheck = {
       ...updateRecruitmentSession,
-      sessionId: recruitmentSession[0].id,
+      sessionId: recruitmentSession.id,
     };
     if (
       !checkAbility(
@@ -149,8 +149,8 @@ export class RecruitmentSessionController {
         const currentlyActiveRecruitmentSession =
           await this.recruitmentSessionService.findActiveRecruitmentSession();
         if (
-          currentlyActiveRecruitmentSession.length &&
-          currentlyActiveRecruitmentSession[0].id !== recruitmentSession[0].id // It's ok to set 'Active' to the (already) active recruitment session
+          currentlyActiveRecruitmentSession != null &&
+          currentlyActiveRecruitmentSession.id !== recruitmentSession.id // It's ok to set 'Active' to the (already) active recruitment session
         )
           throw new ConflictException(
             'There is already an active recruitment session',
@@ -161,7 +161,7 @@ export class RecruitmentSessionController {
         // Recruitment session can't be set to concluded if it has pending interviews
         const hasPendingInterviews =
           await this.recruitmentSessionService.sessionHasPendingInterviews(
-            recruitmentSession[0],
+            recruitmentSession,
           );
         if (hasPendingInterviews)
           throw new ConflictException(
@@ -207,14 +207,14 @@ export class RecruitmentSessionController {
       await this.recruitmentSessionService.findRecruitmentSessionById(
         recruitmentSessionId,
       );
-    if (toRemove.length === 0)
+    if (toRemove === null)
       throw new NotFoundException('Recruitment session not found');
 
     // Check if recruitment session has pending interviews
-    if (toRemove[0].state !== RecruitmentSessionState.Concluded) {
+    if (toRemove.state !== RecruitmentSessionState.Concluded) {
       const hasPendingInterviews =
         await this.recruitmentSessionService.sessionHasPendingInterviews(
-          toRemove[0],
+          toRemove,
         );
       if (hasPendingInterviews)
         throw new ConflictException(
@@ -224,9 +224,7 @@ export class RecruitmentSessionController {
 
     // Delete recruitment session
     const deletedRecruitmentSession =
-      await this.recruitmentSessionService.deleteRecruitmentSession(
-        toRemove[0],
-      );
+      await this.recruitmentSessionService.deleteRecruitmentSession(toRemove);
 
     return plainToClass(
       RecruitmentSessionResponseDto,

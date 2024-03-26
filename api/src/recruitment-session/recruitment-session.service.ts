@@ -29,16 +29,20 @@ export class RecruitmentSessionService {
     return await this.recruitmentSessionRepository.find();
   }
 
-  async findRecruitmentSessionById(id: number): Promise<RecruitmentSession[]> {
-    return await this.recruitmentSessionRepository.findBy({ id });
+  async findRecruitmentSessionById(
+    RSid: number,
+  ): Promise<RecruitmentSession | null> {
+    const matches = await this.recruitmentSessionRepository.findBy({
+      id: RSid,
+    });
+    return matches.length > 0 ? matches[0] : null;
   }
 
-  // Modify here if you want to assume to have more than a Recruitment Session
-  // active at the same time. Tests assume there is only one now.
-  async findActiveRecruitmentSession(): Promise<RecruitmentSession[]> {
-    return await this.recruitmentSessionRepository.findBy({
+  async findActiveRecruitmentSession(): Promise<RecruitmentSession | null> {
+    const matches = await this.recruitmentSessionRepository.findBy({
       state: RecruitmentSessionState.Active,
     });
+    return matches.length > 0 ? matches[0] : null;
   }
 
   async deleteRecruitmentSession(

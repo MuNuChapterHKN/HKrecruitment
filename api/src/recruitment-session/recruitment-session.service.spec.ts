@@ -77,21 +77,21 @@ describe('Recruitment Session Service', () => {
         recruitmentSessionID,
       );
 
-      expect(result[0]).toEqual(mockRecruitmentSession);
+      expect(result).toEqual(mockRecruitmentSession);
       expect(mockedRepository.findBy).toHaveBeenCalledTimes(1);
       expect(mockedRepository.findBy).toHaveBeenLastCalledWith({
         id: recruitmentSessionID,
       });
     });
 
-    it('should return an empty array when no recruitment session is found', async () => {
+    it('should return null when no recruitment session is found', async () => {
       const recruitmentSessionID = 2;
       jest.spyOn(mockedRepository, 'findBy').mockResolvedValue([]); // MAYBE THERE SHOULD NOT BE SQUARE BRACKETS BECAUSE THE SERVICE USES FINDONE()
       const result = await recruitmentSessionService.findRecruitmentSessionById(
         recruitmentSessionID,
       );
 
-      expect(result).toEqual([]);
+      expect(result).toEqual(null);
       expect(mockedRepository.findBy).toHaveBeenCalledTimes(1);
       expect(mockedRepository.findBy).toHaveBeenLastCalledWith({
         id: recruitmentSessionID,
@@ -109,7 +109,7 @@ describe('Recruitment Session Service', () => {
       const result =
         await recruitmentSessionService.findActiveRecruitmentSession();
 
-      expect(result).toEqual([mockRecruitmentSession]);
+      expect(result).toEqual(mockRecruitmentSession);
       expect(mockedRepository.findBy).toHaveBeenCalledTimes(1);
       expect(mockedRepository.findBy).toHaveBeenCalledWith({
         state: activeState,
