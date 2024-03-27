@@ -4,6 +4,7 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Relation,
 } from 'typeorm';
 import {
   Availability as AvailabilityInterface,
@@ -16,14 +17,21 @@ import { TimeSlot } from 'src/timeslots/timeslot.entity';
 export class Availability implements AvailabilityInterface {
   @PrimaryGeneratedColumn('increment')
   id: number;
+
   @Column()
   state: AvailabilityState;
+
   @Column({ name: 'last_modified' })
   lastModified: Date;
+
   @Column({ name: 'time_slot' })
-  @ManyToOne(() => TimeSlot)
-  timeSlot: TimeSlot;
+  @ManyToOne(() => TimeSlot, (timeSlot) => timeSlot.availabilities)
+  timeSlot: Relation<TimeSlot>;
+
   @ManyToOne(() => User)
   @JoinColumn()
-  user: User;
+  user: Relation<User>;
+
+  // @OneToOne(() => Interview)
+  // interview: Interview;
 }
