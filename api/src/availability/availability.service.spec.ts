@@ -1,9 +1,11 @@
-import { mockAvailability, testDate } from '@mocks/data';
+import { mockAvailability, testDate } from 'src/mocks/data';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AvailabilityService } from './availability.service';
 import { Availability } from './availability.entity';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { mockedRepository } from '@mocks/repositories';
+import { getRepositoryToken, getDataSourceToken } from '@nestjs/typeorm';
+import { mockedRepository } from 'src/mocks/repositories';
+import { ConflictException } from '@nestjs/common';
+import { createMockDataSource } from 'src/mocks/data-sources';
 
 describe('AvailabilityService', () => {
   let service: AvailabilityService;
@@ -24,6 +26,12 @@ describe('AvailabilityService', () => {
           provide: getRepositoryToken(Availability),
           useValue: mockedRepository,
         },
+        {
+          provide: getDataSourceToken(),
+          useValue: createMockDataSource({
+            findOne: mockAvailability
+          }),
+        }
       ],
     }).compile();
 
@@ -38,7 +46,25 @@ describe('AvailabilityService', () => {
     expect(service).toBeDefined();
   });
 
+  describe('listAvailabilities', () => {
+    it('should return all availabilities', async () => {
+      jest.spyOn(mockedRepository, 'find').mockResolvedValue([mockAvailability]);
+      const result = await service.listAvailabilities();
+      expect(result).toEqual([mockAvailability]);
+      expect(mockedRepository.find).toHaveBeenCalledTimes(1);
+    });
+  });
+
   // CRUD OPERATIONS
+
+  describe('findById', () => {
+    it('should return the availability with the specified id', async () => {
+      jest.spyOn(mockedRepository, 'findBy').mockResolvedValue([mockAvailability]);
+      const result = await service.findById(mockAvailability.id);
+      expect(result).toEqual(mockAvailability);
+      expect(mockedRepository.findBy).toHaveBeenCalledTimes(1);
+    });
+  });
 
   describe('createAvailability', () => {
     it('should create a new availability', async () => {
@@ -51,23 +77,13 @@ describe('AvailabilityService', () => {
 
   describe('deleteAvailability', () => {
     it('should remove the specified availability from the database', async () => {
+
       jest
         .spyOn(mockedRepository, 'remove')
         .mockResolvedValue(mockAvailability);
-      const result = await service.deleteAvailability(mockAvailability);
+      const result = await service.deleteAvailability(mockAvailability.id);
       expect(result).toEqual(mockAvailability);
       expect(mockedRepository.remove).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('listAvailabilities', () => {
-    it('should return all availabilities', async () => {
-      jest
-        .spyOn(mockedRepository, 'find')
-        .mockResolvedValue([mockAvailability]);
-      const result = await service.listAvailabilities();
-      expect(result).toEqual([mockAvailability]);
-      expect(mockedRepository.find).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -76,7 +92,7 @@ describe('AvailabilityService', () => {
       jest
         .spyOn(mockedRepository, 'findBy')
         .mockResolvedValue([mockAvailability]);
-      const result = await service.findAvailabilityById(mockAvailability.id);
+      const result = await service.findById(mockAvailability.id);
       expect(result).toEqual(mockAvailability);
       expect(mockedRepository.findBy).toHaveBeenCalledTimes(1);
     });
