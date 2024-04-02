@@ -1,4 +1,10 @@
-import { mockAvailability, mockCreateAvailabilityDto, mockClerk, mockTimeSlot, testDate } from 'src/mocks/data';
+import {
+  mockAvailability,
+  mockCreateAvailabilityDto,
+  mockClerk,
+  mockTimeSlot,
+  testDate,
+} from 'src/mocks/data';
 import { createMock } from '@golevelup/ts-jest';
 import { AvailabilityController } from './availability.controller';
 import { AvailabilityService } from './availability.service';
@@ -14,7 +20,6 @@ describe('AvailabilityController', () => {
   let availabilityService: AvailabilityService;
   let userService: UsersService;
   let timeslotService: TimeSlotsService;
-
 
   /************* Test setup ************/
 
@@ -44,7 +49,6 @@ describe('AvailabilityController', () => {
 
   describe('createAvailability', () => {
     it('should allow creating a valid availability', async () => {
-
       const mockRequest = getMockRequest();
 
       jest.spyOn(userService, 'findByOauthId').mockResolvedValue(mockClerk);
@@ -53,7 +57,10 @@ describe('AvailabilityController', () => {
         .spyOn(availabilityService, 'createAvailability')
         .mockResolvedValue(mockAvailability);
 
-      const result = await controller.createAvailability(mockCreateAvailabilityDto, mockRequest);
+      const result = await controller.createAvailability(
+        mockCreateAvailabilityDto,
+        mockRequest,
+      );
 
       expect(result).toEqual(mockAvailability);
     });
@@ -63,7 +70,9 @@ describe('AvailabilityController', () => {
 
       jest.spyOn(userService, 'findByOauthId').mockResolvedValue(mockClerk);
       jest.spyOn(timeslotService, 'findById').mockResolvedValue(mockTimeSlot);
-      jest.spyOn(availabilityService, 'createAvailability').mockResolvedValue(undefined);
+      jest
+        .spyOn(availabilityService, 'createAvailability')
+        .mockResolvedValue(undefined);
 
       await expect(
         controller.createAvailability(mockCreateAvailabilityDto, mockRequest),
@@ -81,7 +90,6 @@ describe('AvailabilityController', () => {
     });
 
     it('should throw an error if the user does not exist', async () => {
-
       const mockRequest = getMockRequest();
 
       jest.spyOn(timeslotService, 'findById').mockResolvedValue(mockTimeSlot);
@@ -97,7 +105,9 @@ describe('AvailabilityController', () => {
 
       jest.spyOn(userService, 'findByOauthId').mockResolvedValue(mockClerk);
       jest.spyOn(timeslotService, 'findById').mockResolvedValue(mockTimeSlot);
-      jest.spyOn(availabilityService, 'findByUserAndTimeSlot').mockResolvedValue(mockAvailability);
+      jest
+        .spyOn(availabilityService, 'findByUserAndTimeSlot')
+        .mockResolvedValue(mockAvailability);
 
       await expect(
         controller.createAvailability(mockCreateAvailabilityDto, mockRequest),
@@ -114,13 +124,19 @@ describe('AvailabilityController', () => {
       const mockReq = createMock<AuthenticatedRequest>();
       mockReq.user.sub = mockAvailability.user.oauthId;
 
-      jest.spyOn(availabilityService, 'findById').mockResolvedValue(mockAvailability);
+      jest
+        .spyOn(availabilityService, 'findById')
+        .mockResolvedValue(mockAvailability);
       jest
         .spyOn(availabilityService, 'deleteAvailability')
         .mockResolvedValue(mockAvailability);
 
       await expect(
-        controller.deleteAvailability(mockAbility, mockAvailability.id, mockReq),
+        controller.deleteAvailability(
+          mockAbility,
+          mockAvailability.id,
+          mockReq,
+        ),
       ).resolves.toEqual(mockAvailability);
     });
 
@@ -131,9 +147,15 @@ describe('AvailabilityController', () => {
       const mockReq = createMock<AuthenticatedRequest>();
       mockReq.user.sub = '123';
 
-      jest.spyOn(availabilityService, 'findById').mockResolvedValue(mockAvailability);
+      jest
+        .spyOn(availabilityService, 'findById')
+        .mockResolvedValue(mockAvailability);
       await expect(
-        controller.deleteAvailability(mockAbility, mockAvailability.id, mockReq),
+        controller.deleteAvailability(
+          mockAbility,
+          mockAvailability.id,
+          mockReq,
+        ),
       ).rejects.toThrowError('Forbidden');
     });
 
@@ -144,9 +166,15 @@ describe('AvailabilityController', () => {
       const mockReq = createMock<AuthenticatedRequest>();
       mockReq.user.sub = '345';
 
-      jest.spyOn(availabilityService, 'findById').mockResolvedValue(mockAvailability);
+      jest
+        .spyOn(availabilityService, 'findById')
+        .mockResolvedValue(mockAvailability);
       await expect(
-        controller.deleteAvailability(mockAbility, mockAvailability.id, mockReq),
+        controller.deleteAvailability(
+          mockAbility,
+          mockAvailability.id,
+          mockReq,
+        ),
       ).rejects.toThrowError('Forbidden');
     });
 
@@ -160,7 +188,11 @@ describe('AvailabilityController', () => {
       jest.spyOn(availabilityService, 'findById').mockResolvedValue(undefined);
 
       await expect(
-        controller.deleteAvailability(mockAbility, mockAvailability.id, mockReq),
+        controller.deleteAvailability(
+          mockAbility,
+          mockAvailability.id,
+          mockReq,
+        ),
       ).rejects.toThrowError('Not Found');
     });
 

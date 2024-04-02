@@ -42,9 +42,11 @@ import { Ability } from 'src/authorization/ability.decorator';
 @ApiTags('availability')
 @Controller('availability')
 export class AvailabilityController {
-  constructor(private readonly availabilityService: AvailabilityService,
+  constructor(
+    private readonly availabilityService: AvailabilityService,
     private readonly timeSlotsService: TimeSlotsService,
-    private readonly userService: UsersService) { }
+    private readonly userService: UsersService,
+  ) {}
 
   @ApiCreatedResponse()
   @ApiBadRequestResponse()
@@ -55,36 +57,45 @@ export class AvailabilityController {
   @CheckPolicies((ability) => ability.can(Action.Create, 'Availability'))
   @Post()
   @JoiValidate({
-    param: Joi.number().positive().integer().required().label('availability_id'),
+    param: Joi.number()
+      .positive()
+      .integer()
+      .required()
+      .label('availability_id'),
     body: insertAvailabilitySchema,
   })
   async createAvailability(
     @Body() availabilityDto: CreateAvailabilityDto,
     @Req() req: AuthenticatedRequest,
   ): Promise<Availability> {
-
     /* Verify timeslot exists */
-    const timeSlot = await this.timeSlotsService.findById(availabilityDto.timeSlotId);
-    if (!timeSlot)
-      throw new NotFoundException("Timeslot not found");
+    const timeSlot = await this.timeSlotsService.findById(
+      availabilityDto.timeSlotId,
+    );
+    if (!timeSlot) throw new NotFoundException('Timeslot not found');
 
     /* Verify user exists */
     const user = await this.userService.findByOauthId(req.user.sub);
-    if (!user)
-      throw new NotFoundException("User not found");
+    if (!user) throw new NotFoundException('User not found');
 
     /* Verify availability for timeslot does not already exist */
-    const existing = await this.availabilityService.findByUserAndTimeSlot(user, timeSlot);
+    const existing = await this.availabilityService.findByUserAndTimeSlot(
+      user,
+      timeSlot,
+    );
     if (existing)
-      throw new ConflictException("Availability already exists for this timeslot");
+      throw new ConflictException(
+        'Availability already exists for this timeslot',
+      );
 
     const availability = {
       timeSlot: timeSlot,
       state: AvailabilityState.Free,
     } as Availability;
-    const result = await this.availabilityService.createAvailability(availability);
-    if (!result)
-      throw new ForbiddenException();
+    const result = await this.availabilityService.createAvailability(
+      availability,
+    );
+    if (!result) throw new ForbiddenException();
     return result;
   }
 
@@ -95,21 +106,28 @@ export class AvailabilityController {
   @CheckPolicies((ability) => ability.can(Action.Delete, 'Availability'))
   @Delete(':availability_id')
   @JoiValidate({
-    param: Joi.number().positive().integer().required().label('availability_id'),
+    param: Joi.number()
+      .positive()
+      .integer()
+      .required()
+      .label('availability_id'),
   })
   async deleteAvailability(
     @Ability() ability: AppAbility,
     @Param('availability_id') availabilityId: number,
     @Req() req: AuthenticatedRequest,
-    ): Promise<Availability> {
-    
+  ): Promise<Availability> {
     // Check if availability exists
-    const availability = await this.availabilityService.findById(availabilityId);
-    if (!availability)
-      throw new NotFoundException();
+    const availability = await this.availabilityService.findById(
+      availabilityId,
+    );
+    if (!availability) throw new NotFoundException();
 
     // Check if user has permission to delete availability
-    if (ability.cannot(Action.Delete, 'Availability') || availability.user.oauthId !== req.user.sub)
+    if (
+      ability.cannot(Action.Delete, 'Availability') ||
+      availability.user.oauthId !== req.user.sub
+    )
       throw new ForbiddenException();
 
     return await this.availabilityService.deleteAvailability(availabilityId);

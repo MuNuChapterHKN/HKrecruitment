@@ -1,12 +1,5 @@
 import { CreateApplicationDto } from 'src/application/create-application.dto';
 import {
-  ApplicationType,
-  ApplicationState,
-  LangLevel,
-  Role,
-  AvailabilityState,
-} from '@hkrecruitment/shared';
-import {
   BscApplication,
   MscApplication,
   PhdApplication,
@@ -15,6 +8,13 @@ import { UpdateApplicationDto } from 'src/application/update-application.dto';
 import { RecruitmentSessionState } from '@hkrecruitment/shared/recruitment-session';
 import { CreateRecruitmentSessionDto } from 'src/recruitment-session/create-recruitment-session.dto';
 import { UpdateRecruitmentSessionDto } from 'src/recruitment-session/update-recruitment-session.dto';
+import { CreateAvailabilityDto } from 'src/availability/create-availability.dto';
+import { ApplicationType } from '@hkrecruitment/shared';
+import { ApplicationState } from '@hkrecruitment/shared';
+import { LangLevel } from '@hkrecruitment/shared';
+import { Role } from '@hkrecruitment/shared';
+import { AvailabilityState } from '@hkrecruitment/shared';
+import { TimeSlot } from '@hkrecruitment/shared';
 
 export const testDate = new Date(2023, 0, 1, 10, 0, 0);
 export const testDateTimeStart = new Date(2023, 0, 1, 10, 30, 0);
@@ -26,7 +26,8 @@ export const mockTimeSlot = {
   start: testDateTimeStart,
   end: testDateTimeEnd,
   id: 1,
-};
+  availabilities: [],
+} as TimeSlot & { availabilities: any[] };
 
 export const testInterviewStart = '11:55' as unknown as Date;
 export const testInterviewEnd = '20:35' as unknown as Date;
@@ -170,6 +171,15 @@ export const applicant = {
   role: Role.Applicant,
 };
 
+export const mockClerk = {
+  firstName: 'Violet',
+  lastName: 'Red',
+  oauthId: '321',
+  sex: 'female',
+  email: 'email2@example.com',
+  role: Role.Clerk,
+};
+
 export const applicationFiles = {
   cv: [
     {
@@ -196,8 +206,12 @@ export const today = '1/1/2023, 10:00:00';
 
 export const mockAvailability = {
   id: 1,
-  state: AvailabilityState.Confirmed,
+  state: AvailabilityState.Free,
   lastModified: new Date(),
   timeSlot: mockTimeSlot,
   user: applicant,
 };
+
+export const mockCreateAvailabilityDto = {
+  timeSlotId: mockTimeSlot.id,
+} as CreateAvailabilityDto;

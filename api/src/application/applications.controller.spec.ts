@@ -16,7 +16,7 @@ import {
   mockMscApplication,
   updateApplicationDTO,
   testDate,
-} from '@mocks/data';
+} from 'src/mocks/data';
 import {
   BadRequestException,
   ConflictException,
