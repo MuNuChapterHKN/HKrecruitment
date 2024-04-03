@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, LessThan, MoreThan } from 'typeorm';
+import { Repository, LessThan, MoreThan, QueryRunner } from 'typeorm';
 import { TimeSlot } from './timeslot.entity';
+import { RecruitmentSession } from '@hkrecruitment/shared';
 import { CreateTimeSlotDto } from './create-timeslot.dto';
 
 @Injectable()
@@ -50,5 +51,58 @@ export class TimeSlotsService {
 
   async createTimeSlot(timeSlot: CreateTimeSlotDto): Promise<TimeSlot> {
     return await this.timeSlotRepository.save(timeSlot);
+  }
+
+  async createRecruitmentSessionTimeSlots(
+    queryRunner: QueryRunner,
+    recruitmentSession: RecruitmentSession,
+  ): Promise<TimeSlot[]> {
+    const { slotDuration, interviewStart, interviewEnd, days } =
+      recruitmentSession;
+    const timeSlots = this.generateTimeSlots(
+      slotDuration,
+      interviewStart,
+      interviewEnd,
+      days,
+    );
+    return await queryRunner.manager.getRepository(TimeSlot).save(timeSlots);
+  }
+
+  generateTimeSlots(
+    slotDuration: number,
+    interviewStart: Date,
+    interviewEnd: Date,
+    days: Date[],
+  ): TimeSlot[] {
+    const timeSlots: TimeSlot[] = [];
+    const interviewStartMinutes =
+      interviewStart.getHours() * 60 + interviewStart.getMinutes();
+    const interviewEndMinutes =
+      interviewEnd.getHours() * 60 + interviewEnd.getMinutes();
+    const dailySlots = Math.floor(
+      (interviewEndMinutes - interviewStartMinutes) / slotDuration,
+    );
+
+    for (let i = 0; i < dailySlots; i++) {
+      for (let day of days) {
+        const timeSlotStart = new Date(day);
+        timeSlotStart.setHours(
+          interviewStart.getHours() + Math.floor((i * slotDuration) / 60),
+          interviewStart.getMinutes() + ((i * slotDuration) % 60),
+          0,
+          0,
+        );
+        const timeSlotEnd = new Date(
+          timeSlotStart.getTime() + slotDuration * 1000 * 60,
+        );
+
+        const timeSlot = new TimeSlot();
+        timeSlot.start = timeSlotStart;
+        timeSlot.end = timeSlotEnd;
+        timeSlots.push(timeSlot);
+      }
+    }
+
+    return timeSlots;
   }
 }
