@@ -1,12 +1,16 @@
-import { mockRecruitmentSession, testDate } from '@mocks/data';
-import { mockedRepository } from '@mocks/repositories';
+import { mockRecruitmentSession, testDate } from 'src/mocks/data';
+import { mockedRepository } from 'src/mocks/repositories';
 import { TestingModule, Test } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
+import { getRepositoryToken, getDataSourceToken } from '@nestjs/typeorm';
 import { RecruitmentSession } from './recruitment-session.entity';
 import { RecruitmentSessionService } from './recruitment-session.service';
+import { mockedTimeSlotsService as mockedTimeSlotsServiceClass } from '@mocks/services';
+import { mockDataSource } from 'src/mocks/data-sources';
+import { TimeSlotsService } from 'src/timeslots/timeslots.service';
 
 describe('Recruitment Session Service', () => {
   let recruitmentSessionService: RecruitmentSessionService;
+  let mockedTimeSlotsService: TimeSlotsService;
 
   beforeAll(() => {
     jest
@@ -22,9 +26,18 @@ describe('Recruitment Session Service', () => {
           provide: getRepositoryToken(RecruitmentSession),
           useValue: mockedRepository,
         },
+        {
+          provide: TimeSlotsService,
+          useValue: mockedTimeSlotsServiceClass,
+        },
+        {
+          provide: getDataSourceToken(),
+          useValue: mockDataSource,
+        },
       ],
     }).compile();
 
+    mockedTimeSlotsService = module.get<TimeSlotsService>(TimeSlotsService);
     recruitmentSessionService = module.get<RecruitmentSessionService>(
       RecruitmentSessionService,
     );
@@ -34,6 +47,38 @@ describe('Recruitment Session Service', () => {
 
   it('should be defined', () => {
     expect(recruitmentSessionService).toBeDefined();
+  });
+
+  describe('createRecruitmentSession', () => {
+    it('should create a new recruitment session', async () => {
+      const mockRecruitmentSessionRepository = {
+        save: mockRecruitmentSession,
+      };
+      const mockedRepositories = mockDataSource.setMockResults({
+        RecruitmentSession: mockRecruitmentSessionRepository,
+      });
+      jest
+        .spyOn(mockedTimeSlotsService, 'createRecruitmentSessionTimeSlots')
+        .mockResolvedValue([]);
+      const result = await recruitmentSessionService.createRecruitmentSession(
+        mockRecruitmentSession,
+      );
+      const expectedRecruitmentSession = {
+        ...mockRecruitmentSession,
+        createdAt: testDate,
+        lastModified: testDate,
+      };
+      expect(result).toEqual(mockRecruitmentSession);
+      expect(
+        mockedRepositories['RecruitmentSession'].save,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockedRepositories['RecruitmentSession'].save,
+      ).toHaveBeenCalledWith(expectedRecruitmentSession);
+      expect(
+        mockedTimeSlotsService.createRecruitmentSessionTimeSlots,
+      ).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('deleteRecruitmentSession', () => {

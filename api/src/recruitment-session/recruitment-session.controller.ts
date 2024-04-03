@@ -100,9 +100,9 @@ export class RecruitmentSessionController {
         'There is already an active recruitment session',
       );
 
-    return this.recruitmentSessionService.createRecruitmentSession({
-      ...recruitmentSession,
-    });
+    return this.recruitmentSessionService.createRecruitmentSession(
+      recruitmentSession,
+    );
   }
 
   // UPDATE A RECRUITMENT SESSION

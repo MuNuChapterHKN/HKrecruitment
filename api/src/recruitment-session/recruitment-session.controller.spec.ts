@@ -10,7 +10,7 @@ import {
   mockUpdateRecruitmentSessionDto,
   mockCreateRecruitmentSessionDto,
   testDate,
-} from '@mocks/data';
+} from 'src/mocks/data';
 import {
   ConflictException,
   ForbiddenException,
@@ -294,6 +294,9 @@ describe('RecruitmentSessionController', () => {
         state: mockDeletedRecruitmentSession.state,
         createdAt: mockDeletedRecruitmentSession.createdAt,
       } as RecruitmentSessionResponseDto;
+      jest
+        .spyOn(global, 'Date')
+        .mockImplementation(() => testDate as unknown as string);
       jest
         .spyOn(service, 'findRecruitmentSessionById')
         .mockResolvedValue(mockRecruitmentSession);
