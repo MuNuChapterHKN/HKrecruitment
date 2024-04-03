@@ -1,17 +1,19 @@
-import { mockTimeSlot, testDate } from '@mocks/data';
-import { mockedRepository } from '@mocks/repositories';
+import { mockGenerateTimeSlots, mockTimeSlot, testDate } from 'src/mocks/data';
+import { mockedRepository } from 'src/mocks/repositories';
 import { TestingModule, Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { TimeSlot } from './timeslot.entity';
 import { TimeSlotsService } from './timeslots.service';
+import { mockDataSource } from 'src/mocks/data-sources';
 
 describe('TimeSlotsService', () => {
   let timeSlotService: TimeSlotsService;
+  let mockDate: jest.SpyInstance;
 
   /************* Test setup ************/
 
   beforeAll(() => {
-    jest
+    mockDate = jest
       .spyOn(global, 'Date')
       .mockImplementation(() => testDate as unknown as string);
   });
@@ -71,6 +73,137 @@ describe('TimeSlotsService', () => {
       const result = await timeSlotService.createTimeSlot(mockTimeSlot);
       expect(result).toEqual(mockTimeSlot);
       expect(mockedRepository.save).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('createRecruitmentSessionTimeSlots', () => {
+    it('should create recruitment session time slots', async () => {
+      const expectedTimeSlots: Partial<TimeSlot>[] = [
+        {
+          start: new Date('2023-01-01T10:30:00'),
+          end: new Date('2023-01-01T11:00:00'),
+        },
+        {
+          start: new Date('2023-01-01T11:00:00'),
+          end: new Date('2023-01-01T11:30:00'),
+        },
+        {
+          start: new Date('2023-01-01T10:00:00'),
+          end: new Date('2022-01-01T11:00:00'),
+        },
+        {
+          start: new Date('2023-01-01T10:00:00'),
+          end: new Date('2022-01-01T11:00:00'),
+        },
+      ];
+
+      mockDataSource.setMockResults({ TimeSlot: { save: expectedTimeSlots } });
+      const queryRunner = mockDataSource.createQueryRunner();
+      const result = await timeSlotService.createRecruitmentSessionTimeSlots(
+        queryRunner,
+        mockGenerateTimeSlots,
+      );
+
+      expect(result).toEqual(expectedTimeSlots);
+      expect(
+        queryRunner.manager.getRepository(TimeSlot).save,
+      ).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('generateTimeSlots', () => {
+    it('should generate time slots', () => {
+      mockDate.mockRestore();
+      const slotDuration = 60;
+      const interviewStart = new Date('2022-01-01T09:00:00');
+      const interviewEnd = new Date('2022-01-01T12:00:00');
+      const days = [new Date('2022-01-01'), new Date('2022-01-03')];
+
+      const expectedTimeSlots: Partial<TimeSlot>[] = [
+        {
+          start: new Date('2022-01-01T09:00:00'),
+          end: new Date('2022-01-01T10:00:00'),
+        },
+        {
+          start: new Date('2022-01-03T09:00:00'),
+          end: new Date('2022-01-03T10:00:00'),
+        },
+        {
+          start: new Date('2022-01-01T10:00:00'),
+          end: new Date('2022-01-01T11:00:00'),
+        },
+        {
+          start: new Date('2022-01-03T10:00:00'),
+          end: new Date('2022-01-03T11:00:00'),
+        },
+        {
+          start: new Date('2022-01-01T11:00:00'),
+          end: new Date('2022-01-01T12:00:00'),
+        },
+        {
+          start: new Date('2022-01-03T11:00:00'),
+          end: new Date('2022-01-03T12:00:00'),
+        },
+      ].map(
+        (timeSlot) =>
+          ({
+            ...timeSlot,
+            id: undefined,
+            availabilities: undefined,
+          } as TimeSlot),
+      );
+
+      const result = timeSlotService.generateTimeSlots(
+        slotDuration,
+        interviewStart,
+        interviewEnd,
+        days,
+      );
+
+      expect(result).toEqual(expectedTimeSlots);
+    });
+
+    it("shouldn't generate time slots that overflow interviewEnd time", () => {
+      mockDate.mockRestore();
+      const slotDuration = 50;
+      const interviewStart = new Date('2022-01-01T09:00:00');
+      const interviewEnd = new Date('2022-01-01T11:00:00');
+      const days = [new Date('2022-01-01'), new Date('2022-01-03')];
+
+      const expectedTimeSlots: Partial<TimeSlot>[] = [
+        {
+          start: new Date('2022-01-01T09:00:00'),
+          end: new Date('2022-01-01T09:50:00'),
+        },
+        {
+          start: new Date('2022-01-03T09:00:00'),
+          end: new Date('2022-01-03T09:50:00'),
+        },
+        {
+          start: new Date('2022-01-01T09:50:00'),
+          end: new Date('2022-01-01T10:40:00'),
+        },
+        {
+          start: new Date('2022-01-03T09:50:00'),
+          end: new Date('2022-01-03T10:40:00'),
+        },
+      ].map(
+        (timeSlot) =>
+          ({
+            ...timeSlot,
+            id: undefined,
+            availabilities: undefined,
+          } as TimeSlot),
+      );
+
+      const result = timeSlotService.generateTimeSlots(
+        slotDuration,
+        interviewStart,
+        interviewEnd,
+        days,
+      );
+
+      expect(result).toEqual(expectedTimeSlots);
     });
   });
 });
