@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryColumn, Relation } from 'typeorm';
 import { Person, Role } from '@hkrecruitment/shared';
 import { Availability } from 'src/availability/availability.entity';
 
@@ -27,4 +27,7 @@ export class User implements Person {
 
   @Column()
   role: Role;
+
+  @OneToMany(() => Availability, (availability) => availability.user)
+  availabilities?: Relation<Availability[]>;
 }

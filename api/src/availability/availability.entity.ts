@@ -1,7 +1,6 @@
 import {
   Column,
   Entity,
-  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   Relation,
@@ -12,6 +11,7 @@ import {
 } from '../../../shared/src/availability';
 import { User } from 'src/users/user.entity';
 import { TimeSlot } from 'src/timeslots/timeslot.entity';
+import { DbAwareColumn } from 'src/utils/db-aware-column';
 
 @Entity()
 export class Availability implements AvailabilityInterface {
@@ -24,12 +24,11 @@ export class Availability implements AvailabilityInterface {
   @Column({ name: 'last_modified' })
   lastModified: Date;
 
-  @Column({ name: 'time_slot' })
+  @DbAwareColumn(() => TimeSlot, { name: 'time_slot' })
   @ManyToOne(() => TimeSlot, (timeSlot) => timeSlot.availabilities)
   timeSlot: Relation<TimeSlot>;
 
-  @ManyToOne(() => User)
-  @JoinColumn()
+  @ManyToOne(() => User, (user) => user.availabilities)
   user: Relation<User>;
 
   // @OneToOne(() => Interview)
