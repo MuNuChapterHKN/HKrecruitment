@@ -1,9 +1,17 @@
-interface QueryResults {
+import { QueryRunner } from 'typeorm';
+import { mock } from 'jest-mock-extended';
+
+export interface QueryResults {
   findOneBy?: any;
+  findOne?: any;
+  findBy?: any;
+  find?: any;
+  save?: any;
+  query?: any;
   remove?: any;
 }
 
-class MockedDataSource {
+export class MockedDataSource {
   results = {};
 
   /**
@@ -38,20 +46,13 @@ class MockedDataSource {
    * @returns A mock query runner object.
    */
   createQueryRunner = jest.fn(() => {
-    return {
-      connect: jest.fn(),
-      startTransaction: jest.fn(),
-      manager: {
-        getRepository: jest.fn((entity: any) => {
-          if (!this.results.hasOwnProperty(entity.name))
-            throw new Error(`No results found for entity ${entity.name}`);
-          return this.results[entity.name];
-        }),
-      },
-      rollbackTransaction: jest.fn(),
-      commitTransaction: jest.fn(),
-      release: jest.fn(),
-    };
+    const queryRunner = mock<QueryRunner>();
+    queryRunner.manager.getRepository = jest.fn((entity: any) => {
+      if (!this.results.hasOwnProperty(entity.name))
+        throw new Error(`No results found for entity ${entity.name}`);
+      return this.results[entity.name];
+    });
+    return queryRunner;
   });
 }
 
