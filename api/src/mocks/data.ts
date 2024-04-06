@@ -5,7 +5,10 @@ import {
   PhdApplication,
 } from 'src/application/application.entity';
 import { UpdateApplicationDto } from 'src/application/update-application.dto';
-import { RecruitmentSessionState } from '@hkrecruitment/shared/recruitment-session';
+import {
+  RecruitmentSession,
+  RecruitmentSessionState,
+} from '@hkrecruitment/shared/recruitment-session';
 import { CreateRecruitmentSessionDto } from 'src/recruitment-session/create-recruitment-session.dto';
 import { UpdateRecruitmentSessionDto } from 'src/recruitment-session/update-recruitment-session.dto';
 import { CreateAvailabilityDto } from 'src/availability/create-availability.dto';
@@ -19,6 +22,7 @@ import { TimeSlot } from '@hkrecruitment/shared';
 export const testDate = new Date(2023, 0, 1, 10, 0, 0);
 export const testDateTimeStart = new Date(2023, 0, 1, 10, 30, 0);
 export const testDateTime10Minutes = new Date(2023, 0, 1, 10, 40, 0);
+export const testDateTime1Hour = new Date(2023, 0, 1, 11, 30, 0);
 export const testDateTime3Hours = new Date(2023, 0, 1, 13, 30, 0);
 export const testDateTimeEnd = new Date(2023, 0, 1, 11, 30, 0);
 
@@ -61,6 +65,13 @@ export const mockUpdateRecruitmentSessionDto = {
   interviewEnd: testInterviewEnd,
   days: [testDay1, testDay2, testDay3],
 } as UpdateRecruitmentSessionDto;
+
+export const mockGenerateTimeSlots = {
+  slotDuration: 30,
+  interviewStart: testDateTimeStart,
+  interviewEnd: testDateTime1Hour,
+  days: [testDay1, testDay3],
+} as RecruitmentSession;
 
 export const baseFile = {
   encoding: '7bit',
