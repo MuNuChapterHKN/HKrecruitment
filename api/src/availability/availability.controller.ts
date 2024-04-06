@@ -33,7 +33,7 @@ import {
 } from '@nestjs/swagger';
 import { CheckPolicies } from 'src/authorization/check-policies.decorator';
 import { Availability } from './availability.entity';
-import Joi from 'joi';
+import * as Joi from 'joi';
 import { CreateAvailabilityDto } from './create-availability.dto';
 import { AuthenticatedRequest } from 'src/authorization/authenticated-request.types';
 import { Ability } from 'src/authorization/ability.decorator';
