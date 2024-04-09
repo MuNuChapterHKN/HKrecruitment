@@ -7,7 +7,11 @@ import { UsersModule } from 'src/users/users.module';
 import { TimeSlotsModule } from 'src/timeslots/timeslots.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([RecruitmentSession]), UsersModule, TimeSlotsModule],
+  imports: [
+    TypeOrmModule.forFeature([RecruitmentSession]),
+    UsersModule,
+    TimeSlotsModule,
+  ],
   providers: [RecruitmentSessionService],
   controllers: [RecruitmentSessionController],
   exports: [RecruitmentSessionService],

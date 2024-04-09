@@ -12,13 +12,15 @@ import {
 import { CreateRecruitmentSessionDto } from 'src/recruitment-session/create-recruitment-session.dto';
 import { UpdateRecruitmentSessionDto } from 'src/recruitment-session/update-recruitment-session.dto';
 import { CreateAvailabilityDto } from 'src/availability/create-availability.dto';
-import { ApplicationType } from '@hkrecruitment/shared';
-import { ApplicationState } from '@hkrecruitment/shared';
-import { LangLevel } from '@hkrecruitment/shared';
-import { Role } from '@hkrecruitment/shared';
-import { AvailabilityState } from '@hkrecruitment/shared';
-import { TimeSlot } from '@hkrecruitment/shared';
- 
+import {
+  ApplicationType,
+  ApplicationState,
+  LangLevel,
+  Role,
+  AvailabilityState,
+  TimeSlot,
+} from '@hkrecruitment/shared';
+
 export const testDate = new Date(2023, 0, 1, 10, 0, 0);
 export const testDateTimeStart = new Date(2023, 0, 1, 10, 30, 0);
 export const testDateTime10Minutes = new Date(2023, 0, 1, 10, 40, 0);

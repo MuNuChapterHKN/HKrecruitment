@@ -118,7 +118,6 @@ describe('TimeSlotsService', () => {
       const interviewStart = new Date('2022-01-01T09:00:00');
       const interviewEnd = new Date('2022-01-01T12:00:00');
       const days = [new Date('2022-01-01'), new Date('2022-01-03')];
-
       const expectedTimeSlots: Partial<TimeSlot>[] = [
         {
           start: new Date('2022-01-01T09:00:00'),
@@ -144,66 +143,76 @@ describe('TimeSlotsService', () => {
           start: new Date('2022-01-03T11:00:00'),
           end: new Date('2022-01-03T12:00:00'),
         },
-      ].map(
-        (timeSlot) =>
-          ({
-            ...timeSlot,
-            id: undefined,
-            availabilities: undefined,
-          } as TimeSlot),
-      );
-
-      const result = timeSlotService.generateTimeSlots(
+      ];
+      testTimeSlotsGeneration(
+        timeSlotService,
         slotDuration,
         interviewStart,
         interviewEnd,
         days,
+        expectedTimeSlots,
       );
-
-      expect(result).toEqual(expectedTimeSlots);
     });
 
     it("shouldn't generate time slots that overflow interviewEnd time", () => {
       mockDate.mockRestore();
       const slotDuration = 50;
-      const interviewStart = new Date('2022-01-01T09:00:00');
-      const interviewEnd = new Date('2022-01-01T11:00:00');
-      const days = [new Date('2022-01-01'), new Date('2022-01-03')];
-
+      const interviewStart = new Date('2022-02-02T09:00:00');
+      const interviewEnd = new Date('2022-02-02T11:00:00');
+      const days = [new Date('2022-02-02'), new Date('2022-02-04')];
       const expectedTimeSlots: Partial<TimeSlot>[] = [
         {
-          start: new Date('2022-01-01T09:00:00'),
-          end: new Date('2022-01-01T09:50:00'),
+          start: new Date('2022-02-02T09:00:00'),
+          end: new Date('2022-02-02T09:50:00'),
         },
         {
-          start: new Date('2022-01-03T09:00:00'),
-          end: new Date('2022-01-03T09:50:00'),
+          start: new Date('2022-02-04T09:00:00'),
+          end: new Date('2022-02-04T09:50:00'),
         },
         {
-          start: new Date('2022-01-01T09:50:00'),
-          end: new Date('2022-01-01T10:40:00'),
+          start: new Date('2022-02-02T09:50:00'),
+          end: new Date('2022-02-02T10:40:00'),
         },
         {
-          start: new Date('2022-01-03T09:50:00'),
-          end: new Date('2022-01-03T10:40:00'),
+          start: new Date('2022-02-04T09:50:00'),
+          end: new Date('2022-02-04T10:40:00'),
         },
-      ].map(
-        (timeSlot) =>
-          ({
-            ...timeSlot,
-            id: undefined,
-            availabilities: undefined,
-          } as TimeSlot),
-      );
-
-      const result = timeSlotService.generateTimeSlots(
+      ];
+      testTimeSlotsGeneration(
+        timeSlotService,
         slotDuration,
         interviewStart,
         interviewEnd,
         days,
+        expectedTimeSlots,
       );
-
-      expect(result).toEqual(expectedTimeSlots);
     });
   });
 });
+
+function testTimeSlotsGeneration(
+  timeSlotService: TimeSlotsService,
+  slotDuration: number,
+  interviewStart: Date,
+  interviewEnd: Date,
+  days: Date[],
+  expectedResult: Partial<TimeSlot>[],
+) {
+  const expectedTimeSlots: Partial<TimeSlot>[] = expectedResult.map(
+    (timeSlot) =>
+      ({
+        ...timeSlot,
+        id: undefined,
+        availabilities: undefined,
+      } as TimeSlot),
+  );
+
+  const result = timeSlotService.generateTimeSlots(
+    slotDuration,
+    interviewStart,
+    interviewEnd,
+    days,
+  );
+
+  expect(result).toEqual(expectedTimeSlots);
+}

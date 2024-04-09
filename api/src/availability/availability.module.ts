@@ -7,7 +7,11 @@ import { UsersModule } from 'src/users/users.module';
 import { TimeSlotsModule } from 'src/timeslots/timeslots.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Availability]), UsersModule, TimeSlotsModule],
+  imports: [
+    TypeOrmModule.forFeature([Availability]),
+    UsersModule,
+    TimeSlotsModule,
+  ],
   providers: [AvailabilityService],
   controllers: [AvailabilityController],
   exports: [AvailabilityService],

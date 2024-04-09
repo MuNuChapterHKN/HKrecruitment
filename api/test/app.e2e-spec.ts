@@ -47,7 +47,7 @@ export const getAccessToken = async (key: string): Promise<string> => {
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(body),
   });
-  
+
   const json = await response.json();
 
   return json.access_token;

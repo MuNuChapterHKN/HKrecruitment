@@ -24,9 +24,9 @@ const mockAvailability = {
     availabilities: [],
   },
   user: {
-    firstName: 'John',
-    lastName: 'Doe',
-    oauthId: '123',
+    firstName: "John",
+    lastName: "Doe",
+    oauthId: "123",
     role: Role.Member,
   },
 };
@@ -37,25 +37,45 @@ describe("Availability", () => {
       const mockAbility = mockAbilityForAvailability({ role, sub: "123" });
       it(`should allow only Admin and Supervisors to update availabilities [${role}]`, () => {
         expect(
-          checkAbility(mockAbility, Action.Update, mockAvailability, "Availability")
+          checkAbility(
+            mockAbility,
+            Action.Update,
+            mockAvailability,
+            "Availability"
+          )
         ).toBe([Role.Admin, Role.Supervisor].includes(role));
       });
       it(`should allow only HKN members to read, create, and delete availabilities [${role}]`, () => {
         expect(
-          checkAbility(mockAbility, Action.Read, mockAvailability, "Availability")
+          checkAbility(
+            mockAbility,
+            Action.Read,
+            mockAvailability,
+            "Availability"
+          )
         ).toBe(![Role.Applicant, Role.None].includes(role));
         expect(
-          checkAbility(mockAbility, Action.Create, mockAvailability, "Availability")
+          checkAbility(
+            mockAbility,
+            Action.Create,
+            mockAvailability,
+            "Availability"
+          )
         ).toBe(![Role.Applicant, Role.None].includes(role));
         expect(
-          checkAbility(mockAbility, Action.Delete, mockAvailability, "Availability")
+          checkAbility(
+            mockAbility,
+            Action.Delete,
+            mockAvailability,
+            "Availability"
+          )
         ).toBe(![Role.Applicant, Role.None].includes(role));
       });
     });
   });
 
   describe("insertAvailabilitySchema", () => {
-    it('should allow creating a valid availability', () => {
+    it("should allow creating a valid availability", () => {
       const validAvailability = {
         timeSlotId: 1,
       };
@@ -64,7 +84,7 @@ describe("Availability", () => {
       expect(error).toBeUndefined();
     });
 
-    it('should not allow creating an availability without a timeSlotId', () => {
+    it("should not allow creating an availability without a timeSlotId", () => {
       const invalidAvailability = {};
 
       const { error } = insertAvailabilitySchema.validate(invalidAvailability);
@@ -72,4 +92,3 @@ describe("Availability", () => {
     });
   });
 });
-
