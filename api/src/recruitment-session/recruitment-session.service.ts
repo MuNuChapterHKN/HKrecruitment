@@ -44,17 +44,23 @@ export class RecruitmentSessionService {
     return await this.recruitmentSessionRepository.find();
   }
 
-  async findRecruitmentSessionById(id: number): Promise<RecruitmentSession> {
-    return await this.recruitmentSessionRepository.findOne({ where: { id } });
-  }
-
-  async findActiveRecruitmentSession(): Promise<RecruitmentSession> {
-    return await this.recruitmentSessionRepository.findOne({
-      where: { state: RecruitmentSessionState.Active },
+  async findRecruitmentSessionById(
+    RSid: number,
+  ): Promise<RecruitmentSession | null> {
+    const matches = await this.recruitmentSessionRepository.findBy({
+      id: RSid,
     });
+    return matches.length > 0 ? matches[0] : null;
   }
 
-  async deletRecruitmentSession(
+  async findActiveRecruitmentSession(): Promise<RecruitmentSession | null> {
+    const matches = await this.recruitmentSessionRepository.findBy({
+      state: RecruitmentSessionState.Active,
+    });
+    return matches.length > 0 ? matches[0] : null;
+  }
+
+  async deleteRecruitmentSession(
     recruitmentSession: RecruitmentSession,
   ): Promise<RecruitmentSession> {
     return await this.recruitmentSessionRepository.remove(recruitmentSession);

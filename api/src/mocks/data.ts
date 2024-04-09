@@ -18,7 +18,7 @@ import { LangLevel } from '@hkrecruitment/shared';
 import { Role } from '@hkrecruitment/shared';
 import { AvailabilityState } from '@hkrecruitment/shared';
 import { TimeSlot } from '@hkrecruitment/shared';
-
+ 
 export const testDate = new Date(2023, 0, 1, 10, 0, 0);
 export const testDateTimeStart = new Date(2023, 0, 1, 10, 30, 0);
 export const testDateTime10Minutes = new Date(2023, 0, 1, 10, 40, 0);
