@@ -1,15 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { RecruitmentSession } from './recruitment-session.entity';
 import { CreateRecruitmentSessionDto } from './create-recruitment-session.dto';
 import { RecruitmentSessionState } from '@hkrecruitment/shared';
+import { transaction } from 'src/utils/database';
+import { TimeSlotsService } from 'src/timeslots/timeslots.service';
 
 @Injectable()
 export class RecruitmentSessionService {
   constructor(
     @InjectRepository(RecruitmentSession)
     private readonly recruitmentSessionRepository: Repository<RecruitmentSession>,
+    private readonly timeslotService: TimeSlotsService,
+    @InjectDataSource()
+    private dataSource: DataSource,
   ) {}
 
   async createRecruitmentSession(
@@ -21,8 +26,18 @@ export class RecruitmentSessionService {
       state: RecruitmentSessionState.Active,
       createdAt: now,
       lastModified: now,
-    } as unknown as RecruitmentSession;
-    return await this.recruitmentSessionRepository.save(rs);
+    } as RecruitmentSession;
+
+    return transaction(this.dataSource, async (queryRunner) => {
+      const recruitmentSession = await queryRunner.manager
+        .getRepository(RecruitmentSession)
+        .save(rs);
+      await this.timeslotService.createRecruitmentSessionTimeSlots(
+        queryRunner,
+        recruitmentSession,
+      );
+      return recruitmentSession;
+    });
   }
 
   async findAllRecruitmentSessions(): Promise<RecruitmentSession[]> {

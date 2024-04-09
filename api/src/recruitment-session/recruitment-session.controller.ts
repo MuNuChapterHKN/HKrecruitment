@@ -100,9 +100,9 @@ export class RecruitmentSessionController {
         'There is already an active recruitment session',
       );
 
-    return this.recruitmentSessionService.createRecruitmentSession({
-      ...recruitmentSession,
-    });
+    return this.recruitmentSessionService.createRecruitmentSession(
+      recruitmentSession,
+    );
   }
 
   // UPDATE A RECRUITMENT SESSION
@@ -172,7 +172,7 @@ export class RecruitmentSessionController {
 
     const updatedRecruitmentSession =
       await this.recruitmentSessionService.updateRecruitmentSession({
-        ...recruitmentSession[0],
+        ...recruitmentSession,
         ...updateRecruitmentSession,
         lastModified: new Date(),
       });

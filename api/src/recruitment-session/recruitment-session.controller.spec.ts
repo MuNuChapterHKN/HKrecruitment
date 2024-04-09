@@ -141,7 +141,10 @@ describe('RecruitmentSessionController', () => {
       expect(service.updateRecruitmentSession).toHaveBeenCalledTimes(1);
       expect(service.updateRecruitmentSession).toHaveBeenCalledWith({
         ...mockUpdateRecruitmentSessionDto,
+        createdAt: mockRecruitmentSession.createdAt,
         lastModified: testDate,
+        id: mockRecruitmentSession.id,
+        state: mockRecruitmentSession.state,
       });
     });
 
@@ -252,39 +255,39 @@ describe('RecruitmentSessionController', () => {
       );
     });
 
-    // it("should throw a ConflictException when updating a RecruitmentSection state to 'Concluded' and there are pending interviews", async () => {
-    //   const mockAbility = createMockAbility(({ can }) => {
-    //     can(Action.Update, 'RecruitmentSession');
-    //   });
-    //   const mockRecruitmentSessionToUpdate = {
-    //     ...mockRecruitmentSession,
-    //     state: RecruitmentSessionState.Active,
-    //     id: 1,
-    //   } as RecruitmentSession;
-    //   const updateRecruitmentSessionDto = {
-    //     state: RecruitmentSessionState.Concluded,
-    //   } as UpdateRecruitmentSessionDto;
-    //   jest
-    //     .spyOn(service, 'findRecruitmentSessionById')
-    //     .mockResolvedValue([mockRecruitmentSessionToUpdate]);
-    //   jest
-    //     .spyOn(service, 'sessionHasPendingInterviews')
-    //     .mockResolvedValue(true);
-    //   const result = controller.updateRecruitmentSession(
-    //     mockRecruitmentSessionToUpdate.id,
-    //     updateRecruitmentSessionDto,
-    //     mockAbility,
-    //   );
-    //   await expect(result).rejects.toThrow(ConflictException);
-    //   expect(service.findRecruitmentSessionById).toHaveBeenCalledTimes(1);
-    //   expect(service.findRecruitmentSessionById).toHaveBeenCalledWith(
-    //     mockRecruitmentSession.id,
-    //   );
-    //   expect(service.sessionHasPendingInterviews).toHaveBeenCalledTimes(1);
-    //   expect(service.sessionHasPendingInterviews).toHaveBeenCalledWith(
-    //     mockRecruitmentSessionToUpdate,
-    //   );
-    // });
+    it("should throw a ConflictException when updating a RecruitmentSection state to 'Concluded' and there are pending interviews", async () => {
+      const mockAbility = createMockAbility(({ can }) => {
+        can(Action.Update, 'RecruitmentSession');
+      });
+      const mockRecruitmentSessionToUpdate = {
+        ...mockRecruitmentSession,
+        state: RecruitmentSessionState.Active,
+        id: 1,
+      } as RecruitmentSession;
+      const updateRecruitmentSessionDto = {
+        state: RecruitmentSessionState.Concluded,
+      } as UpdateRecruitmentSessionDto;
+      jest
+        .spyOn(service, 'findRecruitmentSessionById')
+        .mockResolvedValue(mockRecruitmentSessionToUpdate);
+      jest
+        .spyOn(service, 'sessionHasPendingInterviews')
+        .mockResolvedValue(true);
+      const result = controller.updateRecruitmentSession(
+        mockRecruitmentSessionToUpdate.id,
+        updateRecruitmentSessionDto,
+        mockAbility,
+      );
+      await expect(result).rejects.toThrow(ConflictException);
+      expect(service.findRecruitmentSessionById).toHaveBeenCalledTimes(1);
+      expect(service.findRecruitmentSessionById).toHaveBeenCalledWith(
+        mockRecruitmentSession.id,
+      );
+      expect(service.sessionHasPendingInterviews).toHaveBeenCalledTimes(1);
+      expect(service.sessionHasPendingInterviews).toHaveBeenCalledWith(
+        mockRecruitmentSessionToUpdate,
+      );
+    });
   });
 
   describe('deleteRecruitmentSession', () => {
@@ -297,6 +300,9 @@ describe('RecruitmentSessionController', () => {
         state: mockDeletedRecruitmentSession.state,
         createdAt: mockDeletedRecruitmentSession.createdAt,
       } as RecruitmentSessionResponseDto;
+      jest
+        .spyOn(global, 'Date')
+        .mockImplementation(() => testDate as unknown as string);
       jest
         .spyOn(service, 'findRecruitmentSessionById')
         .mockResolvedValue(mockRecruitmentSession);
@@ -329,30 +335,30 @@ describe('RecruitmentSessionController', () => {
       );
     });
 
-    // it('should throw a ConflictException when deleting a RecruitmentSection that has pending interviews', async () => {
-    //   const mockRecruitmentSessionToDelete = {
-    //     ...mockRecruitmentSession,
-    //     state: RecruitmentSessionState.Active,
-    //     id: 1,
-    //   } as RecruitmentSession;
-    //   jest
-    //     .spyOn(service, 'findRecruitmentSessionById')
-    //     .mockResolvedValue([mockRecruitmentSessionToDelete]);
-    //   jest
-    //     .spyOn(service, 'sessionHasPendingInterviews')
-    //     .mockResolvedValue(true);
-    //   const result = controller.deleteRecruitmentSession(
-    //     mockRecruitmentSessionToDelete.id,
-    //   );
-    //   await expect(result).rejects.toThrow(ConflictException);
-    //   expect(service.findRecruitmentSessionById).toHaveBeenCalledTimes(1);
-    //   expect(service.findRecruitmentSessionById).toHaveBeenCalledWith(
-    //     mockRecruitmentSession.id,
-    //   );
-    //   expect(service.sessionHasPendingInterviews).toHaveBeenCalledTimes(1);
-    //   expect(service.sessionHasPendingInterviews).toHaveBeenCalledWith(
-    //     mockRecruitmentSessionToDelete,
-    //   );
-    // });
+    it('should throw a ConflictException when deleting a RecruitmentSection that has pending interviews', async () => {
+      const mockRecruitmentSessionToDelete = {
+        ...mockRecruitmentSession,
+        state: RecruitmentSessionState.Active,
+        id: 1,
+      } as RecruitmentSession;
+      jest
+        .spyOn(service, 'findRecruitmentSessionById')
+        .mockResolvedValue(mockRecruitmentSessionToDelete);
+      jest
+        .spyOn(service, 'sessionHasPendingInterviews')
+        .mockResolvedValue(true);
+      const result = controller.deleteRecruitmentSession(
+        mockRecruitmentSessionToDelete.id,
+      );
+      await expect(result).rejects.toThrow(ConflictException);
+      expect(service.findRecruitmentSessionById).toHaveBeenCalledTimes(1);
+      expect(service.findRecruitmentSessionById).toHaveBeenCalledWith(
+        mockRecruitmentSession.id,
+      );
+      expect(service.sessionHasPendingInterviews).toHaveBeenCalledTimes(1);
+      expect(service.sessionHasPendingInterviews).toHaveBeenCalledWith(
+        mockRecruitmentSessionToDelete,
+      );
+    });
   });
 });
