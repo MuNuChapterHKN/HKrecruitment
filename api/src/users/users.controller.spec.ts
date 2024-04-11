@@ -31,6 +31,8 @@ describe('UsersController', () => {
     sex: 'M',
     email: 'example@example.com',
     role: Role.Applicant,
+    is_board: false,
+    is_expert: false,
   };
 
   const mockMember: Person = {
@@ -40,6 +42,8 @@ describe('UsersController', () => {
     sex: 'F',
     email: 'jane@hknpolito.org',
     role: Role.Member,
+    is_board: false,
+    is_expert: false,
   };
 
   const mockUsers = [mockApplicant, mockMember];
