@@ -30,4 +30,10 @@ export class User implements Person {
 
   @OneToMany(() => Availability, (availability) => availability.user)
   availabilities?: Relation<Availability[]>;
+
+  @Column()
+  is_board: boolean;
+
+  @Column()
+  is_expert: boolean;
 }
