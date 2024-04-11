@@ -8,8 +8,10 @@ import {
 import { applyAbilitiesForPerson, Person, Role } from "./person";
 import { Application, applyAbilitiesOnApplication } from "./application";
 import { applyAbilitiesOnAvailability, Availability } from "./availability";
-import { TimeSlot } from "./timeslot"
 import { applyAbilitiesOnInterview, Interview } from "./interview";
+import { applyAbilitiesOnTimeSlot, TimeSlot } from "./timeslot";
+import { RecruitmentSession } from "./recruitment-session";
+import { applyAbilitiesOnRecruitmentSession } from "./recruitment-session";
 
 export interface UserAuth {
   sub: string;
@@ -28,8 +30,16 @@ type SubjectsTypes =
   | Partial<Application>
   | Partial<Availability>
   | Partial<TimeSlot>
-  | Partial<Interview>;
-type SubjectNames = "Person" | "Application" | "Availability" | "TimeSlot" | "Interview";
+  | Partial<Interview>
+  | Partial<RecruitmentSession>;
+type SubjectNames =
+  | "Person"
+  | "Application"
+  | "Availability"
+  | "TimeSlot"
+  | "Interview"
+  | "RecruitmentSession";
+
 export type Subjects = SubjectsTypes | SubjectNames;
 
 export type AppAbility = PureAbility<[Action, Subjects]>;
@@ -47,6 +57,8 @@ export const abilityForUser = (user: UserAuth): AppAbility => {
   applyAbilitiesOnApplication(user, builder);
   applyAbilitiesOnAvailability(user, builder);
   applyAbilitiesOnInterview(user, builder);
+  applyAbilitiesOnRecruitmentSession(user, builder);
+  applyAbilitiesOnTimeSlot(user, builder);
 
   const { build } = builder;
   return build();

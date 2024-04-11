@@ -3,12 +3,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { ApplicationsModule } from './application/applications.module';
+import { RecruitmentSessionModule } from './recruitment-session/recruitment-session.module';
 import { TimeSlotsModule } from './timeslots/timeslots.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtGuard } from './authentication/jwt-guard.guard';
 import { AuthorizationModule } from './authorization/authorization.module';
 import { AuthorizationGuard } from './authorization/authorization.guard';
+import { AvailabilityModule } from './availability/availability.module';
 
 @Module({
   imports: [
@@ -30,11 +32,13 @@ import { AuthorizationGuard } from './authorization/authorization.guard';
         } as TypeOrmModuleOptions),
       inject: [ConfigService],
     }),
-    UsersModule,
     ApplicationsModule,
-    TimeSlotsModule,
     AuthenticationModule,
     AuthorizationModule,
+    AvailabilityModule,
+    RecruitmentSessionModule,
+    TimeSlotsModule,
+    UsersModule,
   ],
   providers: [
     {

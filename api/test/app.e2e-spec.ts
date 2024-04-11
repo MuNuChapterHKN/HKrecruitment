@@ -4,6 +4,7 @@ import * as dotenv from 'dotenv';
 dotenv.config({ path: '.env.test' });
 import { readFileSync } from 'fs';
 import { decodeJwt } from 'jose';
+import { INestApplication } from '@nestjs/common';
 
 export const createApp = async () => {
   const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -19,10 +20,12 @@ export const createApp = async () => {
 const allCredentials = JSON.parse(
   readFileSync('test/user-credentials.json').toString(),
 );
+
 const auth0_issuer = process.env.AUTH0_ISSUER_URL;
 const auth0_client_id = process.env.AUTH0_CLIENT_ID;
 const auth0_client_secret = process.env.AUTH0_CLIENT_SECRET;
 const auth0_audience = process.env.AUTH0_AUDIENCE;
+
 export const getAccessToken = async (key: string): Promise<string> => {
   const credentials: {
     mail: string;
@@ -38,21 +41,25 @@ export const getAccessToken = async (key: string): Promise<string> => {
     client_id: auth0_client_id,
     client_secret: auth0_client_secret,
   };
+
   const response = await fetch(`${auth0_issuer}oauth/token`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(body),
-  }).then((res) => res.json());
+  });
 
-  return response.access_token;
+  const json = await response.json();
+
+  return json.access_token;
 };
+
 export const getSub = (accessToken: string): string => {
   const decoded = decodeJwt(accessToken);
   return decoded.sub;
 };
 
 describe('e2e build test', () => {
-  let app;
+  let app: INestApplication;
 
   beforeEach(async () => {
     app = await createApp();

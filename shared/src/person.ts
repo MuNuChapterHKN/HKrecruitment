@@ -19,6 +19,8 @@ export interface Person {
   phone_no?: string;
   telegramId?: string;
   role: Role;
+  is_board: boolean;
+  is_expert: boolean;
 }
 
 export const createUserSchema = Joi.object<Person>({
