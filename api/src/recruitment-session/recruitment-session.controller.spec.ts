@@ -67,7 +67,7 @@ describe('RecruitmentSessionController', () => {
       });
       jest
         .spyOn(service, 'findActiveRecruitmentSession')
-        .mockResolvedValue({ ...mockRecruitmentSession });
+        .mockResolvedValue(mockRecruitmentSession);
       const result = controller.findActive(mockAbility);
       await expect(result).rejects.toThrow(ForbiddenException);
       expect(service.findActiveRecruitmentSession).toHaveBeenCalledTimes(1);
@@ -83,6 +83,9 @@ describe('RecruitmentSessionController', () => {
       jest
         .spyOn(service, 'createRecruitmentSession')
         .mockResolvedValue(mockRecruitmentSession);
+      jest
+        .spyOn(service, 'findActiveRecruitmentSession')
+        .mockResolvedValue(null);
       const result = await controller.createRecruitmentSession(
         mockCreateRecruitmentSessionDto,
       );
@@ -137,8 +140,11 @@ describe('RecruitmentSessionController', () => {
       );
       expect(service.updateRecruitmentSession).toHaveBeenCalledTimes(1);
       expect(service.updateRecruitmentSession).toHaveBeenCalledWith({
-        ...mockRecruitmentSession,
+        ...mockUpdateRecruitmentSessionDto,
+        createdAt: mockRecruitmentSession.createdAt,
         lastModified: testDate,
+        id: mockRecruitmentSession.id,
+        state: mockRecruitmentSession.state,
       });
     });
 
@@ -214,7 +220,7 @@ describe('RecruitmentSessionController', () => {
       expect(service.findActiveRecruitmentSession).toHaveBeenCalledTimes(1);
     });
 
-    it("shouldn't throw a ConflictException when updating the currentyl active RecruitmentSection state to 'Active'", async () => {
+    it("shouldn't throw a ConflictException when updating the currently active RecruitmentSection state to 'Active'", async () => {
       const mockAbility = createMockAbility(({ can }) => {
         can(Action.Update, 'RecruitmentSession');
       });
@@ -295,10 +301,13 @@ describe('RecruitmentSessionController', () => {
         createdAt: mockDeletedRecruitmentSession.createdAt,
       } as RecruitmentSessionResponseDto;
       jest
+        .spyOn(global, 'Date')
+        .mockImplementation(() => testDate as unknown as string);
+      jest
         .spyOn(service, 'findRecruitmentSessionById')
         .mockResolvedValue(mockRecruitmentSession);
       jest
-        .spyOn(service, 'deletRecruitmentSession')
+        .spyOn(service, 'deleteRecruitmentSession')
         .mockResolvedValue(mockDeletedRecruitmentSession);
       const result = await controller.deleteRecruitmentSession(
         mockRecruitmentSession.id,
@@ -308,8 +317,8 @@ describe('RecruitmentSessionController', () => {
       expect(service.findRecruitmentSessionById).toHaveBeenCalledWith(
         mockRecruitmentSession.id,
       );
-      expect(service.deletRecruitmentSession).toHaveBeenCalledTimes(1);
-      expect(service.deletRecruitmentSession).toHaveBeenCalledWith(
+      expect(service.deleteRecruitmentSession).toHaveBeenCalledTimes(1);
+      expect(service.deleteRecruitmentSession).toHaveBeenCalledWith(
         mockRecruitmentSession,
       );
     });

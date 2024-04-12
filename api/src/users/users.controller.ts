@@ -96,6 +96,8 @@ export class UsersController {
     return this.usersService.create({
       ...user,
       role: !!user.role ? user.role : defaultRole,
+      is_board: false,
+      is_expert: false,
     });
   }
 

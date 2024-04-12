@@ -8,7 +8,7 @@ import {
 import { applyAbilitiesForPerson, Person, Role } from "./person";
 import { Application, applyAbilitiesOnApplication } from "./application";
 import { applyAbilitiesOnAvailability, Availability } from "./availability";
-import { TimeSlot } from "./timeslot";
+import { applyAbilitiesOnTimeSlot, TimeSlot } from "./timeslot";
 import { RecruitmentSession } from "./recruitment-session";
 import { applyAbilitiesOnRecruitmentSession } from "./recruitment-session";
 
@@ -53,6 +53,7 @@ export const abilityForUser = (user: UserAuth): AppAbility => {
   applyAbilitiesOnApplication(user, builder);
   applyAbilitiesOnAvailability(user, builder);
   applyAbilitiesOnRecruitmentSession(user, builder);
+  applyAbilitiesOnTimeSlot(user, builder);
 
   const { build } = builder;
   return build();

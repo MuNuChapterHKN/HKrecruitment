@@ -10,6 +10,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtGuard } from './authentication/jwt-guard.guard';
 import { AuthorizationModule } from './authorization/authorization.module';
 import { AuthorizationGuard } from './authorization/authorization.guard';
+import { AvailabilityModule } from './availability/availability.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { AuthorizationGuard } from './authorization/authorization.guard';
     ApplicationsModule,
     AuthenticationModule,
     AuthorizationModule,
+    AvailabilityModule,
     RecruitmentSessionModule,
     TimeSlotsModule,
     UsersModule,
