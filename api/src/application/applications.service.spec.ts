@@ -4,8 +4,8 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Application } from './application.entity';
 import { ApplicationState, ApplicationType } from '@hkrecruitment/shared';
 import { UsersService } from '../users/users.service';
-import { mockedRepository } from '@mocks/repositories';
-import { mockedUsersService } from '@mocks/services';
+import { mockedRepository } from 'src/mocks/repositories';
+import { mockedUsersService } from 'src/mocks/services';
 import {
   applicant,
   applicationFiles,
@@ -20,7 +20,7 @@ import {
   folderId,
   today,
   testDate,
-} from '@mocks/data';
+} from 'src/mocks/data';
 import { flattenApplication } from './create-application.dto';
 import { InternalServerErrorException } from '@nestjs/common';
 
@@ -204,7 +204,7 @@ describe('ApplicationsService', () => {
       const applicantId = 'abc123';
       const folderId = 'folder_abc123';
       const fileId = 'file_abc123';
-      const today = '1/1/2023, 24:00:00';
+      const today = '1/1/2023, 10:00:00';
       let mockApplication, mockCreateApplicationDTO;
       switch (applicationType) {
         case ApplicationType.BSC:
