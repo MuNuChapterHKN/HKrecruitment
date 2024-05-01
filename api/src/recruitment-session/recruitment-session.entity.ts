@@ -1,8 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import {
   RecruitmentSession as RecruitmentSessionInterface,
   RecruitmentSessionState,
 } from '@hkrecruitment/shared';
+import { TimeSlot } from 'src/timeslots/timeslot.entity';
 
 @Entity()
 export class RecruitmentSession implements RecruitmentSessionInterface {
@@ -29,4 +30,9 @@ export class RecruitmentSession implements RecruitmentSessionInterface {
 
   @Column('date', { name: 'last_modified' })
   lastModified: Date;
+
+  @OneToMany(() => TimeSlot, (timeSlot) => timeSlot.recruitmentSession)
+  @JoinColumn({ name: 'time_slots' })
+  timeSlots: TimeSlot[];
+
 }

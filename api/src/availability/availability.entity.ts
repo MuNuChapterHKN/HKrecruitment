@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   Relation,
@@ -26,9 +27,11 @@ export class Availability implements AvailabilityInterface {
 
   @DbAwareColumn(() => TimeSlot, { name: 'time_slot' })
   @ManyToOne(() => TimeSlot, (timeSlot) => timeSlot.availabilities)
+  @JoinColumn({ name: 'time_slot' })
   timeSlot: Relation<TimeSlot>;
 
   @ManyToOne(() => User, (user) => user.availabilities)
+  @JoinColumn({ name: 'user_id' })
   user: Relation<User>;
 
   // @OneToOne(() => Interview)
