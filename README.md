@@ -1,8 +1,9 @@
-<img src="https://www.hknpolito.org/Signature/hkn_logo_blu.png" width="100">
+<p align="center">
+    <img src="https://www.hknpolito.org/Signature/hkn_logo_blu.png" width="100">
+</p>
 
-# HKrecruitment
-
-HKrecruitment is the platform used by HKN Polito to handle the recruitment process.
+<h1 align="center">HKRecruitment</h1>
+<p align="center">Official HKN Polito recruitment platform 🚀</p>
 
 This repository follows the strcuture:
 
