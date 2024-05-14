@@ -23,10 +23,11 @@ export class TimeSlot implements TimeSlotInterface {
   end: Date;
 
   @OneToMany(() => Availability, (availability) => availability.timeSlot)
-  @JoinColumn({ name: 'availabilities' })
   availabilities: Relation<Availability[]>;
 
-  @ManyToOne(() => RecruitmentSession, (recruitmentSession) => recruitmentSession.timeSlots)
-  @JoinColumn({ name: 'recruitment_session' })
+  @ManyToOne(
+    () => RecruitmentSession,
+    (recruitmentSession) => recruitmentSession.timeSlots,
+  )
   recruitmentSession: Relation<RecruitmentSession>;
 }
