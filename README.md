@@ -5,6 +5,14 @@
 <h1 align="center">HKRecruitment</h1>
 <p align="center">Official HKN Polito recruitment platform 🚀</p>
 
+<p align="center">
+<img alt="Quality Gate Status" src="https://sonarcloud.io/api/project_badges/measure?project=MuNuChapterHKN_HKrecruitment&metric=alert_status">
+<img alt="Coverage" src="https://sonarcloud.io/api/project_badges/measure?project=MuNuChapterHKN_HKrecruitment&metric=coverage">
+<img alt="Duplicated Lines (%)" src="https://sonarcloud.io/api/project_badges/measure?project=MuNuChapterHKN_HKrecruitment&metric=duplicated_lines_density">
+<img alt="Lines of Code" src="https://sonarcloud.io/api/project_badges/measure?project=MuNuChapterHKN_HKrecruitment&metric=ncloc">
+<img alt="Security Rating" src="https://sonarcloud.io/api/project_badges/measure?project=MuNuChapterHKN_HKrecruitment&metric=security_rating">
+</p>
+
 ## Project structure
 
 This repository follows the structure:
