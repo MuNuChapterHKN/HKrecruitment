@@ -5,11 +5,13 @@
 <h1 align="center">HKRecruitment</h1>
 <p align="center">Official HKN Polito recruitment platform 🚀</p>
 
-This repository follows the strcuture:
+## Project structure
+
+This repository follows the structure:
 
 - **api** - API endpoints, back-end logic, and data storage
 - **frontend** - React Application UI
-- **shared** - Models, interfaces, and validation logic common to front-end and back-end
+- **shared** - Models, interfaces, and validation logic common to frontend and backend
 
 ## Useful Links
 
