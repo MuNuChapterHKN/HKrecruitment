@@ -25,7 +25,7 @@ This repository follows the structure:
 
 [Reports](https://drive.google.com/drive/folders/1RqGVtzU4TV6RJPmtjZQPpHVybDpU6DZk?usp=sharing)
 
-[Trello](https://trello.com/b/vnLyKH85/hkrecruitment)
+[Tasks](https://github.com/orgs/MuNuChapterHKN/projects/3/views/2)
 
 [UI Mockups](https://miro.com/app/board/uXjVOdvzKAk=/)
 
