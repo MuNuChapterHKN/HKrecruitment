@@ -43,6 +43,10 @@ This repository follows the structure:
 
 - **Marco Pappalardo** - _React application_ - [HKN Polito](https://hknpolito.org/)
 - **Damiano Bonaccorsi** - _React application_ - [HKN Polito](https://hknpolito.org/)
+- **Isabella Lombardi** - _React application_ - [HKN Polito](https://hknpolito.org/)
+- **Filippo Goffredo** - _React application_ - [HKN Polito](https://hknpolito.org/)
+
+- **Alessio Menichinelli** - _DevOps_ - [HKN Polito](https://hknpolito.org/)
 
 ## License
 
