@@ -184,8 +184,8 @@ export class TimeSlotsService {
         '(SELECT COUNT(availability.id) FROM Availability availability WHERE availability.timeSlotId = TimeSlot.id) > 1',
       );
 
-    const allMatches = await queryBuilder.getMany();
-    return this.timeSlotRepository.find({
+    queryBuilder.getMany();
+    const allMatches = await this.timeSlotRepository.find({
       relations: [
         'availabilities',
         'availabilities.user',
@@ -200,6 +200,7 @@ export class TimeSlotsService {
         },
       },
     });
+
     return allMatches;
 
     let goodTimeSlots: TimeSlot[] = [];
