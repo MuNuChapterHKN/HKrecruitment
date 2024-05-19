@@ -185,6 +185,7 @@ export class TimeSlotsService {
       );
 
     const allMatches = await queryBuilder.getMany();
+    return allMatches;
 
     let goodTimeSlots: TimeSlot[] = [];
     allMatches.forEach((timeSlot) => {
