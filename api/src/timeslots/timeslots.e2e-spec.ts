@@ -1190,6 +1190,10 @@ describe('TimeslotsController', () => {
 
   describe(' GET /timeslots', () => {
     beforeEach(async () => {
+      await mockRecruitmentSessions.forEach(
+        async (rs) =>
+          await recruitmentSessionService.createRecruitmentSession(rs),
+      );
       await mockUsers.forEach(async (u) => await usersService.create(u));
       await mockTimeSlots.forEach(
         async (ts) => await timeSlotsService.createTimeSlot(ts),
@@ -1197,13 +1201,21 @@ describe('TimeslotsController', () => {
       await mockAvailability.forEach(
         async (a) => await availabilityService.createAvailability(a),
       );
-      await mockRecruitmentSessions.forEach(
-        async (rs) =>
-          await recruitmentSessionService.createRecruitmentSession(rs),
-      );
     });
 
     it('should return all available timeslots', async () => {
+      const expected = [
+        {
+          id: 71,
+          start: '2024-05-19T13:00:00.000Z',
+          end: '2024-05-19T14:00:00.000Z',
+        },
+        {
+          id: 73,
+          start: '2024-05-19T15:00:00.000Z',
+          end: '2024-05-19T16:00:00.000Z',
+        },
+      ];
       return await request(app.getHttpServer())
         .get('/timeslots')
         .set('Authorization', `Bearer ${newMemberToken}`)
@@ -1211,6 +1223,7 @@ describe('TimeslotsController', () => {
         .expect((res) => {
           console.log(res.body);
           expect(res.body).toBeInstanceOf(Array);
+          expect(res.body).toEqual(expected);
         });
     });
   });
