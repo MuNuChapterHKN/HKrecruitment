@@ -1190,31 +1190,21 @@ describe('TimeslotsController', () => {
 
   describe(' GET /timeslots', () => {
     beforeEach(async () => {
-      let promises = [];
-      mockRecruitmentSessions.forEach((rs) =>
-        promises.push(recruitmentSessionService.createRecruitmentSession(rs)),
-      );
+      for (const rs of mockRecruitmentSessions) {
+        await recruitmentSessionService.createRecruitmentSession(rs);
+      }
 
-      await Promise.all(promises);
+      for (const u of mockUsers) {
+        await usersService.create(u);
+      }
 
-      promises = [];
-      mockUsers.forEach((u) => promises.push(usersService.create(u)));
+      for (const ts of mockTimeSlots) {
+        await timeSlotsService.createTimeSlot(ts);
+      }
 
-      await Promise.all(promises);
-
-      promises = [];
-      mockTimeSlots.forEach((ts) =>
-        promises.push(timeSlotsService.createTimeSlot(ts)),
-      );
-
-      await Promise.all(promises);
-
-      promises = [];
-      mockAvailability.forEach((a) =>
-        promises.push(availabilityService.createAvailability(a)),
-      );
-
-      await Promise.all(promises);
+      for (const a of mockAvailability) {
+        await availabilityService.createAvailability(a);
+      }
     });
 
     it('should return all available timeslots', async () => {
@@ -1231,7 +1221,7 @@ describe('TimeslotsController', () => {
         },
       ];
       return await request(app.getHttpServer())
-        .get('/v1/timeslots')
+        .get('/timeslots')
         .set('Authorization', `Bearer ${newMemberToken}`)
         .expect(200)
         .expect((res) => {
