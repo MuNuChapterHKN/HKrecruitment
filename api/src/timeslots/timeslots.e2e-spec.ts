@@ -887,6 +887,11 @@ describe('TimeslotsController', () => {
       }
     });
 
+    it('there should be users in the db', async () => {
+      const allUsers = await usersService.findAll();
+      expect(allUsers).toHaveLength(mockUsers.length);
+    });
+
     it('should return all available timeslots', async () => {
       const expected = [
         {
