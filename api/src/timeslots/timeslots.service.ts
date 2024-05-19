@@ -186,7 +186,7 @@ export class TimeSlotsService {
       );
 
     queryBuilder.getMany();
-    const allMatches = await this.timeSlotRepository.find({
+    return await this.timeSlotRepository.find({
       relations: [
         'availabilities',
         'availabilities.user',
@@ -201,6 +201,7 @@ export class TimeSlotsService {
         },
       },
     });
+    let allMatches = await queryBuilder.getMany();
 
     let goodTimeSlots: TimeSlot[] = [];
     allMatches.forEach((timeSlot) => {

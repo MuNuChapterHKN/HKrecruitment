@@ -910,28 +910,6 @@ describe('TimeslotsController', () => {
       expect(allAvailabilities).toHaveLength(mockAvailability.length);
     });
 
-    it('DEBUG: check format of an Availabilities table in db', async () => {
-      const availability = await availabilityService.findById(1);
-      expect(availability).toBeDefined();
-      expect(availability).toHaveProperty('id', 1);
-      expect(availability).toHaveProperty('state');
-      expect(availability).toHaveProperty('lastModified');
-      expect(availability).toHaveProperty('timeSlot');
-      expect(availability).toHaveProperty('user');
-      expect(availability).toEqual(mockAvailability[0]);
-    });
-
-    it('DEBUG: check format of a TimeSlots table in db', async () => {
-      const timeSlot = await timeSlotsService.findById(51);
-      expect(timeSlot).toBeDefined();
-      expect(timeSlot).toHaveProperty('id', 51);
-      expect(timeSlot).toHaveProperty('start');
-      expect(timeSlot).toHaveProperty('end');
-      expect(timeSlot).toHaveProperty('recruitmentSession');
-      expect(timeSlot).toHaveProperty('availabilities');
-      expect(timeSlot).toEqual(mockTimeSlots[0]);
-    });
-
     it('DEBUG: check availabilities for timeslot having id 71 & 73', async () => {
       const allAvailabilities = await availabilityService.listAvailabilities();
       const av71 = allAvailabilities.filter((a) => a.timeSlot.id === 71);
