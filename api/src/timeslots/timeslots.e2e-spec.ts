@@ -13,7 +13,7 @@ import {
 } from '@hkrecruitment/shared';
 import { RecruitmentSession } from 'src/recruitment-session/recruitment-session.entity';
 import { Availability } from 'src/availability/availability.entity';
-import { createApp, getAccessToken, getSub } from 'test/app.e2e-spec';
+import { createApp, getAccessToken } from 'test/app.e2e-spec';
 
 describe('TimeslotsController', () => {
   let app: INestApplication;
@@ -1220,14 +1220,17 @@ describe('TimeslotsController', () => {
           start: '2024-05-19T15:00:00.000Z',
         },
       ];
-      return await request(app.getHttpServer())
+      await request(app.getHttpServer())
         .get('/timeslots')
         .set('Authorization', `Bearer ${newMemberToken}`)
         .expect(200)
         .expect((res) => {
           expect(res.body).toBeInstanceOf(Array);
-          expect(res.body).toEqual(expected);
         });
+
+      const availableTimeSlots =
+        await timeSlotsService.findAvailableTimeSlots();
+      expect(availableTimeSlots).toEqual(expected);
     });
   });
 });
