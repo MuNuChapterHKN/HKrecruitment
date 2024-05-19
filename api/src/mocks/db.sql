@@ -6,8 +6,7 @@ INSERT INTO "recruitment_session"
 VALUES
     (1, 'concluded', 1,  '2024-04-10', '2024-04-04', ARRAY['2024-04-05', '2024-04-06', '2024-04-07', '2024-04-08', '2024-04-09']::date[], '2024-04-05', '2024-04-10'),
     (2, 'concluded', 1,  '2024-05-10', '2024-05-04', ARRAY['2024-05-05', '2024-05-06', '2024-05-07', '2024-05-08']::date[], '2024-05-05', '2024-05-09'),
-    (3, 'active',    1,  '2024-05-14', '2024-05-14', ARRAY['2024-05-16', '2024-05-17', '2024-05-18', '2024-05-19', '2024-05-20']::date[], '2024-05-16', '2024-05-21')
-;
+    (3, 'active',    1,  '2024-05-14', '2024-05-14', ARRAY['2024-05-16', '2024-05-17', '2024-05-18', '2024-05-19', '2024-05-20']::date[], '2024-05-16', '2024-05-21');
 
 
 
@@ -94,33 +93,32 @@ VALUES
     (77, '2024-05-20 15:00:00', '2024-05-20 16:00:00', 3),
     (78, '2024-05-20 16:00:00', '2024-05-20 17:00:00', 3),
     (79, '2024-05-20 17:00:00', '2024-05-20 18:00:00', 3),
-    (80, '2024-05-20 18:00:00', '2024-05-20 19:00:00', 3)
-;
+    (80, '2024-05-20 18:00:00', '2024-05-20 19:00:00', 3);
 
 
 INSERT INTO "user"
     ("oauthId","firstName","lastName","sex","email","phone_no","telegramId","role","is_board","is_expert")
 VALUES  
-    ('1',  'Pasquale',   'Bianco',  'male',    'p.bianco@gmail.com',    '3405174444',  'pbianco',   'member', true,  true),
-    ('2',  'John',       'Doe',     'male',    'j.doe@gmail.com',       '1234567890',  'jdoe',      'member', false, true),
-    ('3',  'Jane',       'Smith',   'female',  'j.smith@gmail.com',     '9876543210',  'jsmith',    'member', false, false),
-    ('4',  'Michael',    'Johnson', 'male',    'm.johnson@gmail.com',   '5555555555',  'mjohnson',  'member', true,  true),
-    ('5',  'Emily',      'Brown',   'female',  'e.brown@gmail.com',     '1111111111',  'ebrown',    'member', false, true),
-    ('6',  'David',      'Wilson',  'male',    'd.wilson@gmail.com',    '2222222222',  'dwilson',   'member', false, false),
-    ('7',  'Olivia',     'Johnson', 'female',  'o.johnson@gmail.com',   '3333333333',  'ojohnson',  'member', true,  false),
-    ('8',  'James',      'Smith',   'male',    'j.smith@gmail.com',     '4444444444',  'jsmith',    'member', false, false),
-    ('9',  'Sophia',     'Miller',  'female',  's.miller@gmail.com',    '5555555555',  'smiller',   'member', false, true),
-    ('10', 'Benjamin',   'Davis',   'male',    'b.davis@gmail.com',     '6666666666',  'bdavis',    'member', false, false),
-    ('11', 'Ava',        'Wilson',  'female',  'a.wilson@gmail.com',    '7777777777',  'awilson',   'member', true,  true),
-    ('12', 'William',    'Anderson','male',    'w.anderson@gmail.com',  '8888888888',  'wanderson', 'member', false, false),
-    ('13', 'Mia',        'Thomas',  'female',  'm.thomas@gmail.com',    '9999999999',  'mthomas',   'member', false, false),
-    ('14', 'Alexander',  'Taylor',  'male',    'a.taylor@gmail.com',    '1111111111',  'ataylor',   'member', false, true),
-    ('15', 'Charlotte',  'Clark',   'female',  'c.clark@gmail.com',     '2222222222',  'cclark',    'member', false, false),
-    ('16', 'Daniel',     'Moore',   'male',    'd.moore@gmail.com',     '3333333333',  'dmoore',    'member', false, false),
-    ('17', 'Amelia',     'Walker',  'female',  'a.walker@gmail.com',    '4444444444',  'awalker',   'clerk', false, false),
-    ('18', 'Matthew',    'Lewis',   'male',    'm.lewis@gmail.com',     '5555555555',  'mlewis',    'admin', false, true),
+    ('1',  'Pasquale',   'Bianco',  'male',    'p.bianco@gmail.com',    '3405174444',  'pbianco',   'member',     true,  true),
+    ('2',  'John',       'Doe',     'male',    'j.doe@gmail.com',       '1234567890',  'jdoe',      'member',     false, true),
+    ('3',  'Jane',       'Smith',   'female',  'j.smith@gmail.com',     '9876543210',  'jsmith',    'member',     false, false),
+    ('4',  'Michael',    'Johnson', 'male',    'm.johnson@gmail.com',   '5555555555',  'mjohnson',  'member',     true,  true),
+    ('5',  'Emily',      'Brown',   'female',  'e.brown@gmail.com',     '1111111111',  'ebrown',    'member',     false, true),
+    ('6',  'David',      'Wilson',  'male',    'd.wilson@gmail.com',    '2222222222',  'dwilson',   'member',     false, false),
+    ('7',  'Olivia',     'Johnson', 'female',  'o.johnson@gmail.com',   '3333333333',  'ojohnson',  'member',     true,  false),
+    ('8',  'James',      'Smith',   'male',    'j.smith@gmail.com',     '4444444444',  'jsmith',    'member',     false, false),
+    ('9',  'Sophia',     'Miller',  'female',  's.miller@gmail.com',    '5555555555',  'smiller',   'member',     false, true),
+    ('10', 'Benjamin',   'Davis',   'male',    'b.davis@gmail.com',     '6666666666',  'bdavis',    'member',     false, false),
+    ('11', 'Ava',        'Wilson',  'female',  'a.wilson@gmail.com',    '7777777777',  'awilson',   'member',     true,  true),
+    ('12', 'William',    'Anderson','male',    'w.anderson@gmail.com',  '8888888888',  'wanderson', 'member',     false, false),
+    ('13', 'Mia',        'Thomas',  'female',  'm.thomas@gmail.com',    '9999999999',  'mthomas',   'member',     false, false),
+    ('14', 'Alexander',  'Taylor',  'male',    'a.taylor@gmail.com',    '1111111111',  'ataylor',   'member',     false, true),
+    ('15', 'Charlotte',  'Clark',   'female',  'c.clark@gmail.com',     '2222222222',  'cclark',    'member',     false, false),
+    ('16', 'Daniel',     'Moore',   'male',    'd.moore@gmail.com',     '3333333333',  'dmoore',    'member',     false, false),
+    ('17', 'Amelia',     'Walker',  'female',  'a.walker@gmail.com',    '4444444444',  'awalker',   'clerk',      false, false),
+    ('18', 'Matthew',    'Lewis',   'male',    'm.lewis@gmail.com',     '5555555555',  'mlewis',    'admin',      false, true),
     ('19', 'Ella',       'Harris',  'female',  'e.harris@gmail.com',    '6666666666',  'eharris',   'supervisor', false, true),
-    ('20', 'Joseph',     'King',    'male',    'j.king@gmail.com',      '7777777777',  'jking',     'supervisor', true,  false)
+    ('20', 'Joseph',     'King',    'male',    'j.king@gmail.com',      '7777777777',  'jking',     'supervisor', true,  false);
 
 
 # Availability
@@ -178,6 +176,5 @@ VALUES
     (49, 'recovering'   ,'2024-05-14 00:00:00', 63, '8' ),
     (50, 'free'         ,'2024-05-14 00:00:00', 62, '14'),
     (51, 'free'         ,'2024-05-14 00:00:00', 61, '4' ),
-    (52, 'free'         ,'2024-05-14 00:00:00', 60, '13')
-;
+    (52, 'free'         ,'2024-05-14 00:00:00', 60, '13');
 
