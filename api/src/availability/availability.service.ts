@@ -36,7 +36,6 @@ export class AvailabilityService {
     return matches.length > 0 ? matches[0] : null;
   }
 
-  /******** THIS FUNCTION GETS AN ERROR AT COMPILE TIME *********
   async findByUserAndTimeSlot(user: User, timeSlot: TimeSlot) {
     const matches = await this.availabilityRepository.findBy({
       user: user,
@@ -44,7 +43,7 @@ export class AvailabilityService {
     });
     return matches.length > 0 ? matches[0] : null;
   }
-*/
+
 
   /**
    * Create an availability

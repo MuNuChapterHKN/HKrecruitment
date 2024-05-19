@@ -78,9 +78,8 @@ export class AvailabilityController {
     const user = await this.userService.findByOauthId(req.user.sub);
     if (!user) throw new NotFoundException('User not found');
 
-    /********** DISABLED BEACUSE findByUserAndTimeSlot HAS AN ERROR ************/
     /* Verify availability for timeslot does not already exist */
-    /*    const existing = await this.availabilityService.findByUserAndTimeSlot(
+       const existing = await this.availabilityService.findByUserAndTimeSlot(
       user,
       timeSlot,
     );
@@ -88,7 +87,7 @@ export class AvailabilityController {
       throw new ConflictException(
         'Availability already exists for this timeslot',
       );
-*/
+
     const availability = {
       timeSlot: timeSlot,
       state: AvailabilityState.Free,
