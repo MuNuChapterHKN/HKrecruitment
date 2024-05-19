@@ -9,6 +9,7 @@ import {
   Role,
 } from '@hkrecruitment/shared';
 import { CreateTimeSlotDto } from './create-timeslot.dto';
+import { count } from 'console';
 
 @Injectable()
 export class TimeSlotsService {
@@ -200,8 +201,6 @@ export class TimeSlotsService {
         },
       },
     });
-
-    return allMatches;
 
     let goodTimeSlots: TimeSlot[] = [];
     allMatches.forEach((timeSlot) => {

@@ -959,11 +959,9 @@ describe('TimeslotsController', () => {
         .expect(200)
         .expect((res) => {
           expect(res.body).toBeInstanceOf(Array);
+          expect(res.body).toHaveLength(2);
+          expect(res.body).toEqual(expected);
         });
-
-      const availableTimeSlots =
-        await timeSlotsService.findAvailableTimeSlots();
-      expect(availableTimeSlots).toEqual(expected);
     });
   });
 });
