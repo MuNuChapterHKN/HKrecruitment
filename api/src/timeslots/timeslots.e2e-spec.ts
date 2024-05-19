@@ -1220,14 +1220,14 @@ describe('TimeslotsController', () => {
     it('should return all available timeslots', async () => {
       const expected = [
         {
+          end: '2024-05-19T14:00:00.000Z',
           id: 71,
           start: '2024-05-19T13:00:00.000Z',
-          end: '2024-05-19T14:00:00.000Z',
         },
         {
+          end: '2024-05-19T16:00:00.000Z',
           id: 73,
           start: '2024-05-19T15:00:00.000Z',
-          end: '2024-05-19T16:00:00.000Z',
         },
       ];
       return await request(app.getHttpServer())
@@ -1235,7 +1235,6 @@ describe('TimeslotsController', () => {
         .set('Authorization', `Bearer ${newMemberToken}`)
         .expect(200)
         .expect((res) => {
-          console.log(res.body);
           expect(res.body).toBeInstanceOf(Array);
           expect(res.body).toEqual(expected);
         });
