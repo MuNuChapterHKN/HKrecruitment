@@ -607,7 +607,7 @@ describe('TimeslotsController', () => {
         lastModified: new Date('2024-05-14 00:00:00'),
         timeSlot: 59,
         userOauthId: '18',
-      } 
+      } ,
       {
         id: 20,
         state: AvailabilityState.Free,
