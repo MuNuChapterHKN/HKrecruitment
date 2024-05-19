@@ -8,8 +8,6 @@ import {
   AvailabilityState,
   Role,
 } from '@hkrecruitment/shared';
-import { CreateTimeSlotDto } from './create-timeslot.dto';
-import { count } from 'console';
 
 @Injectable()
 export class TimeSlotsService {
@@ -185,23 +183,22 @@ export class TimeSlotsService {
         '(SELECT COUNT(availability.id) FROM Availability availability WHERE availability.timeSlotId = TimeSlot.id) > 1',
       );
 
-    queryBuilder.getMany();
-    return await this.timeSlotRepository.find({
-      relations: [
-        'availabilities',
-        'availabilities.user',
-        'recruitmentSession',
-      ],
-      where: {
-        availabilities: {
-          state: AvailabilityState.Free,
-          user: {
-            role: Not(In([Role.Applicant, Role.None])),
-          },
-        },
-      },
-    });
-    let allMatches = await queryBuilder.getMany();
+    const allMatches = await queryBuilder.getMany();
+    // const allMatches = await this.timeSlotRepository.find({
+    //   relations: [
+    //     'availabilities',
+    //     'availabilities.user',
+    //     'recruitmentSession',
+    //   ],
+    //   where: {
+    //     availabilities: {
+    //       state: AvailabilityState.Free,
+    //       user: {
+    //         role: Not(In([Role.Applicant, Role.None])),
+    //       },
+    //     },
+    //   },
+    // });
 
     let goodTimeSlots: TimeSlot[] = [];
     allMatches.forEach((timeSlot) => {

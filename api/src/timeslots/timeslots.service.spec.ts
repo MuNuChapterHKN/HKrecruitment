@@ -196,64 +196,64 @@ describe('TimeSlotsService', () => {
     });
   });
 
-  // describe('findAvailableTimeSlots', () => {
-  //   it('should correctly call all functions provided for database query', async () => {
-  //     // Mock the query builder and its methods
-  //     const mockQueryBuilder = {
-  //       innerJoinAndSelect: jest.fn().mockReturnThis(),
-  //       where: jest.fn().mockReturnThis(),
-  //       andWhere: jest.fn().mockReturnThis(),
-  //       getMany: jest.fn().mockResolvedValue([]),
-  //     };
+  describe('findAvailableTimeSlots', () => {
+    it('should correctly call all functions provided for database query', async () => {
+      // Mock the query builder and its methods
+      const mockQueryBuilder = {
+        innerJoinAndSelect: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        getMany: jest.fn().mockResolvedValue([]),
+      };
 
-  //     // Mock the timeSlotRepository and its methods
-  //     const mockTimeSlotRepository = {
-  //       createQueryBuilder: jest.fn().mockReturnValue(mockQueryBuilder),
-  //     };
+      // Mock the timeSlotRepository and its methods
+      const mockTimeSlotRepository = {
+        createQueryBuilder: jest.fn().mockReturnValue(mockQueryBuilder),
+      };
 
-  //     const timeSlotService = new TimeSlotsService(
-  //       mockTimeSlotRepository as any,
-  //     );
-  //     const result = await timeSlotService.findAvailableTimeSlots();
+      const timeSlotService = new TimeSlotsService(
+        mockTimeSlotRepository as any,
+      );
+      const result = await timeSlotService.findAvailableTimeSlots();
 
-  //     // Assert that the query builder methods were called correctly
-  //     expect(mockQueryBuilder.innerJoinAndSelect).toHaveBeenCalledWith(
-  //       'TimeSlot.availabilities',
-  //       'availability',
-  //     );
-  //     expect(mockQueryBuilder.innerJoinAndSelect).toHaveBeenCalledWith(
-  //       'TimeSlot.recruitmentSession',
-  //       'recruitmentSession',
-  //     );
-  //     expect(mockQueryBuilder.innerJoinAndSelect).toHaveBeenCalledWith(
-  //       'availability.user',
-  //       'user',
-  //     );
-  //     expect(mockQueryBuilder.where).toHaveBeenCalledWith(
-  //       'recruitmentSession.state = :recruitmentSessionState',
-  //       {
-  //         recruitmentSessionState: RecruitmentSessionState.Active,
-  //       },
-  //     );
-  //     expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-  //       'user.role NOT IN (:...roles)',
-  //       {
-  //         roles: [Role.None, Role.Applicant],
-  //       },
-  //     );
-  //     expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-  //       'availability.state = :availabilityState AND (user.is_board = true OR user.is_expert = true)',
-  //       {
-  //         availabilityState: AvailabilityState.Free,
-  //       },
-  //     );
-  //     expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-  //       '(SELECT COUNT(availability.id) FROM Availability availability WHERE availability.timeSlotId = TimeSlot.id) > 1',
-  //     );
+      // Assert that the query builder methods were called correctly
+      expect(mockQueryBuilder.innerJoinAndSelect).toHaveBeenCalledWith(
+        'TimeSlot.availabilities',
+        'availability',
+      );
+      expect(mockQueryBuilder.innerJoinAndSelect).toHaveBeenCalledWith(
+        'TimeSlot.recruitmentSession',
+        'recruitmentSession',
+      );
+      expect(mockQueryBuilder.innerJoinAndSelect).toHaveBeenCalledWith(
+        'availability.user',
+        'user',
+      );
+      expect(mockQueryBuilder.where).toHaveBeenCalledWith(
+        'recruitmentSession.state = :recruitmentSessionState',
+        {
+          recruitmentSessionState: RecruitmentSessionState.Active,
+        },
+      );
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        'user.role NOT IN (:...roles)',
+        {
+          roles: [Role.None, Role.Applicant],
+        },
+      );
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        'availability.state = :availabilityState AND (user.is_board = true OR user.is_expert = true)',
+        {
+          availabilityState: AvailabilityState.Free,
+        },
+      );
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        '(SELECT COUNT(availability.id) FROM Availability availability WHERE availability.timeSlotId = TimeSlot.id) > 1',
+      );
 
-  //     expect(result).toEqual([]);
-  //   });
-  // });
+      expect(result).toEqual([]);
+    });
+  });
 });
 
 function testTimeSlotsGeneration(
