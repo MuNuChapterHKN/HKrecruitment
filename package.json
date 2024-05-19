@@ -16,7 +16,7 @@
     "clean": "pnpm --filter frontend clean && pnpm --filter api clean",
     "format": "pnpm --filter shared format & pnpm --filter frontend format & pnpm --filter api format",
     "format-check": "pnpm --filter shared format-check && pnpm --filter frontend format-check && pnpm --filter api format-check",
-    "test": "pnpm --filter api test && pnpm --filter shared test"
+    "test": "pnpm --filter api test && pnpm --filter shared test && pnpm --filter api test-e2e"
   },
   "keywords": [],
   "author": "",

@@ -27,6 +27,8 @@ describe('UsersController (e2e)', () => {
         sex: 'F',
         email: 'known-superuser-test@example.com',
         role: Role.Admin,
+        is_board: true,
+        is_expert: true,
       },
       {
         oauthId: getSub(newApplicantToken),
@@ -35,6 +37,8 @@ describe('UsersController (e2e)', () => {
         sex: 'F',
         email: 'test-applicant@example.com',
         role: Role.Applicant,
+        is_board: false,
+        is_expert: false,
       },
       {
         oauthId: getSub(newMemberToken),
@@ -43,6 +47,8 @@ describe('UsersController (e2e)', () => {
         sex: 'M',
         email: 'hknrecruitment-test@hknpolito.org',
         role: Role.Member,
+        is_board: false,
+        is_expert: true,
       },
     ];
   });
@@ -138,6 +144,8 @@ describe('UsersController (e2e)', () => {
         role: Role.Applicant,
         phone_no: null,
         telegramId: null,
+        is_board: false,
+        is_expert: false,
       };
 
       await request(app.getHttpServer())
@@ -165,6 +173,8 @@ describe('UsersController (e2e)', () => {
         role: Role.Member,
         phone_no: null,
         telegramId: null,
+        is_board: false,
+        is_expert: false,
       };
 
       await request(app.getHttpServer())
