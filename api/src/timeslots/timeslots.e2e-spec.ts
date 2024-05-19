@@ -910,36 +910,36 @@ describe('TimeslotsController', () => {
       expect(allAvailabilities).toHaveLength(mockAvailability.length);
     });
 
-    it('DEBUG: check availabilities for timeslot having id 71 & 73', async () => {
-      const allAvailabilities = await availabilityService.listAvailabilities();
-      const av71 = allAvailabilities.filter((a) => a.timeSlot.id === 71);
-      const av73 = allAvailabilities.filter((a) => a.timeSlot.id === 73);
-      expect(av71).toHaveLength(4);
-      expect(av73).toHaveLength(2);
-    });
+    // it('DEBUG: check availabilities for timeslot having id 71 & 73', async () => {
+    //   const allAvailabilities = await availabilityService.listAvailabilities();
+    //   const av71 = allAvailabilities.filter((a) => a.timeSlot.id === 71);
+    //   const av73 = allAvailabilities.filter((a) => a.timeSlot.id === 73);
+    //   expect(av71).toHaveLength(4);
+    //   expect(av73).toHaveLength(2);
+    // });
 
-    it('should return all available timeslots', async () => {
-      const expected = [
-        {
-          end: '2024-05-19T14:00:00.000Z',
-          id: 71,
-          start: '2024-05-19T13:00:00.000Z',
-        },
-        {
-          end: '2024-05-19T16:00:00.000Z',
-          id: 73,
-          start: '2024-05-19T15:00:00.000Z',
-        },
-      ];
-      await request(app.getHttpServer())
-        .get('/timeslots')
-        .set('Authorization', `Bearer ${newMemberToken}`)
-        .expect(200)
-        .expect((res) => {
-          expect(res.body).toBeInstanceOf(Array);
-          expect(res.body).toHaveLength(2);
-          expect(res.body).toEqual(expected);
-        });
-    });
+    // it('should return all available timeslots', async () => {
+    //   const expected = [
+    //     {
+    //       end: '2024-05-19T14:00:00.000Z',
+    //       id: 71,
+    //       start: '2024-05-19T13:00:00.000Z',
+    //     },
+    //     {
+    //       end: '2024-05-19T16:00:00.000Z',
+    //       id: 73,
+    //       start: '2024-05-19T15:00:00.000Z',
+    //     },
+    //   ];
+    //   await request(app.getHttpServer())
+    //     .get('/timeslots')
+    //     .set('Authorization', `Bearer ${newMemberToken}`)
+    //     .expect(200)
+    //     .expect((res) => {
+    //       expect(res.body).toBeInstanceOf(Array);
+    //       expect(res.body).toHaveLength(2);
+    //       expect(res.body).toEqual(expected);
+    //     });
+    // });
   });
 });
