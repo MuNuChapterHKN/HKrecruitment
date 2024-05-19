@@ -1190,17 +1190,32 @@ describe('TimeslotsController', () => {
 
   describe(' GET /timeslots', () => {
     beforeEach(async () => {
-      await mockRecruitmentSessions.forEach(
-        async (rs) =>
-          await recruitmentSessionService.createRecruitmentSession(rs),
+      
+      let promises = [];
+      mockRecruitmentSessions.forEach(async (rs) =>
+        promises.push(recruitmentSessionService.createRecruitmentSession(rs)),
       );
-      await mockUsers.forEach(async (u) => await usersService.create(u));
-      await mockTimeSlots.forEach(
-        async (ts) => await timeSlotsService.createTimeSlot(ts),
-      );
-      await mockAvailability.forEach(
-        async (a) => await availabilityService.createAvailability(a),
-      );
+
+      Promise.all(promises).then(() => {
+        promises = [];
+        mockUsers.forEach(async (u) => promises.push(usersService.create(u)));
+
+        Promise.all(promises).then(() => {
+          promises = [];
+          mockTimeSlots.forEach(async (ts) =>
+            promises.push(timeSlotsService.createTimeSlot(ts)),
+          );
+
+          Promise.all(promises).then(() => {
+            promises = [];
+            mockAvailability.forEach(async (a) =>
+              promises.push(availabilityService.createAvailability(a)),
+            );
+
+            Promise.all(promises);
+          });
+        });
+      });
     });
 
     it('should return all available timeslots', async () => {
