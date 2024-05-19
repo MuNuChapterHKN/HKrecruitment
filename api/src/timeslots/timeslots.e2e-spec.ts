@@ -1195,7 +1195,7 @@ describe('TimeslotsController', () => {
         promises.push(recruitmentSessionService.createRecruitmentSession(rs)),
       );
 
-      Promise.all(promises).then(() => {
+      await Promise.all(promises).then(() => {
         promises = [];
         mockUsers.forEach(async (u) => promises.push(usersService.create(u)));
 
@@ -1231,7 +1231,7 @@ describe('TimeslotsController', () => {
         },
       ];
       return await request(app.getHttpServer())
-        .get('/timeslots')
+        .get('/v1/timeslots')
         .set('Authorization', `Bearer ${newMemberToken}`)
         .expect(200)
         .expect((res) => {
