@@ -895,7 +895,9 @@ describe('TimeslotsController', () => {
     it('there should be recruitment sessions in the db', async () => {
       const allRecruitmentSessions =
         await recruitmentSessionService.findAllRecruitmentSessions();
-      expect(allRecruitmentSessions).toHaveLength(mockRecruitmentSessions.length);
+      expect(allRecruitmentSessions).toHaveLength(
+        mockRecruitmentSessions.length,
+      );
     });
 
     it('there should be timeslots in the db', async () => {
@@ -908,10 +910,10 @@ describe('TimeslotsController', () => {
       expect(allAvailabilities).toHaveLength(mockAvailability.length);
     });
 
-    it("DEBUG: check availabilities for timeslot having id 71", async () => {
-      const allAvailabilities = await availabilityService.listAvailabilities()
-      const av71 = allAvailabilities.filter((a) => a.timeSlot.id === 71)
-      const av73 = allAvailabilities.filter((a) => a.timeSlot.id === 73)
+    it('DEBUG: check availabilities for timeslot having id 71', async () => {
+      const allAvailabilities = await availabilityService.listAvailabilities();
+      const av71 = allAvailabilities.filter((a) => a.timeSlot.id === 71);
+      const av73 = allAvailabilities.filter((a) => a.timeSlot.id === 73);
       expect(av71).toHaveLength(4);
       expect(av73).toHaveLength(2);
     });
