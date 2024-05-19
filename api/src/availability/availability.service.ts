@@ -38,8 +38,8 @@ export class AvailabilityService {
 
   async findByUserAndTimeSlot(user: User, timeSlot: TimeSlot) {
     const matches = await this.availabilityRepository.findBy({
-      user: user,
-      timeSlot: timeSlot,
+      user: user as any,
+      timeSlot: timeSlot as any,
     });
     return matches.length > 0 ? matches[0] : null;
   }

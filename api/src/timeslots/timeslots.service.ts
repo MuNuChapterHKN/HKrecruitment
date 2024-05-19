@@ -7,7 +7,7 @@ import {
   RecruitmentSessionState,
 } from '@hkrecruitment/shared';
 import { CreateTimeSlotDto } from './create-timeslot.dto';
-import { Role } from '@hkrecruitment/shared/person';
+import { Role } from '@hkrecruitment/shared';
 import { AvailabilityState } from '@hkrecruitment/shared/availability';
 
 @Injectable()
