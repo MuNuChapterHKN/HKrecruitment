@@ -919,7 +919,6 @@ describe('TimeslotsController', () => {
       expect(availability).toHaveProperty('timeSlot');
       expect(availability).toHaveProperty('user');
       expect(availability).toEqual(mockAvailability[0]);
-
     });
 
     it('DEBUG: check availabilities for timeslot having id 71 & 73', async () => {
