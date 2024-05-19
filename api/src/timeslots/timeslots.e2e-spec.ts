@@ -879,7 +879,7 @@ describe('TimeslotsController', () => {
         const availability = {
           id: a.id,
           state: a.state,
-          lastModified: a.lastModified ,
+          lastModified: a.lastModified,
           timeSlot: timeSlotsService.findById(a.timeSlot),
           user: mockUsers.find((u) => u.oauthId === a.userOauthId),
         } as unknown as Availability;
