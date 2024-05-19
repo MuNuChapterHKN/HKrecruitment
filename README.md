@@ -13,14 +13,6 @@
 <img alt="Security Rating" src="https://sonarcloud.io/api/project_badges/measure?project=MuNuChapterHKN_HKrecruitment&metric=security_rating">
 </p>
 
-## Project structure
-
-This repository follows the structure:
-
-- **api** - API endpoints, back-end logic, and data storage
-- **frontend** - React Application UI
-- **shared** - Models, interfaces, and validation logic common to frontend and backend
-
 ## Useful Links
 
 [Reports](https://drive.google.com/drive/folders/1RqGVtzU4TV6RJPmtjZQPpHVybDpU6DZk?usp=sharing)
@@ -30,6 +22,56 @@ This repository follows the structure:
 [UI Mockups](https://miro.com/app/board/uXjVOdvzKAk=/)
 
 [Database Schema](https://app.diagrams.net/#G19QUWxP5BBB3tWXnATnHP8wFE4wW7NsXw)
+
+## Getting started
+
+### Requirements
+- [Node.js](https://nodejs.org/en/download/current), version >= 18 
+- [pnpm](https://pnpm.io/installation)
+- Either [Docker Compose](https://docs.docker.com/compose/install/) or a [PostgreSQL database](https://www.postgresql.org/download/)
+
+### Clone the repository 
+```
+git clone https://github.com/MuNuChapterHKN/HKrecruitment.git
+```
+
+### Install dependencies 
+
+From the root folder run:
+
+```
+pnpm install
+```
+
+### Setup environment
+#### Database
+Place this [.env file](https://drive.google.com/file/d/1_TbKfKMlw9Rpy6H8AFWDVxRYtMCgsiy6/view?usp=drive_link) in the `/api` folder. It contains environmental variables used to connect to the database and for external services.
+
+#### Auth0
+Place this [.env file](https://drive.google.com/file/d/1o_HY3KvsCyTsTvY_BcIeymQy5TO6w8Ts/view?usp=drive_link) in the `/frontend` folder. It contains environmental variables used to interact with Auth0.
+
+### Run the project
+
+Execute the following commands from the root folder.
+
+#### Backend
+```Shell
+docker compose up # Spins up a PostgreSQL database
+
+pnpm dev:api # Starts the backend server
+``` 
+#### Frontend
+```Shell
+pnpm dev:web # Runs the frontend
+```
+
+## Project structure
+
+This repository follows the structure:
+
+- **api** - API endpoints, back-end logic, and data storage
+- **frontend** - React Application UI
+- **shared** - Models, interfaces, and validation logic common to frontend and backend
 
 ## Contributors
 
