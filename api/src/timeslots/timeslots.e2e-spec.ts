@@ -14,6 +14,7 @@ import {
 import { RecruitmentSession } from 'src/recruitment-session/recruitment-session.entity';
 import { Availability } from 'src/availability/availability.entity';
 import { createApp, getAccessToken } from 'test/app.e2e-spec';
+import { CreateTimeSlotDto } from './create-timeslot.dto';
 
 describe('TimeslotsController', () => {
   let app: INestApplication;
@@ -23,7 +24,7 @@ describe('TimeslotsController', () => {
   let availabilityService: AvailabilityService;
   let recruitmentSessionService: RecruitmentSessionService;
   let mockUsers: Person[];
-  let mockTimeSlots: TimeSlot[];
+  let mockTimeSlots: CreateTimeSlotDto[];
   let mockRecruitmentSessions: RecruitmentSession[];
   let mockAvailability: Availability[];
 
@@ -32,181 +33,151 @@ describe('TimeslotsController', () => {
 
     mockTimeSlots = [
       {
-        id: 1,
         start: new Date('2024-04-05 10:00:00'),
         end: new Date('2024-05-21 11:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 2,
         start: new Date('2024-04-05 11:00:00'),
         end: new Date('2024-05-21 12:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 3,
         start: new Date('2024-04-05 15:00:00'),
         end: new Date('2024-05-21 16:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 4,
         start: new Date('2024-04-05 16:00:00'),
         end: new Date('2024-05-21 17:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 5,
         start: new Date('2024-04-05 17:00:00'),
         end: new Date('2024-05-21 18:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 6,
         start: new Date('2024-04-05 18:00:00'),
         end: new Date('2024-05-21 19:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 7,
         start: new Date('2024-04-06 10:00:00'),
         end: new Date('2024-06-21 11:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 8,
         start: new Date('2024-04-06 11:00:00'),
         end: new Date('2024-06-21 12:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 9,
         start: new Date('2024-04-06 15:00:00'),
         end: new Date('2024-06-21 16:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 10,
         start: new Date('2024-04-06 16:00:00'),
         end: new Date('2024-06-21 17:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 11,
         start: new Date('2024-04-06 17:00:00'),
         end: new Date('2024-06-21 18:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 12,
         start: new Date('2024-04-06 18:00:00'),
         end: new Date('2024-06-21 19:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 13,
         start: new Date('2024-04-07 10:00:00'),
         end: new Date('2024-07-21 11:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 14,
         start: new Date('2024-04-07 11:00:00'),
         end: new Date('2024-07-21 12:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 15,
         start: new Date('2024-04-07 15:00:00'),
         end: new Date('2024-07-21 16:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 16,
         start: new Date('2024-04-07 16:00:00'),
         end: new Date('2024-07-21 17:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 17,
         start: new Date('2024-04-07 17:00:00'),
         end: new Date('2024-07-21 18:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 18,
         start: new Date('2024-04-07 18:00:00'),
         end: new Date('2024-07-21 19:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 19,
         start: new Date('2024-04-08 10:00:00'),
         end: new Date('2024-08-21 11:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 20,
         start: new Date('2024-04-08 11:00:00'),
         end: new Date('2024-08-21 12:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 21,
         start: new Date('2024-04-08 15:00:00'),
         end: new Date('2024-08-21 16:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 22,
         start: new Date('2024-04-08 16:00:00'),
         end: new Date('2024-08-21 17:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 23,
         start: new Date('2024-04-08 17:00:00'),
         end: new Date('2024-08-21 18:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 24,
         start: new Date('2024-04-08 18:00:00'),
         end: new Date('2024-08-21 19:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 25,
         start: new Date('2024-04-09 10:00:00'),
         end: new Date('2024-09-21 11:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 26,
         start: new Date('2024-04-09 11:00:00'),
         end: new Date('2024-09-21 12:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 27,
         start: new Date('2024-04-09 15:00:00'),
         end: new Date('2024-09-21 16:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 28,
         start: new Date('2024-04-09 16:00:00'),
         end: new Date('2024-09-21 17:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 29,
         start: new Date('2024-04-09 17:00:00'),
         end: new Date('2024-09-21 18:00:00'),
         recruitmentSession: 1,
       } as TimeSlot,
       {
-        id: 30,
         start: new Date('2024-04-09 18:00:00'),
         end: new Date('2024-09-21 19:00:00'),
         recruitmentSession: 1,
@@ -218,295 +189,245 @@ describe('TimeslotsController', () => {
         recruitmentSession: 2,
       } as TimeSlot,
       {
-        id: 32,
         start: new Date('2024-05-05 11:00:00'),
         end: new Date('2024-05-05 12:00:00'),
         recruitmentSession: 2,
       } as TimeSlot,
       {
-        id: 33,
         start: new Date('2024-05-05 15:00:00'),
         end: new Date('2024-05-05 16:00:00'),
         recruitmentSession: 2,
       } as TimeSlot,
       {
-        id: 34,
         start: new Date('2024-05-05 16:00:00'),
         end: new Date('2024-05-05 17:00:00'),
         recruitmentSession: 2,
       } as TimeSlot,
       {
-        id: 35,
         start: new Date('2024-05-05 17:00:00'),
         end: new Date('2024-05-05 18:00:00'),
         recruitmentSession: 2,
       } as TimeSlot,
       {
-        id: 36,
         start: new Date('2024-05-05 18:00:00'),
         end: new Date('2024-05-05 19:00:00'),
         recruitmentSession: 2,
       } as TimeSlot,
       {
-        id: 37,
         start: new Date('2024-05-06 10:00:00'),
         end: new Date('2024-05-06 11:00:00'),
         recruitmentSession: 2,
       } as TimeSlot,
       {
-        id: 38,
         start: new Date('2024-05-06 11:00:00'),
         end: new Date('2024-05-06 12:00:00'),
         recruitmentSession: 2,
       } as TimeSlot,
       {
-        id: 39,
         start: new Date('2024-05-06 15:00:00'),
         end: new Date('2024-05-06 16:00:00'),
         recruitmentSession: 2,
       } as TimeSlot,
       {
-        id: 40,
-        start: new Date('2024-05-06 16:00:00'),
         end: new Date('2024-05-06 17:00:00'),
         recruitmentSession: 2,
       } as TimeSlot,
       {
-        id: 41,
         start: new Date('2024-05-06 17:00:00'),
         end: new Date('2024-05-06 18:00:00'),
         recruitmentSession: 2,
       } as TimeSlot,
       {
-        id: 42,
         start: new Date('2024-05-06 18:00:00'),
         end: new Date('2024-05-06 19:00:00'),
         recruitmentSession: 2,
       } as TimeSlot,
       {
-        id: 43,
         start: new Date('2024-05-07 10:00:00'),
         end: new Date('2024-05-07 11:00:00'),
         recruitmentSession: 2,
       } as TimeSlot,
       {
-        id: 44,
         start: new Date('2024-05-07 11:00:00'),
         end: new Date('2024-05-07 12:00:00'),
         recruitmentSession: 2,
       } as TimeSlot,
       {
-        id: 45,
         start: new Date('2024-05-07 15:00:00'),
         end: new Date('2024-05-07 16:00:00'),
         recruitmentSession: 2,
       } as TimeSlot,
       {
-        id: 46,
         start: new Date('2024-05-07 16:00:00'),
         end: new Date('2024-05-07 17:00:00'),
         recruitmentSession: 2,
       } as TimeSlot,
       {
-        id: 47,
         start: new Date('2024-05-07 17:00:00'),
         end: new Date('2024-05-07 18:00:00'),
         recruitmentSession: 2,
       } as TimeSlot,
       {
-        id: 48,
         start: new Date('2024-05-07 18:00:00'),
         end: new Date('2024-05-07 19:00:00'),
         recruitmentSession: 2,
       } as TimeSlot,
       {
-        id: 49,
         start: new Date('2024-05-08 10:00:00'),
         end: new Date('2024-05-08 11:00:00'),
         recruitmentSession: 2,
       } as TimeSlot,
       {
-        id: 50,
         start: new Date('2024-05-08 11:00:00'),
         end: new Date('2024-05-08 12:00:00'),
         recruitmentSession: 2,
       } as TimeSlot,
       {
-        id: 51,
         start: new Date('2024-05-16 10:00:00'),
         end: new Date('2024-05-16 11:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 52,
         start: new Date('2024-05-16 11:00:00'),
         end: new Date('2024-05-16 12:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 53,
         start: new Date('2024-05-16 15:00:00'),
         end: new Date('2024-05-16 16:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 54,
         start: new Date('2024-05-16 16:00:00'),
         end: new Date('2024-05-16 17:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 55,
         start: new Date('2024-05-16 17:00:00'),
         end: new Date('2024-05-16 18:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 56,
         start: new Date('2024-05-16 18:00:00'),
         end: new Date('2024-05-16 19:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 57,
         start: new Date('2024-05-17 10:00:00'),
         end: new Date('2024-05-17 11:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 58,
         start: new Date('2024-05-17 11:00:00'),
         end: new Date('2024-05-17 12:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 59,
         start: new Date('2024-05-17 15:00:00'),
         end: new Date('2024-05-17 16:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 60,
         start: new Date('2024-05-17 16:00:00'),
         end: new Date('2024-05-17 17:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 61,
         start: new Date('2024-05-17 17:00:00'),
         end: new Date('2024-05-17 18:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 62,
         start: new Date('2024-05-17 18:00:00'),
         end: new Date('2024-05-17 19:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 63,
         start: new Date('2024-05-18 10:00:00'),
         end: new Date('2024-05-18 11:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 64,
         start: new Date('2024-05-18 11:00:00'),
         end: new Date('2024-05-18 12:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 65,
         start: new Date('2024-05-18 15:00:00'),
         end: new Date('2024-05-18 16:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 66,
         start: new Date('2024-05-18 16:00:00'),
         end: new Date('2024-05-18 17:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 67,
         start: new Date('2024-05-18 17:00:00'),
         end: new Date('2024-05-18 18:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 68,
         start: new Date('2024-05-18 18:00:00'),
         end: new Date('2024-05-18 19:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 69,
         start: new Date('2024-05-19 10:00:00'),
         end: new Date('2024-05-19 11:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 70,
         start: new Date('2024-05-19 11:00:00'),
         end: new Date('2024-05-19 12:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 71,
         start: new Date('2024-05-19 15:00:00'),
         end: new Date('2024-05-19 16:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 72,
         start: new Date('2024-05-19 16:00:00'),
         end: new Date('2024-05-19 17:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 73,
         start: new Date('2024-05-19 17:00:00'),
         end: new Date('2024-05-19 18:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 74,
         start: new Date('2024-05-19 18:00:00'),
         end: new Date('2024-05-19 19:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 75,
         start: new Date('2024-05-20 10:00:00'),
         end: new Date('2024-05-20 11:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 76,
         start: new Date('2024-05-20 11:00:00'),
         end: new Date('2024-05-20 12:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 77,
         start: new Date('2024-05-20 15:00:00'),
         end: new Date('2024-05-20 16:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 78,
         start: new Date('2024-05-20 16:00:00'),
         end: new Date('2024-05-20 17:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 79,
         start: new Date('2024-05-20 17:00:00'),
         end: new Date('2024-05-20 18:00:00'),
         recruitmentSession: 3,
       } as TimeSlot,
       {
-        id: 80,
         start: new Date('2024-05-20 18:00:00'),
         end: new Date('2024-05-20 19:00:00'),
         recruitmentSession: 3,
