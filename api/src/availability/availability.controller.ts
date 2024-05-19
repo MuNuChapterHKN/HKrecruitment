@@ -79,7 +79,7 @@ export class AvailabilityController {
     if (!user) throw new NotFoundException('User not found');
 
     /* Verify availability for timeslot does not already exist */
-       const existing = await this.availabilityService.findByUserAndTimeSlot(
+    const existing = await this.availabilityService.findByUserAndTimeSlot(
       user,
       timeSlot,
     );

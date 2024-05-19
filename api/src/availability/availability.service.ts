@@ -44,7 +44,6 @@ export class AvailabilityService {
     return matches.length > 0 ? matches[0] : null;
   }
 
-
   /**
    * Create an availability
    * @param availability - Availability to create
