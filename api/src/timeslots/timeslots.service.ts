@@ -5,10 +5,10 @@ import { TimeSlot } from './timeslot.entity';
 import {
   RecruitmentSession,
   RecruitmentSessionState,
+  AvailabilityState,
+  Role,
 } from '@hkrecruitment/shared';
 import { CreateTimeSlotDto } from './create-timeslot.dto';
-import { Role } from '@hkrecruitment/shared';
-import { AvailabilityState } from '@hkrecruitment/shared/availability';
 
 @Injectable()
 export class TimeSlotsService {

@@ -2,7 +2,6 @@ import { TestBed } from '@automock/jest';
 import { TimeSlotsController } from './timeslots.controller';
 import { TimeSlotsService } from './timeslots.service';
 import { TimeSlot } from './timeslot.entity';
-import { Test } from '@nestjs/testing';
 
 describe('TimeSlotController', () => {
   let controller: TimeSlotsController;
