@@ -910,10 +910,10 @@ describe('TimeslotsController', () => {
       expect(allAvailabilities).toHaveLength(mockAvailability.length);
     });
 
-    it('DEBUG: check availabilities for timeslot having id 71', async () => {
+    it('DEBUG: check availabilities for timeslot having id 71 & 73', async () => {
       const allAvailabilities = await availabilityService.listAvailabilities();
-      const av71 = allAvailabilities.filter((a) => a.timeSlot.id === 71);
-      const av73 = allAvailabilities.filter((a) => a.timeSlot.id === 73);
+      const av71 = allAvailabilities.filter((a) => a.timeSlotId === 71);
+      const av73 = allAvailabilities.filter((a) => a.timeSlotId === 73);
       expect(av71).toHaveLength(4);
       expect(av73).toHaveLength(2);
     });
