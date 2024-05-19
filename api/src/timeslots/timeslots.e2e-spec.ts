@@ -858,6 +858,14 @@ describe('TimeslotsController', () => {
 
   describe(' GET /timeslots', () => {
     beforeEach(async () => {
+      for (const user of mockUsers) {
+        await usersService.create(user);
+      }
+
+      for (const rs of mockRecruitmentSessions) {
+        await recruitmentSessionService.createRecruitmentSession(rs);
+      }
+
       for (const ts of mockTimeSlots) {
         const timeSlot = {
           ...ts,
