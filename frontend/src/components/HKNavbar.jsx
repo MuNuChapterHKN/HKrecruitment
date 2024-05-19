@@ -16,6 +16,31 @@ import LoadingSpinner from "./LoadingSpinner";
 const HKNavbar = () => {
   const { isLoading, isAuthenticated, user } = useAuth0();
 
+  const LoggedUserMenu = () => (
+    <div id="profile-nav-dropdown">
+      <NavDropdown
+        title={
+          (user.picture && (
+            <img
+              className="thumbnail-image"
+              src={user.picture}
+              width="65"
+              height="65"
+              alt="user pic"
+              style={{ borderRadius: "50%" }}
+            />
+          )) || <i class="bi bi-person-circle fs-4 me-2" />
+        }
+      >
+        <NavDropdown.ItemText>
+          {user.name ? user.name : user.email}
+        </NavDropdown.ItemText>
+        <NavDropdown.Divider />
+        <LogoutButton />
+      </NavDropdown>
+    </div>
+  );
+
   return (
     <Container fluid>
       <Row>
@@ -45,17 +70,7 @@ const HKNavbar = () => {
             ) : !isAuthenticated ? (
               <LoginButton />
             ) : (
-              <div id="profile-nav-dropdown">
-                <NavDropdown
-                  title={<i class="bi bi-person-circle fs-4 me-2"></i>}
-                >
-                  <NavDropdown.ItemText>
-                    {user.name ? user.name : user.email}
-                  </NavDropdown.ItemText>
-                  <NavDropdown.Divider />
-                  <LogoutButton />
-                </NavDropdown>
-              </div>
+              <LoggedUserMenu />
             )}
           </Col>
         </Navbar>
