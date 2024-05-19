@@ -1190,7 +1190,6 @@ describe('TimeslotsController', () => {
 
   describe(' GET /timeslots', () => {
     beforeEach(async () => {
-      
       let promises = [];
       mockRecruitmentSessions.forEach(async (rs) =>
         promises.push(recruitmentSessionService.createRecruitmentSession(rs)),
