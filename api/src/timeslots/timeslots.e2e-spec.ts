@@ -1191,30 +1191,30 @@ describe('TimeslotsController', () => {
   describe(' GET /timeslots', () => {
     beforeEach(async () => {
       let promises = [];
-      mockRecruitmentSessions.forEach(async (rs) =>
+      mockRecruitmentSessions.forEach((rs) =>
         promises.push(recruitmentSessionService.createRecruitmentSession(rs)),
       );
 
-      await Promise.all(promises).then(() => {
-        promises = [];
-        mockUsers.forEach(async (u) => promises.push(usersService.create(u)));
+      await Promise.all(promises);
 
-        Promise.all(promises).then(() => {
-          promises = [];
-          mockTimeSlots.forEach(async (ts) =>
-            promises.push(timeSlotsService.createTimeSlot(ts)),
-          );
+      promises = [];
+      mockUsers.forEach((u) => promises.push(usersService.create(u)));
 
-          Promise.all(promises).then(() => {
-            promises = [];
-            mockAvailability.forEach(async (a) =>
-              promises.push(availabilityService.createAvailability(a)),
-            );
+      await Promise.all(promises);
 
-            Promise.all(promises);
-          });
-        });
-      });
+      promises = [];
+      mockTimeSlots.forEach((ts) =>
+        promises.push(timeSlotsService.createTimeSlot(ts)),
+      );
+
+      await Promise.all(promises);
+
+      promises = [];
+      mockAvailability.forEach((a) =>
+        promises.push(availabilityService.createAvailability(a)),
+      );
+
+      await Promise.all(promises);
     });
 
     it('should return all available timeslots', async () => {
