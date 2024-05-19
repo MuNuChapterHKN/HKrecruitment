@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  OneToMany,
-  PrimaryColumn,
-  Relation,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryColumn, Relation } from 'typeorm';
 import { Person, Role } from '@hkrecruitment/shared';
 import { Availability } from 'src/availability/availability.entity';
 

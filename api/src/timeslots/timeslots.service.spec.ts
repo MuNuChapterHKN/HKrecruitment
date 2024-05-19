@@ -5,6 +5,11 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { TimeSlot } from './timeslot.entity';
 import { TimeSlotsService } from './timeslots.service';
 import { mockDataSource } from 'src/mocks/data-sources';
+import {
+  AvailabilityState,
+  RecruitmentSessionState,
+  Role,
+} from '@hkrecruitment/shared';
 
 describe('TimeSlotsService', () => {
   let timeSlotService: TimeSlotsService;
@@ -43,7 +48,9 @@ describe('TimeSlotsService', () => {
   describe('deleteTimeSlot', () => {
     it('should remove the specified timeslot from the database', async () => {
       jest.spyOn(mockedRepository, 'remove').mockResolvedValue(mockTimeSlot);
-      const result = await timeSlotService.deleteTimeSlot(mockTimeSlot);
+      const result = await timeSlotService.deleteTimeSlot(
+        mockTimeSlot as TimeSlot,
+      );
       expect(result).toEqual(mockTimeSlot);
       expect(mockedRepository.remove).toHaveBeenCalledTimes(1);
     });
@@ -186,6 +193,65 @@ describe('TimeSlotsService', () => {
         days,
         expectedTimeSlots,
       );
+    });
+  });
+
+  describe('findAvailableTimeSlots', () => {
+    it('should correctly call all functions provided for database query', async () => {
+      // Mock the query builder and its methods
+      const mockQueryBuilder = {
+        leftJoinAndSelect: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        getMany: jest.fn().mockResolvedValue([]),
+      };
+
+      // Mock the timeSlotRepository and its methods
+      const mockTimeSlotRepository = {
+        createQueryBuilder: jest.fn().mockReturnValue(mockQueryBuilder),
+      };
+
+      const timeSlotService = new TimeSlotsService(
+        mockTimeSlotRepository as any,
+      );
+      const result = await timeSlotService.findAvailableTimeSlots();
+
+      // Assert that the query builder methods were called correctly
+      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledWith(
+        'TimeSlot.availabilities',
+        'availability',
+      );
+      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledWith(
+        'TimeSlot.recruitmentSession',
+        'recruitmentSession',
+      );
+      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledWith(
+        'availability.user',
+        'user',
+      );
+      expect(mockQueryBuilder.where).toHaveBeenCalledWith(
+        'recruitmentSession.state = :recruitmentSessionState',
+        {
+          recruitmentSessionState: RecruitmentSessionState.Active,
+        },
+      );
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        'user.role NOT IN (:...roles)',
+        {
+          roles: [Role.None, Role.Applicant],
+        },
+      );
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        'availability.state = :availabilityState AND (user.is_board = true OR user.is_expert = true)',
+        {
+          availabilityState: AvailabilityState.Free,
+        },
+      );
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        '(SELECT COUNT(availability.id) FROM Availability availability WHERE availability.timeSlotId = TimeSlot.id) > 1',
+      );
+
+      expect(result).toEqual([]);
     });
   });
 });

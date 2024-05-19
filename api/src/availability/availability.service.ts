@@ -16,10 +16,19 @@ export class AvailabilityService {
     private dataSource: DataSource,
   ) {}
 
+  /**
+   * List all availabilities
+   * @returns {Promise<Availability[]>} - List of availabilities
+   */
   async listAvailabilities(): Promise<Availability[]> {
     return await this.availabilityRepository.find();
   }
 
+  /**
+   * Find all availabilities for a given user
+   * @param user - User to find availabilities for
+   * @returns {Promise<Availability[]>} - List of availabilities for the user
+   */
   async findById(id: number): Promise<Availability> {
     const matches = await this.availabilityRepository.findBy({
       id: id,
@@ -27,6 +36,7 @@ export class AvailabilityService {
     return matches.length > 0 ? matches[0] : null;
   }
 
+  /******** THIS FUNCTION GETS AN ERROR AT COMPILE TIME *********
   async findByUserAndTimeSlot(user: User, timeSlot: TimeSlot) {
     const matches = await this.availabilityRepository.findBy({
       user: user,
@@ -34,11 +44,23 @@ export class AvailabilityService {
     });
     return matches.length > 0 ? matches[0] : null;
   }
+*/
 
+  /**
+   * Create an availability
+   * @param availability - Availability to create
+   * @returns {Promise<Availability>} - Created availability
+   */
   async createAvailability(availability: Availability): Promise<Availability> {
     return await this.availabilityRepository.save(availability);
   }
 
+  /**
+   * Update an availability
+   * @param oldAvailabilityId - ID of the
+   * @param newAvailability - New availability
+   * @returns {Promise<Availability>} - Updated availability
+   */
   async updateAvailability(
     oldAvailabilityId: number,
     newAvailability: Availability,
@@ -49,6 +71,12 @@ export class AvailabilityService {
     });
   }
 
+  /**
+   * Delete an availability
+   * @param availabilityId - ID of the availability to delete
+   * @returns {Promise<Availability>} - Deleted availability
+   * @throws {ConflictException} - If availability is in use
+   */
   async deleteAvailability(availabilityId: number): Promise<Availability> {
     return await transaction(
       this.dataSource,
