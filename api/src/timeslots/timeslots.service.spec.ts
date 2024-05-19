@@ -200,7 +200,7 @@ describe('TimeSlotsService', () => {
     it('should correctly call all functions provided for database query', async () => {
       // Mock the query builder and its methods
       const mockQueryBuilder = {
-        leftJoinAndSelect: jest.fn().mockReturnThis(),
+        innerJoinAndSelect: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
         andWhere: jest.fn().mockReturnThis(),
         getMany: jest.fn().mockResolvedValue([]),
@@ -217,15 +217,15 @@ describe('TimeSlotsService', () => {
       const result = await timeSlotService.findAvailableTimeSlots();
 
       // Assert that the query builder methods were called correctly
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledWith(
+      expect(mockQueryBuilder.innerJoinAndSelect).toHaveBeenCalledWith(
         'TimeSlot.availabilities',
         'availability',
       );
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledWith(
+      expect(mockQueryBuilder.innerJoinAndSelect).toHaveBeenCalledWith(
         'TimeSlot.recruitmentSession',
         'recruitmentSession',
       );
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledWith(
+      expect(mockQueryBuilder.innerJoinAndSelect).toHaveBeenCalledWith(
         'availability.user',
         'user',
       );

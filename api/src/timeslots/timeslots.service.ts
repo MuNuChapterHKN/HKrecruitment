@@ -79,7 +79,7 @@ export class TimeSlotsService {
    * @param timeSlot - Time slot to create
    * @returns {Promise<TimeSlot>} - Created time slot
    */
-  async createTimeSlot(timeSlot: CreateTimeSlotDto): Promise<TimeSlot> {
+  async createTimeSlot(timeSlot: TimeSlot): Promise<TimeSlot> {
     return await this.timeSlotRepository.save(timeSlot);
   }
 
@@ -157,9 +157,9 @@ export class TimeSlotsService {
   async findAvailableTimeSlots(): Promise<TimeSlot[]> {
     const queryBuilder = this.timeSlotRepository.createQueryBuilder('TimeSlot');
     queryBuilder
-      .leftJoinAndSelect('TimeSlot.availabilities', 'availability')
-      .leftJoinAndSelect('TimeSlot.recruitmentSession', 'recruitmentSession')
-      .leftJoinAndSelect('availability.user', 'user')
+      .innerJoinAndSelect('TimeSlot.availabilities', 'availability')
+      .innerJoinAndSelect('TimeSlot.recruitmentSession', 'recruitmentSession')
+      .innerJoinAndSelect('availability.user', 'user')
 
       // only active recruitment sessions (the current one)
       .where('recruitmentSession.state = :recruitmentSessionState', {

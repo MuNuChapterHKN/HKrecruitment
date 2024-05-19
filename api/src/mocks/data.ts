@@ -28,13 +28,6 @@ export const testDateTime1Hour = new Date(2023, 0, 1, 11, 30, 0);
 export const testDateTime3Hours = new Date(2023, 0, 1, 13, 30, 0);
 export const testDateTimeEnd = new Date(2023, 0, 1, 11, 30, 0);
 
-export const mockTimeSlot = {
-  start: testDateTimeStart,
-  end: testDateTimeEnd,
-  id: 1,
-  availabilities: [],
-} as TimeSlot & { availabilities: any[] };
-
 export const testInterviewStart = '11:55' as unknown as Date;
 export const testInterviewEnd = '20:35' as unknown as Date;
 export const testDay1 = '2024-10-20' as unknown as Date;
@@ -53,6 +46,14 @@ export const mockRecruitmentSession = {
   createdAt: testDateCreatedAt,
   lastModified: testDateLastModified,
 };
+
+export const mockTimeSlot = {
+  recruitmentSession: mockRecruitmentSession,
+  start: testDateTimeStart,
+  end: testDateTimeEnd,
+  id: 1,
+  availabilities: [],
+} as TimeSlot & { availabilities: any[] };
 
 export const mockCreateRecruitmentSessionDto = {
   slotDuration: 50,
