@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, LessThan, MoreThan, QueryRunner } from 'typeorm';
+import { Repository, LessThan, MoreThan, QueryRunner, Not, In } from 'typeorm';
 import { TimeSlot } from './timeslot.entity';
 import {
   RecruitmentSession,
@@ -185,6 +185,21 @@ export class TimeSlotsService {
       );
 
     const allMatches = await queryBuilder.getMany();
+    return this.timeSlotRepository.find({
+      relations: [
+        'availabilities',
+        'availabilities.user',
+        'recruitmentSession',
+      ],
+      where: {
+        availabilities: {
+          state: AvailabilityState.Free,
+          user: {
+            role: Not(In([Role.Applicant, Role.None])),
+          },
+        },
+      },
+    });
     return allMatches;
 
     let goodTimeSlots: TimeSlot[] = [];
