@@ -8,9 +8,10 @@ import {
   Body,
   Post,
   Req,
-  Delete
+  Delete,
+  ConflictException,
 } from '@nestjs/common';
-import { Interview } from './interview.entity';  
+import { Interview } from './interview.entity';
 import { InterviewService } from './interview.Service';
 import { TimeSlotsService } from '../timeslots/timeslots.service';
 import { ApplicationsService } from '../application/applications.service';
@@ -24,7 +25,7 @@ import {
   updateInterviewSchema,
 } from '@hkrecruitment/shared';
 import { JoiValidate } from 'src/joi-validation/joi-validate.decorator';
-import {    
+import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiNotFoundResponse,
@@ -38,13 +39,12 @@ import { Ability } from 'src/authorization/ability.decorator';
 @ApiBearerAuth()
 @ApiTags('interview')
 @Controller('interview')
-
 export class InterviewController {
   constructor(
     private readonly interviewService: InterviewService,
     private readonly timeSlotService: TimeSlotsService,
-    private readonly applicationService: ApplicationsService
-    ) {}
+    private readonly applicationService: ApplicationsService,
+  ) {}
 
   @ApiNotFoundResponse()
   @ApiBadRequestResponse()
@@ -108,7 +108,7 @@ export class InterviewController {
       ...updateInterview,
     });
   }
-  
+
   @ApiNotFoundResponse()
   @ApiBadRequestResponse()
   @Post()
@@ -121,19 +121,20 @@ export class InterviewController {
     @Ability() ability: AppAbility,
     @Req() req: AuthenticatedRequest,
   ): Promise<Interview> {
-      const timeslot = await this.timeSlotService.findById(interview.id_timeslot)
-      if (timeslot === null) {
-        throw new NotFoundException();
-      }
-      const application = await this.applicationService.findByApplicationId(interview.id_application)
-      if (application === null) {
-        throw new NotFoundException();
-      }
-    return this.interviewService.create(
-      interview,
-      application,
-      timeslot
-    );
+    const Id = req.user.sub;
+    const timeslot = await this.timeSlotService.findById(interview.timeslot_id);
+    if (timeslot === null) {
+      throw new NotFoundException();
+    }
+    const application =
+      await this.applicationService.findLastApplicationByActiveUserId(Id);
+    if (application === null) {
+      throw new NotFoundException();
+    }
+    try {
+      return this.interviewService.create(interview, application, timeslot);
+    } catch {
+      throw new ConflictException();
+    }
   }
 }
-   

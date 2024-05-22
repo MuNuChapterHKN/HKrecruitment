@@ -20,6 +20,9 @@ import {
   AvailabilityState,
   TimeSlot,
 } from '@hkrecruitment/shared';
+import { Interview } from 'src/interview/interview.entity';
+import { UpdateInterviewDto } from 'src/interview/update-interview.dto';
+import { CreateInterviewDto } from 'src/interview/create-interview.dto';
 
 export const testDate = new Date(2023, 0, 1, 10, 0, 0);
 export const testDateTimeStart = new Date(2023, 0, 1, 10, 30, 0);
@@ -228,3 +231,50 @@ export const mockAvailability = {
 export const mockCreateAvailabilityDto = {
   timeSlotId: mockTimeSlot.id,
 } as CreateAvailabilityDto;
+
+export const mockInterview: Interview = {
+  id: 123,
+  notes: 'qwerty',
+  createdAt: new Date(2023, 0, 1),
+  timeslot: mockTimeSlot,
+  application: mockMscApplication,
+  interviewer1: {
+    oauthId: '123',
+    firstName: 'Jane',
+    lastName: 'Doe',
+    sex: 'F',
+    email: 'jane@hknpolito.org',
+    is_board: true,
+    is_expert: false,
+    role: Role.Member,
+  },
+  interviewer2: {
+    oauthId: '456',
+    firstName: 'John',
+    lastName: 'Doe',
+    sex: 'M',
+    email: 'john@hknpolito.org',
+    is_board: false,
+    is_expert: true,
+    role: Role.Member,
+  },
+  optionalInterviewer: {
+    oauthId: '678',
+    firstName: 'Jack',
+    lastName: 'Dao',
+    sex: 'M',
+    email: 'jack@hknpolito.org',
+    is_board: false,
+    is_expert: false,
+    role: Role.Member,
+  },
+};
+
+export const MockCreateInterviewDTO: CreateInterviewDto = {
+  createdAt: new Date(2023, 0, 1),
+  timeslot_id: mockTimeSlot.id,
+};
+
+export const MockUpdateInterviewDTO = {
+  notes: 'Notes',
+} as UpdateInterviewDto;

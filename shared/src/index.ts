@@ -4,5 +4,5 @@ export * from "./application";
 export * from "./availability";
 export * from "./timeslot";
 export * from "./slot";
-export * from "./interview"
 export * from "./recruitment-session";
+export * from "./interview";
