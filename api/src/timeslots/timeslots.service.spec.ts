@@ -311,6 +311,22 @@ describe('TimeSlotsService', () => {
               },
             ],
           },
+          {
+            start: new Date('2022-01-01T9:00:00'),
+            end: new Date('2022-01-01T20:00:00'),
+            id: 2,
+            recruitmentSession: 3,
+            availabilities: [
+              {
+                state: AvailabilityState.Free,
+                user: {
+                  role: Role.Member,
+                  is_board: true,
+                  is_expert: true,
+                },
+              },
+            ],
+          },
         ]),
       };
 
