@@ -257,7 +257,7 @@ describe('TimeSlotsService', () => {
       jest.resetAllMocks();
     });
 
-    it("should return only time slots with at least 2 available people, one of which is a board member", async () => {
+    it('should return only time slots with at least 2 available people, one of which is a board member', async () => {
       const mockQueryBuilder = {
         innerJoinAndSelect: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
@@ -309,7 +309,8 @@ describe('TimeSlotsService', () => {
                   is_expert: true,
                 },
               },
-            ]}
+            ],
+          },
         ]),
       };
 
@@ -323,11 +324,15 @@ describe('TimeSlotsService', () => {
       );
 
       const result = await timeSlotService.findAvailableTimeSlots();
-      expect(JSON.stringify(result)).toBe(JSON.stringify([{
-        id: 1,
-        start: new Date('2022-01-01T09:00:00'),
-        end: new Date('2022-01-01T10:00:00'),
-      }]));
+      expect(JSON.stringify(result)).toBe(
+        JSON.stringify([
+          {
+            id: 1,
+            start: new Date('2022-01-01T09:00:00'),
+            end: new Date('2022-01-01T10:00:00'),
+          },
+        ]),
+      );
     });
   });
 });
