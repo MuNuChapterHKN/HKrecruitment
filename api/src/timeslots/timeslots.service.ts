@@ -184,21 +184,6 @@ export class TimeSlotsService {
       );
 
     const allMatches = await queryBuilder.getMany();
-    // const allMatches = await this.timeSlotRepository.find({
-    //   relations: [
-    //     'availabilities',
-    //     'availabilities.user',
-    //     'recruitmentSession',
-    //   ],
-    //   where: {
-    //     availabilities: {
-    //       state: AvailabilityState.Free,
-    //       user: {
-    //         role: Not(In([Role.Applicant, Role.None])),
-    //       },
-    //     },
-    //   },
-    // });
 
     let goodTimeSlots: TimeSlot[] = [];
     allMatches.forEach((timeSlot) => {

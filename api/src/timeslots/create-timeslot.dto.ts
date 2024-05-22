@@ -4,7 +4,7 @@ import { Availability } from 'src/availability/availability.entity';
 import { RecruitmentSession } from 'src/recruitment-session/recruitment-session.entity';
 
 export class CreateTimeSlotDto implements Partial<TimeSlot> {
-  @ApiProperty() //
+  @ApiProperty()
   start: Date;
 
   @ApiProperty()
