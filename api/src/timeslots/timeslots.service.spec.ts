@@ -252,6 +252,82 @@ describe('TimeSlotsService', () => {
       );
 
       expect(result).toEqual([]);
+
+      jest.clearAllMocks();
+      jest.resetAllMocks();
+    });
+
+    it("should return only time slots with at least 2 available people, one of which is a board member", async () => {
+      const mockQueryBuilder = {
+        innerJoinAndSelect: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        getMany: jest.fn().mockResolvedValue([
+          {
+            start: new Date('2022-01-01T09:00:00'),
+            end: new Date('2022-01-01T10:00:00'),
+            id: 1,
+            recruitmentSession: 3,
+            availabilities: [
+              {
+                state: AvailabilityState.Free,
+                user: {
+                  role: Role.Member,
+                  is_board: true,
+                  is_expert: false,
+                },
+              },
+              {
+                state: AvailabilityState.Free,
+                user: {
+                  role: Role.Applicant,
+                  is_board: false,
+                  is_expert: false,
+                },
+              },
+              {
+                state: AvailabilityState.Free,
+                user: {
+                  role: Role.Member,
+                  is_board: false,
+                  is_expert: true,
+                },
+              },
+              {
+                state: AvailabilityState.Interviewing,
+                user: {
+                  role: Role.Member,
+                  is_board: false,
+                  is_expert: true,
+                },
+              },
+              {
+                state: AvailabilityState.Interviewing,
+                user: {
+                  role: Role.Admin,
+                  is_board: false,
+                  is_expert: true,
+                },
+              },
+            ]}
+        ]),
+      };
+
+      // Mock the timeSlotRepository and its methods
+      const mockTimeSlotRepository = {
+        createQueryBuilder: jest.fn().mockReturnValue(mockQueryBuilder),
+      };
+
+      const timeSlotService = new TimeSlotsService(
+        mockTimeSlotRepository as any,
+      );
+
+      const result = await timeSlotService.findAvailableTimeSlots();
+      expect(JSON.stringify(result)).toBe(JSON.stringify([{
+        id: 1,
+        start: new Date('2022-01-01T09:00:00'),
+        end: new Date('2022-01-01T10:00:00'),
+      }]));
     });
   });
 });
