@@ -36,6 +36,11 @@ export class AvailabilityService {
     return matches.length > 0 ? matches[0] : null;
   }
 
+  /**
+   * Find all availabilities for a given user
+   * @param user - User to find availabilities for
+   * @returns {Promise<Availability[]>} - List of availabilities for the user
+   */
   async findByUserAndTimeSlot(user: User, timeSlot: TimeSlot) {
     const matches = await this.availabilityRepository.findBy({
       user: user as any,
