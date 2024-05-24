@@ -20,6 +20,7 @@ describe('TimeSlotController', () => {
     expect(service).toBeDefined();
   });
 
+  
   describe('findAvailableTimeSlots', () => {
     it('should return an array of available time slots', async () => {
       const expectedTimeSlots: TimeSlot[] = [
@@ -34,6 +35,21 @@ describe('TimeSlotController', () => {
           end: new Date('2024-05-19T16:00:00.000Z'),
         } as TimeSlot,
       ];
+
+      jest
+        .spyOn(service, 'findAvailableTimeSlots')
+        .mockResolvedValue(expectedTimeSlots);
+
+      // Act
+      const result = await controller.findAvailableTimeSlots();
+
+      // Assert
+      expect(result).toEqual(expectedTimeSlots);
+      expect(service.findAvailableTimeSlots).toHaveBeenCalledTimes(1);
+    });
+
+    it("should return an empty array if there are no available time slots", async () => {
+      const expectedTimeSlots: TimeSlot[] = [];
 
       jest
         .spyOn(service, 'findAvailableTimeSlots')
