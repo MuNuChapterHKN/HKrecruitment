@@ -20,7 +20,6 @@ describe('TimeSlotController', () => {
     expect(service).toBeDefined();
   });
 
-  
   describe('findAvailableTimeSlots', () => {
     it('should return an array of available time slots', async () => {
       const expectedTimeSlots: TimeSlot[] = [
@@ -48,7 +47,7 @@ describe('TimeSlotController', () => {
       expect(service.findAvailableTimeSlots).toHaveBeenCalledTimes(1);
     });
 
-    it("should return an empty array if there are no available time slots", async () => {
+    it('should return an empty array if there are no available time slots', async () => {
       const expectedTimeSlots: TimeSlot[] = [];
 
       jest
