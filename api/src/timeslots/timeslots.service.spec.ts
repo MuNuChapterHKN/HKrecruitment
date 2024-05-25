@@ -1,4 +1,9 @@
-import { mockGenerateTimeSlots, mockTimeSlot, testDate } from 'src/mocks/data';
+import {
+  mockGenerateTimeSlots,
+  mockTimeSlot,
+  mockTimeSlotsJoined,
+  testDate,
+} from 'src/mocks/data';
 import { mockedRepository } from 'src/mocks/repositories';
 import { TestingModule, Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -283,80 +288,7 @@ describe('TimeSlotsService', () => {
         innerJoinAndSelect: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
         andWhere: jest.fn().mockReturnThis(),
-        getMany: jest.fn().mockResolvedValue([
-          {
-            start: new Date('2022-01-01T09:00:00'),
-            end: new Date('2022-01-01T10:00:00'),
-            id: 1,
-            recruitmentSession: 3,
-            availabilities: [
-              {
-                state: AvailabilityState.Interviewing,
-                user: {
-                  role: Role.None,
-                  is_board: false,
-                  is_expert: true,
-                },
-              },
-              {
-                state: AvailabilityState.Free,
-                user: {
-                  role: Role.Member,
-                  is_board: true,
-                  is_expert: false,
-                },
-              },
-              {
-                state: AvailabilityState.Free,
-                user: {
-                  role: Role.Applicant,
-                  is_board: false,
-                  is_expert: false,
-                },
-              },
-              {
-                state: AvailabilityState.Free,
-                user: {
-                  role: Role.Member,
-                  is_board: false,
-                  is_expert: true,
-                },
-              },
-              {
-                state: AvailabilityState.Interviewing,
-                user: {
-                  role: Role.Member,
-                  is_board: false,
-                  is_expert: true,
-                },
-              },
-              {
-                state: AvailabilityState.Interviewing,
-                user: {
-                  role: Role.Admin,
-                  is_board: false,
-                  is_expert: true,
-                },
-              },
-            ],
-          },
-          {
-            start: new Date('2022-01-01T9:00:00'),
-            end: new Date('2022-01-01T20:00:00'),
-            id: 2,
-            recruitmentSession: 3,
-            availabilities: [
-              {
-                state: AvailabilityState.Free,
-                user: {
-                  role: Role.Member,
-                  is_board: true,
-                  is_expert: true,
-                },
-              },
-            ],
-          },
-        ]),
+        getMany: jest.fn().mockResolvedValue(mockTimeSlotsJoined),
       };
 
       // Mock the timeSlotRepository and its methods

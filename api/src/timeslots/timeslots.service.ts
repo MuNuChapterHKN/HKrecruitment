@@ -185,30 +185,23 @@ export class TimeSlotsService {
 
     const allMatches = await queryBuilder.getMany();
 
-    let goodTimeSlots: TimeSlot[] = [];
-    allMatches.forEach((timeSlot) => {
-      let boardMembers = 0;
-      let expertMembers = 0;
-      for (let availability of timeSlot.availabilities) {
-        // redundant checks
-        if (availability.state !== AvailabilityState.Free) continue;
-        if (availability.user.role === Role.None) continue;
-        if (availability.user.role === Role.Applicant) continue;
-
-        if (availability.user.is_board) ++boardMembers;
-        else if (availability.user.is_expert) ++expertMembers;
-      }
-
-      if ((boardMembers && expertMembers) || boardMembers > 1) {
-        const timeslotToPush = {
+    return allMatches
+      .filter((timeSlot) => {
+        let [boardMembers, expertMembers] = [0, 0];
+        for (let av of timeSlot.availabilities) {
+          if (av.state !== AvailabilityState.Free) continue;
+          if ([Role.None, Role.Applicant].includes(av.user.role)) continue;
+          if (av.user.is_board) ++boardMembers;
+          else if (av.user.is_expert) ++expertMembers;
+        }
+        return (boardMembers && expertMembers) || boardMembers > 1;
+      })
+      .map((timeSlot) => {
+        return {
           id: timeSlot.id,
           start: timeSlot.start,
           end: timeSlot.end,
         } as TimeSlot;
-        goodTimeSlots.push(timeslotToPush);
-      }
-    });
-
-    return goodTimeSlots;
+      });
   }
 }
