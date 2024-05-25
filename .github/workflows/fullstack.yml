@@ -54,7 +54,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: shared-unit-coverage-report
-          path: ./shared/coverage/lcov.info
+          path: ./coverage/shared/lcov.info
 
       - name: Run api unit tests
         run: pnpm --filter api test:cov
