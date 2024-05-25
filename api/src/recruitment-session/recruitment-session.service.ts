@@ -66,11 +66,6 @@ export class RecruitmentSessionService {
     return await this.recruitmentSessionRepository.remove(recruitmentSession);
   }
 
-  /**
-   * Update a recruitment session
-   * @param recruitmentSession - Recruitment session to update
-   * @returns {Promise<RecruitmentSession>} - Updated recruitment session
-   */
   async updateRecruitmentSession(
     recruitmentSession: RecruitmentSession,
   ): Promise<RecruitmentSession> {
