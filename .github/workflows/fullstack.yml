@@ -50,8 +50,20 @@ jobs:
       - name: Run shared unit tests
         run: pnpm --filter shared test:cov
 
+      - name: Upload shared unit test coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: shared-unit-coverage-report
+          path: ./shared/coverage/lcov.info
+
       - name: Run api unit tests
         run: pnpm --filter api test:cov
+
+      - name: Upload api unit test coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-unit-coverage-report
+          path: ./coverage/api/lcov.info
 
       - name: Run api e2e tests
         env:
@@ -63,6 +75,12 @@ jobs:
           AUTH0_CLIENT_ID: ${{ secrets.TEST_AUTH0_CLIENT_ID }}
           AUTH0_CLIENT_SECRET: ${{ secrets.TEST_AUTH0_CLIENT_SECRET }}
         run: pnpm --filter api test-e2e:cov
+
+      - name: Upload api end-to-end test coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-e2e-coverage-report
+          path: ./coverage/api-e2e/lcov.info
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
