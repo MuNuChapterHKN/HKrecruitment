@@ -28,11 +28,6 @@ export class UsersService {
     return this.userRepository.findOne({ where: { oauthId } });
   }
 
-  /**
-   * Delete a user
-   * @param {User} user - User to delete
-   * @returns {Promise<User>} - Deleted user
-   */
   async delete(user: User): Promise<User> {
     return this.userRepository.remove(user);
   }
