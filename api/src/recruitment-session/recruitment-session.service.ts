@@ -17,11 +17,6 @@ export class RecruitmentSessionService {
     private dataSource: DataSource,
   ) {}
 
-  /**
-   * Create a recruitment session
-   * @param recruitmentSession - Recruitment session to create
-   * @returns {Promise<RecruitmentSession>} - Created recruitment session
-   */
   async createRecruitmentSession(
     recruitmentSession: CreateRecruitmentSessionDto,
   ): Promise<RecruitmentSession> {
@@ -45,19 +40,10 @@ export class RecruitmentSessionService {
     });
   }
 
-  /**
-   * List all recruitment sessions
-   * @returns {Promise<RecruitmentSession[]>} - List of recruitment sessions
-   */
   async findAllRecruitmentSessions(): Promise<RecruitmentSession[]> {
     return await this.recruitmentSessionRepository.find();
   }
 
-  /**
-   * Find a recruitment session by its ID
-   * @param RSid - ID of the recruitment session
-   * @returns {Promise<RecruitmentSession | null>} - Recruitment session with the given ID
-   */
   async findRecruitmentSessionById(
     RSid: number,
   ): Promise<RecruitmentSession | null> {
@@ -67,10 +53,6 @@ export class RecruitmentSessionService {
     return matches.length > 0 ? matches[0] : null;
   }
 
-  /**
-   * Find an active recruitment session
-   * @returns {Promise<RecruitmentSession | null>} - Active recruitment session
-   */
   async findActiveRecruitmentSession(): Promise<RecruitmentSession | null> {
     const matches = await this.recruitmentSessionRepository.findBy({
       state: RecruitmentSessionState.Active,
@@ -78,11 +60,6 @@ export class RecruitmentSessionService {
     return matches.length > 0 ? matches[0] : null;
   }
 
-  /**
-   * Delete a recruitment session
-   * @param recruitmentSession - Recruitment session to delete
-   * @returns {Promise<RecruitmentSession>} - Deleted recruitment session
-   */
   async deleteRecruitmentSession(
     recruitmentSession: RecruitmentSession,
   ): Promise<RecruitmentSession> {
@@ -100,11 +77,6 @@ export class RecruitmentSessionService {
     return await this.recruitmentSessionRepository.save(recruitmentSession);
   }
 
-  /**
-   * Check if a recruitment session has pending interviews
-   * @param recruitmentSession - Recruitment session to check
-   * @returns {Promise<boolean>} - True if the recruitment session has pending interviews, false otherwise
-   */
   async sessionHasPendingInterviews(
     recruitmentSession: RecruitmentSession,
   ): Promise<boolean> {
