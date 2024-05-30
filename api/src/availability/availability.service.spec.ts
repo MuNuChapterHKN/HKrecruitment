@@ -78,6 +78,28 @@ describe('AvailabilityService', () => {
     });
   });
 
+  describe('updateAvailability', () => {
+    it('should update the availability with the specified id', async () => {
+      const mockUpdatedAvailability = {
+        ...mockAvailability,
+        state: AvailabilityState.Interviewing,
+      };
+      jest
+        .spyOn(mockedRepository, 'save')
+        .mockResolvedValue(mockUpdatedAvailability);
+      const result = await service.updateAvailability(
+        mockAvailability.id,
+        mockUpdatedAvailability,
+      );
+      expect(result).toEqual(mockUpdatedAvailability);
+      expect(mockedRepository.save).toHaveBeenCalledTimes(1);
+      expect(mockedRepository.save).toHaveBeenCalledWith({
+        ...mockUpdatedAvailability,
+        id: mockAvailability.id,
+      });
+    });
+  });
+
   describe('deleteAvailability', () => {
     it('should remove the specified availability from the database', async () => {
       const mockAvailabilityRepository = {
@@ -140,6 +162,13 @@ describe('AvailabilityService', () => {
         .mockResolvedValue([mockAvailability]);
       const result = await service.findById(mockAvailability.id);
       expect(result).toEqual(mockAvailability);
+      expect(mockedRepository.findBy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return null if no availability is found', async () => {
+      jest.spyOn(mockedRepository, 'findBy').mockResolvedValue([]);
+      const result = await service.findById(mockAvailability.id);
+      expect(result).toBeNull();
       expect(mockedRepository.findBy).toHaveBeenCalledTimes(1);
     });
   });
