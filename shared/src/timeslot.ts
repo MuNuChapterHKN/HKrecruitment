@@ -1,10 +1,12 @@
 import { Action, ApplyAbilities } from "./abilities";
 import { Role } from "./person";
+import { RecruitmentSession } from "./recruitment-session";
 
 export interface TimeSlot {
   id: number;
   start: Date;
   end: Date;
+  recruitmentSession: RecruitmentSession;
 }
 
 /* Abilities */

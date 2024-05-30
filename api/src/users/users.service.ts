@@ -11,10 +11,19 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
   ) {}
 
+  /**
+   * Find all users
+   * @returns {Promise<User[]>} - List of users
+   */
   async findAll(): Promise<User[]> {
     return this.userRepository.find();
   }
 
+  /**
+   * Find a user by their OAuth ID
+   * @param {string} oauthId - OAuth ID of the user
+   * @returns {Promise<User | null>} - User with the given OAuth ID
+   */
   async findByOauthId(oauthId: string): Promise<User | null> {
     return this.userRepository.findOne({ where: { oauthId } });
   }
@@ -23,14 +32,29 @@ export class UsersService {
     return this.userRepository.remove(user);
   }
 
+  /**
+   * Create a user
+   * @param {User} user - User to create
+   * @returns {Promise<User>} - Created user
+   */
   async create(user: User): Promise<User> {
     return this.userRepository.save(user);
   }
 
+  /**
+   * Update a user
+   * @param {User} user - User to update
+   * @returns {Promise<User>} - Updated user
+   */
   async update(user: User): Promise<User> {
     return this.userRepository.save(user);
   }
 
+  /**
+   * Get the role and abilities for a user
+   * @param {string} oauthId - OAuth ID of the user
+   * @returns {[Role, AppAbility]} - Role and abilities for the user
+   */
   async getRoleAndAbilityForOauthId(
     oauthId: string,
   ): Promise<[Role, AppAbility]> {
