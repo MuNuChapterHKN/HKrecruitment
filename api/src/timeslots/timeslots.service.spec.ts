@@ -1,10 +1,20 @@
-import { mockGenerateTimeSlots, mockTimeSlot, testDate } from 'src/mocks/data';
+import {
+  mockGenerateTimeSlots,
+  mockTimeSlot,
+  mockTimeSlotsJoined,
+  testDate,
+} from 'src/mocks/data';
 import { mockedRepository } from 'src/mocks/repositories';
 import { TestingModule, Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { TimeSlot } from './timeslot.entity';
 import { TimeSlotsService } from './timeslots.service';
 import { mockDataSource } from 'src/mocks/data-sources';
+import {
+  AvailabilityState,
+  RecruitmentSessionState,
+  Role,
+} from '@hkrecruitment/shared';
 
 describe('TimeSlotsService', () => {
   let timeSlotService: TimeSlotsService;
@@ -40,10 +50,26 @@ describe('TimeSlotsService', () => {
     expect(timeSlotService).toBeDefined();
   });
 
+  describe('countOverlappingTimeSlots', () => {
+    it('should return the number of overlapping time slots', async () => {
+      jest.spyOn(mockedRepository, 'count').mockResolvedValue(2);
+      const startDate = new Date('2022-01-01T09:00:00');
+      const endDate = new Date('2022-01-01T10:00:00');
+      const result = await timeSlotService.countOverlappingTimeSlots(
+        startDate,
+        endDate,
+      );
+      expect(result).toBe(2);
+      expect(mockedRepository.count).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('deleteTimeSlot', () => {
     it('should remove the specified timeslot from the database', async () => {
       jest.spyOn(mockedRepository, 'remove').mockResolvedValue(mockTimeSlot);
-      const result = await timeSlotService.deleteTimeSlot(mockTimeSlot);
+      const result = await timeSlotService.deleteTimeSlot(
+        mockTimeSlot as TimeSlot,
+      );
       expect(result).toEqual(mockTimeSlot);
       expect(mockedRepository.remove).toHaveBeenCalledTimes(1);
     });
@@ -63,6 +89,13 @@ describe('TimeSlotsService', () => {
       jest.spyOn(mockedRepository, 'findBy').mockResolvedValue([mockTimeSlot]);
       const result = await timeSlotService.findById(mockTimeSlot.id);
       expect(result).toEqual(mockTimeSlot);
+      expect(mockedRepository.findBy).toHaveBeenCalledTimes(1);
+    });
+
+    it("should return null if the timeslot doesn't exist", async () => {
+      jest.spyOn(mockedRepository, 'findBy').mockResolvedValue([]);
+      const result = await timeSlotService.findById(mockTimeSlot.id);
+      expect(result).toBeNull();
       expect(mockedRepository.findBy).toHaveBeenCalledTimes(1);
     });
   });
@@ -186,6 +219,143 @@ describe('TimeSlotsService', () => {
         days,
         expectedTimeSlots,
       );
+    });
+  });
+
+  describe('findAvailableTimeSlots', () => {
+    it('should correctly call all functions provided for database query', async () => {
+      // Mock the query builder and its methods
+      const mockQueryBuilder = {
+        innerJoinAndSelect: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        getMany: jest.fn().mockResolvedValue([]),
+      };
+
+      // Mock the timeSlotRepository and its methods
+      const mockTimeSlotRepository = {
+        createQueryBuilder: jest.fn().mockReturnValue(mockQueryBuilder),
+      };
+
+      const timeSlotService = new TimeSlotsService(
+        mockTimeSlotRepository as any,
+      );
+      const result = await timeSlotService.findAvailableTimeSlots();
+
+      // Assert that the query builder methods were called correctly
+      expect(mockQueryBuilder.innerJoinAndSelect).toHaveBeenCalledWith(
+        'TimeSlot.availabilities',
+        'availability',
+      );
+      expect(mockQueryBuilder.innerJoinAndSelect).toHaveBeenCalledWith(
+        'TimeSlot.recruitmentSession',
+        'recruitmentSession',
+      );
+      expect(mockQueryBuilder.innerJoinAndSelect).toHaveBeenCalledWith(
+        'availability.user',
+        'user',
+      );
+      expect(mockQueryBuilder.where).toHaveBeenCalledWith(
+        'recruitmentSession.state = :recruitmentSessionState',
+        {
+          recruitmentSessionState: RecruitmentSessionState.Active,
+        },
+      );
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        'user.role NOT IN (:...roles)',
+        {
+          roles: [Role.None, Role.Applicant],
+        },
+      );
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        'availability.state = :availabilityState AND (user.is_board = true OR user.is_expert = true)',
+        {
+          availabilityState: AvailabilityState.Free,
+        },
+      );
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        '(SELECT COUNT(availability.id) FROM Availability availability WHERE availability.timeSlotId = TimeSlot.id) > 1',
+      );
+
+      expect(result).toEqual([]);
+
+      jest.clearAllMocks();
+      jest.resetAllMocks();
+    });
+
+    it('should return only time slots with at least 2 available people, one of which is a board member', async () => {
+      const mockQueryBuilder = {
+        innerJoinAndSelect: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        getMany: jest.fn().mockResolvedValue(mockTimeSlotsJoined),
+      };
+
+      // Mock the timeSlotRepository and its methods
+      const mockTimeSlotRepository = {
+        createQueryBuilder: jest.fn().mockReturnValue(mockQueryBuilder),
+      };
+
+      const timeSlotService = new TimeSlotsService(
+        mockTimeSlotRepository as any,
+      );
+
+      const result = await timeSlotService.findAvailableTimeSlots();
+      expect(JSON.stringify(result)).toBe(
+        JSON.stringify([
+          {
+            id: 1,
+            start: new Date('2022-01-01T09:00:00'),
+            end: new Date('2022-01-01T10:00:00'),
+          },
+        ]),
+      );
+    });
+
+    it("should return an empty array if there aren't any time slots with at least 2 available people", async () => {
+      const mockQueryBuilder = {
+        innerJoinAndSelect: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        getMany: jest.fn().mockResolvedValue([
+          {
+            start: new Date('2022-01-01T09:00:00'),
+            end: new Date('2022-01-01T10:00:00'),
+            id: 1,
+            recruitmentSession: 3,
+            availabilities: [
+              {
+                state: AvailabilityState.Interviewing,
+                user: {
+                  role: Role.None,
+                  is_board: false,
+                  is_expert: true,
+                },
+              },
+              {
+                state: AvailabilityState.Free,
+                user: {
+                  role: Role.Member,
+                  is_board: false,
+                  is_expert: true,
+                },
+              },
+            ],
+          },
+        ]),
+      };
+
+      // Mock the timeSlotRepository and its methods
+      const mockTimeSlotRepository = {
+        createQueryBuilder: jest.fn().mockReturnValue(mockQueryBuilder),
+      };
+
+      const timeSlotService = new TimeSlotsService(
+        mockTimeSlotRepository as any,
+      );
+
+      const result = await timeSlotService.findAvailableTimeSlots();
+      expect(result).toEqual([]);
     });
   });
 });
