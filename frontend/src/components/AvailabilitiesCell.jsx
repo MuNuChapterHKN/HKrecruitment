@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-function AvaiabilitiesCell(props) {
+function AvailabilitiesCell(props) {
   const [className, setClassName] = useState("name");
 
   return (
@@ -16,4 +16,4 @@ function AvaiabilitiesCell(props) {
     </td>
   );
 }
-export default AvaiabilitiesCell;
+export default AvailabilitiesCell;

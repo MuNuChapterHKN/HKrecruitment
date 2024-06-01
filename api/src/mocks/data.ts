@@ -28,13 +28,6 @@ export const testDateTime1Hour = new Date(2023, 0, 1, 11, 30, 0);
 export const testDateTime3Hours = new Date(2023, 0, 1, 13, 30, 0);
 export const testDateTimeEnd = new Date(2023, 0, 1, 11, 30, 0);
 
-export const mockTimeSlot = {
-  start: testDateTimeStart,
-  end: testDateTimeEnd,
-  id: 1,
-  availabilities: [],
-} as TimeSlot & { availabilities: any[] };
-
 export const testInterviewStart = '11:55' as unknown as Date;
 export const testInterviewEnd = '20:35' as unknown as Date;
 export const testDay1 = '2024-10-20' as unknown as Date;
@@ -53,6 +46,14 @@ export const mockRecruitmentSession = {
   createdAt: testDateCreatedAt,
   lastModified: testDateLastModified,
 };
+
+export const mockTimeSlot = {
+  recruitmentSession: mockRecruitmentSession,
+  start: testDateTimeStart,
+  end: testDateTimeEnd,
+  id: 1,
+  availabilities: [],
+} as TimeSlot & { availabilities: any[] };
 
 export const mockCreateRecruitmentSessionDto = {
   slotDuration: 50,
@@ -228,3 +229,78 @@ export const mockAvailability = {
 export const mockCreateAvailabilityDto = {
   timeSlotId: mockTimeSlot.id,
 } as CreateAvailabilityDto;
+
+export const mockTimeSlotsJoined = [
+  {
+    start: new Date('2022-01-01T09:00:00'),
+    end: new Date('2022-01-01T10:00:00'),
+    id: 1,
+    recruitmentSession: 3,
+    availabilities: [
+      {
+        state: AvailabilityState.Interviewing,
+        user: {
+          role: Role.None,
+          is_board: false,
+          is_expert: true,
+        },
+      },
+      {
+        state: AvailabilityState.Free,
+        user: {
+          role: Role.Member,
+          is_board: true,
+          is_expert: false,
+        },
+      },
+      {
+        state: AvailabilityState.Free,
+        user: {
+          role: Role.Applicant,
+          is_board: false,
+          is_expert: false,
+        },
+      },
+      {
+        state: AvailabilityState.Free,
+        user: {
+          role: Role.Member,
+          is_board: false,
+          is_expert: true,
+        },
+      },
+      {
+        state: AvailabilityState.Interviewing,
+        user: {
+          role: Role.Member,
+          is_board: false,
+          is_expert: true,
+        },
+      },
+      {
+        state: AvailabilityState.Interviewing,
+        user: {
+          role: Role.Admin,
+          is_board: false,
+          is_expert: true,
+        },
+      },
+    ],
+  },
+  {
+    start: new Date('2022-01-01T9:00:00'),
+    end: new Date('2022-01-01T20:00:00'),
+    id: 2,
+    recruitmentSession: 3,
+    availabilities: [
+      {
+        state: AvailabilityState.Free,
+        user: {
+          role: Role.Member,
+          is_board: true,
+          is_expert: true,
+        },
+      },
+    ],
+  },
+];
