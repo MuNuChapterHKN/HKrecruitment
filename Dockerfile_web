@@ -30,8 +30,7 @@ RUN pnpm run build:web
 
 # Expose the port
 EXPOSE 5173
-EXPOSE 5174
 
 # Start the app
-CMD ["pnpm", "preview:web"]
+CMD ["pnpm", "dev:web"]
 
