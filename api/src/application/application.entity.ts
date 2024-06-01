@@ -40,12 +40,6 @@ export class Application implements ApplicationInterface {
   @Column({ length: 255 })
   cv: string;
 
-  // @Column()
-  // availability: TimeSlot[];
-
-  // @Column({ "name": "interview_id" })
-  // interviewId: number;
-
   @Column({ name: 'ita_level' })
   itaLevel: LangLevel;
 }

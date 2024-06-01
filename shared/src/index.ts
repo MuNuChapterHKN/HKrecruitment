@@ -5,3 +5,4 @@ export * from "./availability";
 export * from "./timeslot";
 export * from "./slot";
 export * from "./recruitment-session";
+export * from "./interview";

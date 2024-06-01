@@ -1,2 +1,29 @@
 GET http://localhost:3000/v1/timeslots/
-Authorization: Bearer <personal-token>
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Imc4aFdBRTB0U00tX3JJVUR0WElNMyJ9.eyJlbWFpbCI6InBhc3F1YWxlLmJpYW5jb0Boa25wb2xpdG8ub3JnIiwiaXNzIjoiaHR0cHM6Ly9kZXYtYzhyb29jZGw3NjNsbDVxZi5ldS5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDYyMjgyMTU0MzYxNTk5ODcwNTEiLCJhdWQiOlsiaHR0cDovL2hrcmVjcnVpdG1lbnQub3JnIiwiaHR0cHM6Ly9kZXYtYzhyb29jZGw3NjNsbDVxZi5ldS5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNzE3MjYwMTI1LCJleHAiOjE3MTczNDY1MjUsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJhenAiOiJaekNWd2R2eUJOUWZKc3R1ZUJPcVh3TW1jazZCa0d4NiJ9.TFqppFFgYh7ujlPGaeLF1cg1WACxiof6SX0G3IocfSPMGidJdZtiaG1lRLwphATZ4QDdAGWK_gouMj56zOhFmOaKO4aaXl1nj93RY8EvyEsEC2kiKTUH_qNo9tgV_28zJ9lZn4rSohxTmUTXKE5o4uMKFDF24FALGprmRb_5CI2IZhO6buc3nFHpBXTf-rAZzXnPTeFGG7kb-l9v3MRo2HBYDiqM1Dj3B5fRhpVbHzO4V6oT93lsPAa0i2C0HhM9faesHR_X7p-MfzuH-Xgi4RqXQtpb7H1vv7_cfFM01anf-M7beew5btj4CEfLEAmi9qq5Lfik3TCFt-nPhg1i-A
+
+###
+
+POST http://localhost:3000/v1/interview/localhost:3000/v1/interview/createInterview/
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Imc4aFdBRTB0U00tX3JJVUR0WElNMyJ9.eyJlbWFpbCI6InBhc3F1YWxlLmJpYW5jb0Boa25wb2xpdG8ub3JnIiwiaXNzIjoiaHR0cHM6Ly9kZXYtYzhyb29jZGw3NjNsbDVxZi5ldS5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDYyMjgyMTU0MzYxNTk5ODcwNTEiLCJhdWQiOlsiaHR0cDovL2hrcmVjcnVpdG1lbnQub3JnIiwiaHR0cHM6Ly9kZXYtYzhyb29jZGw3NjNsbDVxZi5ldS5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNzE3MjYwMTI1LCJleHAiOjE3MTczNDY1MjUsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJhenAiOiJaekNWd2R2eUJOUWZKc3R1ZUJPcVh3TW1jazZCa0d4NiJ9.TFqppFFgYh7ujlPGaeLF1cg1WACxiof6SX0G3IocfSPMGidJdZtiaG1lRLwphATZ4QDdAGWK_gouMj56zOhFmOaKO4aaXl1nj93RY8EvyEsEC2kiKTUH_qNo9tgV_28zJ9lZn4rSohxTmUTXKE5o4uMKFDF24FALGprmRb_5CI2IZhO6buc3nFHpBXTf-rAZzXnPTeFGG7kb-l9v3MRo2HBYDiqM1Dj3B5fRhpVbHzO4V6oT93lsPAa0i2C0HhM9faesHR_X7p-MfzuH-Xgi4RqXQtpb7H1vv7_cfFM01anf-M7beew5btj4CEfLEAmi9qq5Lfik3TCFt-nPhg1i-A
+Content-Type: application/json
+
+{
+    "interview": {
+        "createdAt": "2021-04-01T00:00:00.000Z",
+        "timeslot_id": 1
+    },
+    "application": {
+        "id": 1,
+        "type": "internship",
+        "applicantId": "ciao-123",
+        "submission": "2021-04-01T00:00:00.000Z",
+        "lastModified": "2021-04-01T00:00:00.000Z",
+        "cv": "https://www.google.com",
+        "itaLevel": "B1"
+    },
+    "timeslot": {
+        "id": 1,
+        "start": "2021-04-01T00:00:00.000Z",
+        "end": "2021-04-01T00:00:00.000Z"
+    }
+}
