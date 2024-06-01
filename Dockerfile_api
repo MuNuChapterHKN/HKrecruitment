@@ -6,7 +6,6 @@ WORKDIR /app
 
 # Copy package.json and package-lock.json
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY frontend/package.json frontend/
 COPY api/package.json api/
 COPY shared/package.json shared/
 
@@ -26,15 +25,11 @@ COPY . .
 RUN pnpm run format-check
 
 # Build the app
-RUN pnpm run build
+RUN pnpm run build:api
 
 # Expose the port
-EXPOSE 5173
-
-ENV PORT 5173
-# set hostname to localhost
-ENV HOSTNAME "0.0.0.0"
+EXPOSE 3000
 
 # Start the app
-CMD ["pnpm", "dev:web"]
+CMD ["pnpm", "preview:api"]
 

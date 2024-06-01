@@ -26,15 +26,12 @@ COPY . .
 RUN pnpm run format-check
 
 # Build the app
-RUN pnpm run build
+RUN pnpm run build:web
 
 # Expose the port
-EXPOSE 3000
-
-ENV PORT 3000
-# set hostname to localhost
-ENV HOSTNAME "0.0.0.0"
+EXPOSE 5173
+EXPOSE 5174
 
 # Start the app
-CMD ["pnpm", "dev:api"]
+CMD ["pnpm", "preview:web"]
 

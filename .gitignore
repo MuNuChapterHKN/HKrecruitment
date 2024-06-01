@@ -7,6 +7,7 @@ api/src/modules/GAuth/authInfo
 /**/dist
 /**/*.tsbuildinfo
 .vscode
+/**/.env*
 
 tmp-*
 

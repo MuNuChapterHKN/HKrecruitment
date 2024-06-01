@@ -1,10 +1,8 @@
 services:
   db:
     image: postgres:latest
-    environment:
-      - POSTGRES_USER=hkrecruitment
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=hkrecruitment
+    env_file:
+      - .env_db
     ports:
       - '5432:5432'
 
@@ -12,9 +10,9 @@ services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile_web
     env_file:
-      - .env
+      - .env_web
     ports:
       - '5173:5173'
     depends_on:
@@ -23,9 +21,9 @@ services:
   api:
     build:
       context: .
-      dockerfile: Dockerfile_copy
+      dockerfile: Dockerfile_api
     env_file:
-      - .env
+      - .env_api
     ports:
       - '3000:3000'
     depends_on:
