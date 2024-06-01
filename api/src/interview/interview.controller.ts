@@ -12,7 +12,7 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { Interview } from './interview.entity';
-import { InterviewService } from './interview.Service';
+import { InterviewService } from './interview.service';
 import { TimeSlotsService } from '../timeslots/timeslots.service';
 import { ApplicationsService } from '../application/applications.service';
 import { CreateInterviewDto } from './create-interview.dto';

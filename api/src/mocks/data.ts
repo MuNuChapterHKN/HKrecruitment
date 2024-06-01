@@ -20,9 +20,6 @@ import {
   AvailabilityState,
   TimeSlot,
 } from '@hkrecruitment/shared';
-import { Interview } from 'src/interview/interview.entity';
-import { UpdateInterviewDto } from 'src/interview/update-interview.dto';
-import { CreateInterviewDto } from 'src/interview/create-interview.dto';
 
 export const testDate = new Date(2023, 0, 1, 10, 0, 0);
 export const testDateTimeStart = new Date(2023, 0, 1, 10, 30, 0);
@@ -232,3 +229,78 @@ export const mockAvailability = {
 export const mockCreateAvailabilityDto = {
   timeSlotId: mockTimeSlot.id,
 } as CreateAvailabilityDto;
+
+export const mockTimeSlotsJoined = [
+  {
+    start: new Date('2022-01-01T09:00:00'),
+    end: new Date('2022-01-01T10:00:00'),
+    id: 1,
+    recruitmentSession: 3,
+    availabilities: [
+      {
+        state: AvailabilityState.Interviewing,
+        user: {
+          role: Role.None,
+          is_board: false,
+          is_expert: true,
+        },
+      },
+      {
+        state: AvailabilityState.Free,
+        user: {
+          role: Role.Member,
+          is_board: true,
+          is_expert: false,
+        },
+      },
+      {
+        state: AvailabilityState.Free,
+        user: {
+          role: Role.Applicant,
+          is_board: false,
+          is_expert: false,
+        },
+      },
+      {
+        state: AvailabilityState.Free,
+        user: {
+          role: Role.Member,
+          is_board: false,
+          is_expert: true,
+        },
+      },
+      {
+        state: AvailabilityState.Interviewing,
+        user: {
+          role: Role.Member,
+          is_board: false,
+          is_expert: true,
+        },
+      },
+      {
+        state: AvailabilityState.Interviewing,
+        user: {
+          role: Role.Admin,
+          is_board: false,
+          is_expert: true,
+        },
+      },
+    ],
+  },
+  {
+    start: new Date('2022-01-01T9:00:00'),
+    end: new Date('2022-01-01T20:00:00'),
+    id: 2,
+    recruitmentSession: 3,
+    availabilities: [
+      {
+        state: AvailabilityState.Free,
+        user: {
+          role: Role.Member,
+          is_board: true,
+          is_expert: true,
+        },
+      },
+    ],
+  },
+];

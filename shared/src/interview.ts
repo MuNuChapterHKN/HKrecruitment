@@ -1,10 +1,10 @@
 import { Person, createUserSchema, updateUserSchema, Role } from "./person";
-import { TimeSlot } from "timeslot";
+import { TimeSlot } from "./timeslot";
 import {
   Application,
   createApplicationSchema,
   updateApplicationSchema,
-} from "application";
+} from "./application";
 import { Action, ApplyAbilities } from "./abilities";
 import * as Joi from "joi";
 

@@ -53,11 +53,13 @@ export class ApplicationsService {
     return match.length > 0;
   }
 
-  async findLastApplicationByActiveUserId(applicantId: string): Promise<Application> {
+  async findLastApplicationByActiveUserId(
+    applicantId: string,
+  ): Promise<Application> {
     return await this.applicationRepository.findOne({
       where: { applicantId },
       order: {
-        lastModified: 'DESC'
+        lastModified: 'DESC',
       },
     });
   }
