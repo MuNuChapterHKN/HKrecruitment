@@ -5,6 +5,7 @@ import { UsersModule } from './users/users.module';
 import { ApplicationsModule } from './application/applications.module';
 import { RecruitmentSessionModule } from './recruitment-session/recruitment-session.module';
 import { TimeSlotsModule } from './timeslots/timeslots.module';
+import { InterviewModule } from './interview/interview.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtGuard } from './authentication/jwt-guard.guard';
@@ -39,6 +40,7 @@ import { AvailabilityModule } from './availability/availability.module';
     RecruitmentSessionModule,
     TimeSlotsModule,
     UsersModule,
+    InterviewModule,
   ],
   providers: [
     {

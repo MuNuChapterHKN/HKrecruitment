@@ -15,8 +15,8 @@ import { Action } from '@hkrecruitment/shared';
 export class TimeSlotsController {
   constructor(private readonly timeSlotsService: TimeSlotsService) {}
 
-  @ApiUnauthorizedResponse()
-  @CheckPolicies((ability) => ability.can(Action.Read, 'TimeSlot'))
+  // @ApiUnauthorizedResponse()
+  // @CheckPolicies((ability) => ability.can(Action.Read, 'TimeSlot'))
   @Get()
   async findAvailableTimeSlots(): Promise<TimeSlot[]> {
     return await this.timeSlotsService.findAvailableTimeSlots();

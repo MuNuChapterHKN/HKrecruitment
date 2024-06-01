@@ -30,11 +30,14 @@ import {
   ApiBearerAuth,
   ApiNotFoundResponse,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { AuthenticatedRequest } from 'src/authorization/authenticated-request.types';
 import * as Joi from 'joi';
 import { CheckPolicies } from 'src/authorization/check-policies.decorator';
 import { Ability } from 'src/authorization/ability.decorator';
+import { Application } from 'src/application/application.entity';
+import { TimeSlot } from 'src/timeslots/timeslot.entity';
 
 @ApiBearerAuth()
 @ApiTags('interview')
@@ -136,5 +139,16 @@ export class InterviewController {
     } catch {
       throw new ConflictException();
     }
+  }
+
+  // @ApiUnauthorizedResponse()
+  // @CheckPolicies((ability) => ability.can(Action.Read, 'Interview'))
+  @Post('createInterview')
+  async CreateInterview(
+    @Body() interview: CreateInterviewDto,
+    @Body() application: Application,
+    @Body() timeslot: TimeSlot,
+  ): Promise<Interview> {
+    return await this.interviewService.create(interview, application, timeslot);
   }
 }

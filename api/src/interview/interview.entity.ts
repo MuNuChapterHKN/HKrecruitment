@@ -1,8 +1,16 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  Relation,
+} from 'typeorm';
 import { Interview as InterviewSlot } from '@hkrecruitment/shared';
 import { User } from '../users/user.entity';
 import { TimeSlot } from '../timeslots/timeslot.entity';
 import { Application } from '../application/application.entity';
+import { on } from 'events';
 
 @Entity()
 export class Interview implements InterviewSlot {
@@ -15,18 +23,21 @@ export class Interview implements InterviewSlot {
   @Column({ name: 'created_at' })
   createdAt: Date;
 
-  @Column()
-  timeslot: TimeSlot;
+  @OneToOne(() => TimeSlot)
+  timeslot: Relation<TimeSlot>;
 
-  @Column()
-  application: Application;
+  @OneToOne(() => Application)
+  application: Relation<Application>;
 
-  @Column({ name: 'interviewer_1' })
-  interviewer1: User;
+  @OneToOne(() => User)
+  @JoinColumn({ name: 'interviewer_1' })
+  interviewer1: Relation<User>;
 
-  @Column({ name: 'interviewer_2' })
-  interviewer2: User;
+  @OneToOne(() => User)
+  @JoinColumn({ name: 'interviewer_2' })
+  interviewer2: Relation<User>;
 
-  @Column({ name: 'optional_interviewer', nullable: true })
-  optionalInterviewer?: User;
+  @OneToOne(() => User)
+  @JoinColumn({ name: 'optional_interviewer' })
+  optionalInterviewer?: Relation<User>;
 }
