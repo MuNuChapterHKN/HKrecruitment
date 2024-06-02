@@ -11,7 +11,6 @@ import {
 } from '../../../shared/src/availability';
 import { User } from 'src/users/user.entity';
 import { TimeSlot } from 'src/timeslots/timeslot.entity';
-import { DbAwareColumn } from 'src/utils/db-aware-column';
 
 @Entity()
 export class Availability implements AvailabilityInterface {
@@ -24,7 +23,6 @@ export class Availability implements AvailabilityInterface {
   @Column({ name: 'last_modified' })
   lastModified: Date;
 
-  @DbAwareColumn(() => TimeSlot, { name: 'time_slot' })
   @ManyToOne(() => TimeSlot, (timeSlot) => timeSlot.availabilities)
   timeSlot: Relation<TimeSlot>;
 
