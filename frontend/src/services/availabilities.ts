@@ -3,8 +3,8 @@ import { Api } from "./api";
 const resource = "availabilities";
 
 const availabilities = {
-  getAvailabilities: async () => {
-    return await Api.get(`${resource}`);
+  getAvailabilities: async (accessToken: string | undefined) => {
+    return await Api.get(`${resource}`, accessToken);
   },
 };
 

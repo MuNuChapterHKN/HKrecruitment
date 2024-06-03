@@ -4,7 +4,6 @@ import timeSlots from "./timeSlots";
 import interviews from "./interviews";
 import availabilities from "./availabilities";
 import recruitmentSessions from "./recruitmentSessions";
-import { useAuth0 } from "@auth0/auth0-react";
 
 const api = {
   users,
@@ -18,7 +17,7 @@ const api = {
 export default api;
 
 type HttpRequestOptions = {
-  authRequired?: boolean;
+  authToken?: string;
   body?: object;
 };
 
@@ -36,7 +35,7 @@ export class Api {
     try {
       /* Prepare request parameters */
       const headers: HeadersInit = await Api.buildHeaders(
-        options.authRequired ?? false,
+        options.authToken ?? "",
         true
       );
       const init = {
@@ -54,36 +53,36 @@ export class Api {
     return await this.handleResponse(response);
   }
 
-  static async get(endpoint: string, authRequired: boolean = true) {
-    return Api.httpRequest(endpoint, "GET", { authRequired });
+  static async get(endpoint: string, authToken: string = "") {
+    return Api.httpRequest(endpoint, "GET", { authToken });
   }
 
   static async post(
     endpoint: string,
     body: object = {},
-    authRequired: boolean = false
+    authToken: string = ""
   ) {
-    return Api.httpRequest(endpoint, "POST", { authRequired, body });
+    return Api.httpRequest(endpoint, "POST", { authToken, body });
   }
 
   static async put(
     endpoint: string,
     body: object = {},
-    authRequired: boolean = false
+    authToken: string = ""
   ) {
-    return Api.httpRequest(endpoint, "PUT", { authRequired, body });
+    return Api.httpRequest(endpoint, "PUT", { authToken, body });
   }
 
   static async patch(
     endpoint: string,
     body: object = {},
-    authRequired: boolean = false
+    authToken: string = ""
   ) {
-    return Api.httpRequest(endpoint, "PATCH", { authRequired, body });
+    return Api.httpRequest(endpoint, "PATCH", { authToken, body });
   }
 
-  static async delete(endpoint: string, authRequired: boolean = false) {
-    return Api.httpRequest(endpoint, "DELETE", { authRequired });
+  static async delete(endpoint: string, authToken: string = "") {
+    return Api.httpRequest(endpoint, "DELETE", { authToken });
   }
 
   static async handleResponse(response: Response) {
@@ -95,13 +94,11 @@ export class Api {
   }
 
   static async buildHeaders(
-    authRequired: boolean = false,
+    token: string = "",
     json: boolean = false
   ): Promise<HeadersInit> {
     const headers: HeadersInit = new Headers();
-    if (authRequired) {
-      const { getAccessTokenSilently } = useAuth0();
-      const token = await getAccessTokenSilently();
+    if (token) {
       headers.append("Authorization", `Bearer ${token}`);
     }
     if (json) {
