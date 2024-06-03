@@ -24,7 +24,7 @@ type HttpRequestOptions = {
 
 export class Api {
   private static getUrl = (endpoint: string) =>
-    `${process.env.API_ENDPOINT}/${endpoint}/`;
+    `${process.env.REACT_APP_API_ENDPOINT}/v1/${endpoint}`;
 
   static async httpRequest(
     endpoint: string,
@@ -46,14 +46,15 @@ export class Api {
       if (options.body) init["body"] = JSON.stringify(options.body);
       /* Send the request */
       response = await fetch(new URL(this.getUrl(endpoint)), init);
-    } catch {
+    } catch (error) {
+      console.log(error);
       throw new Error("Something went wrong, try again later.");
     }
 
     return await this.handleResponse(response);
   }
 
-  static async get(endpoint: string, authRequired: boolean = false) {
+  static async get(endpoint: string, authRequired: boolean = true) {
     return Api.httpRequest(endpoint, "GET", { authRequired });
   }
 

@@ -1,8 +1,10 @@
 import { Api } from "./api";
 
+const resource = "applications";
+
 const applications = {
   getApplications: async () => {
-    return await Api.get("applications");
+    return await Api.get(`${resource}`);
   },
 };
 
