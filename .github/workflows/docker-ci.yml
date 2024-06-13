@@ -42,14 +42,14 @@ jobs:
         shell: bash
 
       - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v1
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push web image
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v5
         with:
           context: .
           dockerfile: ./Dockerfile_web
@@ -57,7 +57,7 @@ jobs:
           tags: ${{ steps.prep.outputs.web_tags }}
 
       - name: Build and push api image
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v5
         with:
           context: .
           dockerfile: ./Dockerfile_api
