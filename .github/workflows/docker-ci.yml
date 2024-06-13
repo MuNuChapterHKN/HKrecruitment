@@ -1,10 +1,6 @@
 name: Docker Image CI
 
-on:
-  workflow_run:
-    workflows: [Test]
-    types:
-      - completed
+on: [push, pull_request]
 
 jobs:
   build-and-push:
