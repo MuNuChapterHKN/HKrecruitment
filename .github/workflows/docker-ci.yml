@@ -48,7 +48,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          dockerfile: ./Dockerfile_web
+          file: ./Dockerfile_web
           push: true
           tags: ${{ steps.prep.outputs.web_tags }}
 
@@ -56,6 +56,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          dockerfile: ./Dockerfile_api
+          file: ./Dockerfile_api
           push: true
           tags: ${{ steps.prep.outputs.api_tags }}
