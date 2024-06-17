@@ -23,8 +23,10 @@ function AvailabilitiesPage() {
     <>
       <PageHeader>Availabilities</PageHeader>
       <p>This page will be used by members to manage their availabilities.</p>
-
+      <div>
       <AvailabilitiesTable />
+      </div>
+      
     </>
   );
 }
