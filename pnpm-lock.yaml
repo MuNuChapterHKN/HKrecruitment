@@ -1261,7 +1261,7 @@ packages:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
       callsites: 3.1.0
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
 
   /@jest/test-result@28.1.3:
     resolution: {integrity: sha512-kZAkxnSE+FqE8YjW8gNuoVkkC9I7S1qmenl8sGcDOLropASP+BkcGKwhXoyqQuGOGeYY0y/ixjrd/iERpEXHNg==}
@@ -1324,6 +1324,7 @@ packages:
       '@types/node': 16.18.97
       '@types/yargs': 17.0.32
       chalk: 4.1.2
+    dev: true
 
   /@joi/date@2.1.1:
     resolution: {integrity: sha512-oXF8vU8M+O9a6tuItgtTQeboO3+Ed6xunLatt6gq7WEFJ7HjawPH64OmrsX0ch3TEsUgQkU8v4MlOGEsf6PHSQ==}
@@ -5094,7 +5095,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
     dev: true
 
   /jsonwebtoken@9.0.2:
@@ -7062,6 +7063,7 @@ packages:
       typescript: '>=3.7.0'
     dependencies:
       typescript: 4.5.2
+    dev: true
 
   /ts-jest@28.0.8(@babel/core@7.24.5)(jest@28.1.3)(typescript@4.5.2):
     resolution: {integrity: sha512-5FaG0lXmRPzApix8oFG8RKjAz4ehtm8yMKOTy5HX3fY6W8kmvOrmcY0hKDElW52FJov+clhUbrKAqofnj4mXTg==}
