@@ -5,6 +5,9 @@ on: [push, pull_request]
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
     steps:
       - uses: actions/checkout@v2
 
