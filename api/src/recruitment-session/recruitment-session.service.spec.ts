@@ -5,7 +5,7 @@ import { getRepositoryToken, getDataSourceToken } from '@nestjs/typeorm';
 import { RecruitmentSession } from './recruitment-session.entity';
 import { RecruitmentSessionService } from './recruitment-session.service';
 import { mockedTimeSlotsService as mockedTimeSlotsServiceClass } from '@mocks/services';
-import { MockedDataSource, mockDataSource } from 'src/mocks/data-sources';
+import { mockDataSource } from 'src/mocks/data-sources';
 import { TimeSlotsService } from 'src/timeslots/timeslots.service';
 import { RecruitmentSessionState } from '@hkrecruitment/shared';
 

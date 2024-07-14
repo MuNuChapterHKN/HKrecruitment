@@ -29,6 +29,6 @@ export class Availability implements AvailabilityInterface {
   @ManyToOne(() => User, (user) => user.availabilities)
   user: Relation<User>;
 
-  // @OneToOne(() => Interview, (interview) => interview.availability)
+  // @OneToOne(() => Interview)
   // interview: Interview;
 }
