@@ -1,0 +1,67 @@
+name: Docker Image CI
+
+on:
+  workflow_run:
+    workflows: ["Test"]
+    types: [completed]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Prepare
+        id: prep
+        run: |
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          WEB_IMAGE=ghcr.io/$OWNER/hkrecruitment-web
+          API_IMAGE=ghcr.io/$OWNER/hkrecruitment-api
+          
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/}
+            WEB_TAGS="$WEB_IMAGE:$VERSION,$WEB_IMAGE:latest"
+            API_TAGS="$API_IMAGE:$VERSION,$API_IMAGE:latest"
+          elif [[ $GITHUB_REF == refs/heads/main ]]; then
+            VERSION=main-$(git rev-parse --short ${{ github.sha }})
+            WEB_TAGS="$WEB_IMAGE:$VERSION,$WEB_IMAGE:latest"
+            API_TAGS="$API_IMAGE:$VERSION,$API_IMAGE:latest"
+          elif [[ $GITHUB_REF == refs/heads/dev ]]; then
+            VERSION=dev-$(git rev-parse --short ${{ github.sha }})
+            WEB_TAGS="$WEB_IMAGE:$VERSION,$WEB_IMAGE:test"
+            API_TAGS="$API_IMAGE:$VERSION,$API_IMAGE:test"
+          else
+            VERSION=$(git rev-parse --short ${{ github.sha }})
+            WEB_TAGS="$WEB_IMAGE:$VERSION"
+            API_TAGS="$API_IMAGE:$VERSION"
+          fi
+
+          echo "::set-output name=web_tags::$WEB_TAGS"
+          echo "::set-output name=api_tags::$API_TAGS"
+        shell: bash
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push web image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile_web
+          push: true
+          tags: ${{ steps.prep.outputs.web_tags }}
+
+      - name: Build and push api image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile_api
+          push: true
+          tags: ${{ steps.prep.outputs.api_tags }}

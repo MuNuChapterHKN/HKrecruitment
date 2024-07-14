@@ -9,4 +9,8 @@ export default defineConfig({
     'process.env.REACT_APP_API_ENDPOINT': JSON.stringify(env.REACT_APP_API_ENDPOINT)
   },
   plugins: [react()],
+  server: {
+    host: '0.0.0.0',
+    port: 5173,
+  },
 });
