@@ -2,7 +2,7 @@ node_modules/
 build/
 api/src/modules/GAuth/authInfo
 .idea/
-/**/.env
+/**/*.env
 /api/config/*.yaml
 /**/dist
 /**/*.tsbuildinfo

@@ -8,6 +8,8 @@
     "dev:api": "pnpm --filter api start:dev",
     "dev": "pnpm run --stream dev:web & pnpm run --stream dev:api",
     "dev:tmux": "tmux new-session -d -s hkrecruitment 'pnpm run dev:web' \\; split-window -h -p 50 'pnpm run dev:api' \\; attach",
+    "build:web": "pnpm --filter frontend build",
+    "build:api": "pnpm --filter api build",
     "build": "pnpm --filter frontend build && pnpm --filter api build",
     "preview:web": "pnpm --filter frontend preview",
     "preview:api": "pnpm --filter api start:prod",
