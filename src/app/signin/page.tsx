@@ -1,23 +1,20 @@
 'use client';
-import { signUp } from "./action";
-import { type FormState } from './schema';
-import { useActionState } from "react";
 
-const initialState = {};
+import { authClient } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export default function SignUp() {
-  // @ts-ignore Apparently server actions are not well-typed yet.
-  const [state, formAction, pending] = useActionState<FormState>(signUp, initialState);
+  const handleLogin = async () => {
+    await authClient.signIn.social({
+      provider: 'google'
+    })
+
+    redirect('/dashboard');
+  };
 
   return (
     <div>
-      <form action={formAction}>
-        <input type="text" id="email" name="email" placeholder="email" />
-        <input type="password" id="password" name="password" placeholder="password " />
-        <button disabled={pending}>Submit</button>
-        {state?.error}
-        {state?.message}
-      </form>
+      <button onClick={handleLogin}>Login with Google</button>
     </div>
   )
 }
