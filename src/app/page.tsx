@@ -6,7 +6,7 @@ export default async function Home() {
   return (
     <div>
       {users.map((u) => (
-        <h1 key={u.id}>{u.name}</h1>
+        <h2 key={u.id}>{u.name}</h2>
       ))}
     </div>
   );
