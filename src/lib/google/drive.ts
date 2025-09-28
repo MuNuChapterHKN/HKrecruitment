@@ -73,13 +73,15 @@ export async function uploadFile(
     fileMetadata.parents = [params.parentId];
 
   const buffer = Buffer.from(file.data);
+  const passThrough = new stream.PassThrough();
+  passThrough.end(buffer);
 
   return fromPromise(
     drive.files.create({
       requestBody: fileMetadata,
       media: {
         mimeType: file.type,
-        body: new stream.PassThrough().end(buffer)
+        body: passThrough
       },
       fields: 'id, name, parents, mimeType'
     }),
