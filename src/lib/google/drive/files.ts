@@ -1,56 +1,8 @@
 import { google } from 'googleapis';
 import { Result, ok, err, fromPromise } from 'neverthrow';
-import { service } from './service';
+import { service } from '../service';
+import { DriveFile } from './types';
 import stream from 'stream';
-
-interface DriveFolder {
-  id: string;
-  name: string;
-  parents?: string[];
-}
-
-export interface DriveFile {
-  id: string;
-  name: string;
-  parents?: string[];
-  mimeType: string;
-}
-
-export async function createFolder(
-  params: {
-    name: string;
-    parentId?: string;
-  }
-): Promise<Result<DriveFolder, Error>> {
-  const drive = google.drive({ version: 'v3', auth: service.auth });
-
-  const fileMetadata: any = {
-    name: params.name,
-    mimeType: 'application/vnd.google-apps.folder'
-  };
-
-  if (params.parentId) {
-    fileMetadata.parents = [params.parentId];
-  }
-
-  return fromPromise(
-    drive.files.create({
-      requestBody: fileMetadata,
-      fields: 'id, name, parents'
-    }),
-    (error) => error instanceof Error ? error : new Error('Unknown error occurred')
-  ).andThen((response) => {
-    if (!response.data.id) {
-      return err(new Error('Failed to create folder: No ID returned'));
-    }
-
-    return ok({
-      id: response.data.id,
-      name: response.data.name || params.name,
-      parents: response.data.parents || undefined
-    });
-  });
-}
 
 export async function uploadFile(
   params: {
@@ -62,10 +14,18 @@ export async function uploadFile(
     parentId?: string;
   }
 ): Promise<Result<DriveFile, Error>> {
-  const drive = google.drive({ version: 'v3', auth: service.auth });
+  const authResult = await service.getAuth();
+  if (authResult.isErr()) {
+    return err(authResult.error);
+  }
+
+  const drive = google.drive({ version: 'v3', auth: authResult.value });
   const { file } = params;
 
-  const fileMetadata: any = {
+  const fileMetadata: {
+    name: string,
+    parents?: string[];
+  } = {
     name: file.name
   };
 
