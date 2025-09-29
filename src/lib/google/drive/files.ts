@@ -23,7 +23,7 @@ export async function uploadFile(
   const { file } = params;
 
   const fileMetadata: {
-    name: string,
+    name: string;
     parents?: string[];
   } = {
     name: file.name
