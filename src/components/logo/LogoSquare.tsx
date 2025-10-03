@@ -6,6 +6,7 @@ const LogoSquare = (props: SVGProps<SVGSVGElement>) => (
     width={500}
     height={500}
     className="text-white"
+    viewBox="0 0 500 500"
     fill="none"
     {...props}
   >

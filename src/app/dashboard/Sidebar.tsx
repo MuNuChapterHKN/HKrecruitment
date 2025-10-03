@@ -1,8 +1,8 @@
+"use client";
+
 import LogoLong from "@/components/logo/LogoLong"
-import { Separator } from "@/components/ui/separator"
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupAction, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSubButton } from "@/components/ui/sidebar"
-import RecruitmentDropdown from "./RecruitmentDropDown"
-import { ChevronUp, CircleAlert, Gauge, Plus, Users } from "lucide-react"
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSubButton, SidebarRail, useSidebar } from "@/components/ui/sidebar"
+import { ChevronUp, CircleAlert, Gauge, Users } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import Link from "next/link"
@@ -10,6 +10,8 @@ import { AuthUser, AuthUserRole, AuthUserRoleName } from "@/lib/auth"
 import { A } from "@/lib/abilities"
 import { Can } from "@/components/ability/Can"
 import { capitalize } from "@/lib/utils"
+import LogoSquare from "@/components/logo/LogoSquare"
+import clsx from "clsx";
 
 const LINKS: Record<string, A<{
   links: A<{ label: string; href: string; icon?: React.ReactNode; }>[];
@@ -36,12 +38,16 @@ const LINKS: Record<string, A<{
 }
 
 export function DashboardSidebar({ user }: { user: AuthUser }) {
+  const { state } = useSidebar();
   const initials = user.name.split(' ').slice(0, 2).map((w: string) => w[0]).join('');
 
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon">
       <SidebarHeader>
-        <LogoLong className="text-foreground w-fit h-7 py-1 px-2" />
+        {state == "expanded" ? (
+          <LogoLong className="text-foreground w-fit h-7 py-1 px-2" />) : (
+          <LogoSquare className="text-foreground w-fit h-7 mt-[0.1em]" />
+        )}
       </SidebarHeader>
       <SidebarContent>
         {Object.entries(LINKS).map(([groupName, group], i) => (
@@ -74,15 +80,19 @@ export function DashboardSidebar({ user }: { user: AuthUser }) {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton className="h-auto">
-                  <Avatar>
+                  <Avatar className={clsx(state == "collapsed" && "w-5 h-5")}>
                     {user.image && <AvatarImage src={user.image} />}
                     <AvatarFallback>{initials}</AvatarFallback>
                   </Avatar>
-                  <div className="flex flex-col justify-center">
-                    <span>{user.name}</span>
-                    <span className="text-xs text-zinc-400 capitalize">{AuthUserRoleName[user.role ?? AuthUserRole.Guest]}</span>
-                  </div>
-                  <ChevronUp className="ml-auto h-4" />
+                  {state == "expanded" && (
+                    <>
+                      <div className="flex flex-col justify-center">
+                        <span>{user.name}</span>
+                        <span className="text-xs text-zinc-400 capitalize">{AuthUserRoleName[user.role ?? AuthUserRole.Guest]}</span>
+                      </div>
+                      <ChevronUp className="ml-auto h-4" />
+                    </>
+                  )}
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent
@@ -100,6 +110,7 @@ export function DashboardSidebar({ user }: { user: AuthUser }) {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
   )
 }
