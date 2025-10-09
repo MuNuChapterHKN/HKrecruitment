@@ -10,10 +10,10 @@ const timestamps = {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 }
 
-const degreeLevel = ["bsc", "msc", "phd"] as const;
-const languageLevels = ["a1", "a2", "b1", "b2", "c1", "c2", "native"] as const;
-const stages = ["a", "b", "c", "d", "e", "f", "z", "s"] as const;
-const areas = ["it", "hr", "tutoring", "comms", "training", "events"] as const;
+export const DEGREE_LEVELS = ["bsc", "msc", "phd"] as const;
+export const LANGUAGE_LEVELS = ["a1", "a2", "b1", "b2", "c1", "c2", "native"] as const;
+export const STAGES = ["a", "b", "c", "d", "e", "f", "z", "s"] as const;
+export const AREAS = ["it", "hr", "tutoring", "comms", "training", "events"] as const;
 
 export const recruitingSession = pgTable("recruitment_session", {
   id: text("id").primaryKey(),
@@ -28,28 +28,28 @@ export const recruitingSessionRelations = relations(recruitingSession, ({ many }
 
 export const applicant = pgTable("applicant", {
   id: text("id").primaryKey(),
-  recruitingSessionId: text("recruiting_session_id").notNull(),
+  recruitingSessionId: text("recruiting_session_id").notNull().references(() => recruitingSession.id),
   name: text("name").notNull(),
   surname: text("surname").notNull(),
   email: text("email").notNull(),
   gpa: numeric("gpa").notNull(),
   degreeLevel: text("degree", {
-    enum: degreeLevel
+    enum: DEGREE_LEVELS
   }).notNull(),
   course: text("course").notNull(),
   courseArea: text("course_area").notNull(),
   italianLevel: text("italian_level", {
-    enum: languageLevels,
+    enum: LANGUAGE_LEVELS,
   }).notNull(),
   stage: text("stage", {
-    enum: stages
+    enum: STAGES
   }).notNull(),
   cvFileId: text("cv_file_id").notNull(),
   spFileId: text("sp_file_id").notNull(),
   interviewId: text("interview_id").references(() => interview.id),
   token: text("token"),
   chosenArea: text("chosen_area", {
-    enum: areas
+    enum: AREAS
   }),
   accepted: boolean("accepted"),
   ...timestamps
@@ -71,10 +71,11 @@ export const stageStatus = pgTable("stage_status", {
   applicantId: text("applicant_id").notNull().references(() => applicant.id),
   assignedById: text("assigned_by_id").notNull().references(() => user.id),
   stage: text("stage", {
-    enum: stages
+    enum: STAGES
   }).notNull(),
   counter: integer("counter").default(0),
   processed: boolean("processed").default(false).notNull(),
+  deletedAt: timestamp("deleted_at"),
   ...timestamps
 });
 
@@ -152,6 +153,7 @@ export const interviewerAvailabilityRelations = relations(interviewerAvailabilit
     references: [timeslot.id]
   })
 }));
+
 
 export {
   account,
