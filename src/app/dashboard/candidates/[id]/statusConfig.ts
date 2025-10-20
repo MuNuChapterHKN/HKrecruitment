@@ -1,5 +1,6 @@
-import { ApplicationStage } from "@/db/types";
-export interface StatusConfig {
+import type { ApplicationStage } from "@/db/types";
+
+export interface StageConfig {
   label: string;
   buttons: Array<{
     text: string;
@@ -9,7 +10,7 @@ export interface StatusConfig {
   }>;
 }
 
-export const statusConfig: Record<ApplicationStage, StatusConfig> = {
+export const stageConfig: Record<ApplicationStage, StageConfig> = {
   a: {
     label: "Pending Application Review",
     buttons: [
@@ -63,6 +64,6 @@ export const statusConfig: Record<ApplicationStage, StatusConfig> = {
   }
 };
 
-export function getStatusLabel(status: ApplicationStage): string {
-  return statusConfig[status]?.label || "Unknown Status";
+export function getStageLabel(stage: ApplicationStage): string {
+  return stageConfig[stage]?.label || "unknown stage";
 }

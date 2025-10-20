@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { getApplicantById } from "@/lib/models/applicants";
+import type { ApplicationStage } from "@/db/types";
 import ActionButtons from "./ActionButtons";
-import { getStatusLabel} from "./statusConfig";
-import { ApplicationStage } from "@/db/types";
+import { getStageLabel } from "./statusConfig";
 
 export default async function CandidateDetailsPage({ params }: { params: { id: string } }) {
   const id = params.id;
@@ -17,8 +17,8 @@ export default async function CandidateDetailsPage({ params }: { params: { id: s
     );
   }
 
-  // Usa il campo 'stage' dal database, con fallback ad "a" se non specificato
-  const currentStatus: ApplicationStage = (candidate.stage as ApplicationStage) || "a";
+  // Usa il campo 'stage' dal database, con fallback ad "A" se non specificato
+  const currentStage: ApplicationStage = (candidate.stage as ApplicationStage) || "A";
 
   return (
     <main className="p-6 max-w-6xl">
@@ -48,16 +48,16 @@ export default async function CandidateDetailsPage({ params }: { params: { id: s
               <strong>Interview:</strong> {candidate.interviewId || "Not assigned"}
             </div>
             <div>
-              <strong>Status:</strong> {getStatusLabel(currentStatus)}
+              <strong>Stage:</strong> {getStageLabel(currentStage)}
             </div>
             <div>
-              <strong>Stage Code:</strong> <span className="font-mono bg-gray-100 px-2 py-1 rounded uppercase">{currentStatus}</span>
+              <strong>Stage Code:</strong> <span className="font-mono bg-gray-100 px-2 py-1 rounded uppercase">{currentStage}</span>
             </div>
           </div>
         </div>
 
         {/* Sezione azioni - Client Component */}
-        <ActionButtons status={currentStatus} candidateId={id} />
+        <ActionButtons stage={currentStage} candidateId={id} />
       </div>
 
       {/* Sezione documenti scaricabili */}
