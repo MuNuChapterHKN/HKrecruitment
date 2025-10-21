@@ -1,7 +1,6 @@
 "use client";
 
-import { SidebarMenuButton } from "@/components/ui/sidebar";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { SidebarMenuButton, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components";
 import { ChevronDown } from "lucide-react";
 
 export default function RecruitmentDropdown() {

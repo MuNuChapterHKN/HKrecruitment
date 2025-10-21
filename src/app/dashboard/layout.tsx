@@ -1,9 +1,7 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarTrigger, Separator, AbilityProvider, ModalPortal } from "@/components";
 import { DashboardSidebar } from "./Sidebar";
-import { Separator } from "@/components/ui/separator";
 import { auth } from "@/lib/server/auth";
 import { headers } from "next/headers";
-import { AbilityProvider } from "@/components/ability/AbilityContext";
 
 export default async function DashboardLayout({ children, breadcrumbs }: { children: React.ReactNode; breadcrumbs: React.ReactNode }) {
   const session = await auth.api.getSession({
@@ -26,6 +24,7 @@ export default async function DashboardLayout({ children, breadcrumbs }: { child
           </div>
           {children}
         </main>
+        <ModalPortal />
       </AbilityProvider>
     </SidebarProvider>
   )

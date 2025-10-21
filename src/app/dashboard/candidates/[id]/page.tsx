@@ -1,14 +1,13 @@
 import Link from "next/link";
 import { getApplicantById } from "@/lib/models/applicants";
-import type { ApplicationStage } from "@/db/types";
 import ActionButtons from "./ActionButtons";
-import { getStageLabel } from "./statusConfig";
+import { getStageLabel } from "@/lib/stages";
 
-export default async function CandidateDetailsPage({ params }: { params: { id: string } }) {
-  const id = params.id;
+export default async function CandidateDetailsPage({ params }: PageProps<'/dashboard/candidates/[id]'>) {
+  const { id } = await params;
+  const applicant = await getApplicantById(id);
 
-  const candidate = await getApplicantById(id);
-  if (!candidate) {
+  if (!applicant) {
     return (
       <main className="p-6">
         <h1>Candidato non trovato</h1>
@@ -17,18 +16,15 @@ export default async function CandidateDetailsPage({ params }: { params: { id: s
     );
   }
 
-  // Usa il campo 'stage' dal database, con fallback ad "A" se non specificato
-  const currentStage: ApplicationStage = (candidate.stage as ApplicationStage) || "A";
-
   return (
     <main className="p-6 max-w-6xl">
       {/* Header con nome e data */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-2">
-          {candidate.name} {candidate.surname}
+          {applicant.name} {applicant.surname}
         </h1>
         <p className="text-lg text-muted-foreground">
-          Application date: {candidate.createdAt ? new Date(candidate.createdAt).toLocaleDateString() : "N/A"}
+          Application date: {applicant.createdAt ? new Date(applicant.createdAt).toLocaleDateString() : "N/A"}
         </p>
       </div>
 
@@ -39,25 +35,22 @@ export default async function CandidateDetailsPage({ params }: { params: { id: s
           <h2 className="text-2xl font-semibold mb-4">Dettagli candidato</h2>
           <div className="bg-card rounded-lg shadow p-6 space-y-4">
             <div>
-              <strong>Nome completo:</strong> {candidate.name} {candidate.surname}
+              <strong>Nome completo:</strong> {applicant.name} {applicant.surname}
             </div>
             <div>
-              <strong>Titolo di studio:</strong> {candidate.degreeLevel || "N/A"}
+              <strong>Titolo di studio:</strong> {applicant.degreeLevel || "N/A"}
             </div>
             <div>
-              <strong>Interview:</strong> {candidate.interviewId || "Not assigned"}
+              <strong>Interview:</strong> {applicant.interviewId || "Not assigned"}
             </div>
             <div>
-              <strong>Stage:</strong> {getStageLabel(currentStage)}
-            </div>
-            <div>
-              <strong>Stage Code:</strong> <span className="font-mono bg-gray-100 px-2 py-1 rounded uppercase">{currentStage}</span>
+              <strong>Stage:</strong> {getStageLabel(applicant.stage)}
             </div>
           </div>
         </div>
 
         {/* Sezione azioni - Client Component */}
-        <ActionButtons stage={currentStage} candidateId={id} />
+        <ActionButtons applicant={applicant} />
       </div>
 
       {/* Sezione documenti scaricabili */}
@@ -65,8 +58,8 @@ export default async function CandidateDetailsPage({ params }: { params: { id: s
         <h2 className="text-2xl font-semibold mb-4">Documenti</h2>
         <div className="bg-card rounded-lg shadow p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Link 
-              href="#" 
+            <Link
+              href="#"
               className="flex items-center p-4 border border-border rounded-lg hover:bg-muted transition-colors"
             >
               <div className="mr-3">
@@ -80,8 +73,8 @@ export default async function CandidateDetailsPage({ params }: { params: { id: s
               </div>
             </Link>
 
-            <Link 
-              href="#" 
+            <Link
+              href="#"
               className="flex items-center p-4 border border-border rounded-lg hover:bg-muted transition-colors"
             >
               <div className="mr-3">
@@ -99,7 +92,7 @@ export default async function CandidateDetailsPage({ params }: { params: { id: s
       </div>
 
       {/* Bottone torna alla lista */}
-      <Link href="/dashboard/candidates">
+      <Link href="/dashboard/applicant.">
         <button className="bg-primary text-primary-foreground px-6 py-3 rounded-md font-medium hover:bg-primary/90">
           ← Torna alla lista
         </button>

@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { X, Search, Check } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@/components"
 import { cn } from "@/lib/utils"
 
 export interface Option {
@@ -39,7 +39,7 @@ export function MultiSelect({
     const newSelectedValues = selectedValues.includes(optionValue)
       ? selectedValues.filter((value) => value !== optionValue)
       : [...selectedValues, optionValue]
-    
+
     setSelectedValues(newSelectedValues)
     onValueChange(newSelectedValues)
     // NON chiudiamo il dropdown qui per permettere selezioni multiple
@@ -70,7 +70,7 @@ export function MultiSelect({
     option.label.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const selectedOptions = selectedValues.map(value => 
+  const selectedOptions = selectedValues.map(value =>
     options.find(option => option.value === value)
   ).filter(Boolean) as Option[]
 
@@ -110,7 +110,7 @@ export function MultiSelect({
             <span className="text-muted-foreground">{placeholder}</span>
           )}
         </div>
-        
+
         <div className="flex items-center gap-2">
           {selectedValues.length > 0 && (
             <X
@@ -207,7 +207,7 @@ export function MultiSelect({
               </button>
             </div>
           </div>
-          
+
           {/* Backdrop to close dropdown */}
           <div
             className="fixed inset-0 z-40"

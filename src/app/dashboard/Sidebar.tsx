@@ -1,17 +1,34 @@
 "use client";
 
-import LogoLong from "@/components/logo/LogoLong"
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSubButton, SidebarRail, useSidebar } from "@/components/ui/sidebar"
+import {
+  LogoLong,
+  LogoSquare,
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail,
+  useSidebar,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Can
+} from "@/components"
 import { ChevronUp, CircleAlert, Gauge, Users } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import Link from "next/link"
 import { AuthUser, AuthUserRole, AuthUserRoleName } from "@/lib/auth"
 import { A } from "@/lib/abilities"
-import { Can } from "@/components/ability/Can"
-import { capitalize } from "@/lib/utils"
-import LogoSquare from "@/components/logo/LogoSquare"
-import clsx from "clsx";
+import { capitalize, cn } from "@/lib/utils"
 
 const LINKS: Record<string, A<{
   links: A<{ label: string; href: string; icon?: React.ReactNode; }>[];
@@ -80,7 +97,7 @@ export function DashboardSidebar({ user }: { user: AuthUser }) {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton className="h-auto">
-                  <Avatar className={clsx(state == "collapsed" && "w-5 h-5")}>
+                  <Avatar className={cn(state == "collapsed" && "w-5 h-5")}>
                     {user.image && <AvatarImage src={user.image} />}
                     <AvatarFallback>{initials}</AvatarFallback>
                   </Avatar>

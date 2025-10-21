@@ -19,7 +19,7 @@ async function main() {
       columns: {
         stage: f.valuesFromArray({
           values: [
-            "A", "B", "C", "D", "E", "F", "Z"
+            "a", "b", "c", "d", "e", "f", "z"
           ],
         })
       }
@@ -28,7 +28,7 @@ async function main() {
       columns: {
         stage: f.valuesFromArray({
           values: [
-            "A", "B", "C", "D", "E", "F", "Z"
+            "a", "b", "c", "d", "e", "f", "z"
           ],
         })
       }
