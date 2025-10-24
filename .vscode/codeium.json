@@ -1,0 +1,25 @@
+{
+  "workspaceSettings": {
+    "codeium.enableCodeLens": true,
+    "codeium.enableSearch": true,
+    "codeium.enableCodeCitation": true
+  },
+  "contextFiles": [
+    "AGENTS.md",
+    "src/db/schema.ts",
+    "src/lib/utils.ts",
+    "components.json",
+    "tsconfig.json"
+  ],
+  "customInstructions": [
+    "Follow HKrecruitment code style from AGENTS.md",
+    "Use @/ imports for src files",
+    "Prefer TypeScript strict mode with proper typing", 
+    "Use shadcn-ui components with TailwindCSS",
+    "Use Drizzle ORM with schema constants",
+    "Apply Jotai for state and CASL for permissions",
+    "Use neverthrow Result pattern for errors",
+    "Use cn() utility for conditional Tailwind classes",
+    "Commands: pnpm build/dev/lint, pnpm db:push/seed/reset"
+  ]
+}

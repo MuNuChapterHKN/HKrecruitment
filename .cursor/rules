@@ -1,0 +1,22 @@
+# Cursor IDE Rules for HKrecruitment
+
+## Code Guidelines
+- Follow the guidelines in AGENTS.md
+- Use TypeScript strict mode with proper typing
+- Prefer `@/` imports for src files
+- Use shadcn-ui components with TailwindCSS
+- Use Drizzle ORM with schema constants for database operations
+- Use Jotai for state management and CASL for permissions
+- Apply neverthrow Result pattern for error handling
+
+## Architecture Patterns
+- Next.js 15 App Router with React 19
+- Component structure: `/components/ui` for reusable, `/components/dashboard` for features
+- Database models in `/src/db/schema.ts`
+- Use `cn()` utility for conditional Tailwind classes
+
+## Commands
+- Build: `pnpm build`
+- Dev: `pnpm dev`
+- Lint: `pnpm lint` 
+- Database: `pnpm db:push`, `pnpm db:seed`, `pnpm db:reset`
