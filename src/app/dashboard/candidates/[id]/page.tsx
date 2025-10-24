@@ -92,7 +92,7 @@ export default async function CandidateDetailsPage({ params }: PageProps<'/dashb
       </div>
 
       {/* Bottone torna alla lista */}
-      <Link href="/dashboard/applicant.">
+      <Link href="/dashboard/candidates">
         <button className="bg-primary text-primary-foreground px-6 py-3 rounded-md font-medium hover:bg-primary/90">
           ← Torna alla lista
         </button>
