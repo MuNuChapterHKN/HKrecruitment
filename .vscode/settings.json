@@ -3,8 +3,7 @@
   "typescript.suggest.autoImports": true,
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit",
-    "source.organizeImports": "explicit"
+    "source.fixAll.eslint": "explicit"
   },
   "files.exclude": {
     "**/.next": true,
