@@ -26,3 +26,6 @@
 
 ## Package Manager
 Use `pnpm` (version 10.19.0) for all package operations
+
+## Origin Compliance
+Before pushing check if the code is following the guidelines specified at `/docs/CONTRIBUTING.md`.
