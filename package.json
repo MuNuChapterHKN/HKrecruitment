@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "db:push": "drizzle-kit push",
-    "db:seed": "pnpm dlx tsx src/db/seed.ts",
+    "db:seed": "pnpm exec tsx src/db/seed.ts",
     "db:reset": "pnpm dlx tsx src/db/reset.ts"
   },
   "dependencies": {

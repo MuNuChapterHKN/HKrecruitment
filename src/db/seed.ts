@@ -1,7 +1,20 @@
 import { seed } from "drizzle-seed";
 import { db, schema } from ".";
+import { eq } from "drizzle-orm";
 
 async function main() {
+  let adminEmail;
+
+  for (const arg of process.argv) {
+    if (arg.startsWith("--admin-email"))
+      adminEmail = arg.replaceAll(/--admin-email[=\s]+?/gi, "");
+  }
+
+  if (adminEmail) {
+    console.log("Setting admin user with email ", adminEmail);
+    await db.update(schema.user).set({ role: 4 }).where(eq(schema.user.email, adminEmail));
+  }
+
   await seed(db, {
     user: schema.user,
     recruitingSession: schema.recruitingSession,
