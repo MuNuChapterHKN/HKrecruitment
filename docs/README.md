@@ -2,7 +2,6 @@
   <img src="docs/img/cover.svg" alt="HKRecruitment">
 
   ![](https://img.shields.io/badge/HKN_Chapter-MuNu-blue) ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/MuNuChapterHKN/HKrecruitment) ![GitHub contributors](https://img.shields.io/github/contributors/MuNuChapterHKN/HKrecruitment) 
-
 </div>
 
 A recruitment platform used by the Mu Nu Chapter of Eta Kappa Nu, check out our website to learn more about our chapter [hknpolito.org](https://hknpolito.org).
@@ -35,8 +34,9 @@ Whenever you make any change to the codebase, try to follow these guidelines:
 
 1. Try to check if there's something similar already that you can use, instead of creating it from scratch.
 2. Check if you're following the same guidelines as the other file and entities in the project.
-3. Check if you're commiting in the right branch, check the (CONTRIBUTING)[./CONTRIBUTING.md] docs for more info.
-4. If you're using any AI related software, make sure they also follow these guidlines. Refer to (AGENTS)[../AGENTS.md] for more info.
+3. Check if you're commiting in the right branch, check the [CONTRIBUTING](./CONTRIBUTING.md) docs for more info.
+4. If you're using any AI related software, make sure they also follow these guidlines. Refer to [AGENTS](../AGENTS.md) for more info.
+5. Make sure that your commit has a significant message, in order to explain others what you did. There is no syntax that we impose, but [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) are suggested.
 
 ## Contributing
 
@@ -50,4 +50,4 @@ For approved contributors, check out the contributing guidelines in [CONTRIBUTIN
 
 ## License
 
-This project is released under [GNU GPLv3](./LICENSE). Forking, redistribution, and modification for both personal and commercial use are allowed as long as the source code stays open under the same license.
+This project is released under [GNU GPLv3](../LICENSE). Forking, redistribution, and modification for both personal and commercial use are allowed as long as the source code stays open under the same license.
