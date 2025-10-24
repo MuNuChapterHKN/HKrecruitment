@@ -17,3 +17,5 @@ Regarding the code, as also defined in the README:
 ## Regarding AI
 
 You're completely free to use AI whenever you see fit. The only suggestion is to give it enough context not to go against the points described above. Sometimes AIs tend to rewrite whole files when it isn't really needed, try to review your AI generated code before submitting it for approval.
+
+With that said, [opencode](https://opencode.ai/) seems to be a good tool, especially if combined with [Context7](https://context7.com/) and [Vercel Grep](https://grep.app/). The program is open source, and it can be used for free with GitHub Copilot if you're a student, learn more [here](https://github.com/education).
