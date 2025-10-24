@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { createStore } from 'jotai';
 import { currentModalAtom, Modal } from './atoms';
@@ -8,7 +8,7 @@ const modalStore = createStore();
 
 export function openModal(component: Modal) {
   modalStore.set(currentModalAtom, {
-    fn: component
+    fn: component,
   });
 }
 
@@ -20,8 +20,8 @@ export function useCurrentModal() {
   const [state, setState] = useState<Modal>(null);
 
   modalStore.sub(currentModalAtom, () => {
-    setState(modalStore.get(currentModalAtom).fn)
-  })
+    setState(modalStore.get(currentModalAtom).fn);
+  });
 
   return state;
 }

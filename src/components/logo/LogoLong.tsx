@@ -1,4 +1,4 @@
-import { SVGProps } from "react"
+import { SVGProps } from 'react';
 
 const LogoLong = (props: SVGProps<SVGSVGElement>) => (
   <svg
@@ -24,5 +24,5 @@ const LogoLong = (props: SVGProps<SVGSVGElement>) => (
       />
     </g>
   </svg>
-)
-export default LogoLong
+);
+export default LogoLong;

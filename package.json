@@ -12,8 +12,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "pretty": "prettier --check .",
-    "pretty:fix": "prettier --write .",
+    "pretty": "prettier --check 'src/**/*' '*.{ts,mjs,js}'",
+    "pretty:fix": "prettier --write 'src/**/*' '*.{ts,mjs,js}'",
     "db:push": "drizzle-kit push",
     "db:seed": "pnpm exec tsx src/db/seed.ts",
     "db:reset": "pnpm dlx tsx src/db/reset.ts"

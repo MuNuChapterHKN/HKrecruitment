@@ -1,5 +1,5 @@
-import type { ApplicationStage, Applicant } from "@/db/types";
-import { dismissModal, openModal } from "@/components/modals";
+import type { ApplicationStage, Applicant } from '@/db/types';
+import { dismissModal, openModal } from '@/components/modals';
 
 import {
   ApproveInterviewModal,
@@ -7,8 +7,8 @@ import {
   SubmitReportModal,
   AssignAreaModal,
   RejectModal,
-  RemoveLimboModal
-} from "@/components/dashboard";
+  RemoveLimboModal,
+} from '@/components/dashboard';
 
 export interface StageButton {
   text: string;
@@ -17,72 +17,90 @@ export interface StageButton {
 }
 
 const limboButton: StageButton = {
-  text: "Move to Limbo",
-  className: "bg-yellow-600 hover:bg-yellow-700",
+  text: 'Move to Limbo',
+  className: 'bg-yellow-600 hover:bg-yellow-700',
   callback: (applicant: Applicant) =>
-    openModal(<LimboModal onClose={() => dismissModal()} applicant={applicant} />)
+    openModal(
+      <LimboModal onClose={() => dismissModal()} applicant={applicant} />
+    ),
 };
 
 export const stageButtons: Record<ApplicationStage, StageButton[]> = {
   a: [
     {
-      text: "Accept Application",
-      className: "bg-green-600 hover:bg-green-700",
+      text: 'Accept Application',
+      className: 'bg-green-600 hover:bg-green-700',
       callback: (applicant) => {
         // TODO: Implement direct action for accept
-        console.log("Accept action for", applicant.id);
-      }
+        console.log('Accept action for', applicant.id);
+      },
     },
-    limboButton
+    limboButton,
   ],
-  b: [
-    limboButton
-  ],
+  b: [limboButton],
   c: [
     {
-      text: "Approve Interview",
-      className: "bg-blue-600 hover:bg-blue-700",
+      text: 'Approve Interview',
+      className: 'bg-blue-600 hover:bg-blue-700',
       callback: (applicant) =>
-        openModal(<ApproveInterviewModal onClose={() => dismissModal()} applicant={applicant} />)
+        openModal(
+          <ApproveInterviewModal
+            onClose={() => dismissModal()}
+            applicant={applicant}
+          />
+        ),
     },
-    limboButton
+    limboButton,
   ],
   d: [
     {
-      text: "Submit Interview Report",
-      className: "bg-purple-600 hover:bg-purple-700",
+      text: 'Submit Interview Report',
+      className: 'bg-purple-600 hover:bg-purple-700',
       callback: (applicant) =>
-        openModal(<SubmitReportModal onClose={() => dismissModal()} applicant={applicant} />)
+        openModal(
+          <SubmitReportModal
+            onClose={() => dismissModal()}
+            applicant={applicant}
+          />
+        ),
     },
-    limboButton
+    limboButton,
   ],
   e: [
     {
-      text: "Assign to Area",
-      className: "bg-green-600 hover:bg-green-700",
+      text: 'Assign to Area',
+      className: 'bg-green-600 hover:bg-green-700',
       callback: (applicant) =>
-        openModal(<AssignAreaModal onClose={() => dismissModal()} applicant={applicant} />)
+        openModal(
+          <AssignAreaModal
+            onClose={() => dismissModal()}
+            applicant={applicant}
+          />
+        ),
     },
     {
-      text: "Reject",
-      className: "bg-red-600 hover:bg-red-700",
+      text: 'Reject',
+      className: 'bg-red-600 hover:bg-red-700',
       callback: (applicant) =>
-        openModal(<RejectModal onClose={() => dismissModal()} applicant={applicant} />)
+        openModal(
+          <RejectModal onClose={() => dismissModal()} applicant={applicant} />
+        ),
     },
-    limboButton
+    limboButton,
   ],
-  f: [
-    limboButton
-  ],
+  f: [limboButton],
   z: [
     {
-      text: "Remove from Limbo",
-      className: "bg-blue-600 hover:bg-blue-700",
+      text: 'Remove from Limbo',
+      className: 'bg-blue-600 hover:bg-blue-700',
       callback: (applicant) =>
-        openModal(<RemoveLimboModal onClose={() => dismissModal()} applicant={applicant} />)
-    }
+        openModal(
+          <RemoveLimboModal
+            onClose={() => dismissModal()}
+            applicant={applicant}
+          />
+        ),
+    },
   ],
-  s: []
+  s: [],
 };
-
-
