@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="docs/img/cover.svg" alt="HKRecruitment">
+  <img src="/docs/img/cover.svg" alt="HKRecruitment">
 
   ![](https://img.shields.io/badge/HKN_Chapter-MuNu-blue) ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/MuNuChapterHKN/HKrecruitment) ![GitHub contributors](https://img.shields.io/github/contributors/MuNuChapterHKN/HKrecruitment) 
 </div>
@@ -21,7 +21,7 @@ In order to manage multiple versions of node.js and pnpm, I'd suggest using [asd
 ### Set up
 
 1. `pnpm i` in order to install the required packages;
-2. Create a new `.env` file based on the (`.env.example`)[../.env.example];
+2. Create a new `.env` file based on the (`.env.example`)[/.env.example];
 3. Start the database with `docker compose up -d postgres`;
 4. Push the migrations to the database with `pnpm db:push`;
 5. Start the development server with `pnpm dev`;
@@ -34,15 +34,15 @@ Whenever you make any change to the codebase, try to follow these guidelines:
 
 1. Try to check if there's something similar already that you can use, instead of creating it from scratch.
 2. Check if you're following the same guidelines as the other file and entities in the project.
-3. Check if you're commiting in the right branch, check the [CONTRIBUTING](./CONTRIBUTING.md) docs for more info.
-4. If you're using any AI related software, make sure they also follow these guidlines. Refer to [AGENTS](../AGENTS.md) for more info.
-5. Make sure that your commit has a significant message, in order to explain others what you did. There is no syntax that we impose, but [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) are suggested.
+3. Check if you're commiting in the right branch, check the [CONTRIBUTING](/docs/CONTRIBUTING.md) docs for more info.
+4. If you're using any AI related software, make sure they also follow these guidlines. Refer to [AGENTS](/AGENTS.md) for more info.
+5. Make sure that your commit has a significant message, in order to explain others what you did. There is no syntax that we impose, but [Conventional Commits]() are suggested.
 
 ## Contributing
 
 This project is managed by the IT area and usually only accepts internal contributors, but if you wish to take part in the project contact [it@hknpolito.org](mailto:it@hknpolito.org).
 
-For approved contributors, check out the contributing guidelines in [CONTRIBUTING](./docs/CONTRIBUTING.md). Thank you for contributing to this project 💙
+For approved contributors, check out the contributing guidelines in [CONTRIBUTING](/docs/CONTRIBUTING.md). Thank you for contributing to this project 💙
 
 <a href="https://github.com/MuNuChapterHKN/HKrecruitment/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=MuNuChapterHKN/HKrecruitment" />
@@ -50,4 +50,4 @@ For approved contributors, check out the contributing guidelines in [CONTRIBUTIN
 
 ## License
 
-This project is released under [GNU GPLv3](../LICENSE). Forking, redistribution, and modification for both personal and commercial use are allowed as long as the source code stays open under the same license.
+This project is released under [GNU GPLv3](/LICENSE). Forking, redistribution, and modification for both personal and commercial use are allowed as long as the source code stays open under the same license.
