@@ -13,3 +13,7 @@ Regarding the code, as also defined in the README:
 3. Check if you're commiting in the right branch.
 4. If you're using any AI related software, make sure they also follow these guidlines. Refer to [AGENTS](../AGENTS.md) for more info.
 5. Make sure that your commit has a significant message, in order to explain others what you did. There is no syntax that we impose, but [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) are suggested.
+
+## Regarding AI
+
+You're completely free to use AI whenever you see fit. The only suggestion is to give it enough context not to go against the points described above. Sometimes AIs tend to rewrite whole files when it isn't really needed, try to review your AI generated code before submitting it for approval.
