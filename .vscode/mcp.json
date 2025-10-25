@@ -1,0 +1,12 @@
+{
+    "servers": {
+        "github-grep": {
+            "type": "http",
+            "url": "https://mcp.grep.app"
+        },
+        "context7": {
+            "type": "http",
+            "url": "https://mcp.context7.com/mcp"
+        }
+    }
+}

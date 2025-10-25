@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -43,7 +43,8 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-body, html {
+body,
+html {
   height: 100%;
 }
 
@@ -116,7 +117,9 @@ body, html {
   --sidebar-ring: oklch(0.552 0.016 285.938);
 }
 
-:host, html, body {
+:host,
+html,
+body {
   font-family: theme(fontFamily.sans);
 }
 

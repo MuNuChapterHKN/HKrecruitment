@@ -1,8 +1,15 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, Button } from "@/components";
-import type { BaseModalProps } from "./types";
+import { useState } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  Button,
+} from '@/components';
+import type { BaseModalProps } from './types';
 
 export interface RejectFormData {
   description: string;
@@ -10,17 +17,17 @@ export interface RejectFormData {
 
 export default function RejectModal({ onClose }: BaseModalProps) {
   const [formData, setFormData] = useState<RejectFormData>({
-    description: ""
+    description: '',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     // TODO: Implement API call to reject candidate
-    console.log("Rejecting candidate:", formData);
+    console.log('Rejecting candidate:', formData);
 
     onClose();
-    setFormData({ description: "" });
+    setFormData({ description: '' });
   };
 
   return (
@@ -31,14 +38,19 @@ export default function RejectModal({ onClose }: BaseModalProps) {
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="description" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            <label
+              htmlFor="description"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
               Rejection reason
             </label>
             <textarea
               id="description"
               placeholder="Enter reason for rejection..."
               value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
               required
               className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-2"
               rows={3}

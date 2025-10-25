@@ -1,7 +1,13 @@
-"use client";
+'use client';
 
-import { SidebarMenuButton, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components";
-import { ChevronDown } from "lucide-react";
+import {
+  SidebarMenuButton,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components';
+import { ChevronDown } from 'lucide-react';
 
 export default function RecruitmentDropdown() {
   // TODO
@@ -23,5 +29,5 @@ export default function RecruitmentDropdown() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

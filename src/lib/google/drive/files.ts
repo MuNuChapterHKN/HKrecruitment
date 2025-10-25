@@ -4,16 +4,14 @@ import { service } from '../service';
 import { DriveFile } from './types';
 import stream from 'stream';
 
-export async function uploadFile(
-  params: {
-    file: {
-      name: string;
-      data: ArrayBuffer;
-      type: string;
-    },
-    parentId?: string;
-  }
-): Promise<Result<DriveFile, Error>> {
+export async function uploadFile(params: {
+  file: {
+    name: string;
+    data: ArrayBuffer;
+    type: string;
+  };
+  parentId?: string;
+}): Promise<Result<DriveFile, Error>> {
   const authResult = await service.getAuth();
   if (authResult.isErr()) {
     return err(authResult.error);
@@ -26,11 +24,10 @@ export async function uploadFile(
     name: string;
     parents?: string[];
   } = {
-    name: file.name
+    name: file.name,
   };
 
-  if (params.parentId)
-    fileMetadata.parents = [params.parentId];
+  if (params.parentId) fileMetadata.parents = [params.parentId];
 
   const buffer = Buffer.from(file.data);
   const passThrough = new stream.PassThrough();
@@ -41,11 +38,12 @@ export async function uploadFile(
       requestBody: fileMetadata,
       media: {
         mimeType: file.type,
-        body: passThrough
+        body: passThrough,
       },
-      fields: 'id, name, parents, mimeType'
+      fields: 'id, name, parents, mimeType',
     }),
-    (error) => error instanceof Error ? error : new Error('Unknown error occurred')
+    (error) =>
+      error instanceof Error ? error : new Error('Unknown error occurred')
   ).andThen((response) => {
     if (!response.data.id) {
       return err(new Error('Failed to upload file: No ID returned'));
@@ -55,7 +53,7 @@ export async function uploadFile(
       id: response.data.id,
       name: response.data.name || params.file.name,
       parents: response.data.parents || undefined,
-      mimeType: response.data.mimeType || params.file.type
+      mimeType: response.data.mimeType || params.file.type,
     });
   });
 }

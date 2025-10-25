@@ -1,8 +1,16 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, Button, Input } from "@/components";
-import type { BaseModalProps } from "./types";
+import { useState } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  Button,
+  Input,
+} from '@/components';
+import type { BaseModalProps } from './types';
 
 export interface ReportFormData {
   reportLink: string;
@@ -10,17 +18,17 @@ export interface ReportFormData {
 
 export default function SubmitReportModal({ onClose }: BaseModalProps) {
   const [formData, setFormData] = useState<ReportFormData>({
-    reportLink: ""
+    reportLink: '',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     // TODO: Implement API call to submit interview report
-    console.log("Submitting interview report:", formData);
+    console.log('Submitting interview report:', formData);
 
     onClose();
-    setFormData({ reportLink: "" });
+    setFormData({ reportLink: '' });
   };
 
   return (
@@ -31,7 +39,10 @@ export default function SubmitReportModal({ onClose }: BaseModalProps) {
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="reportLink" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            <label
+              htmlFor="reportLink"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
               Report link
             </label>
             <Input
@@ -39,7 +50,9 @@ export default function SubmitReportModal({ onClose }: BaseModalProps) {
               type="url"
               placeholder="https://example.com/report"
               value={formData.reportLink}
-              onChange={(e) => setFormData({ ...formData, reportLink: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, reportLink: e.target.value })
+              }
               required
               className="mt-2"
             />

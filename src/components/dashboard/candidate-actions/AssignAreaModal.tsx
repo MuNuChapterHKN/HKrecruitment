@@ -1,28 +1,42 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, Button } from "@/components";
-import type { BaseModalProps } from "./types";
+import { useState } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  Button,
+} from '@/components';
+import type { BaseModalProps } from './types';
 
 export interface AreaFormData {
   area: string;
 }
 
-const AREAS = ["software", "hardware", "network", "security", "ai/ml", "devops"];
+const AREAS = [
+  'software',
+  'hardware',
+  'network',
+  'security',
+  'ai/ml',
+  'devops',
+];
 
 export default function AssignAreaModal({ onClose }: BaseModalProps) {
   const [formData, setFormData] = useState<AreaFormData>({
-    area: ""
+    area: '',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     // TODO: Implement API call to assign candidate to area
-    console.log("Assigning candidate to area:", formData);
+    console.log('Assigning candidate to area:', formData);
 
     onClose();
-    setFormData({ area: "" });
+    setFormData({ area: '' });
   };
 
   return (
@@ -33,13 +47,18 @@ export default function AssignAreaModal({ onClose }: BaseModalProps) {
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="area" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            <label
+              htmlFor="area"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
               Select area
             </label>
             <select
               id="area"
               value={formData.area}
-              onChange={(e) => setFormData({ ...formData, area: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, area: e.target.value })
+              }
               className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-2"
               required
             >
