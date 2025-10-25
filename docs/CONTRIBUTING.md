@@ -11,7 +11,7 @@ Regarding the code, as also defined in the [README](/docs/README.md):
 1. Try to check if there's something similar already that you can use, instead of creating it from scratch.
 2. Check if you're following the same guidelines as the other file and entities in the project.
 3. Check if you're commiting in the right branch.
-4. If you're using any AI related software, make sure they also follow these guidlines. Refer to [AGENTS](/AGENTS.md) for more info.
+4. If you're using any AI related software, make sure they also follow these guidelines. Refer to [AGENTS](/AGENTS.md) for more info.
 5. Make sure that your commit has a significant message, in order to explain others what you did. There is no syntax that we impose, but [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) are suggested.
 
 ## Regarding AI
