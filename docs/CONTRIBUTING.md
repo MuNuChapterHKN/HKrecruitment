@@ -4,7 +4,7 @@ This project is gonna be managed by multiple people at the same time, thus we al
 
 1. Every new feature is gonna have an issue describing in brief terms the task. _E.g. Adding logout button in the dashboard._
 2. Every new feature has a branch assigned to it that is followed by only one contributor, and its name has to be `yournickname/name-feature`. _E.g. peppe/dashboard-logout._ 
-3. When you think your feature is ready to be merged, open a pull request to `dev` and add one of the Project Leads as a reviwer.
+3. When you think your feature is ready to be merged, open a pull request to `dev` and add one of the Project Leads as a reviewer.
 
 Regarding the code, as also defined in the [README](/docs/README.md):
 
