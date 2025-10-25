@@ -21,7 +21,7 @@ In order to manage multiple versions of node.js and pnpm, I'd suggest using [asd
 ### Set up
 
 1. `pnpm i` in order to install the required packages;
-2. Create a new `.env` file based on the (`.env.example`)[/.env.example];
+2. Create a new `.env` file based on the [`.env.example`](/.env.example);
 3. Start the database with `docker compose up -d postgres`;
 4. Push the migrations to the database with `pnpm db:push`;
 5. Start the development server with `pnpm dev`;
