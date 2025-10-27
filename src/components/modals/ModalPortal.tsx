@@ -1,6 +1,6 @@
 'use client';
 
-import { cloneElement, useEffect } from 'react';
+import { cloneElement } from 'react';
 import { useCurrentModal } from './utils';
 
 export function ModalPortal() {

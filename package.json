@@ -11,7 +11,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "eslint src",
     "pretty": "prettier --check 'src/**/*' '*.{ts,mjs,js}'",
     "pretty:fix": "prettier --write 'src/**/*' '*.{ts,mjs,js}'",
     "db:push": "drizzle-kit push",
