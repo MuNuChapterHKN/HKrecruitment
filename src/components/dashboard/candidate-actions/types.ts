@@ -1,4 +1,4 @@
-import { Applicant } from "@/db/types";
+import { Applicant } from '@/db/types';
 
 export interface BaseModalProps {
   applicant?: Applicant;

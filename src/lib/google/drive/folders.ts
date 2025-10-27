@@ -22,9 +22,10 @@ async function getFolderByName(
   return fromPromise(
     drive.files.list({
       q: query,
-      fields: 'files(id, name, parents)'
+      fields: 'files(id, name, parents)',
     }),
-    (error) => error instanceof Error ? error : new Error('Unknown error occurred')
+    (error) =>
+      error instanceof Error ? error : new Error('Unknown error occurred')
   ).andThen((response) => {
     const files = response.data.files || [];
     if (files.length === 0) {
@@ -35,17 +36,15 @@ async function getFolderByName(
     return ok({
       id: file.id!,
       name: file.name!,
-      parents: file.parents || undefined
+      parents: file.parents || undefined,
     });
   });
 }
 
-export async function createFolder(
-  params: {
-    name: string;
-    parentId?: string;
-  }
-): Promise<Result<DriveFolder, Error>> {
+export async function createFolder(params: {
+  name: string;
+  parentId?: string;
+}): Promise<Result<DriveFolder, Error>> {
   const authResult = await service.getAuth();
   if (authResult.isErr()) {
     return err(authResult.error);
@@ -59,7 +58,7 @@ export async function createFolder(
     parents?: string[];
   } = {
     name: params.name,
-    mimeType: 'application/vnd.google-apps.folder'
+    mimeType: 'application/vnd.google-apps.folder',
   };
 
   if (params.parentId) {
@@ -69,9 +68,10 @@ export async function createFolder(
   return fromPromise(
     drive.files.create({
       requestBody: fileMetadata,
-      fields: 'id, name, parents'
+      fields: 'id, name, parents',
     }),
-    (error) => error instanceof Error ? error : new Error('Unknown error occurred')
+    (error) =>
+      error instanceof Error ? error : new Error('Unknown error occurred')
   ).andThen((response) => {
     if (!response.data.id) {
       return err(new Error('Failed to create folder: No ID returned'));
@@ -80,23 +80,23 @@ export async function createFolder(
     return ok({
       id: response.data.id,
       name: response.data.name || params.name,
-      parents: response.data.parents || undefined
+      parents: response.data.parents || undefined,
     });
   });
 }
 
 export async function assertPath(
   path: string,
-  parentId: string,
+  parentId: string
 ): Promise<Result<DriveFolder, Error>> {
   if (!path || path === '/') {
     return err(new Error('Invalid path'));
   }
 
-  const parts = path.split('/').filter(part => part.length > 0);
+  const parts = path.split('/').filter((part) => part.length > 0);
   let currentParent: DriveFolder = {
     id: parentId,
-    name: 'Parent'
+    name: 'Parent',
   };
 
   for (const part of parts) {
@@ -113,7 +113,7 @@ export async function assertPath(
     } else {
       const createResult = await createFolder({
         name: part,
-        parentId: currentParent.id
+        parentId: currentParent.id,
       });
 
       if (createResult.isErr()) return err(createResult.error);

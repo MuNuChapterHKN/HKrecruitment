@@ -1,12 +1,10 @@
-"use client";
+'use client';
 
-import type { Applicant } from "@/db/types";
+import type { Applicant } from '@/db/types';
 
-import { stageButtons } from "./stageButtons";
+import { stageButtons } from './stageButtons';
 
-export default function ActionButtons({ applicant }: {
-  applicant: Applicant
-}) {
+export default function ActionButtons({ applicant }: { applicant: Applicant }) {
   const buttons = stageButtons[applicant.stage];
 
   return (

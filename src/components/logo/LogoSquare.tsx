@@ -1,4 +1,4 @@
-import { SVGProps } from "react"
+import { SVGProps } from 'react';
 
 const LogoSquare = (props: SVGProps<SVGSVGElement>) => (
   <svg
@@ -24,6 +24,6 @@ const LogoSquare = (props: SVGProps<SVGSVGElement>) => (
       />
     </g>
   </svg>
-)
+);
 
-export default LogoSquare
+export default LogoSquare;

@@ -1,6 +1,6 @@
-import Link from "next/link";
-import { listAllApplicants } from "@/lib/models/applicants";
-import { Applicant } from "@/db/types";
+import Link from 'next/link';
+import { listAllApplicants } from '@/lib/models/applicants';
+import { Applicant } from '@/db/types';
 
 export default async function CandidatesPage() {
   const applicants = await listAllApplicants();
@@ -11,11 +11,19 @@ export default async function CandidatesPage() {
 
       <div className="grid gap-4">
         {applicants.map((applicant: Applicant) => (
-          <div key={applicant.id} className="bg-card rounded-lg shadow p-4 flex justify-between items-center">
+          <div
+            key={applicant.id}
+            className="bg-card rounded-lg shadow p-4 flex justify-between items-center"
+          >
             <div>
-              <div className="font-semibold">{applicant.name} {applicant.surname}</div>
+              <div className="font-semibold">
+                {applicant.name} {applicant.surname}
+              </div>
               <div className="text-sm text-muted-foreground">
-                Application date: {applicant.createdAt ? new Date(applicant.createdAt).toLocaleDateString() : ""}
+                Application date:{' '}
+                {applicant.createdAt
+                  ? new Date(applicant.createdAt).toLocaleDateString()
+                  : ''}
               </div>
             </div>
 
@@ -26,7 +34,11 @@ export default async function CandidatesPage() {
             </Link>
           </div>
         ))}
-        {applicants.length === 0 && <div className="text-center text-muted-foreground">No candidates found.</div>}
+        {applicants.length === 0 && (
+          <div className="text-center text-muted-foreground">
+            No candidates found.
+          </div>
+        )}
       </div>
     </main>
   );

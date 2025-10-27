@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   LogoLong,
@@ -22,47 +22,59 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-  Can
-} from "@/components"
-import { ChevronUp, CircleAlert, Gauge, Users } from "lucide-react"
-import Link from "next/link"
-import { AuthUser, AuthUserRole, AuthUserRoleName } from "@/lib/auth"
-import { A } from "@/lib/abilities"
-import { capitalize, cn } from "@/lib/utils"
+  Can,
+} from '@/components';
+import { ChevronUp, CircleAlert, Gauge, Users } from 'lucide-react';
+import Link from 'next/link';
+import { AuthUser, AuthUserRole, AuthUserRoleName } from '@/lib/auth';
+import { A } from '@/lib/abilities';
+import { capitalize, cn } from '@/lib/utils';
 
-const LINKS: Record<string, A<{
-  links: A<{ label: string; href: string; icon?: React.ReactNode; }>[];
-}>> = {
-  "platform": {
+const LINKS: Record<
+  string,
+  A<{
+    links: A<{ label: string; href: string; icon?: React.ReactNode }>[];
+  }>
+> = {
+  platform: {
     canRead: AuthUserRole.User,
-    links: [{
-      label: "Overview",
-      href: "/dashboard",
-      icon: <Gauge />,
-      canRead: AuthUserRole.User,
-    }, {
-      label: "Candidates",
-      href: "/dashboard/candidates",
-      icon: <Users />,
-      canRead: AuthUserRole.User,
-    }, {
-      label: "Alert",
-      href: "/dashboard/candidates?stage=z",
-      icon: <CircleAlert />,
-      canRead: AuthUserRole.User,
-    }]
-  }
-}
+    links: [
+      {
+        label: 'Overview',
+        href: '/dashboard',
+        icon: <Gauge />,
+        canRead: AuthUserRole.User,
+      },
+      {
+        label: 'Candidates',
+        href: '/dashboard/candidates',
+        icon: <Users />,
+        canRead: AuthUserRole.User,
+      },
+      {
+        label: 'Alert',
+        href: '/dashboard/candidates?stage=z',
+        icon: <CircleAlert />,
+        canRead: AuthUserRole.User,
+      },
+    ],
+  },
+};
 
 export function DashboardSidebar({ user }: { user: AuthUser }) {
   const { state } = useSidebar();
-  const initials = user.name.split(' ').slice(0, 2).map((w: string) => w[0]).join('');
+  const initials = user.name
+    .split(' ')
+    .slice(0, 2)
+    .map((w: string) => w[0])
+    .join('');
 
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        {state == "expanded" ? (
-          <LogoLong className="text-foreground w-fit h-7 py-1 px-2" />) : (
+        {state == 'expanded' ? (
+          <LogoLong className="text-foreground w-fit h-7 py-1 px-2" />
+        ) : (
           <LogoSquare className="text-foreground w-fit h-7 mt-[0.1em]" />
         )}
       </SidebarHeader>
@@ -97,15 +109,17 @@ export function DashboardSidebar({ user }: { user: AuthUser }) {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton className="h-auto">
-                  <Avatar className={cn(state == "collapsed" && "w-5 h-5")}>
+                  <Avatar className={cn(state == 'collapsed' && 'w-5 h-5')}>
                     {user.image && <AvatarImage src={user.image} />}
                     <AvatarFallback>{initials}</AvatarFallback>
                   </Avatar>
-                  {state == "expanded" && (
+                  {state == 'expanded' && (
                     <>
                       <div className="flex flex-col justify-center">
                         <span>{user.name}</span>
-                        <span className="text-xs text-zinc-400 capitalize">{AuthUserRoleName[user.role ?? AuthUserRole.Guest]}</span>
+                        <span className="text-xs text-zinc-400 capitalize">
+                          {AuthUserRoleName[user.role ?? AuthUserRole.Guest]}
+                        </span>
                       </div>
                       <ChevronUp className="ml-auto h-4" />
                     </>
@@ -129,5 +143,5 @@ export function DashboardSidebar({ user }: { user: AuthUser }) {
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }
