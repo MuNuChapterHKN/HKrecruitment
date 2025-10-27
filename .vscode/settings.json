@@ -13,5 +13,8 @@
   "emmet.includeLanguages": {
     "typescript": "html",
     "typescriptreact": "html"
+  },
+  "files.associations": {
+    "*.css": "tailwindcss"
   }
 }
