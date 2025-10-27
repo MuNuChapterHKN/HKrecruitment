@@ -6,7 +6,7 @@ If this closes an issue, write "Closes #1" where #1 should be the number of the 
 
 Tiny description, nothing fancy, even just one sentence. Write here if you had difficulties in implementing something.
 
-**Health Check:**
+**Guidelines Check:**
 
 - [ ] I ran `pnpm dev` and checked the results.  
 - [ ] I successfully ran `pnpm build`.
