@@ -1,9 +1,11 @@
 <div align="center">
   <img src="/docs/img/cover.svg" alt="HKRecruitment">
 
-  ![](https://img.shields.io/badge/HKN_Chapter-MuNu-blue) ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/MuNuChapterHKN/HKrecruitment) ![GitHub contributors](https://img.shields.io/github/contributors/MuNuChapterHKN/HKrecruitment) 
+![](https://img.shields.io/badge/HKN_Chapter-MuNu-blue) ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/MuNuChapterHKN/HKrecruitment) ![GitHub contributors](https://img.shields.io/github/contributors/MuNuChapterHKN/HKrecruitment)
 
 </div>
+
+TEST
 
 A recruitment platform used by the Mu Nu Chapter of Eta Kappa Nu, check out our website to learn more about our chapter [hknpolito.org](https://hknpolito.org).
 
