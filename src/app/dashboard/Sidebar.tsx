@@ -24,7 +24,7 @@ import {
   AvatarImage,
   Can,
 } from '@/components';
-import { ChevronUp, CircleAlert, Gauge, Users } from 'lucide-react';
+import { Calendar, ChevronUp, CircleAlert, Gauge, Users } from 'lucide-react';
 import Link from 'next/link';
 import { AuthUser, AuthUserRole, AuthUserRoleName } from '@/lib/auth';
 import { A } from '@/lib/abilities';
@@ -37,25 +37,31 @@ const LINKS: Record<
   }>
 > = {
   platform: {
-    canRead: AuthUserRole.User,
+    canRead: AuthUserRole.Guest,
     links: [
       {
         label: 'Overview',
         href: '/dashboard',
         icon: <Gauge />,
-        canRead: AuthUserRole.User,
+        canRead: AuthUserRole.Guest,
       },
       {
         label: 'Candidates',
         href: '/dashboard/candidates',
         icon: <Users />,
-        canRead: AuthUserRole.User,
+        canRead: AuthUserRole.Guest,
       },
       {
-        label: 'Alert',
-        href: '/dashboard/candidates?stage=z',
-        icon: <CircleAlert />,
-        canRead: AuthUserRole.User,
+        label: 'Users',
+        href: '/dashboard/users',
+        icon: <Users />,
+        canRead: AuthUserRole.Guest,
+      },
+      {
+        label: 'Availability Calendar',
+        href: '/dashboard/me/availability',
+        icon: <Calendar />,
+        canRead: AuthUserRole.Guest,
       },
     ],
   },
