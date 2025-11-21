@@ -42,6 +42,8 @@ export const recruitingSession = pgTable('recruitment_session', {
   id: text('id').primaryKey(),
   year: integer('year').notNull(),
   semester: integer('semester').notNull(),
+  start_date: timestamp('start_date').notNull(),
+  end_date: timestamp('end_date').notNull(),
 });
 
 export const recruitingSessionRelations = relations(
