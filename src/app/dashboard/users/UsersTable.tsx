@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { AuthUserRole, AuthUserRoleName } from '@/lib/auth';
+
 import {
   Select,
   SelectTrigger,
@@ -13,182 +15,35 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 
-const mockUsers = [
-  {
-    id: 1,
-    name: 'John Doe',
-    email: 'john@example.com',
-    role: 'User',
-    avatar: '',
-  },
-  {
-    id: 2,
-    name: 'Alice Brown',
-    email: 'alice@example.com',
-    role: 'Admin',
-    avatar: '',
-  },
-  {
-    id: 3,
-    name: 'Michael Green',
-    email: 'michael@example.com',
-    role: 'Clerk',
-    avatar: '',
-  },
-  {
-    id: 4,
-    name: 'Laura Smith',
-    email: 'laura@example.com',
-    role: 'User',
-    avatar: '',
-  },
-  {
-    id: 5,
-    name: 'David Lee',
-    email: 'david@example.com',
-    role: 'Clerk',
-    avatar: '',
-  },
-  {
-    id: 6,
-    name: 'Sarah Wilson',
-    email: 'sarah.wilson@example.com',
-    role: 'User',
-    avatar: '',
-  },
-  {
-    id: 7,
-    name: 'Mark Johnson',
-    email: 'mark.j@example.com',
-    role: 'Admin',
-    avatar: '',
-  },
-  {
-    id: 8,
-    name: 'Emma Davis',
-    email: 'emma.davis@example.com',
-    role: 'Clerk',
-    avatar: '',
-  },
-  {
-    id: 9,
-    name: 'James Miller',
-    email: 'james.miller@example.com',
-    role: 'User',
-    avatar: '',
-  },
-  {
-    id: 10,
-    name: 'Olivia Taylor',
-    email: 'olivia.taylor@example.com',
-    role: 'User',
-    avatar: '',
-  },
-  {
-    id: 11,
-    name: 'Robert Martinez',
-    email: 'robert.m@example.com',
-    role: 'Clerk',
-    avatar: '',
-  },
-  {
-    id: 12,
-    name: 'Sophia Harris',
-    email: 'sophia.harris@example.com',
-    role: 'Admin',
-    avatar: '',
-  },
-  {
-    id: 13,
-    name: 'Daniel Clark',
-    email: 'daniel.c@example.com',
-    role: 'User',
-    avatar: '',
-  },
-  {
-    id: 14,
-    name: 'Chloe Lewis',
-    email: 'chloe.lewis@example.com',
-    role: 'Clerk',
-    avatar: '',
-  },
-  {
-    id: 15,
-    name: 'Benjamin Walker',
-    email: 'ben.walker@example.com',
-    role: 'User',
-    avatar: '',
-  },
-  {
-    id: 16,
-    name: 'Grace Hall',
-    email: 'grace.h@example.com',
-    role: 'User',
-    avatar: '',
-  },
-  {
-    id: 17,
-    name: 'Henry Young',
-    email: 'henry.young@example.com',
-    role: 'Clerk',
-    avatar: '',
-  },
-  {
-    id: 18,
-    name: 'Ava King',
-    email: 'ava.king@example.com',
-    role: 'Admin',
-    avatar: '',
-  },
-  {
-    id: 19,
-    name: 'Ethan Wright',
-    email: 'ethan.wright@example.com',
-    role: 'User',
-    avatar: '',
-  },
-  {
-    id: 20,
-    name: 'Mia Scott',
-    email: 'mia.scott@example.com',
-    role: 'Clerk',
-    avatar: '',
-  },
-  {
-    id: 21,
-    name: 'Emma Watson',
-    email: 'emma@example.com',
-    role: 'User',
-    avatar: '',
-  },
-  {
-    id: 22,
-    name: 'Liam Johnson',
-    email: 'liam@example.com',
-    role: 'Clerk',
-    avatar: '',
-  },
-  {
-    id: 23,
-    name: 'Olivia Martinez',
-    email: 'olivia@example.com',
-    role: 'Admin',
-    avatar: '',
-  },
-  {
-    id: 24,
-    name: 'Noah Davis',
-    email: 'noah@example.com',
-    role: 'User',
-    avatar: '',
-  },
-];
+interface UserDB {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified: boolean;
+  image: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  role: number | null;
+}
 
-export default function UsersTable() {
-  const [users, setUsers] = useState(mockUsers);
+interface UsersTableProps {
+  users: UserDB[];
+}
+
+export default function UsersTable({ users: initialUsers }: UsersTableProps) {
+  const [users, setUsers] = useState(initialUsers);
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+
   const pageSize = 5; // number of users per page (editable)
+
+  const editableRoles = [
+    AuthUserRole.Guest,
+    AuthUserRole.User,
+    AuthUserRole.Clerk,
+    AuthUserRole.Admin,
+    AuthUserRole.God,
+  ]; // "Guest" and "God" may be excluded in the future
 
   const filtered = users.filter((u) =>
     u.name.toLowerCase().includes(search.toLowerCase())
@@ -210,7 +65,7 @@ export default function UsersTable() {
               <th colSpan={4} className="p-4 bg-white">
                 <div className="flex justify-center items-center relative">
                   {/* Search bar */}
-                  <div className="absolute left-1/2 transform -translate-x-1/2 w-full max-w-md">
+                  <div className="w-full max-w-md">
                     <div className="relative">
                       <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                       <Input
@@ -230,23 +85,38 @@ export default function UsersTable() {
                     <span className="text-sm font-medium text-gray-600">
                       Role:
                     </span>
+
                     <Select
                       onValueChange={(value) => {
                         if (value === 'all') {
-                          setUsers(mockUsers);
+                          setUsers(initialUsers);
                         } else {
-                          setUsers(mockUsers.filter((u) => u.role === value));
+                          setUsers(
+                            initialUsers.filter(
+                              (u) =>
+                                u.role !== null &&
+                                AuthUserRoleName[u.role] === value
+                            )
+                          );
                         }
+                        setCurrentPage(1);
                       }}
                     >
                       <SelectTrigger className="w-[140px]">
                         <SelectValue placeholder="All roles" />
                       </SelectTrigger>
+
                       <SelectContent>
                         <SelectItem value="all">All</SelectItem>
-                        <SelectItem value="User">User</SelectItem>
-                        <SelectItem value="Clerk">Clerk</SelectItem>
-                        <SelectItem value="Admin">Admin</SelectItem>
+
+                        {/* Show ONLY <= Admin and >= User roles to exclude "Guest" and "God" */}
+                        {Object.entries(AuthUserRoleName)
+                          //.filter(([key]) => AuthUserRole.User <= Number(key) && Number(key) <= AuthUserRole.Admin)
+                          .map(([key, label]) => (
+                            <SelectItem key={key} value={label}>
+                              {label}
+                            </SelectItem>
+                          ))}
                       </SelectContent>
                     </Select>
                   </div>
@@ -269,7 +139,7 @@ export default function UsersTable() {
               <tr key={user.id} className="border-t">
                 <td className="p-3">
                   <Avatar>
-                    <AvatarImage src={user.avatar || undefined} />
+                    <AvatarImage src={user.image || undefined} />
                     <AvatarFallback>
                       {user.name
                         .split(' ')
@@ -284,22 +154,19 @@ export default function UsersTable() {
                 <td className="p-3">{user.email}</td>
                 <td className="p-3 w-40">
                   <Select
-                    value={user.role}
-                    onValueChange={(value) =>
-                      setUsers((prev) =>
-                        prev.map((u) =>
-                          u.id === user.id ? { ...u, role: value } : u
-                        )
-                      )
+                    value={
+                      user.role !== null ? AuthUserRoleName[user.role] : ''
                     }
                   >
                     <SelectTrigger className="w-full">
-                      <SelectValue />
+                      <SelectValue placeholder="No role" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="User">User</SelectItem>
-                      <SelectItem value="Clerk">Clerk</SelectItem>
-                      <SelectItem value="Admin">Admin</SelectItem>
+                      {editableRoles.map((role) => (
+                        <SelectItem key={role} value={AuthUserRoleName[role]}>
+                          {AuthUserRoleName[role]}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </td>

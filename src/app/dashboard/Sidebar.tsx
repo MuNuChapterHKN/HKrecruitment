@@ -52,7 +52,7 @@ const LINKS: Record<
         canRead: AuthUserRole.Guest,
       },
       {
-        label: 'Users',
+        label: 'Members',
         href: '/dashboard/users',
         icon: <Users />,
         canRead: AuthUserRole.Guest,

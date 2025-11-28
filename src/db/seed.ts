@@ -4,18 +4,9 @@ import { eq } from 'drizzle-orm';
 
 async function main() {
   let adminEmail;
-
   for (const arg of process.argv) {
     if (arg.startsWith('--admin-email'))
       adminEmail = arg.replaceAll(/--admin-email[=\s]+?/gi, '');
-  }
-
-  if (adminEmail) {
-    console.log('Setting admin user with email ', adminEmail);
-    await db
-      .update(schema.user)
-      .set({ role: 4 })
-      .where(eq(schema.user.email, adminEmail));
   }
 
   await seed(db, {
@@ -28,6 +19,14 @@ async function main() {
     interviewerAvailability: schema.interviewerAvailability,
     usersToInterviews: schema.usersToInterviews,
   }).refine((f) => ({
+    user: {
+      columns: {
+        role: f.valuesFromArray({
+          values: [0, 1, 2, 3, 4], // Guest, User, Clerk, Admin, God ("Guest" and "God" may be excluded in the future)
+          isUnique: false,
+        }),
+      },
+    },
     usersToInterviews: {
       count: 5,
     },
@@ -46,6 +45,15 @@ async function main() {
       },
     },
   }));
+
+  // Set the admin AFTER the seed
+  if (adminEmail) {
+    console.log('Setting admin user with email ', adminEmail);
+    await db
+      .update(schema.user)
+      .set({ role: 4 })
+      .where(eq(schema.user.email, adminEmail));
+  }
 }
 
 main();
