@@ -1,6 +1,6 @@
 'use client';
 
-import { AvailabilitiesTable } from '@/components/dashboard/availability/availabilitiesTable';
+import { AvailabilitiesTable } from '@/app/dashboard/me/availability/availabilitiesTable';
 
 export default function Page() {
   return (

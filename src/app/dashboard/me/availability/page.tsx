@@ -1,9 +1,23 @@
-export default async function MyAvailabilitiesPage() {
-  return (
-    <main className="p-6">
-      <h1 className="text-2xl font-bold mb-6">La mia disponibilità</h1>
+import { getTimeslots } from './queries';
+import { AvailabilityClient } from './availabilityClient';
 
-      <div>{/* TODO: Availability Calendar Component */}</div>
+export default async function AvailabilityPage() {
+  const timeslots = await getTimeslots();
+
+  return (
+    <main className="px-4 py-8">
+      <div className="mx-auto max-w-4xl space-y-6">
+        <header>
+          <h1 className="text-2xl font-semibold tracking-tight">
+            Interview availability
+          </h1>
+          <p className="mt-1 text-sm text-gray-500">
+            Seleziona le tue disponibilità settimanali per le interview.
+          </p>
+        </header>
+
+        <AvailabilityClient timeslots={timeslots} />
+      </div>
     </main>
   );
 }
