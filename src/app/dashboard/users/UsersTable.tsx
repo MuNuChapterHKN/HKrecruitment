@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { AuthUserRole, AuthUserRoleName } from '@/lib/auth';
-import { toggleIsFirstTimeCheckbox } from '@/app/actions/users';
+import { toggleIsFirstTimeCheckbox } from '@/lib/actions/users';
 import {
   Select,
   SelectTrigger,
