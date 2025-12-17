@@ -18,6 +18,7 @@ export const user = pgTable('user', {
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
   role: integer('role').default(0),
+  isFirstTime: boolean('is_first_time').default(false).notNull(),
 });
 
 export const session = pgTable('session', {

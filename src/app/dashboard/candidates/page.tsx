@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { listAllApplicants } from '@/lib/models/applicants';
+import { listAllApplicants } from '@/lib/services/applicants';
 import { Applicant } from '@/db/types';
 
 export default async function CandidatesPage() {

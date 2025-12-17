@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getApplicantById } from '@/lib/models/applicants';
+import { getApplicantById } from '@/lib/services/applicants';
 import ActionButtons from './ActionButtons';
 import { getStageLabel } from '@/lib/stages';
 

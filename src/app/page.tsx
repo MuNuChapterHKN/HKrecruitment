@@ -1,4 +1,4 @@
-import { listAllUsers } from '@/lib/models/users';
+import { listAllUsers } from '@/lib/services/users';
 
 export default async function Home() {
   const users = await listAllUsers();
