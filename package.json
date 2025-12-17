@@ -46,6 +46,7 @@
     "cmdk": "^1.1.1",
     "dotenv": "^17.2.2",
     "drizzle-orm": "^0.44.5",
+    "drizzle-zod": "^0.8.3",
     "googleapis": "^160.0.0",
     "jotai": "^2.15.0",
     "lucide-react": "^0.544.0",

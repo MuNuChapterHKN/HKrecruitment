@@ -59,6 +59,9 @@ importers:
       drizzle-orm:
         specifier: ^0.44.5
         version: 0.44.5(@types/pg@8.15.5)(kysely@0.28.7)(pg@8.16.3)
+      drizzle-zod:
+        specifier: ^0.8.3
+        version: 0.8.3(drizzle-orm@0.44.5(@types/pg@8.15.5)(kysely@0.28.7)(pg@8.16.3))(zod@4.1.11)
       googleapis:
         specifier: ^160.0.0
         version: 160.0.0
@@ -1942,6 +1945,12 @@ packages:
     peerDependenciesMeta:
       drizzle-orm:
         optional: true
+
+  drizzle-zod@0.8.3:
+    resolution: {integrity: sha512-66yVOuvGhKJnTdiqj1/Xaaz9/qzOdRJADpDa68enqS6g3t0kpNkwNYjUuaeXgZfO/UWuIM9HIhSlJ6C5ZraMww==}
+    peerDependencies:
+      drizzle-orm: '>=0.36.0'
+      zod: ^3.25.0 || ^4.0.0
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -4909,6 +4918,11 @@ snapshots:
       pure-rand: 6.1.0
     optionalDependencies:
       drizzle-orm: 0.44.5(@types/pg@8.15.5)(kysely@0.28.7)(pg@8.16.3)
+
+  drizzle-zod@0.8.3(drizzle-orm@0.44.5(@types/pg@8.15.5)(kysely@0.28.7)(pg@8.16.3))(zod@4.1.11):
+    dependencies:
+      drizzle-orm: 0.44.5(@types/pg@8.15.5)(kysely@0.28.7)(pg@8.16.3)
+      zod: 4.1.11
 
   dunder-proto@1.0.1:
     dependencies:

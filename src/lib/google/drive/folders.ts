@@ -3,7 +3,7 @@ import { Result, ok, err, fromPromise } from 'neverthrow';
 import { service } from '../service';
 import { DriveFolder } from './types';
 
-async function getFolderByName(
+export async function getFolderByName(
   name: string,
   parentId?: string
 ): Promise<Result<DriveFolder | null, Error>> {
