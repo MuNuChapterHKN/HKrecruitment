@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import {
   SidebarProvider,
   SidebarTrigger,
@@ -9,13 +10,15 @@ import { DashboardSidebar } from './Sidebar';
 import { auth } from '@/lib/server/auth';
 import { headers } from 'next/headers';
 
+type DashboardLayoutProps = {
+  children: ReactNode;
+  breadcrumbs: ReactNode;
+};
+
 export default async function DashboardLayout({
   children,
   breadcrumbs,
-}: {
-  children: React.ReactNode;
-  breadcrumbs: React.ReactNode;
-}) {
+}: DashboardLayoutProps) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
