@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist_Mono, Outfit } from 'next/font/google';
+import { Toaster } from '@/components/ui/sonner';
+
 import './globals.css';
 
 const outfit = Outfit({
@@ -27,6 +29,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${outfit.variable} ${geistMono.variable} antialiased`}>
         {children}
+        <Toaster />
       </body>
     </html>
   );
