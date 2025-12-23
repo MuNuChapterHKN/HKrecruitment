@@ -6,7 +6,7 @@ export default async function CandidatesPage() {
   const applicants = await listAllApplicants();
 
   return (
-    <main className="p-6">
+    <main className="px-6 py-4">
       <h1 className="text-2xl font-bold mb-6">Candidates</h1>
 
       <div className="grid gap-4">
