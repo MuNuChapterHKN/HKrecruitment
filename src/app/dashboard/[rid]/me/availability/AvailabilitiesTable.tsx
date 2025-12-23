@@ -1,6 +1,6 @@
 'use client';
 
-import { Timeslot } from '@/db/types';
+import { TimeslotPeek } from './page';
 import { useState, useEffect } from 'react';
 
 const WEEK_DAYS = [
@@ -14,24 +14,29 @@ const WEEK_DAYS = [
 ];
 
 type AvailabilitiesTableProps = {
-  timeslots: Timeslot[];
-  onSelectionChange?: (slots: Timeslot[]) => void;
+  timeslots: TimeslotPeek[];
+  onSelectionChange?: (slots: TimeslotPeek[]) => void;
 };
 
 export function AvailabilitiesTable({
-  timeslots,
+  timeslots: initialTimeslots,
   onSelectionChange,
 }: AvailabilitiesTableProps) {
-  const [selected, setSelected] = useState<Record<string, boolean>>({});
+  const [timeslots, setTimeslots] = useState<TimeslotPeek[]>(initialTimeslots);
   const [hourLimits, setHourLimits] = useState<[number, number]>([9, 20]);
   const [weekOffset, setWeekOffset] = useState(0);
+  const [availableWeeks, setAvailableWeeks] = useState<number[]>([]);
 
+  // Initialize timeslots from props
+  useEffect(() => {
+    setTimeslots(initialTimeslots);
+  }, [initialTimeslots]);
+
+  // Notify parent of changes
   useEffect(() => {
     if (!onSelectionChange) return;
-
-    const slots: Timeslot[] = timeslots.filter((ts) => selected[ts.id]);
-    onSelectionChange(slots);
-  }, [selected, timeslots, onSelectionChange]);
+    onSelectionChange(timeslots);
+  }, [timeslots, onSelectionChange]);
 
   useEffect(() => {
     let minHour = +Infinity,
@@ -43,15 +48,40 @@ export function AvailabilitiesTable({
       maxHour = Math.max(maxHour, h);
     });
 
-    console.log(minHour, maxHour);
     setHourLimits([minHour, maxHour]);
+
+    const today = new Date();
+    const todayMonday = new Date(today);
+    todayMonday.setDate(today.getDate() - today.getDay() + 1);
+    todayMonday.setHours(0, 0, 0, 0);
+
+    const weekOffsets = new Set<number>();
+    timeslots.forEach((ts) => {
+      const tsDate = new Date(ts.startingFrom);
+      const tsMonday = new Date(tsDate);
+      tsMonday.setDate(tsDate.getDate() - tsDate.getDay() + 1);
+      tsMonday.setHours(0, 0, 0, 0);
+
+      const weekDiff = Math.floor(
+        (tsMonday.getTime() - todayMonday.getTime()) / (7 * 24 * 60 * 60 * 1000)
+      );
+      weekOffsets.add(weekDiff);
+    });
+
+    const sortedWeeks = Array.from(weekOffsets).sort((a, b) => a - b);
+    setAvailableWeeks(sortedWeeks);
+
+    if (sortedWeeks.length > 0 && !sortedWeeks.includes(weekOffset)) {
+      setWeekOffset(sortedWeeks[0]);
+    }
   }, [timeslots]);
 
-  function toggleSlot(key: string) {
-    setSelected((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
+  function toggleSlot(timeslotId: string) {
+    setTimeslots((prev) =>
+      prev.map((ts) =>
+        ts.id === timeslotId ? { ...ts, active: !ts.active } : ts
+      )
+    );
   }
 
   const hours = Array.from(
@@ -69,7 +99,7 @@ export function AvailabilitiesTable({
     return date;
   });
 
-  const timeslotMap = new Map<string, Timeslot>();
+  const timeslotMap = new Map<string, TimeslotPeek>();
   timeslots.forEach((ts) => {
     const dateStr = ts.startingFrom.toISOString().split('T')[0];
     const hour = ts.startingFrom.getHours();
@@ -78,24 +108,35 @@ export function AvailabilitiesTable({
   });
 
   function goToPreviousWeek() {
-    setWeekOffset((prev) => prev - 1);
+    const currentIndex = availableWeeks.indexOf(weekOffset);
+    if (currentIndex > 0) {
+      setWeekOffset(availableWeeks[currentIndex - 1]);
+    }
   }
 
   function goToNextWeek() {
-    setWeekOffset((prev) => prev + 1);
+    const currentIndex = availableWeeks.indexOf(weekOffset);
+    if (currentIndex < availableWeeks.length - 1) {
+      setWeekOffset(availableWeeks[currentIndex + 1]);
+    }
   }
 
+  const canGoPrevious = availableWeeks.indexOf(weekOffset) > 0;
+  const canGoNext =
+    availableWeeks.indexOf(weekOffset) < availableWeeks.length - 1;
+
   return (
-    <div className="space-y-4 w-full">
-      <div className="flex items-center justify-center gap-4 w-full">
+    <div className="space-y-2 w-full">
+      <div className="flex items-center justify-center gap-2">
         <button
           onClick={goToPreviousWeek}
-          className="p-2 hover:bg-gray-100 rounded"
+          disabled={!canGoPrevious}
+          className="p-1 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed text-lg"
           aria-label="Previous week"
         >
           ←
         </button>
-        <span className="font-medium">
+        <span className="text-sm font-medium min-w-[200px] text-center">
           {weekDates[0].toLocaleDateString('en-US', {
             month: 'short',
             day: 'numeric',
@@ -109,7 +150,8 @@ export function AvailabilitiesTable({
         </span>
         <button
           onClick={goToNextWeek}
-          className="p-2 hover:bg-gray-100 rounded"
+          disabled={!canGoNext}
+          className="p-1 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed text-lg"
           aria-label="Next week"
         >
           →
@@ -153,16 +195,14 @@ export function AvailabilitiesTable({
                   );
                 }
 
-                const active = selected[timeslot.id];
-
                 return (
                   <td
                     key={key}
                     onClick={() => toggleSlot(timeslot.id)}
                     className={`cursor-pointer border text-center
-                    ${active ? 'bg-green-500 text-white' : 'bg-white hover:bg-gray-100'}`}
+                    ${timeslot.active ? 'bg-green-500 text-white' : 'bg-white hover:bg-gray-100'}`}
                   >
-                    {active ? '✓' : ''}
+                    {timeslot.active ? '✓' : ''}
                   </td>
                 );
               })}

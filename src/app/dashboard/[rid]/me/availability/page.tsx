@@ -1,10 +1,41 @@
 'use server';
 
 import { AvailabilityClient } from './AvailabilityClient';
-import { findAll } from '@/lib/services/timeslots';
+import { findAll, findForUser } from '@/lib/services/timeslots';
+import { submitAvailability } from '@/lib/actions/availability';
+import { auth } from '@/lib/server/auth';
+import { headers } from 'next/headers';
+
+export type TimeslotPeek = {
+  id: string;
+  startingFrom: Date;
+  active: boolean;
+};
 
 export default async function AvailabilityPage() {
-  const timeslots = await findAll();
+  /* Check Auth */
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session) return null;
+  const { user } = session;
+
+  const allTimeslots = await findAll();
+  const userTimeslotIds = await findForUser(user.id);
+
+  const timeslots: TimeslotPeek[] = allTimeslots.map((ts) => ({
+    id: ts.id,
+    startingFrom: ts.startingFrom,
+    active: userTimeslotIds.includes(ts.id),
+  }));
+
+  async function handleSubmit(slots: TimeslotPeek[]) {
+    'use server';
+    const timeslotIds = slots
+      .filter((slot) => slot.active)
+      .map((slot) => slot.id);
+    return submitAvailability(timeslotIds);
+  }
 
   return (
     <main className="px-6 py-4">
@@ -18,7 +49,10 @@ export default async function AvailabilityPage() {
           </p>
         </header>
 
-        <AvailabilityClient timeslots={timeslots} />
+        <AvailabilityClient
+          timeslots={timeslots}
+          onSubmitAction={handleSubmit}
+        />
       </div>
     </main>
   );
