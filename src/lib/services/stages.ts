@@ -1,6 +1,6 @@
 import { ApplicationStage } from '@/db/types';
 import { db, schema } from '@/db';
-import { eq } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 
 export const switchStage = async (
@@ -25,4 +25,26 @@ export const switchStage = async (
       processed,
     });
   });
+};
+
+export const getStageHistory = async (applicantId: string) => {
+  const history = await db
+    .select({
+      id: schema.stageStatus.id,
+      stage: schema.stageStatus.stage,
+      processed: schema.stageStatus.processed,
+      createdAt: schema.stageStatus.createdAt,
+      deletedAt: schema.stageStatus.deletedAt,
+      assignedBy: {
+        id: schema.user.id,
+        name: schema.user.name,
+        image: schema.user.image,
+      },
+    })
+    .from(schema.stageStatus)
+    .leftJoin(schema.user, eq(schema.stageStatus.assignedById, schema.user.id))
+    .where(eq(schema.stageStatus.applicantId, applicantId))
+    .orderBy(desc(schema.stageStatus.createdAt));
+
+  return history;
 };

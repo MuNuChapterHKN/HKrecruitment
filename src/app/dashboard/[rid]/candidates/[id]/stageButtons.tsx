@@ -104,6 +104,17 @@ export const stageButtons: Record<ApplicationStage, StageButton[]> = {
           />
         ),
     },
+    {
+      text: 'Remove from Limbo',
+      className: 'bg-blue-600 hover:bg-blue-700',
+      callback: (applicant) =>
+        openModal(
+          <RemoveLimboModal
+            onClose={() => dismissModal()}
+            applicant={applicant}
+          />
+        ),
+    },
   ],
   s: [],
 };
