@@ -190,7 +190,6 @@ export const interviewerAvailability = pgTable(
     timeslotId: text('timeslot_id')
       .notNull()
       .references(() => timeslot.id),
-    isFirstTime: boolean('is_first_time').default(false).notNull(),
     ...timestamps,
   },
   (t) => [primaryKey({ columns: [t.userId, t.timeslotId] })]
