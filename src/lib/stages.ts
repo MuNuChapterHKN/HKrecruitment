@@ -1,6 +1,8 @@
 import type { ApplicationStage } from '@/db/types';
 
 export const INTERVIEW_STAGE = 'c';
+export const INTERVIEW_BOOKING_STAGE = 'b';
+export const INTERVIEW_AWAITING_INTERVIEW = 'd';
 
 export const stageLabels: Record<ApplicationStage, string> = {
   a: 'Pending Application Review',

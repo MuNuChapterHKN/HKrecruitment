@@ -3,7 +3,7 @@ import { eq } from 'drizzle-orm';
 
 const tsl = schema.timeslot;
 
-const TIMESLOT_AVAILABILITY_MARGIN = 1;
+export const TIMESLOT_AVAILABILITY_MARGIN = 1;
 
 export const findAll = async (rid: string) =>
   await db.select().from(tsl).where(eq(tsl.recruitingSessionId, rid));

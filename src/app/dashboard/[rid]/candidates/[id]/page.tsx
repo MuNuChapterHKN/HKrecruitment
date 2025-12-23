@@ -20,7 +20,6 @@ export default async function CandidateDetailsPage({
 
   return (
     <main className="p-6 max-w-6xl">
-      {/* Header con nome e data */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-2">
           {applicant.name} {applicant.surname}
@@ -33,9 +32,7 @@ export default async function CandidateDetailsPage({
         </p>
       </div>
 
-      {/* Container principale con dettagli e azioni */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        {/* Dettagli candidato (2/3 della larghezza) */}
         <div className="lg:col-span-2">
           <h2 className="text-2xl font-semibold mb-4">Dettagli candidato</h2>
           <div className="bg-card rounded-lg shadow p-6 space-y-4">
@@ -57,11 +54,9 @@ export default async function CandidateDetailsPage({
           </div>
         </div>
 
-        {/* Sezione azioni - Client Component */}
         <ActionButtons applicant={applicant} />
       </div>
 
-      {/* Sezione documenti scaricabili */}
       <div className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">Documenti</h2>
         <div className="bg-card rounded-lg shadow p-6">
@@ -119,7 +114,6 @@ export default async function CandidateDetailsPage({
         </div>
       </div>
 
-      {/* Bottone torna alla lista */}
       <Link href="/dashboard/candidates">
         <button className="bg-primary text-primary-foreground px-6 py-3 rounded-md font-medium hover:bg-primary/90">
           ← Torna alla lista

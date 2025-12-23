@@ -5,6 +5,7 @@ import { InterviewBookingClient } from './InterviewBookingClient';
 import { findAvailableForBooking } from '@/lib/services/timeslots';
 import { findOne, bookInterview } from '@/lib/services/interviews';
 import { revalidatePath } from 'next/cache';
+import { INTERVIEW_BOOKING_STAGE } from '@/lib/stages';
 
 export type TimeslotPeek = {
   id: string;
@@ -29,7 +30,12 @@ export default async function InterviewBookingPage({
   if (!aid || !token || Array.isArray(token)) unauthorized();
 
   const applicant = await getApplicantById(aid);
-  if (!applicant || !applicant.token) unauthorized();
+  if (
+    !applicant ||
+    !applicant.token ||
+    applicant.stage < INTERVIEW_BOOKING_STAGE
+  )
+    unauthorized();
 
   if (!(await compare(token, applicant.token))) unauthorized();
 
