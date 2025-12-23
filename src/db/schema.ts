@@ -107,7 +107,6 @@ export const stageStatus = pgTable('stage_status', {
   stage: text('stage', {
     enum: STAGES,
   }).notNull(),
-  counter: integer('counter').default(0),
   processed: boolean('processed').default(false).notNull(),
   deletedAt: timestamp('deleted_at'),
   ...timestamps,
