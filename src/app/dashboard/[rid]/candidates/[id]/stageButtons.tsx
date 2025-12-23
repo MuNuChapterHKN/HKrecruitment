@@ -9,6 +9,7 @@ import {
   RejectModal,
   RemoveLimboModal,
 } from '@/components/dashboard';
+import { acceptApplication } from '@/lib/actions/applicants';
 
 export interface StageButton {
   text: string;
@@ -30,9 +31,11 @@ export const stageButtons: Record<ApplicationStage, StageButton[]> = {
     {
       text: 'Accept Application',
       className: 'bg-green-600 hover:bg-green-700',
-      callback: (applicant) => {
-        // TODO: Implement direct action for accept
-        console.log('Accept action for', applicant.id);
+      callback: async (applicant) => {
+        const result = await acceptApplication(applicant.id);
+        if (!result.success) {
+          alert(result.error || 'Failed to accept application');
+        }
       },
     },
     limboButton,
