@@ -10,6 +10,7 @@
 
 ## Code Style
 
+- **Comments**: No comments, UNLESS asked.
 - **TypeScript**: Strict mode enabled, use proper typing
 - **Imports**: Use `@/` alias for src imports, named imports preferred
 - **Components**: Use `export function ComponentName()` syntax
