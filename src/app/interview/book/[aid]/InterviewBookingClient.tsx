@@ -60,11 +60,12 @@ export function InterviewBookingClient({
         <div className="rounded-lg bg-card p-4 sm:p-8">
           <div className="mb-6 sm:mb-8">
             <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              Book Your Interview
+              {interview ? 'Your Interview' : 'Book Your Interview'}
             </h1>
             <p className="text-muted-foreground mt-2 text-sm sm:text-base">
-              Hello {applicantName}, please select a timeslot for your
-              interview.
+              {interview
+                ? `Hello ${applicantName}, here are the details of your scheduled interview.`
+                : `Hello ${applicantName}, please select a timeslot for your interview.`}
             </p>
           </div>
 
