@@ -14,13 +14,9 @@ export type TimeslotPeek = {
   active: boolean;
 };
 
-export type PageProps = {
-  params: Promise<{
-    rid: string;
-  }>;
-};
-
-export default async function AvailabilityPage({ params }: PageProps) {
+export default async function AvailabilityPage({
+  params,
+}: PageProps<'/dashboard/[rid]/me/availability'>) {
   /* Check Auth */
   const session = await auth.api.getSession({
     headers: await headers(),

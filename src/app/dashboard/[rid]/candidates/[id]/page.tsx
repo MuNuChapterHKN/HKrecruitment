@@ -5,7 +5,7 @@ import { getStageLabel } from '@/lib/stages';
 
 export default async function CandidateDetailsPage({
   params,
-}: PageProps<'/dashboard/candidates/[id]'>) {
+}: PageProps<'/dashboard/[rid]/candidates/[id]'>) {
   const { id } = await params;
   const applicant = await getApplicantById(id);
 

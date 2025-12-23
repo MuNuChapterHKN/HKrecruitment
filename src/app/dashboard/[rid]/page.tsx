@@ -1,13 +1,9 @@
 import { findOne } from '@/lib/services/recruitmentSessions';
 import { notFound } from 'next/navigation';
 
-export type PageProps = {
-  params: Promise<{
-    rid: string;
-  }>;
-};
-
-export default async function Dashboard({ params }: PageProps) {
+export default async function Dashboard({
+  params,
+}: PageProps<'/dashboard/[rid]'>) {
   const { rid } = await params;
   const recruitmentSession = await findOne(rid);
   if (!recruitmentSession) notFound();
