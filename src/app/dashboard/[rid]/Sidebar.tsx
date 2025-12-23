@@ -21,15 +21,14 @@ import {
   AvatarFallback,
   AvatarImage,
   Can,
+  DashboardLink,
 } from '@/components';
 import { ChevronUp, Users } from 'lucide-react';
-import Link from 'next/link';
 import { AuthUser, AuthUserRole, AuthUserRoleName } from '@/lib/auth';
 import { capitalize, cn } from '@/lib/utils';
 import RecruitmentSwitcher from './RecruitmentSwitcher';
 import { RecruitingSession } from '@/db/types';
 import { LINKS } from './Sidebar.data';
-import { useLinkPrefix } from '@/hooks/use-link-prefix';
 
 export type DashboardSidebarProps = {
   user: AuthUser;
@@ -40,8 +39,6 @@ export type DashboardSidebarProps = {
 };
 
 export function DashboardSidebar({ user, recruitment }: DashboardSidebarProps) {
-  const linkPrefix = useLinkPrefix();
-
   const { state } = useSidebar();
   const initials = user.name
     .split(' ')
@@ -68,10 +65,10 @@ export function DashboardSidebar({ user, recruitment }: DashboardSidebarProps) {
                     <Can I="read" this={link} key={j}>
                       <SidebarMenuItem key={link.label}>
                         <SidebarMenuButton asChild>
-                          <Link href={linkPrefix + link.href}>
+                          <DashboardLink href={link.href}>
                             {link.icon}
                             <span>{link.label}</span>
-                          </Link>
+                          </DashboardLink>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
                     </Can>
@@ -86,10 +83,10 @@ export function DashboardSidebar({ user, recruitment }: DashboardSidebarProps) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href={linkPrefix + '/users'}>
+              <DashboardLink href={'/users'}>
                 <Users />
                 <span>Members</span>
-              </Link>
+              </DashboardLink>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
