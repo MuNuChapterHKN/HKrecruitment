@@ -1,12 +1,12 @@
 import { getApplicantById } from '@/lib/services/applicants';
 import ActionButtons from './ActionButtons';
-import { getStageColor } from '@/lib/stages';
-import { Badge, Avatar, AvatarImage, AvatarFallback } from '@/components/ui';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui';
 import { DEGREE_LEVELS } from '@/db/schema';
 import { findOne, findInterviewers } from '@/lib/services/interviews';
 import { getStageHistory } from '@/lib/services/stages';
 import { CandidateTabs } from './CandidateTabs';
 import { StageHistory } from './StageHistory';
+import { StageBadge } from './StageBadge';
 
 const degreeLevelMap: Record<(typeof DEGREE_LEVELS)[number], string> = {
   bsc: 'Bachelor',
@@ -216,12 +216,7 @@ export default async function CandidateDetailsPage({
                 : ''}
             </p>
           </div>
-          <Badge
-            className="px-4 py-2 text-sm font-medium rounded-full"
-            style={{ backgroundColor: getStageColor(applicant.stage) }}
-          >
-            Stage {applicant.stage.toUpperCase()}
-          </Badge>
+          <StageBadge stage={applicant.stage} />
         </header>
 
         <CandidateTabs
