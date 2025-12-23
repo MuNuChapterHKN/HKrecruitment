@@ -101,9 +101,7 @@ export const stageStatus = pgTable('stage_status', {
   applicantId: text('applicant_id')
     .notNull()
     .references(() => applicant.id),
-  assignedById: text('assigned_by_id')
-    .notNull()
-    .references(() => user.id),
+  assignedById: text('assigned_by_id').references(() => user.id),
   stage: text('stage', {
     enum: STAGES,
   }).notNull(),

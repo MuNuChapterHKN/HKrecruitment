@@ -16,11 +16,13 @@ const WEEK_DAYS = [
 type AvailabilitiesTableProps = {
   timeslots: TimeslotPeek[];
   onSelectionChange?: (slots: TimeslotPeek[]) => void;
+  maxSelections?: number;
 };
 
 export function AvailabilitiesTable({
   timeslots: initialTimeslots,
   onSelectionChange,
+  maxSelections,
 }: AvailabilitiesTableProps) {
   const [timeslots, setTimeslots] = useState<TimeslotPeek[]>(initialTimeslots);
   const [hourLimits, setHourLimits] = useState<[number, number]>([9, 20]);
@@ -77,11 +79,33 @@ export function AvailabilitiesTable({
   }, [timeslots]);
 
   function toggleSlot(timeslotId: string) {
-    setTimeslots((prev) =>
-      prev.map((ts) =>
-        ts.id === timeslotId ? { ...ts, active: !ts.active } : ts
-      )
-    );
+    setTimeslots((prev) => {
+      const activeCount = prev.filter((ts) => ts.active).length;
+      const clickedSlot = prev.find((ts) => ts.id === timeslotId);
+
+      if (!clickedSlot) return prev;
+
+      if (clickedSlot.active) {
+        return prev.map((ts) =>
+          ts.id === timeslotId ? { ...ts, active: false } : ts
+        );
+      }
+
+      if (maxSelections !== undefined && activeCount >= maxSelections) {
+        if (maxSelections === 1) {
+          return prev.map((ts) =>
+            ts.id === timeslotId
+              ? { ...ts, active: true }
+              : { ...ts, active: false }
+          );
+        }
+        return prev;
+      }
+
+      return prev.map((ts) =>
+        ts.id === timeslotId ? { ...ts, active: true } : ts
+      );
+    });
   }
 
   const hours = Array.from(

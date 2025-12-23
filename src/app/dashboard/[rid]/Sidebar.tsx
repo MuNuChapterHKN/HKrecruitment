@@ -24,7 +24,12 @@ import {
   DashboardLink,
 } from '@/components';
 import { ChevronUp, Users } from 'lucide-react';
-import { AuthUser, AuthUserRole, AuthUserRoleName } from '@/lib/auth';
+import {
+  AuthUser,
+  AuthUserRole,
+  AuthUserRoleName,
+  authClient,
+} from '@/lib/auth';
 import { capitalize, cn } from '@/lib/utils';
 import RecruitmentSwitcher from './RecruitmentSwitcher';
 import { RecruitingSession } from '@/db/types';
@@ -45,6 +50,16 @@ export function DashboardSidebar({ user, recruitment }: DashboardSidebarProps) {
     .slice(0, 2)
     .map((w: string) => w[0])
     .join('');
+
+  const handleSignOut = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          window.location.href = '/signin';
+        },
+      },
+    });
+  };
 
   return (
     <Sidebar collapsible="icon">
@@ -117,7 +132,10 @@ export function DashboardSidebar({ user, recruitment }: DashboardSidebarProps) {
                 <DropdownMenuItem>
                   <span>Account</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="text-red-700">
+                <DropdownMenuItem
+                  className="text-red-700"
+                  onClick={handleSignOut}
+                >
                   <span>Sign out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>

@@ -1,6 +1,23 @@
-import { compare, hash } from '@/lib/server/token';
+import { compare } from '@/lib/server/token';
 import { getApplicantById } from '@/lib/services/applicants';
 import { unauthorized } from 'next/navigation';
+import { InterviewBookingClient } from './InterviewBookingClient';
+import { findAvailableForBooking } from '@/lib/services/timeslots';
+import { findOne, bookInterview } from '@/lib/services/interviews';
+import { revalidatePath } from 'next/cache';
+
+export type TimeslotPeek = {
+  id: string;
+  startingFrom: Date;
+  active: boolean;
+};
+
+export type InterviewInfo = {
+  id: string;
+  startingFrom: Date;
+  meetingId: string | null;
+  confirmed: boolean;
+};
 
 export default async function InterviewBookingPage({
   params,
@@ -10,14 +27,48 @@ export default async function InterviewBookingPage({
   const { token } = await searchParams;
 
   if (!aid || !token || Array.isArray(token)) unauthorized();
-  console.log(aid, token);
 
   const applicant = await getApplicantById(aid);
   if (!applicant || !applicant.token) unauthorized();
-  console.log(applicant);
 
-  console.log('yay', await hash('ciao-come-va'));
   if (!(await compare(token, applicant.token))) unauthorized();
 
-  return <div>you can now see this</div>;
+  let interview: InterviewInfo | null = null;
+  if (applicant.interviewId) {
+    const interviewData = await findOne(applicant.interviewId);
+    if (interviewData) {
+      interview = {
+        id: interviewData.id,
+        startingFrom: interviewData.startingFrom,
+        meetingId: interviewData.meetingId,
+        confirmed: interviewData.confirmed,
+      };
+    }
+  }
+
+  const availableTimeslots = await findAvailableForBooking(
+    applicant.recruitingSessionId
+  );
+
+  const timeslots: TimeslotPeek[] = availableTimeslots.map((ts) => ({
+    id: ts.id,
+    startingFrom: ts.startingFrom,
+    active: false,
+  }));
+
+  async function handleBooking(timeslotId: string) {
+    'use server';
+
+    await bookInterview(aid, timeslotId);
+    revalidatePath(`/interview/book/${aid}`);
+  }
+
+  return (
+    <InterviewBookingClient
+      timeslots={timeslots}
+      applicantName={`${applicant.name} ${applicant.surname}`}
+      interview={interview}
+      onSubmitAction={handleBooking}
+    />
+  );
 }
