@@ -1,7 +1,7 @@
 'use client';
 
 import { AvailabilitiesTable } from '@/app/dashboard/[rid]/me/availability/AvailabilitiesTable';
-import { Button } from '@/components/ui';
+import { Button, Avatar, AvatarImage, AvatarFallback } from '@/components/ui';
 import { useState } from 'react';
 import type { InterviewInfo } from './page';
 
@@ -98,6 +98,38 @@ export function InterviewBookingClient({
                         : 'Pending confirmation'}
                     </span>
                   </div>
+                  {interview.interviewers.length > 0 && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-muted-foreground font-medium">
+                        Interviewers:
+                      </span>
+                      <div className="flex items-center gap-3">
+                        {interview.interviewers.map((interviewer) => (
+                          <div
+                            key={interviewer.id}
+                            className="flex items-center gap-2"
+                          >
+                            <Avatar className="size-6">
+                              {interviewer.image && (
+                                <AvatarImage
+                                  src={interviewer.image}
+                                  alt={interviewer.name}
+                                />
+                              )}
+                              <AvatarFallback className="text-xs">
+                                {interviewer.name
+                                  .split(' ')
+                                  .map((n) => n[0])
+                                  .join('')
+                                  .toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            <span>{interviewer.name}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   {interview.meetingId && (
                     <div className="flex items-start gap-2">
                       <span className="text-muted-foreground font-medium">

@@ -3,7 +3,11 @@ import { getApplicantById } from '@/lib/services/applicants';
 import { unauthorized } from 'next/navigation';
 import { InterviewBookingClient } from './InterviewBookingClient';
 import { findAvailableForBooking } from '@/lib/services/timeslots';
-import { findOne, bookInterview } from '@/lib/services/interviews';
+import {
+  findOne,
+  bookInterview,
+  findInterviewers,
+} from '@/lib/services/interviews';
 import { revalidatePath } from 'next/cache';
 import { INTERVIEW_BOOKING_STAGE } from '@/lib/stages';
 
@@ -13,11 +17,18 @@ export type TimeslotPeek = {
   active: boolean;
 };
 
+export type Interviewer = {
+  id: string;
+  name: string;
+  image: string | null;
+};
+
 export type InterviewInfo = {
   id: string;
   startingFrom: Date;
   meetingId: string | null;
   confirmed: boolean;
+  interviewers: Interviewer[];
 };
 
 export default async function InterviewBookingPage({
@@ -43,11 +54,13 @@ export default async function InterviewBookingPage({
   if (applicant.interviewId) {
     const interviewData = await findOne(applicant.interviewId);
     if (interviewData) {
+      const interviewers = await findInterviewers(applicant.interviewId);
       interview = {
         id: interviewData.id,
         startingFrom: interviewData.startingFrom,
         meetingId: interviewData.meetingId,
         confirmed: interviewData.confirmed,
+        interviewers,
       };
     }
   }

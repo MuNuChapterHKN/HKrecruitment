@@ -2,9 +2,17 @@ import { listAllApplicants } from '@/lib/services/applicants';
 import { Applicant } from '@/db/types';
 import { DashboardLink } from '@/components/dashboard/DashboardLink';
 import { getStageLabel } from '@/lib/stages';
+import { notFound } from 'next/navigation';
+import { findOne } from '@/lib/services/recruitmentSessions';
 
-export default async function CandidatesPage() {
-  const applicants = await listAllApplicants();
+export default async function CandidatesPage({
+  params,
+}: PageProps<'/dashboard/[rid]/candidates'>) {
+  const { rid } = await params;
+  const recruitmentSession = await findOne(rid);
+  if (!recruitmentSession) notFound();
+
+  const applicants = await listAllApplicants(rid);
 
   return (
     <main className="px-6 py-4">

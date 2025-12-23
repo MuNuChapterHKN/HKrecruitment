@@ -24,6 +24,20 @@ export const findOne = async (interviewId: string) => {
   return result[0] ?? null;
 };
 
+export const findInterviewers = async (interviewId: string) => {
+  const result = await db
+    .select({
+      id: schema.user.id,
+      name: schema.user.name,
+      image: schema.user.image,
+    })
+    .from(schema.usersToInterviews)
+    .innerJoin(schema.user, eq(schema.usersToInterviews.userId, schema.user.id))
+    .where(eq(schema.usersToInterviews.interviewId, interviewId));
+
+  return result;
+};
+
 export const bookInterview = async (
   applicantId: string,
   timeslotId: string
