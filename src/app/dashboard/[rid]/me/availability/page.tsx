@@ -1,12 +1,14 @@
-import { getTimeslots } from './queries';
-import { AvailabilityClient } from './availabilityClient';
+'use server';
+
+import { AvailabilityClient } from './AvailabilityClient';
+import { findAll } from '@/lib/services/timeslots';
 
 export default async function AvailabilityPage() {
-  const timeslots = await getTimeslots();
+  const timeslots = await findAll();
 
   return (
-    <main className="px-4 py-8">
-      <div className="mx-auto max-w-4xl space-y-6">
+    <main className="px-6 py-4">
+      <div className="space-y-6">
         <header>
           <h1 className="text-2xl font-semibold tracking-tight">
             Interview availability
