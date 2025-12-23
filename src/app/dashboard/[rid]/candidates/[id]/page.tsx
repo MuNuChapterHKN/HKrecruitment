@@ -1,7 +1,15 @@
-import Link from 'next/link';
 import { getApplicantById } from '@/lib/services/applicants';
 import ActionButtons from './ActionButtons';
-import { getStageLabel } from '@/lib/stages';
+import { getStageLabel, getStageColor } from '@/lib/stages';
+import { Badge, Avatar, AvatarImage, AvatarFallback } from '@/components/ui';
+import { DEGREE_LEVELS } from '@/db/schema';
+import { findOne, findInterviewers } from '@/lib/services/interviews';
+
+const degreeLevelMap: Record<(typeof DEGREE_LEVELS)[number], string> = {
+  bsc: 'Bachelor',
+  msc: 'Master',
+  phd: 'PhD',
+};
 
 export default async function CandidateDetailsPage({
   params,
@@ -10,115 +18,199 @@ export default async function CandidateDetailsPage({
   const applicant = await getApplicantById(id);
 
   if (!applicant) {
-    return (
-      <main className="p-6">
-        <h1>Candidato non trovato</h1>
-        <Link href="/dashboard/candidates">Torna alla lista</Link>
-      </main>
-    );
+    return null;
   }
 
+  let interview = null;
+  let interviewers = [];
+  if (applicant.interviewId) {
+    interview = await findOne(applicant.interviewId);
+    interviewers = await findInterviewers(applicant.interviewId);
+  }
+
+  const formatDateTime = (date: Date) => {
+    return new Intl.DateTimeFormat('en-US', {
+      dateStyle: 'full',
+      timeStyle: 'short',
+    }).format(new Date(date));
+  };
+
   return (
-    <main className="p-6 max-w-6xl">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">
-          {applicant.name} {applicant.surname}
-        </h1>
-        <p className="text-lg text-muted-foreground">
-          Application date:{' '}
-          {applicant.createdAt
-            ? new Date(applicant.createdAt).toLocaleDateString()
-            : 'N/A'}
-        </p>
-      </div>
+    <main className="px-6 py-4">
+      <div className="space-y-6">
+        <header className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">
+              {applicant.name} {applicant.surname}
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {applicant.createdAt
+                ? new Date(applicant.createdAt).toLocaleDateString()
+                : ''}
+            </p>
+          </div>
+          <Badge
+            className="px-4 py-2 text-sm font-medium rounded-full"
+            style={{ backgroundColor: getStageColor(applicant.stage) }}
+          >
+            Stage {applicant.stage.toUpperCase()}
+          </Badge>
+        </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        <div className="lg:col-span-2">
-          <h2 className="text-2xl font-semibold mb-4">Dettagli candidato</h2>
-          <div className="bg-card rounded-lg shadow p-6 space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="space-y-6">
             <div>
-              <strong>Nome completo:</strong> {applicant.name}{' '}
-              {applicant.surname}
+              <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">
+                Quick View
+              </h2>
+              <div className="bg-muted/30 rounded-lg border p-6 space-y-3">
+                <div>
+                  <span className="font-semibold">Email:</span>{' '}
+                  {applicant.email}
+                </div>
+                <div>
+                  <span className="font-semibold">Degree Level:</span>{' '}
+                  {degreeLevelMap[applicant.degreeLevel]}
+                </div>
+                <div>
+                  <span className="font-semibold">Course:</span>{' '}
+                  {applicant.course}
+                </div>
+                <div>
+                  <span className="font-semibold">GPA:</span> {applicant.gpa}/30
+                </div>
+                <div>
+                  <span className="font-semibold">Italian Level:</span>{' '}
+                  {applicant.italianLevel.toUpperCase()}
+                </div>
+              </div>
             </div>
+
+            {interview && (
+              <div>
+                <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">
+                  Interview Details
+                </h2>
+                <div className="rounded-lg border bg-muted/30 p-6">
+                  <div className="space-y-3 text-sm">
+                    <div className="flex items-start gap-2">
+                      <span className="font-semibold">Date & Time:</span>
+                      <span>{formatDateTime(interview.startingFrom)}</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="font-semibold">Status:</span>
+                      <span
+                        className={
+                          interview.confirmed
+                            ? 'text-green-600 dark:text-green-400'
+                            : 'text-yellow-600 dark:text-yellow-400'
+                        }
+                      >
+                        {interview.confirmed
+                          ? 'Confirmed'
+                          : 'Pending confirmation'}
+                      </span>
+                    </div>
+                    {interviewers.length > 0 && (
+                      <div className="flex items-start gap-2">
+                        <span className="font-semibold">Interviewers:</span>
+                        <div className="flex items-center gap-3">
+                          {interviewers.map((interviewer) => (
+                            <div
+                              key={interviewer.id}
+                              className="flex items-center gap-2"
+                            >
+                              <Avatar className="size-6">
+                                {interviewer.image && (
+                                  <AvatarImage
+                                    src={interviewer.image}
+                                    alt={interviewer.name}
+                                  />
+                                )}
+                                <AvatarFallback className="text-xs">
+                                  {interviewer.name
+                                    .split(' ')
+                                    .map((n) => n[0])
+                                    .join('')
+                                    .toUpperCase()}
+                                </AvatarFallback>
+                              </Avatar>
+                              <span>{interviewer.name}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {interview.meetingId && (
+                      <div className="flex items-start gap-2">
+                        <span className="font-semibold">Meeting Link:</span>
+                        <a
+                          href={interview.meetingId}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary hover:underline"
+                        >
+                          Join interview
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div>
-              <strong>Titolo di studio:</strong>{' '}
-              {applicant.degreeLevel || 'N/A'}
-            </div>
-            <div>
-              <strong>Interview:</strong>{' '}
-              {applicant.interviewId || 'Not assigned'}
-            </div>
-            <div>
-              <strong>Stage:</strong> {getStageLabel(applicant.stage)}
+              <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">
+                Attachments
+              </h2>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-white rounded-lg p-4 border border-border flex flex-col items-center justify-center space-y-2 h-32">
+                  <svg
+                    className="w-8 h-8 text-muted-foreground"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <div className="text-center">
+                    <p className="font-medium text-sm">CV</p>
+                    <button className="text-xs text-muted-foreground hover:underline"></button>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg p-4 border border-border flex flex-col items-center justify-center space-y-2 h-32">
+                  <svg
+                    className="w-8 h-8 text-muted-foreground"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <div className="text-center">
+                    <p className="font-medium text-sm">StudyPath</p>
+                    <button className="text-xs text-muted-foreground hover:underline"></button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <ActionButtons applicant={applicant} />
-      </div>
-
-      <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">Documenti</h2>
-        <div className="bg-card rounded-lg shadow p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Link
-              href="#"
-              className="flex items-center p-4 border border-border rounded-lg hover:bg-muted transition-colors"
-            >
-              <div className="mr-3">
-                <svg
-                  className="w-8 h-8 text-red-600"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
-              <div>
-                <p className="font-medium">Curriculum Vitae</p>
-                <p className="text-sm text-muted-foreground">
-                  Download CV (PDF)
-                </p>
-              </div>
-            </Link>
-
-            <Link
-              href="#"
-              className="flex items-center p-4 border border-border rounded-lg hover:bg-muted transition-colors"
-            >
-              <div className="mr-3">
-                <svg
-                  className="w-8 h-8 text-blue-600"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
-              <div>
-                <p className="font-medium">Study Path</p>
-                <p className="text-sm text-muted-foreground">
-                  Download transcript (PDF)
-                </p>
-              </div>
-            </Link>
+          <div>
+            <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">
+              Quick Actions
+            </h2>
+            <ActionButtons applicant={applicant} />
           </div>
         </div>
       </div>
-
-      <Link href="/dashboard/candidates">
-        <button className="bg-primary text-primary-foreground px-6 py-3 rounded-md font-medium hover:bg-primary/90">
-          ← Torna alla lista
-        </button>
-      </Link>
     </main>
   );
 }
