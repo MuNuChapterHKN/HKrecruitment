@@ -17,7 +17,6 @@ export type TimeslotPeek = {
 export default async function AvailabilityPage({
   params,
 }: PageProps<'/dashboard/[rid]/me/availability'>) {
-  /* Check Auth */
   const session = await auth.api.getSession({
     headers: await headers(),
   });
