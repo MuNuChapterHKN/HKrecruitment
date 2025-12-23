@@ -29,7 +29,7 @@ import { capitalize, cn } from '@/lib/utils';
 import RecruitmentSwitcher from './RecruitmentSwitcher';
 import { RecruitingSession } from '@/db/types';
 import { LINKS } from './Sidebar.data';
-import { usePathname } from 'next/navigation';
+import { useLinkPrefix } from '@/hooks/use-link-prefix';
 
 export type DashboardSidebarProps = {
   user: AuthUser;
@@ -40,8 +40,7 @@ export type DashboardSidebarProps = {
 };
 
 export function DashboardSidebar({ user, recruitment }: DashboardSidebarProps) {
-  const pathname = usePathname();
-  const linkPrefix = pathname.split('/').splice(0, 3).join('/');
+  const linkPrefix = useLinkPrefix();
 
   const { state } = useSidebar();
   const initials = user.name
