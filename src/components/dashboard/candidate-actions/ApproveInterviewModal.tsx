@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useActionState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -12,10 +12,18 @@ import {
   type Option,
 } from '@/components';
 import type { BaseModalProps } from './types';
+import {
+  approveInterview,
+  type ApproveInterviewState,
+} from '@/lib/actions/interviews';
 
 export interface InterviewFormData {
   interviewers: string[];
 }
+
+const initialState: ApproveInterviewState = {
+  message: '',
+};
 
 export default function ApproveInterviewModal({
   applicant,
@@ -28,6 +36,10 @@ export default function ApproveInterviewModal({
     []
   );
   const [isLoading, setIsLoading] = useState(true);
+  const [state, formAction, pending] = useActionState(
+    approveInterview,
+    initialState
+  );
 
   useEffect(() => {
     const fetchAvailableUsers = async () => {
@@ -64,22 +76,11 @@ export default function ApproveInterviewModal({
     fetchAvailableUsers();
   }, [applicant?.interviewId]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (formData.interviewers.length === 0) {
-      alert('Please select at least one interviewer');
-      return;
+  useEffect(() => {
+    if (state.success) {
+      onClose();
     }
-
-    console.log(
-      'Approving interview with interviewers:',
-      formData.interviewers
-    );
-
-    onClose();
-    setFormData({ interviewers: [] });
-  };
+  }, [state.success, onClose]);
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
@@ -87,7 +88,21 @@ export default function ApproveInterviewModal({
         <DialogHeader>
           <DialogTitle>Approve Interview</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form action={formAction} className="space-y-4">
+          <input type="hidden" name="applicantId" value={applicant?.id || ''} />
+          <input
+            type="hidden"
+            name="interviewId"
+            value={applicant?.interviewId || ''}
+          />
+          {formData.interviewers.map((interviewerId) => (
+            <input
+              key={interviewerId}
+              type="hidden"
+              name="interviewerIds"
+              value={interviewerId}
+            />
+          ))}
           <div>
             <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 block mb-2">
               Select Interviewers
@@ -105,7 +120,6 @@ export default function ApproveInterviewModal({
                 <MultiSelect
                   options={availableInterviewers}
                   onValueChange={(values) => {
-                    console.log('Interviewers selected:', values);
                     setFormData({ ...formData, interviewers: values });
                   }}
                   defaultValue={formData.interviewers}
@@ -121,6 +135,14 @@ export default function ApproveInterviewModal({
               </>
             )}
           </div>
+          {state.message && (
+            <p
+              className={`text-sm ${state.success ? 'text-green-600' : 'text-red-600'}`}
+              aria-live="polite"
+            >
+              {state.message}
+            </p>
+          )}
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
@@ -128,9 +150,11 @@ export default function ApproveInterviewModal({
             <Button
               type="submit"
               className="bg-blue-600 hover:bg-blue-700"
-              disabled={isLoading || availableInterviewers.length === 0}
+              disabled={
+                isLoading || pending || availableInterviewers.length === 0
+              }
             >
-              Approve Interview
+              {pending ? 'Approving...' : 'Approve Interview'}
             </Button>
           </DialogFooter>
         </form>
