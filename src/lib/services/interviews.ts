@@ -2,6 +2,7 @@ import { db, schema } from '@/db';
 import { eq } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import { INTERVIEW_STAGE } from '../stages';
+import { switchStage } from './stages';
 
 export const findOne = async (interviewId: string) => {
   const result = await db
@@ -43,7 +44,6 @@ export const bookInterview = async (
   timeslotId: string
 ) => {
   const interviewId = nanoid();
-  const stageStatusId = nanoid();
 
   await db.transaction(async (tx) => {
     await tx.insert(schema.interview).values({
@@ -57,19 +57,12 @@ export const bookInterview = async (
     await tx
       .update(schema.applicant)
       .set({
-        stage: INTERVIEW_STAGE,
         interviewId,
       })
       .where(eq(schema.applicant.id, applicantId));
-
-    await tx.insert(schema.stageStatus).values({
-      id: stageStatusId,
-      applicantId,
-      assignedById: null,
-      stage: INTERVIEW_STAGE,
-      processed: true,
-    });
   });
+
+  await switchStage(applicantId, INTERVIEW_STAGE, true, null);
 
   return interviewId;
 };

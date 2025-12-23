@@ -1,12 +1,10 @@
 'use server';
 
-import { db, schema } from '@/db';
 import { auth } from '@/lib/server/auth';
 import { headers } from 'next/headers';
-import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
-import { nanoid } from 'nanoid';
 import { INTERVIEW_BOOKING_STAGE } from '@/lib/stages';
+import { switchStage } from '@/lib/services/stages';
 
 export async function acceptApplication(applicantId: string) {
   const session = await auth.api.getSession({
@@ -18,22 +16,7 @@ export async function acceptApplication(applicantId: string) {
   const { user } = session;
 
   try {
-    await db.transaction(async (tx) => {
-      await tx
-        .update(schema.applicant)
-        .set({
-          stage: INTERVIEW_BOOKING_STAGE,
-        })
-        .where(eq(schema.applicant.id, applicantId));
-
-      await tx.insert(schema.stageStatus).values({
-        id: nanoid(),
-        applicantId,
-        assignedById: user.id,
-        stage: INTERVIEW_BOOKING_STAGE,
-        processed: false,
-      });
-    });
+    await switchStage(applicantId, INTERVIEW_BOOKING_STAGE, false, user.id);
 
     revalidatePath('/dashboard/[rid]/candidates');
 

@@ -5,8 +5,8 @@ import { auth } from '@/lib/server/auth';
 import { headers } from 'next/headers';
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
-import { nanoid } from 'nanoid';
 import { INTERVIEW_AWAITING_INTERVIEW } from '@/lib/stages';
+import { switchStage } from '@/lib/services/stages';
 
 export type ApproveInterviewState = {
   message: string;
@@ -43,21 +43,6 @@ export async function approveInterview(
   try {
     await db.transaction(async (tx) => {
       await tx
-        .update(schema.applicant)
-        .set({
-          stage: INTERVIEW_AWAITING_INTERVIEW,
-        })
-        .where(eq(schema.applicant.id, applicantId));
-
-      await tx.insert(schema.stageStatus).values({
-        id: nanoid(),
-        applicantId,
-        assignedById: user.id,
-        stage: INTERVIEW_AWAITING_INTERVIEW,
-        processed: true,
-      });
-
-      await tx
         .update(schema.interview)
         .set({
           confirmed: true,
@@ -71,6 +56,8 @@ export async function approveInterview(
         }))
       );
     });
+
+    await switchStage(applicantId, INTERVIEW_AWAITING_INTERVIEW, true, user.id);
 
     revalidatePath('/dashboard/[rid]/candidates');
 
