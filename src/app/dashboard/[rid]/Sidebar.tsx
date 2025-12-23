@@ -1,8 +1,6 @@
 'use client';
 
 import {
-  LogoLong,
-  LogoSquare,
   Sidebar,
   SidebarContent,
   SidebarFooter,
@@ -24,50 +22,27 @@ import {
   AvatarImage,
   Can,
 } from '@/components';
-import { Calendar, ChevronUp, CircleAlert, Gauge, Users } from 'lucide-react';
+import { ChevronUp, Users } from 'lucide-react';
 import Link from 'next/link';
 import { AuthUser, AuthUserRole, AuthUserRoleName } from '@/lib/auth';
-import { A } from '@/lib/abilities';
 import { capitalize, cn } from '@/lib/utils';
+import RecruitmentSwitcher from './RecruitmentSwitcher';
+import { RecruitingSession } from '@/db/types';
+import { LINKS } from './Sidebar.data';
+import { usePathname } from 'next/navigation';
 
-const LINKS: Record<
-  string,
-  A<{
-    links: A<{ label: string; href: string; icon?: React.ReactNode }>[];
-  }>
-> = {
-  platform: {
-    canRead: AuthUserRole.Guest,
-    links: [
-      {
-        label: 'Overview',
-        href: '/dashboard',
-        icon: <Gauge />,
-        canRead: AuthUserRole.Guest,
-      },
-      {
-        label: 'Candidates',
-        href: '/dashboard/candidates',
-        icon: <Users />,
-        canRead: AuthUserRole.Guest,
-      },
-      {
-        label: 'Members',
-        href: '/dashboard/users',
-        icon: <Users />,
-        canRead: AuthUserRole.Guest,
-      },
-      {
-        label: 'Availability Calendar',
-        href: '/dashboard/me/availability',
-        icon: <Calendar />,
-        canRead: AuthUserRole.Guest,
-      },
-    ],
-  },
+export type DashboardSidebarProps = {
+  user: AuthUser;
+  recruitment: {
+    selected: RecruitingSession;
+    options: Pick<RecruitingSession, 'id' | 'year' | 'semester'>[];
+  };
 };
 
-export function DashboardSidebar({ user }: { user: AuthUser }) {
+export function DashboardSidebar({ user, recruitment }: DashboardSidebarProps) {
+  const pathname = usePathname();
+  const linkPrefix = pathname.split('/').splice(0, 3).join('/');
+
   const { state } = useSidebar();
   const initials = user.name
     .split(' ')
@@ -78,11 +53,10 @@ export function DashboardSidebar({ user }: { user: AuthUser }) {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        {state == 'expanded' ? (
-          <LogoLong className="text-foreground w-fit h-7 py-1 px-2" />
-        ) : (
-          <LogoSquare className="text-foreground w-fit h-7 mt-[0.1em]" />
-        )}
+        <RecruitmentSwitcher
+          selected={recruitment.selected}
+          options={recruitment.options}
+        />
       </SidebarHeader>
       <SidebarContent>
         {Object.entries(LINKS).map(([groupName, group], i) => (
@@ -95,7 +69,7 @@ export function DashboardSidebar({ user }: { user: AuthUser }) {
                     <Can I="read" this={link} key={j}>
                       <SidebarMenuItem key={link.label}>
                         <SidebarMenuButton asChild>
-                          <Link href={link.href}>
+                          <Link href={linkPrefix + link.href}>
                             {link.icon}
                             <span>{link.label}</span>
                           </Link>
@@ -111,6 +85,14 @@ export function DashboardSidebar({ user }: { user: AuthUser }) {
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <Link href={linkPrefix + '/users'}>
+                <Users />
+                <span>Members</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
