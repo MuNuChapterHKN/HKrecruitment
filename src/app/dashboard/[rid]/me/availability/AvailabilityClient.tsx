@@ -24,7 +24,8 @@ export function AvailabilityClient({
 
     try {
       setIsSubmitting(true);
-      const result = await onSubmitAction(selectedSlots);
+      const activeSlots = selectedSlots.filter((slot) => slot.active);
+      const result = await onSubmitAction(activeSlots);
 
       if (result.success) {
         toast.success('Availability submitted successfully!');
@@ -53,7 +54,7 @@ export function AvailabilityClient({
         onClick={handleSubmit}
         disabled={isSubmitting || activeCount === 0}
       >
-        {isSubmitting ? 'Salvataggio...' : `Submit (${activeCount} selected)`}
+        {isSubmitting ? 'Saving...' : `Submit (${activeCount} selected)`}
       </button>
     </div>
   );

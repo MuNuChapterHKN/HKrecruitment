@@ -5,6 +5,8 @@ import { findAll, findForUser } from '@/lib/services/timeslots';
 import { submitAvailability } from '@/lib/actions/availability';
 import { auth } from '@/lib/server/auth';
 import { headers } from 'next/headers';
+import { findOne } from '@/lib/services/recruitmentSessions';
+import { notFound } from 'next/navigation';
 
 export type TimeslotPeek = {
   id: string;
@@ -12,7 +14,13 @@ export type TimeslotPeek = {
   active: boolean;
 };
 
-export default async function AvailabilityPage() {
+export type PageProps = {
+  params: Promise<{
+    rid: string;
+  }>;
+};
+
+export default async function AvailabilityPage({ params }: PageProps) {
   /* Check Auth */
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -20,7 +28,11 @@ export default async function AvailabilityPage() {
   if (!session) return null;
   const { user } = session;
 
-  const allTimeslots = await findAll();
+  const { rid } = await params;
+  const recruitmentSession = await findOne(rid);
+  if (!recruitmentSession) notFound();
+
+  const allTimeslots = await findAll(rid);
   const userTimeslotIds = await findForUser(user.id);
 
   const timeslots: TimeslotPeek[] = allTimeslots.map((ts) => ({

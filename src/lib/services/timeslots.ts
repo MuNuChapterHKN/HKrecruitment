@@ -1,7 +1,10 @@
 import { db, schema } from '@/db';
 import { eq } from 'drizzle-orm';
 
-export const findAll = async () => await db.select().from(schema.timeslot);
+const tsl = schema.timeslot;
+
+export const findAll = async (rid: string) =>
+  await db.select().from(tsl).where(eq(tsl.recruitingSessionId, rid));
 
 export const findForUser = async (userId: string) => {
   const availabilities = await db
