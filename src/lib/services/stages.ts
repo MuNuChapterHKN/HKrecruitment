@@ -7,7 +7,8 @@ export const switchStage = async (
   aid: string,
   stage: ApplicationStage,
   processed: boolean = false,
-  userId: string | null = null
+  userId: string | null = null,
+  notes: string | null = null
 ) => {
   await db.transaction(async (tx) => {
     await tx
@@ -23,8 +24,17 @@ export const switchStage = async (
       assignedById: userId,
       stage,
       processed,
+      notes,
     });
   });
+};
+
+export const switchToLimbo = async (
+  aid: string,
+  userId: string | null = null
+) => {
+  const LIMBO_STAGE = 'z' as ApplicationStage;
+  await switchStage(aid, LIMBO_STAGE, false, userId);
 };
 
 export const getStageHistory = async (applicantId: string) => {
@@ -35,6 +45,7 @@ export const getStageHistory = async (applicantId: string) => {
       processed: schema.stageStatus.processed,
       createdAt: schema.stageStatus.createdAt,
       deletedAt: schema.stageStatus.deletedAt,
+      notes: schema.stageStatus.notes,
       assignedBy: {
         id: schema.user.id,
         name: schema.user.name,

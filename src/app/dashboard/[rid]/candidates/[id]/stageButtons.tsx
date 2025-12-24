@@ -3,8 +3,6 @@ import { dismissModal, openModal } from '@/components/modals';
 
 import {
   ApproveInterviewModal,
-  LimboModal,
-  SubmitReportModal,
   AssignAreaModal,
   RejectModal,
   RemoveLimboModal,
@@ -12,6 +10,7 @@ import {
 import {
   acceptApplication,
   submitInterviewReport,
+  moveToLimbo,
 } from '@/lib/actions/applicants';
 
 export interface StageButton {
@@ -23,10 +22,12 @@ export interface StageButton {
 const limboButton: StageButton = {
   text: 'Move to Limbo',
   className: 'bg-yellow-600 hover:bg-yellow-700',
-  callback: (applicant: Applicant) =>
-    openModal(
-      <LimboModal onClose={() => dismissModal()} applicant={applicant} />
-    ),
+  callback: async (applicant: Applicant) => {
+    const result = await moveToLimbo(applicant.id);
+    if (!result.success) {
+      alert(result.error || 'Failed to move to limbo');
+    }
+  },
 };
 
 export const stageButtons: Record<ApplicationStage, StageButton[]> = {
@@ -95,17 +96,6 @@ export const stageButtons: Record<ApplicationStage, StageButton[]> = {
   ],
   f: [limboButton],
   z: [
-    {
-      text: 'Remove from Limbo',
-      className: 'bg-blue-600 hover:bg-blue-700',
-      callback: (applicant) =>
-        openModal(
-          <RemoveLimboModal
-            onClose={() => dismissModal()}
-            applicant={applicant}
-          />
-        ),
-    },
     {
       text: 'Remove from Limbo',
       className: 'bg-blue-600 hover:bg-blue-700',

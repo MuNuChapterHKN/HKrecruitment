@@ -107,6 +107,7 @@ export const stageStatus = pgTable('stage_status', {
   }).notNull(),
   processed: boolean('processed').default(false).notNull(),
   deletedAt: timestamp('deleted_at'),
+  notes: text('notes'),
   ...timestamps,
 });
 

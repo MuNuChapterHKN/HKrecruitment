@@ -13,6 +13,7 @@ type StageHistoryItem = {
     name: string;
     image: string | null;
   } | null;
+  notes: string | null;
 };
 
 type StageHistoryProps = {
@@ -62,6 +63,14 @@ export function StageHistory({ history }: StageHistoryProps) {
                   <span className="font-medium">Processed:</span>{' '}
                   {item.processed ? 'Yes' : 'No'}
                 </div>
+                {item.notes && (
+                  <div className="mt-2 pt-2 border-t border-border">
+                    <span className="font-medium">Notes:</span>
+                    <p className="mt-1 text-foreground whitespace-pre-wrap">
+                      {item.notes}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
             <div className="flex items-center gap-2">
