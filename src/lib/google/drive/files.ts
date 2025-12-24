@@ -57,3 +57,32 @@ export async function uploadFile(params: {
     });
   });
 }
+
+export async function shareFileWithDomain(
+  fileId: string,
+  domain: string
+): Promise<Result<void, Error>> {
+  const authResult = await service.getAuth();
+  if (authResult.isErr()) {
+    return err(authResult.error);
+  }
+
+  const drive = google.drive({ version: 'v3', auth: authResult.value });
+
+  return fromPromise(
+    drive.permissions.create({
+      fileId,
+      requestBody: {
+        role: 'reader',
+        type: 'domain',
+        domain,
+      },
+    }),
+    (error) =>
+      error instanceof Error ? error : new Error('Unknown error occurred')
+  ).andThen(() => ok(undefined));
+}
+
+export function getFileViewUrl(fileId: string): string {
+  return `https://drive.google.com/file/d/${fileId}/view`;
+}

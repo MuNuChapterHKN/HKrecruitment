@@ -3,7 +3,7 @@ import { db } from '@/db';
 import { applicant, DEGREE_LEVELS, LANGUAGE_LEVELS, STAGES } from '@/db/schema';
 import { insertApplicantSchema } from '@/lib/services/applicants';
 import { getFolderByName, createFolder } from '@/lib/google/drive/folders';
-import { uploadFile } from '@/lib/google/drive/files';
+import { uploadFile, shareFileWithDomain } from '@/lib/google/drive/files';
 import { ZodError } from 'zod';
 import { findLatest } from '@/lib/services/recruitmentSessions';
 import { nanoid } from 'nanoid';
@@ -168,6 +168,13 @@ export async function POST(req: Request) {
 
     toInsert.cvFileId = cvUploadResult.value.id;
     toInsert.spFileId = spUploadResult.value.id;
+
+    const domain = process.env.GOOGLE_WORKSPACE_DOMAIN;
+    if (domain) {
+      await shareFileWithDomain(cvUploadResult.value.id, domain);
+      await shareFileWithDomain(spUploadResult.value.id, domain);
+      await shareFileWithDomain(infoUploadResult.value.id, domain);
+    }
 
     const inserted = await db.insert(applicant).values([toInsert]).returning();
 
