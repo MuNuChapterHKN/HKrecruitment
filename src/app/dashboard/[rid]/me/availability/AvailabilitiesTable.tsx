@@ -208,13 +208,13 @@ export function AvailabilitiesTable({
               {WEEK_DAYS.map((day, dayIndex) => {
                 const weekDate = weekDates[dayIndex];
                 const dateStr = weekDate.toISOString().split('T')[0];
-                const key = `${dateStr}-${hour}`;
-                const timeslot = timeslotMap.get(key);
+                const cellKey = `${dateStr}-${hour}`;
+                const timeslot = timeslotMap.get(cellKey);
 
                 if (!timeslot) {
                   return (
                     <td
-                      key={`${day}-${hour}`}
+                      key={cellKey}
                       className="border bg-gray-100 text-center"
                     >
                       -
@@ -224,7 +224,7 @@ export function AvailabilitiesTable({
 
                 return (
                   <td
-                    key={`${day}-${hour}`}
+                    key={cellKey}
                     onClick={() => toggleSlot(timeslot.id)}
                     className={`cursor-pointer border text-center
                     ${timeslot.active ? 'bg-green-500 text-white' : 'bg-white hover:bg-gray-100'}`}
