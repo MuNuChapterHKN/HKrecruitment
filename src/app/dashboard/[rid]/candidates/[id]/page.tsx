@@ -1,18 +1,12 @@
 import { getApplicantById } from '@/lib/services/applicants';
 import ActionButtons from './ActionButtons';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui';
-import { DEGREE_LEVELS } from '@/db/schema';
 import { findOne, findInterviewers } from '@/lib/services/interviews';
 import { getStageHistory } from '@/lib/services/stages';
 import { CandidateTabs } from './CandidateTabs';
 import { StageHistory } from './StageHistory';
 import { StageBadge } from './StageBadge';
-
-const degreeLevelMap: Record<(typeof DEGREE_LEVELS)[number], string> = {
-  bsc: 'Bachelor',
-  msc: 'Master',
-  phd: 'PhD',
-};
+import { degreeLevelMap } from '@/lib/degrees';
 
 export default async function CandidateDetailsPage({
   params,
