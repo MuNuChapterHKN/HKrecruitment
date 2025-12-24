@@ -1,57 +1,54 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
-import {
-  applicant,
-  recruitingSession,
-  DEGREE_LEVELS,
-  LANGUAGE_LEVELS,
-  STAGES,
-} from '@/db/schema';
-import { insertApplicantSchema } from '@/lib/models/applicants';
-import {
-  getFolderByName,
-  createFolder,
-} from '@/lib/google/drive/folders';
+import { applicant, DEGREE_LEVELS, LANGUAGE_LEVELS, STAGES } from '@/db/schema';
+import { insertApplicantSchema } from '@/lib/services/applicants';
+import { getFolderByName, createFolder } from '@/lib/google/drive/folders';
 import { uploadFile } from '@/lib/google/drive/files';
 import { ZodError } from 'zod';
-import { desc } from 'drizzle-orm';
+import { findLatest } from '@/lib/services/recruitmentSessions';
+import { nanoid } from 'nanoid';
 
 export async function POST(req: Request) {
   try {
     const form = await req.formData();
 
-    const [session] = await db
-      .select()
-      .from(recruitingSession)
-      .orderBy(desc(recruitingSession.start_date))
-      .limit(1);
+    const recruiting = await findLatest();
 
-    if (!session) {
+    if (!recruiting) {
       return NextResponse.json(
         { error: 'No recruiting session found' },
-        { status: 500 }
+        { status: 400 }
       );
     }
 
     const now = new Date();
-    const start = new Date(session.start_date);
-    const end = new Date(session.end_date);
+    const isValidWindow =
+      now >= recruiting.start_date && now <= recruiting.end_date;
 
-    const isValidWindow = now >= start && now <= end;
-
-    if (!isValidWindow) {
+    if (!isValidWindow)
       return NextResponse.json(
         {
           error:
             'Applications are closed. Please apply during the next recruiting session.',
-          session: { start_date: start, end_date: end },
+          session: {
+            start_date: recruiting.start_date,
+            end_date: recruiting.end_date,
+          },
         },
         { status: 403 }
+      );
+
+    const cvFile = form.get('cvFile') as File | null;
+    const spFile = form.get('spFile') as File | null;
+
+    if (!cvFile || !spFile) {
+      return NextResponse.json(
+        { error: 'CV file and StudyPath file are required.' },
+        { status: 422 }
       );
     }
 
     const data = {
-      recruitingSessionId: form.get('recruitingSessionId')?.toString(),
       name: form.get('name')?.toString(),
       surname: form.get('surname')?.toString(),
       email: form.get('email')?.toString(),
@@ -65,8 +62,8 @@ export async function POST(req: Request) {
     const parsed = insertApplicantSchema.parse(data);
 
     const toInsert = {
-      id: crypto.randomUUID(),
-      recruitingSessionId: parsed.recruitingSessionId,
+      id: nanoid(),
+      recruitingSessionId: recruiting.id,
       name: parsed.name,
       surname: parsed.surname,
       email: parsed.email,
@@ -78,23 +75,12 @@ export async function POST(req: Request) {
       stage: 'a' as (typeof STAGES)[number],
       cvFileId: '',
       spFileId: '',
-      interviewId: '',
-      token: '',
-      chosenArea: null,
-      accepted: null,
     };
 
-    const cvFile = form.get('cvFile') as File | null;
-    const spFile = form.get('spFile') as File | null;
-
-    if(!cvFile || !spFile){
-      return NextResponse.json(
-        { error: 'CV file and SP file are required.' },
-        { status: 422 }
-      );
-    }
-
-    if(cvFile.type !== 'application/pdf' || spFile.type !== 'application/pdf'){
+    if (
+      cvFile.type !== 'application/pdf' ||
+      spFile.type !== 'application/pdf'
+    ) {
       return NextResponse.json(
         { error: 'CV file and SP file must be PDF documents.' },
         { status: 422 }
@@ -169,7 +155,7 @@ export async function POST(req: Request) {
       file: {
         name: 'info.txt',
         type: 'text/plain',
-        data: new TextEncoder().encode(infoTxt),
+        data: new TextEncoder().encode(infoTxt).buffer,
       },
     });
 

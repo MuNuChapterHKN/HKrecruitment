@@ -17,7 +17,6 @@ export async function getApplicantById(id: string) {
 
 export const insertApplicantSchema = createInsertSchema(applicant)
   .pick({
-    recruitingSessionId: true,
     name: true,
     surname: true,
     email: true,
@@ -28,7 +27,6 @@ export const insertApplicantSchema = createInsertSchema(applicant)
     italianLevel: true,
   })
   .extend({
-    recruitingSessionId: z.string().nonempty('Recruiting session is required'),
     name: z.string().nonempty('Name is required'),
     surname: z.string().nonempty('Surname is required'),
     email: z.email('Invalid email'),
