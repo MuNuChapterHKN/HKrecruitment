@@ -5,6 +5,7 @@ import {
   findOne,
   findInterviewers,
   bookInterview,
+  deleteInterview,
 } from '@/lib/services/interviews';
 import { getStageHistory } from '@/lib/services/stages';
 import { CandidateTabs } from './CandidateTabs';
@@ -13,8 +14,9 @@ import { StageBadge } from './StageBadge';
 import { degreeLevelMap } from '@/lib/degrees';
 import { getFileViewUrl } from '@/lib/google/drive/files';
 import { findOne as findRecruitmentSession } from '@/lib/services/recruitmentSessions';
-import { Mail } from 'lucide-react';
+import { Mail, Trash2 } from 'lucide-react';
 import { ManualBookingClient } from './ManualBookingClient';
+import { DeleteInterviewButton } from './DeleteInterviewButton';
 import { findAvailableForBooking } from '@/lib/services/timeslots';
 import { revalidatePath } from 'next/cache';
 import { INTERVIEW_BOOKING_STAGE } from '@/lib/stages';
@@ -57,6 +59,15 @@ export default async function CandidateDetailsPage({
     'use server';
 
     await bookInterview(id, timeslotId);
+    revalidatePath(
+      `/dashboard/${applicant.recruitingSessionId}/candidates/${id}`
+    );
+  }
+
+  async function handleDeleteInterview() {
+    'use server';
+
+    await deleteInterview(id);
     revalidatePath(
       `/dashboard/${applicant.recruitingSessionId}/candidates/${id}`
     );
@@ -114,9 +125,12 @@ export default async function CandidateDetailsPage({
 
       {interview && (
         <div>
-          <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">
-            Interview Details
-          </h2>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              Interview Details
+            </h2>
+            <DeleteInterviewButton deleteAction={handleDeleteInterview} />
+          </div>
           <div className="rounded-lg border bg-muted/30 p-6">
             <div className="space-y-3">
               <div className="flex items-start gap-2">
