@@ -9,7 +9,10 @@ import {
   RejectModal,
   RemoveLimboModal,
 } from '@/components/dashboard';
-import { acceptApplication } from '@/lib/actions/applicants';
+import {
+  acceptApplication,
+  submitInterviewReport,
+} from '@/lib/actions/applicants';
 
 export interface StageButton {
   text: string;
@@ -59,13 +62,12 @@ export const stageButtons: Record<ApplicationStage, StageButton[]> = {
     {
       text: 'Submit Interview Report',
       className: 'bg-purple-600 hover:bg-purple-700',
-      callback: (applicant) =>
-        openModal(
-          <SubmitReportModal
-            onClose={() => dismissModal()}
-            applicant={applicant}
-          />
-        ),
+      callback: async (applicant) => {
+        const result = await submitInterviewReport(applicant.id);
+        if (!result.success) {
+          alert(result.error || 'Failed to submit interview report');
+        }
+      },
     },
     limboButton,
   ],

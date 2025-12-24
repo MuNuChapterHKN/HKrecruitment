@@ -3,6 +3,18 @@ import type { ApplicationStage } from '@/db/types';
 export const INTERVIEW_BOOKING_STAGE = 'b';
 export const INTERVIEW_STAGE = 'c';
 export const INTERVIEW_AWAITING_INTERVIEW = 'd';
+export const INTERVIEW_DONE_STAGE = 'e';
+
+export const labelsStages: Record<string, ApplicationStage> = {
+  'Pending Application Review': 'a',
+  Awaiting: 'b',
+  'Approving Interview Booking': 'c',
+  'Awaiting Interview Result': 'd',
+  'Choosing Area or Rejection': 'e',
+  'Announce the Outcome': 'f',
+  Limbo: 'z',
+  'Approved Member': 's',
+};
 
 export const stageLabels: Record<ApplicationStage, string> = {
   a: 'Pending Application Review',

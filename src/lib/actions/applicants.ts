@@ -3,7 +3,7 @@
 import { auth } from '@/lib/server/auth';
 import { headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
-import { INTERVIEW_BOOKING_STAGE } from '@/lib/stages';
+import { INTERVIEW_BOOKING_STAGE, INTERVIEW_DONE_STAGE } from '@/lib/stages';
 import { switchStage } from '@/lib/services/stages';
 
 export async function acceptApplication(applicantId: string) {
@@ -24,5 +24,26 @@ export async function acceptApplication(applicantId: string) {
   } catch (error) {
     console.error('Error accepting application:', error);
     return { success: false, error: 'Failed to accept application' };
+  }
+}
+
+export async function submitInterviewReport(applicantId: string) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session) {
+    return { success: false, error: 'Unauthorized' };
+  }
+  const { user } = session;
+
+  try {
+    await switchStage(applicantId, INTERVIEW_DONE_STAGE, false, user.id);
+
+    revalidatePath('/dashboard/[rid]/candidates');
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error submitting interview report:', error);
+    return { success: false, error: 'Failed to submit interview report' };
   }
 }
