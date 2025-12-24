@@ -21,15 +21,19 @@ import {
   AvatarFallback,
   AvatarImage,
   Can,
+  DashboardLink,
 } from '@/components';
 import { ChevronUp, Users } from 'lucide-react';
-import Link from 'next/link';
-import { AuthUser, AuthUserRole, AuthUserRoleName } from '@/lib/auth';
+import {
+  AuthUser,
+  AuthUserRole,
+  AuthUserRoleName,
+  authClient,
+} from '@/lib/auth';
 import { capitalize, cn } from '@/lib/utils';
 import RecruitmentSwitcher from './RecruitmentSwitcher';
 import { RecruitingSession } from '@/db/types';
 import { LINKS } from './Sidebar.data';
-import { usePathname } from 'next/navigation';
 
 export type DashboardSidebarProps = {
   user: AuthUser;
@@ -40,15 +44,22 @@ export type DashboardSidebarProps = {
 };
 
 export function DashboardSidebar({ user, recruitment }: DashboardSidebarProps) {
-  const pathname = usePathname();
-  const linkPrefix = pathname.split('/').splice(0, 3).join('/');
-
   const { state } = useSidebar();
   const initials = user.name
     .split(' ')
     .slice(0, 2)
     .map((w: string) => w[0])
     .join('');
+
+  const handleSignOut = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          window.location.href = '/signin';
+        },
+      },
+    });
+  };
 
   return (
     <Sidebar collapsible="icon">
@@ -69,10 +80,10 @@ export function DashboardSidebar({ user, recruitment }: DashboardSidebarProps) {
                     <Can I="read" this={link} key={j}>
                       <SidebarMenuItem key={link.label}>
                         <SidebarMenuButton asChild>
-                          <Link href={linkPrefix + link.href}>
+                          <DashboardLink href={link.href}>
                             {link.icon}
                             <span>{link.label}</span>
-                          </Link>
+                          </DashboardLink>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
                     </Can>
@@ -87,10 +98,10 @@ export function DashboardSidebar({ user, recruitment }: DashboardSidebarProps) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href={linkPrefix + '/users'}>
+              <DashboardLink href={'/users'}>
                 <Users />
                 <span>Members</span>
-              </Link>
+              </DashboardLink>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
@@ -121,7 +132,10 @@ export function DashboardSidebar({ user, recruitment }: DashboardSidebarProps) {
                 <DropdownMenuItem>
                   <span>Account</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="text-red-700">
+                <DropdownMenuItem
+                  className="text-red-700"
+                  onClick={handleSignOut}
+                >
                   <span>Sign out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>

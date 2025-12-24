@@ -3,12 +3,15 @@ import { dismissModal, openModal } from '@/components/modals';
 
 import {
   ApproveInterviewModal,
-  LimboModal,
-  SubmitReportModal,
   AssignAreaModal,
   RejectModal,
   RemoveLimboModal,
 } from '@/components/dashboard';
+import {
+  acceptApplication,
+  submitInterviewReport,
+  moveToLimbo,
+} from '@/lib/actions/applicants';
 
 export interface StageButton {
   text: string;
@@ -19,10 +22,12 @@ export interface StageButton {
 const limboButton: StageButton = {
   text: 'Move to Limbo',
   className: 'bg-yellow-600 hover:bg-yellow-700',
-  callback: (applicant: Applicant) =>
-    openModal(
-      <LimboModal onClose={() => dismissModal()} applicant={applicant} />
-    ),
+  callback: async (applicant: Applicant) => {
+    const result = await moveToLimbo(applicant.id);
+    if (!result.success) {
+      alert(result.error || 'Failed to move to limbo');
+    }
+  },
 };
 
 export const stageButtons: Record<ApplicationStage, StageButton[]> = {
@@ -30,9 +35,11 @@ export const stageButtons: Record<ApplicationStage, StageButton[]> = {
     {
       text: 'Accept Application',
       className: 'bg-green-600 hover:bg-green-700',
-      callback: (applicant) => {
-        // TODO: Implement direct action for accept
-        console.log('Accept action for', applicant.id);
+      callback: async (applicant) => {
+        const result = await acceptApplication(applicant.id);
+        if (!result.success) {
+          alert(result.error || 'Failed to accept application');
+        }
       },
     },
     limboButton,
@@ -56,13 +63,12 @@ export const stageButtons: Record<ApplicationStage, StageButton[]> = {
     {
       text: 'Submit Interview Report',
       className: 'bg-purple-600 hover:bg-purple-700',
-      callback: (applicant) =>
-        openModal(
-          <SubmitReportModal
-            onClose={() => dismissModal()}
-            applicant={applicant}
-          />
-        ),
+      callback: async (applicant) => {
+        const result = await submitInterviewReport(applicant.id);
+        if (!result.success) {
+          alert(result.error || 'Failed to submit interview report');
+        }
+      },
     },
     limboButton,
   ],

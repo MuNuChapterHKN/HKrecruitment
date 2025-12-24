@@ -5,8 +5,10 @@ import { createInsertSchema } from 'drizzle-zod';
 import { z } from 'zod';
 import { DEGREE_LEVELS, LANGUAGE_LEVELS, STAGES, AREAS } from '@/db/schema';
 
-export const listAllApplicants = async () =>
-  await db.select().from(schema.applicant);
+const appl = schema.applicant;
+
+export const listAllApplicants = async (rid: string) =>
+  await db.select().from(appl).where(eq(appl.recruitingSessionId, rid));
 
 export async function getApplicantById(id: string) {
   const rows = await db.select().from(applicant).where(eq(applicant.id, id));

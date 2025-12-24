@@ -10,26 +10,50 @@ import {
   Button,
 } from '@/components';
 import type { BaseModalProps } from './types';
+import { removeFromLimbo } from '@/lib/actions/applicants';
 
 export interface RemoveLimboFormData {
   stageCode: string;
   reason: string;
 }
 
-export default function RemoveLimboModal({ onClose }: BaseModalProps) {
+export default function RemoveLimboModal({
+  onClose,
+  applicant,
+}: BaseModalProps) {
   const [formData, setFormData] = useState<RemoveLimboFormData>({
     stageCode: '',
     reason: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // TODO: Implement API call to remove candidate from limbo
-    console.log('Removing candidate from limbo:', formData);
+    if (!applicant) return;
 
-    onClose();
-    setFormData({ stageCode: '', reason: '' });
+    setIsSubmitting(true);
+
+    try {
+      const result = await removeFromLimbo(
+        applicant.id,
+        formData.stageCode,
+        formData.reason
+      );
+
+      if (!result.success) {
+        alert(result.error || 'Failed to remove from limbo');
+        return;
+      }
+
+      onClose();
+      setFormData({ stageCode: '', reason: '' });
+    } catch (error) {
+      console.error('Error removing from limbo:', error);
+      alert('Failed to remove from limbo');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -56,12 +80,12 @@ export default function RemoveLimboModal({ onClose }: BaseModalProps) {
               required
             >
               <option value="">Select stage...</option>
-              <option value="A">A - Pending Application Review</option>
-              <option value="B">B - Awaiting</option>
-              <option value="C">C - Approving Interview Booking</option>
-              <option value="D">D - Awaiting Interview Result</option>
-              <option value="E">E - Choosing Area or Rejection</option>
-              <option value="F">F - Announce the Outcome</option>
+              <option value="a">A - Pending Application Review</option>
+              <option value="b">B - Awaiting</option>
+              <option value="c">C - Approving Interview Booking</option>
+              <option value="d">D - Awaiting Interview Result</option>
+              <option value="e">E - Choosing Area or Rejection</option>
+              <option value="f">F - Announce the Outcome</option>
             </select>
           </div>
           <div>
@@ -87,8 +111,12 @@ export default function RemoveLimboModal({ onClose }: BaseModalProps) {
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-              Remove from Limbo
+            <Button
+              type="submit"
+              className="bg-blue-600 hover:bg-blue-700"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Removing...' : 'Remove from Limbo'}
             </Button>
           </DialogFooter>
         </form>
