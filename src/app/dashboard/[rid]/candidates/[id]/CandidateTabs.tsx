@@ -25,7 +25,7 @@ export function CandidateTabs({
           <button
             onClick={() => setActiveTab('details')}
             className={cn(
-              'py-2 px-1 border-b-2 font-medium text-sm transition-colors',
+              'py-2 px-1 border-b-2 font-medium text-sm transition-colors cursor-pointer',
               activeTab === 'details'
                 ? 'border-primary text-primary'
                 : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
@@ -36,7 +36,7 @@ export function CandidateTabs({
           <button
             onClick={() => setActiveTab('history')}
             className={cn(
-              'py-2 px-1 border-b-2 font-medium text-sm transition-colors',
+              'py-2 px-1 border-b-2 font-medium text-sm transition-colors cursor-pointer',
               activeTab === 'history'
                 ? 'border-primary text-primary'
                 : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
@@ -48,7 +48,7 @@ export function CandidateTabs({
             <button
               onClick={() => setActiveTab('booking')}
               className={cn(
-                'py-2 px-1 border-b-2 font-medium text-sm transition-colors',
+                'py-2 px-1 border-b-2 font-medium text-sm transition-colors cursor-pointer',
                 activeTab === 'booking'
                   ? 'border-primary text-primary'
                   : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
