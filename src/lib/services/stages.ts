@@ -34,7 +34,7 @@ export const switchToLimbo = async (
   userId: string | null = null
 ) => {
   const LIMBO_STAGE = 'z' as ApplicationStage;
-  await switchStage(aid, LIMBO_STAGE, false, userId);
+  await switchStage(aid, LIMBO_STAGE, true, userId);
 };
 
 export const getStageHistory = async (applicantId: string) => {
