@@ -1,6 +1,6 @@
 import { db, schema } from '@/db';
 import { applicant } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import { createInsertSchema } from 'drizzle-zod';
 import { z } from 'zod';
 import { DEGREE_LEVELS, LANGUAGE_LEVELS, STAGES, AREAS } from '@/db/schema';
@@ -8,7 +8,11 @@ import { DEGREE_LEVELS, LANGUAGE_LEVELS, STAGES, AREAS } from '@/db/schema';
 const appl = schema.applicant;
 
 export const listAllApplicants = async (rid: string) =>
-  await db.select().from(appl).where(eq(appl.recruitingSessionId, rid));
+  await db
+    .select()
+    .from(appl)
+    .where(eq(appl.recruitingSessionId, rid))
+    .orderBy(desc(appl.createdAt));
 
 export async function getApplicantById(id: string) {
   const rows = await db.select().from(applicant).where(eq(applicant.id, id));
