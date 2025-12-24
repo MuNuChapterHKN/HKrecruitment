@@ -1,6 +1,6 @@
 import { getApplicantById } from '@/lib/services/applicants';
 import ActionButtons from './ActionButtons';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui';
+import { Avatar, AvatarImage, AvatarFallback, Button } from '@/components/ui';
 import { findOne, findInterviewers } from '@/lib/services/interviews';
 import { getStageHistory } from '@/lib/services/stages';
 import { CandidateTabs } from './CandidateTabs';
@@ -8,6 +8,8 @@ import { StageHistory } from './StageHistory';
 import { StageBadge } from './StageBadge';
 import { degreeLevelMap } from '@/lib/degrees';
 import { getFileViewUrl } from '@/lib/google/drive/files';
+import { findOne as findRecruitmentSession } from '@/lib/services/recruitmentSessions';
+import { Mail } from 'lucide-react';
 
 export default async function CandidateDetailsPage({
   params,
@@ -18,6 +20,10 @@ export default async function CandidateDetailsPage({
   if (!applicant) {
     return null;
   }
+
+  const recruitmentSession = await findRecruitmentSession(
+    applicant.recruitingSessionId
+  );
 
   let interview = null;
   let interviewers: Array<{ id: string; name: string; image: string | null }> =
@@ -36,6 +42,8 @@ export default async function CandidateDetailsPage({
     }).format(new Date(date));
   };
 
+  const emailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(applicant.email)}&su=${encodeURIComponent(`IEEE-HKN Recruitment ${recruitmentSession?.year || ''}: `)}&body=BODY&cc=${encodeURIComponent('board@hknpolito.org,hr@hknpolito.org')}`;
+
   const detailsContent = (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <div>
@@ -43,8 +51,15 @@ export default async function CandidateDetailsPage({
           Quick View
         </h2>
         <div className="bg-muted/30 rounded-lg border p-6 space-y-3">
-          <div>
-            <span className="font-semibold">Email:</span> {applicant.email}
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="font-semibold">Email:</span> {applicant.email}
+            </div>
+            <Button size="sm" variant="outline" asChild>
+              <a href={emailUrl} target="_blank" rel="noopener noreferrer">
+                <Mail className="size-4" />
+              </a>
+            </Button>
           </div>
           <div>
             <span className="font-semibold">Degree Level:</span>{' '}
