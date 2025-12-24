@@ -7,6 +7,7 @@ import { CandidateTabs } from './CandidateTabs';
 import { StageHistory } from './StageHistory';
 import { StageBadge } from './StageBadge';
 import { degreeLevelMap } from '@/lib/degrees';
+import { getFileViewUrl } from '@/lib/google/drive/files';
 
 export default async function CandidateDetailsPage({
   params,
@@ -145,7 +146,12 @@ export default async function CandidateDetailsPage({
           Attachments
         </h2>
         <div className="flex gap-4">
-          <button className="flex flex-col items-center justify-center space-y-2 opacity-75 hover:opacity-100 transition-opacity cursor-pointer">
+          <a
+            href={getFileViewUrl(applicant.cvFileId)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex flex-col items-center justify-center space-y-2 opacity-75 hover:opacity-100 transition-opacity cursor-pointer"
+          >
             <svg
               className="w-10 h-10 text-muted-foreground"
               fill="currentColor"
@@ -158,9 +164,14 @@ export default async function CandidateDetailsPage({
               />
             </svg>
             <p className="font-medium text-sm">CV</p>
-          </button>
+          </a>
 
-          <button className="flex flex-col items-center justify-center space-y-2 opacity-75 hover:opacity-100 transition-opacity cursor-pointer">
+          <a
+            href={getFileViewUrl(applicant.spFileId)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex flex-col items-center justify-center space-y-2 opacity-75 hover:opacity-100 transition-opacity cursor-pointer"
+          >
             <svg
               className="w-10 h-10 text-muted-foreground"
               fill="currentColor"
@@ -173,10 +184,15 @@ export default async function CandidateDetailsPage({
               />
             </svg>
             <p className="font-medium text-sm">StudyPath</p>
-          </button>
+          </a>
 
-          {interview && (
-            <button className="flex flex-col items-center justify-center space-y-2 opacity-75 hover:opacity-100 transition-opacity cursor-pointer">
+          {interview?.reportDocId && (
+            <a
+              href={getFileViewUrl(interview.reportDocId)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col items-center justify-center space-y-2 opacity-75 hover:opacity-100 transition-opacity cursor-pointer"
+            >
               <svg
                 className="w-10 h-10 text-muted-foreground"
                 fill="currentColor"
@@ -189,7 +205,7 @@ export default async function CandidateDetailsPage({
                 />
               </svg>
               <p className="font-medium text-sm">Interview Report</p>
-            </button>
+            </a>
           )}
         </div>
       </div>
