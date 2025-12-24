@@ -9,7 +9,7 @@ export function DashboardLink({
   ...otherProps
 }: LinkProps & {
   children: React.ReactNode;
-  className: string;
+  className?: string;
 }) {
   const linkPrefix = useLinkPrefix();
 

@@ -3,7 +3,7 @@ import { applicant } from '@/db/schema';
 import { desc, eq } from 'drizzle-orm';
 import { createInsertSchema } from 'drizzle-zod';
 import { z } from 'zod';
-import { DEGREE_LEVELS, LANGUAGE_LEVELS, STAGES, AREAS } from '@/db/schema';
+import { DEGREE_LEVELS, LANGUAGE_LEVELS } from '@/db/schema';
 
 const appl = schema.applicant;
 

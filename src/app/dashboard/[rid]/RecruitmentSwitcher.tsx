@@ -13,7 +13,7 @@ import {
   useSidebar,
 } from '@/components';
 import { RecruitingSession } from '@/db/types';
-import { ChevronDown, ChevronsUpDown, Plus } from 'lucide-react';
+import { ChevronsUpDown, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 

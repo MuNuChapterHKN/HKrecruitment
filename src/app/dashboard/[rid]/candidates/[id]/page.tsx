@@ -14,7 +14,7 @@ import { StageBadge } from './StageBadge';
 import { degreeLevelMap } from '@/lib/degrees';
 import { getFileViewUrl } from '@/lib/google/drive/files';
 import { findOne as findRecruitmentSession } from '@/lib/services/recruitmentSessions';
-import { Mail, Trash2 } from 'lucide-react';
+import { Mail } from 'lucide-react';
 import { ManualBookingClient } from './ManualBookingClient';
 import { DeleteInterviewButton } from './DeleteInterviewButton';
 import { findAvailableForBooking } from '@/lib/services/timeslots';
@@ -58,18 +58,24 @@ export default async function CandidateDetailsPage({
   async function handleManualBooking(timeslotId: string) {
     'use server';
 
+    const currentApplicant = await getApplicantById(id);
+    if (!currentApplicant) return;
+
     await bookInterview(id, timeslotId);
     revalidatePath(
-      `/dashboard/${applicant.recruitingSessionId}/candidates/${id}`
+      `/dashboard/${currentApplicant.recruitingSessionId}/candidates/${id}`
     );
   }
 
   async function handleDeleteInterview() {
     'use server';
 
+    const currentApplicant = await getApplicantById(id);
+    if (!currentApplicant) return;
+
     await deleteInterview(id);
     revalidatePath(
-      `/dashboard/${applicant.recruitingSessionId}/candidates/${id}`
+      `/dashboard/${currentApplicant.recruitingSessionId}/candidates/${id}`
     );
   }
 

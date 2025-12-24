@@ -76,7 +76,7 @@ export function AvailabilitiesTable({
     if (sortedWeeks.length > 0 && !sortedWeeks.includes(weekOffset)) {
       setWeekOffset(sortedWeeks[0]);
     }
-  }, [timeslots]);
+  }, [timeslots, weekOffset]);
 
   function toggleSlot(timeslotId: string) {
     setTimeslots((prev) => {

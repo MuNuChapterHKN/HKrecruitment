@@ -180,7 +180,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(inserted[0], { status: 201 });
   } catch (error) {
-    if (error instanceof ZodError && 'issues' in (error as any)) {
+    if (error instanceof ZodError) {
       return NextResponse.json({ error: error.issues }, { status: 400 });
     }
 
