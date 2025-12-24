@@ -16,6 +16,7 @@ import {
   approveInterview,
   type ApproveInterviewState,
 } from '@/lib/actions/interviews';
+import { fetchAvailableInterviewers } from '@/lib/api/users';
 
 export interface InterviewFormData {
   interviewers: string[];
@@ -48,29 +49,23 @@ export default function ApproveInterviewModal({
         return;
       }
 
-      try {
-        const response = await fetch(
-          `/api/users/available/interview/${applicant.interviewId}`
-        );
+      const result = await fetchAvailableInterviewers(applicant.interviewId);
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch available users');
-        }
-
-        const users = await response.json();
-        const options: Option[] = users.map(
-          (user: { id: string; name: string }) => ({
-            value: user.id,
-            label: user.name,
-          })
-        );
-
-        setAvailableInterviewers(options);
-      } catch (error) {
-        console.error('Error fetching available users:', error);
-      } finally {
+      if (result.isErr()) {
+        console.error('Error fetching available users:', result.error);
         setIsLoading(false);
+        return;
       }
+
+      const options: Option[] = result.value.map(
+        (user: { id: string; name: string }) => ({
+          value: user.id,
+          label: user.name,
+        })
+      );
+
+      setAvailableInterviewers(options);
+      setIsLoading(false);
     };
 
     fetchAvailableUsers();
