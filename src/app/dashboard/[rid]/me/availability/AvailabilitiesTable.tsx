@@ -213,7 +213,10 @@ export function AvailabilitiesTable({
 
                 if (!timeslot) {
                   return (
-                    <td key={key} className="border bg-gray-100 text-center">
+                    <td
+                      key={`${day}-${hour}`}
+                      className="border bg-gray-100 text-center"
+                    >
                       -
                     </td>
                   );
@@ -221,7 +224,7 @@ export function AvailabilitiesTable({
 
                 return (
                   <td
-                    key={key}
+                    key={`${day}-${hour}`}
                     onClick={() => toggleSlot(timeslot.id)}
                     className={`cursor-pointer border text-center
                     ${timeslot.active ? 'bg-green-500 text-white' : 'bg-white hover:bg-gray-100'}`}
