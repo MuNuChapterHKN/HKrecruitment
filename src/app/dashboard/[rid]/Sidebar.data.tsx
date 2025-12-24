@@ -1,6 +1,6 @@
 import { A } from '@/lib/abilities';
 import { AuthUserRole } from '@/lib/auth';
-import { Calendar, Gauge, Users } from 'lucide-react';
+import { Calendar, CalendarClock, Gauge, Users } from 'lucide-react';
 
 export const LINKS: Record<
   string,
@@ -24,7 +24,13 @@ export const LINKS: Record<
         canRead: AuthUserRole.Guest,
       },
       {
-        label: 'Availability Calendar',
+        label: 'Availability Overview',
+        href: '/availability',
+        icon: <CalendarClock />,
+        canRead: AuthUserRole.Guest,
+      },
+      {
+        label: 'My Availability',
         href: '/me/availability',
         icon: <Calendar />,
         canRead: AuthUserRole.Guest,

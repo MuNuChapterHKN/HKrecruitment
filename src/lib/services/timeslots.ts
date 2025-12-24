@@ -17,6 +17,53 @@ export const findForUser = async (userId: string) => {
   return availabilities.map((a) => a.timeslotId);
 };
 
+export const findWithAggregatedAvailability = async (rid: string) => {
+  const allTimeslots = await findAll(rid);
+
+  const availabilityData = await db
+    .select({
+      timeslotId: schema.interviewerAvailability.timeslotId,
+      userName: schema.user.name,
+      isFirstTime: schema.user.isFirstTime,
+    })
+    .from(schema.interviewerAvailability)
+    .innerJoin(
+      schema.user,
+      eq(schema.interviewerAvailability.userId, schema.user.id)
+    );
+
+  const timeslotMap = new Map<
+    string,
+    { users: string[]; firstTimeUsers: string[] }
+  >();
+
+  availabilityData.forEach((record) => {
+    if (!timeslotMap.has(record.timeslotId)) {
+      timeslotMap.set(record.timeslotId, { users: [], firstTimeUsers: [] });
+    }
+    const data = timeslotMap.get(record.timeslotId)!;
+    data.users.push(record.userName);
+    if (record.isFirstTime) {
+      data.firstTimeUsers.push(record.userName);
+    }
+  });
+
+  return allTimeslots.map((ts) => {
+    const availability = timeslotMap.get(ts.id) || {
+      users: [],
+      firstTimeUsers: [],
+    };
+    return {
+      id: ts.id,
+      startingFrom: ts.startingFrom,
+      totalUsers: availability.users.length,
+      firstTimeUsers: availability.firstTimeUsers.length,
+      userNames: availability.users,
+      firstTimeUserNames: availability.firstTimeUsers,
+    };
+  });
+};
+
 export const findAvailableForBooking = async (rid: string) => {
   const now = new Date();
   const tomorrow = new Date(now);
