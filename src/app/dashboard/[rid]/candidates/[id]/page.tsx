@@ -1,7 +1,11 @@
 import { getApplicantById } from '@/lib/services/applicants';
 import ActionButtons from './ActionButtons';
 import { Avatar, AvatarImage, AvatarFallback, Button } from '@/components/ui';
-import { findOne, findInterviewers } from '@/lib/services/interviews';
+import {
+  findOne,
+  findInterviewers,
+  bookInterview,
+} from '@/lib/services/interviews';
 import { getStageHistory } from '@/lib/services/stages';
 import { CandidateTabs } from './CandidateTabs';
 import { StageHistory } from './StageHistory';
@@ -10,6 +14,10 @@ import { degreeLevelMap } from '@/lib/degrees';
 import { getFileViewUrl } from '@/lib/google/drive/files';
 import { findOne as findRecruitmentSession } from '@/lib/services/recruitmentSessions';
 import { Mail } from 'lucide-react';
+import { ManualBookingClient } from './ManualBookingClient';
+import { findAvailableForBooking } from '@/lib/services/timeslots';
+import { revalidatePath } from 'next/cache';
+import { INTERVIEW_BOOKING_STAGE } from '@/lib/stages';
 
 export default async function CandidateDetailsPage({
   params,
@@ -34,6 +42,25 @@ export default async function CandidateDetailsPage({
   }
 
   const stageHistory = await getStageHistory(id);
+
+  const availableTimeslots = await findAvailableForBooking(
+    applicant.recruitingSessionId
+  );
+
+  const timeslots = availableTimeslots.map((ts) => ({
+    id: ts.id,
+    startingFrom: ts.startingFrom,
+    active: false,
+  }));
+
+  async function handleManualBooking(timeslotId: string) {
+    'use server';
+
+    await bookInterview(id, timeslotId);
+    revalidatePath(
+      `/dashboard/${applicant.recruitingSessionId}/candidates/${id}`
+    );
+  }
 
   const formatDateTime = (date: Date) => {
     return new Intl.DateTimeFormat('en-US', {
@@ -227,6 +254,25 @@ export default async function CandidateDetailsPage({
     </div>
   );
 
+  const bookingContent =
+    applicant.stage >= INTERVIEW_BOOKING_STAGE ? (
+      <ManualBookingClient
+        timeslots={timeslots}
+        hasExistingInterview={!!applicant.interviewId}
+        onSubmitAction={handleManualBooking}
+      />
+    ) : (
+      <div className="rounded-lg border bg-muted/30 p-6">
+        <h2 className="text-lg font-semibold mb-2">
+          Booking Not Available Yet
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          This candidate has not reached the interview booking stage yet. Please
+          advance their stage before attempting to book an interview.
+        </p>
+      </div>
+    );
+
   return (
     <main className="px-6 py-4">
       <div className="space-y-6">
@@ -247,6 +293,7 @@ export default async function CandidateDetailsPage({
         <CandidateTabs
           detailsContent={detailsContent}
           historyContent={<StageHistory history={stageHistory} />}
+          bookingContent={bookingContent}
         />
       </div>
     </main>

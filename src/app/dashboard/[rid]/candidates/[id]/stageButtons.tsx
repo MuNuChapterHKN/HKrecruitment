@@ -23,6 +23,13 @@ const limboButton: StageButton = {
   text: 'Move to Limbo',
   className: 'bg-yellow-600 hover:bg-yellow-700',
   callback: async (applicant: Applicant) => {
+    if (
+      !confirm(
+        `Are you sure you want to move ${applicant.name} ${applicant.surname} to Limbo?`
+      )
+    ) {
+      return;
+    }
     const result = await moveToLimbo(applicant.id);
     if (!result.success) {
       alert(result.error || 'Failed to move to limbo');
@@ -36,6 +43,13 @@ export const stageButtons: Record<ApplicationStage, StageButton[]> = {
       text: 'Accept Application',
       className: 'bg-green-600 hover:bg-green-700',
       callback: async (applicant) => {
+        if (
+          !confirm(
+            `Are you sure you want to accept the application from ${applicant.name} ${applicant.surname}?`
+          )
+        ) {
+          return;
+        }
         const result = await acceptApplication(applicant.id);
         if (!result.success) {
           alert(result.error || 'Failed to accept application');
@@ -64,6 +78,13 @@ export const stageButtons: Record<ApplicationStage, StageButton[]> = {
       text: 'Submit Interview Report',
       className: 'bg-purple-600 hover:bg-purple-700',
       callback: async (applicant) => {
+        if (
+          !confirm(
+            `Are you sure you want to submit the interview report for ${applicant.name} ${applicant.surname}?`
+          )
+        ) {
+          return;
+        }
         const result = await submitInterviewReport(applicant.id);
         if (!result.success) {
           alert(result.error || 'Failed to submit interview report');

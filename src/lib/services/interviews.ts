@@ -43,6 +43,25 @@ export const bookInterview = async (
   applicantId: string,
   timeslotId: string
 ) => {
+  const timeslot = await db
+    .select()
+    .from(schema.timeslot)
+    .where(eq(schema.timeslot.id, timeslotId))
+    .limit(1);
+
+  if (!timeslot[0]) {
+    throw new Error('Timeslot not found');
+  }
+
+  const now = new Date();
+  const tomorrow = new Date(now);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0);
+
+  if (timeslot[0].startingFrom < tomorrow) {
+    throw new Error('Cannot book interview for past or current day');
+  }
+
   const interviewId = nanoid();
 
   await db.transaction(async (tx) => {

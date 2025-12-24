@@ -18,7 +18,15 @@ export const findForUser = async (userId: string) => {
 };
 
 export const findAvailableForBooking = async (rid: string) => {
+  const now = new Date();
+  const tomorrow = new Date(now);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0);
+
   const allTimeslots = await findAll(rid);
+  const futureTimeslots = allTimeslots.filter(
+    (ts) => ts.startingFrom >= tomorrow
+  );
 
   const allTimeslotsWithInterviews = await db
     .select({
@@ -65,25 +73,33 @@ export const findAvailableForBooking = async (rid: string) => {
   });
 
   const availabilities = await db
-    .select()
+    .select({
+      userId: schema.interviewerAvailability.userId,
+      timeslotId: schema.interviewerAvailability.timeslotId,
+      isFirstTime: schema.user.isFirstTime,
+    })
     .from(schema.interviewerAvailability)
     .innerJoin(
       schema.timeslot,
       eq(schema.interviewerAvailability.timeslotId, schema.timeslot.id)
     )
+    .innerJoin(
+      schema.user,
+      eq(schema.interviewerAvailability.userId, schema.user.id)
+    )
     .where(eq(schema.timeslot.recruitingSessionId, rid));
 
   const availableTimeslots: string[] = [];
 
-  for (const timeslot of allTimeslots) {
+  for (const timeslot of futureTimeslots) {
     const currentIndex = timeslotIndices.get(timeslot.id)!;
 
-    const usersAvailableInSlot = availabilities
-      .filter((a) => a.interviewer_availability.timeslotId === timeslot.id)
-      .map((a) => a.interviewer_availability.userId);
+    const usersAvailableInSlot = availabilities.filter(
+      (a) => a.timeslotId === timeslot.id
+    );
 
-    const actuallyAvailableUsers = usersAvailableInSlot.filter((userId) => {
-      const userInterviewIndices = userInterviews.get(userId);
+    const actuallyAvailableUsers = usersAvailableInSlot.filter((user) => {
+      const userInterviewIndices = userInterviews.get(user.userId);
       if (!userInterviewIndices) return true;
 
       for (
@@ -99,9 +115,15 @@ export const findAvailableForBooking = async (rid: string) => {
     });
 
     if (actuallyAvailableUsers.length >= 2) {
-      availableTimeslots.push(timeslot.id);
+      const firstTimeCount = actuallyAvailableUsers.filter(
+        (user) => user.isFirstTime
+      ).length;
+
+      if (firstTimeCount < 2) {
+        availableTimeslots.push(timeslot.id);
+      }
     }
   }
 
-  return allTimeslots.filter((ts) => availableTimeslots.includes(ts.id));
+  return futureTimeslots.filter((ts) => availableTimeslots.includes(ts.id));
 };
