@@ -77,15 +77,6 @@ export function ManualBookingClient({
 
   return (
     <div className="space-y-6">
-      <div className="rounded-lg border bg-muted/30 p-4">
-        <h2 className="text-sm font-semibold mb-2">Manual Interview Booking</h2>
-        <p className="text-sm text-muted-foreground">
-          Select an available timeslot to manually schedule an interview for
-          this candidate. Only timeslots with at least 2 available interviewers
-          are shown.
-        </p>
-      </div>
-
       {timeslots.length === 0 ? (
         <div className="rounded-lg border bg-yellow-50 dark:bg-yellow-950/30 p-6">
           <h2 className="text-lg font-semibold text-yellow-900 dark:text-yellow-100 mb-2">

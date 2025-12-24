@@ -1,7 +1,7 @@
 import { db, schema } from '@/db';
 import { eq } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
-import { INTERVIEW_STAGE } from '../stages';
+import { INTERVIEW_STAGE, INTERVIEW_BOOKING_STAGE } from '../stages';
 import { switchStage } from './stages';
 
 export const findOne = async (interviewId: string) => {
@@ -113,4 +113,6 @@ export const deleteInterview = async (applicantId: string) => {
       .delete(schema.interview)
       .where(eq(schema.interview.id, interviewId));
   });
+
+  await switchStage(applicantId, INTERVIEW_BOOKING_STAGE, false, null);
 };
