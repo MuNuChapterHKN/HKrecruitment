@@ -1,6 +1,7 @@
 import { getApplicantById } from '@/lib/services/applicants';
 import ActionButtons from './ActionButtons';
-import { Avatar, AvatarImage, AvatarFallback, Button } from '@/components/ui';
+import { Button } from '@/components/ui';
+import { InterviewCard } from '@/components/dashboard';
 import {
   findOne,
   findInterviewers,
@@ -80,13 +81,6 @@ export default async function CandidateDetailsPage({
     );
   }
 
-  const formatDateTime = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
-      dateStyle: 'full',
-      timeStyle: 'short',
-    }).format(new Date(date));
-  };
-
   const emailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(applicant.email)}&su=${encodeURIComponent(`IEEE-HKN Recruitment ${recruitmentSession?.year || ''}: `)}&body=BODY&cc=${encodeURIComponent('board@hknpolito.org,hr@hknpolito.org')}`;
 
   const detailsContent = (
@@ -138,69 +132,15 @@ export default async function CandidateDetailsPage({
             </h2>
             <DeleteInterviewButton deleteAction={handleDeleteInterview} />
           </div>
-          <div className="rounded-lg border bg-muted/30 p-6">
-            <div className="space-y-3">
-              <div className="flex items-start gap-2">
-                <span className="font-semibold">Date & Time:</span>
-                <span>{formatDateTime(interview.startingFrom)}</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <span className="font-semibold">Status:</span>
-                <span
-                  className={
-                    interview.confirmed
-                      ? 'text-green-600 dark:text-green-400'
-                      : 'text-yellow-600 dark:text-yellow-400'
-                  }
-                >
-                  {interview.confirmed ? 'Confirmed' : 'Pending confirmation'}
-                </span>
-              </div>
-              {interviewers.length > 0 && (
-                <div className="flex items-start gap-2">
-                  <span className="font-semibold">Interviewers:</span>
-                  <div className="flex items-center gap-3">
-                    {interviewers.map((interviewer) => (
-                      <div
-                        key={interviewer.id}
-                        className="flex items-center gap-2"
-                      >
-                        <Avatar className="size-6">
-                          {interviewer.image && (
-                            <AvatarImage
-                              src={interviewer.image}
-                              alt={interviewer.name}
-                            />
-                          )}
-                          <AvatarFallback className="text-xs">
-                            {interviewer.name
-                              .split(' ')
-                              .map((n: string) => n[0])
-                              .join('')
-                              .toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span>{interviewer.name}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {interview.meetingId && (
-                <div className="flex items-start gap-2">
-                  <span className="font-semibold">Meeting Link:</span>
-                  <a
-                    href={interview.meetingId}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline"
-                  >
-                    Join interview
-                  </a>
-                </div>
-              )}
-            </div>
-          </div>
+          <InterviewCard
+            interview={{
+              startingFrom: interview.startingFrom,
+              confirmed: interview.confirmed,
+              meetingId: interview.meetingId,
+            }}
+            interviewers={interviewers}
+            variant="compact"
+          />
         </div>
       )}
 

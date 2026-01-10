@@ -1,7 +1,8 @@
 'use client';
 
 import { AvailabilitiesTable } from '@/app/dashboard/[rid]/me/availability/AvailabilitiesTable';
-import { Button, Avatar, AvatarImage, AvatarFallback } from '@/components/ui';
+import { Button } from '@/components/ui';
+import { InterviewCard } from '@/components/dashboard';
 import { useState } from 'react';
 import type { InterviewInfo } from './page';
 
@@ -47,13 +48,6 @@ export function InterviewBookingClient({
     }
   };
 
-  const formatDateTime = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
-      dateStyle: 'full',
-      timeStyle: 'short',
-    }).format(new Date(date));
-  };
-
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background to-muted/20 p-4">
       <div className="w-full max-w-4xl">
@@ -71,82 +65,15 @@ export function InterviewBookingClient({
 
           <div className="space-y-4 sm:space-y-6">
             {interview && (
-              <div className="rounded-lg border bg-muted/50 p-4">
-                <h2 className="mb-3 text-lg font-semibold">
-                  Your Interview Details
-                </h2>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-start gap-2">
-                    <span className="text-muted-foreground font-medium">
-                      Date & Time:
-                    </span>
-                    <span>{formatDateTime(interview.startingFrom)}</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="text-muted-foreground font-medium">
-                      Status:
-                    </span>
-                    <span
-                      className={
-                        interview.confirmed
-                          ? 'text-green-600 dark:text-green-400'
-                          : 'text-yellow-600 dark:text-yellow-400'
-                      }
-                    >
-                      {interview.confirmed
-                        ? 'Confirmed'
-                        : 'Pending confirmation'}
-                    </span>
-                  </div>
-                  {interview.interviewers.length > 0 && (
-                    <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground font-medium">
-                        Interviewers:
-                      </span>
-                      <div className="flex items-center gap-3">
-                        {interview.interviewers.map((interviewer) => (
-                          <div
-                            key={interviewer.id}
-                            className="flex items-center gap-2"
-                          >
-                            <Avatar className="size-6">
-                              {interviewer.image && (
-                                <AvatarImage
-                                  src={interviewer.image}
-                                  alt={interviewer.name}
-                                />
-                              )}
-                              <AvatarFallback className="text-xs">
-                                {interviewer.name
-                                  .split(' ')
-                                  .map((n) => n[0])
-                                  .join('')
-                                  .toUpperCase()}
-                              </AvatarFallback>
-                            </Avatar>
-                            <span>{interviewer.name}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  {interview.meetingId && (
-                    <div className="flex items-start gap-2">
-                      <span className="text-muted-foreground font-medium">
-                        Meeting Link:
-                      </span>
-                      <a
-                        href={interview.meetingId}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary hover:underline"
-                      >
-                        Join interview
-                      </a>
-                    </div>
-                  )}
-                </div>
-              </div>
+              <InterviewCard
+                interview={{
+                  startingFrom: interview.startingFrom,
+                  confirmed: interview.confirmed,
+                  meetingId: interview.meetingId,
+                }}
+                interviewers={interview.interviewers}
+                variant="default"
+              />
             )}
 
             {!interview && (
