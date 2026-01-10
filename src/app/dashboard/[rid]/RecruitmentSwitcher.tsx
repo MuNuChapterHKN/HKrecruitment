@@ -73,7 +73,7 @@ export default function RecruitmentSwitcher({
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-muted-foreground text-xs">
-              Teams
+              Recruitment Sessions
             </DropdownMenuLabel>
 
             {options.map((option) => (
