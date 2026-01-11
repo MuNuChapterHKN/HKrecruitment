@@ -12,6 +12,11 @@ export type TimeslotWithAvailability = {
   firstTimeUsers: number;
   userNames: string[];
   firstTimeUserNames: string[];
+  interviews: {
+    meetingId: string;
+    applicant: { name: string; surname: string };
+    interviewers: string[];
+  }[];
 };
 
 export default async function AvailabilityOverviewPage({

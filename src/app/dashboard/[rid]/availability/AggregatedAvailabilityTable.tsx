@@ -8,7 +8,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { X } from 'lucide-react';
+import { X, Calendar, Calendars } from 'lucide-react';
+import { getMeetingLink } from '@/lib/utils';
 
 const WEEK_DAYS = [
   'Monday',
@@ -19,6 +20,11 @@ const WEEK_DAYS = [
   'Saturday',
   'Sunday',
 ];
+
+const COLORS = {
+  INTERVIEWER_IN_MEETING: 'text-blue-600',
+  CELL_WITH_INTERVIEW: 'bg-blue-500 text-white',
+};
 
 type AggregatedAvailabilityTableProps = {
   timeslots: TimeslotWithAvailability[];
@@ -193,13 +199,26 @@ export function AggregatedAvailabilityTable({
                     ? 'bg-green-500 text-white'
                     : 'bg-red-400 text-white';
 
+                  const interviewerNamesInMeeting = new Set<string>();
+                  timeslot.interviews.forEach((interview) => {
+                    interview.interviewers.forEach((name) =>
+                      interviewerNamesInMeeting.add(name)
+                    );
+                  });
+
                   const tooltipContent = (
                     <div className="space-y-1">
                       {timeslot.userNames.map((name) => {
                         const isFirstTime =
                           timeslot.firstTimeUserNames.includes(name);
+                        const isInMeeting = interviewerNamesInMeeting.has(name);
                         return (
-                          <div key={name}>
+                          <div
+                            key={name}
+                            className={
+                              isInMeeting ? COLORS.INTERVIEWER_IN_MEETING : ''
+                            }
+                          >
                             {isFirstTime ? <strong>{name}</strong> : name}
                           </div>
                         );
@@ -208,32 +227,106 @@ export function AggregatedAvailabilityTable({
                   );
 
                   if (timeslot.totalUsers === 0) {
-                    return (
-                      <td
-                        key={cellKey}
-                        className="border text-center p-2 bg-white"
-                      >
-                        <X className="w-4 h-4 mx-auto text-gray-400" />
-                      </td>
-                    );
+                    if (timeslot.interviews.length === 0) {
+                      return (
+                        <td
+                          key={cellKey}
+                          className="border text-center p-2 bg-white"
+                        >
+                          <X className="w-4 h-4 mx-auto text-gray-400" />
+                        </td>
+                      );
+                    }
                   }
+
+                  const interviewsTooltip = timeslot.interviews.length > 0 && (
+                    <div className="space-y-4 min-w-[250px]">
+                      {timeslot.interviews.map((interview, idx) => (
+                        <div key={idx} className="space-y-3">
+                          {idx > 0 && <hr className="border-gray-600" />}
+                          <div className="space-y-2">
+                            <div className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                              Interview{' '}
+                              {timeslot.interviews.length > 1
+                                ? `#${idx + 1}`
+                                : ''}
+                            </div>
+                            <div className="space-y-2">
+                              <div>
+                                <div className="text-xs text-gray-400 mb-0.5">
+                                  Applicant
+                                </div>
+                                <div className="font-semibold text-base text-white">
+                                  {interview.applicant.name}{' '}
+                                  {interview.applicant.surname}
+                                </div>
+                              </div>
+                              <div>
+                                <div className="text-xs text-gray-400 mb-0.5">
+                                  Interviewers
+                                </div>
+                                <div className="space-y-0.5">
+                                  {interview.interviewers.map((interviewer) => (
+                                    <div
+                                      key={interviewer}
+                                      className="text-sm text-gray-200"
+                                    >
+                                      {interviewer}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                            {interview.meetingId && (
+                              <a
+                                href={getMeetingLink(interview.meetingId)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-block mt-2 text-xs font-medium bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 transition-colors"
+                              >
+                                Join Meeting
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  );
 
                   return (
                     <td
                       key={cellKey}
-                      className={`border text-center p-2 ${cellColor}`}
+                      className={`border text-center p-2 ${timeslot.interviews.length > 0 ? COLORS.CELL_WITH_INTERVIEW : cellColor}`}
                     >
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <div className="cursor-help">
-                            {timeslot.totalUsers}
-                            {timeslot.firstTimeUsers > 0
-                              ? ` (${timeslot.firstTimeUsers})`
-                              : ''}
-                          </div>
-                        </TooltipTrigger>
-                        <TooltipContent>{tooltipContent}</TooltipContent>
-                      </Tooltip>
+                      <div className="flex items-center justify-center gap-2">
+                        {timeslot.totalUsers > 0 && (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div className="cursor-help">
+                                {timeslot.totalUsers}
+                                {timeslot.firstTimeUsers > 0
+                                  ? ` (${timeslot.firstTimeUsers})`
+                                  : ''}
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent>{tooltipContent}</TooltipContent>
+                          </Tooltip>
+                        )}
+                        {timeslot.interviews.length > 0 && (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div className="cursor-pointer">
+                                {timeslot.interviews.length === 1 ? (
+                                  <Calendar className="w-4 h-4" />
+                                ) : (
+                                  <Calendars className="w-4 h-4" />
+                                )}
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent>{interviewsTooltip}</TooltipContent>
+                          </Tooltip>
+                        )}
+                      </div>
                     </td>
                   );
                 })}

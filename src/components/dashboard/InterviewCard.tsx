@@ -1,4 +1,5 @@
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui';
+import { getMeetingLink } from '@/lib/utils';
 
 type Interviewer = {
   id: string;
@@ -96,7 +97,7 @@ export function InterviewCard({
           <div className="flex items-start gap-2">
             <span className={labelClass}>Meeting Link:</span>
             <a
-              href={`https://meet.google.com/${interview.meetingId}`}
+              href={getMeetingLink(interview.meetingId)}
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary hover:underline"
