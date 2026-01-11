@@ -19,12 +19,12 @@
       },
       "type": "n8n-nodes-base.postgresTrigger",
       "typeVersion": 1,
-      "position": [-1184, 272],
-      "id": "195008b0-e820-4698-bb86-c58674de36b4",
+      "position": [-1296, 384],
+      "id": "053e23a8-35c6-4b1a-be63-ddb77a693b62",
       "name": "Postgres Trigger",
       "credentials": {
         "postgres": {
-          "id": "ktu3cPZOlhvtphp3",
+          "id": "jDzjA7qKfXuIgLgC",
           "name": "Postgres account"
         }
       }
@@ -35,8 +35,8 @@
       },
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
-      "position": [-992, 272],
-      "id": "3c198e78-d6e6-4dec-b25e-c8de433bdf2d",
+      "position": [-1072, 384],
+      "id": "c5afeb0a-9168-45e6-8d60-2ba8ae1b8e97",
       "name": "Wait",
       "webhookId": "ac52f145-d3c4-464a-8ae8-fc70fcbda65c"
     },
@@ -68,12 +68,12 @@
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
-      "position": [-784, 272],
-      "id": "46a3cd5a-4783-4596-8816-9e6491bdce7b",
+      "position": [-848, 384],
+      "id": "3cc78110-67de-4781-8d97-ba61303bd1c1",
       "name": "Select rows from a table",
       "credentials": {
         "postgres": {
-          "id": "ktu3cPZOlhvtphp3",
+          "id": "jDzjA7qKfXuIgLgC",
           "name": "Postgres account"
         }
       }
@@ -115,8 +115,8 @@
       },
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
-      "position": [-576, 272],
-      "id": "3775209f-794d-431b-843a-c32c39eda55b",
+      "position": [-624, 384],
+      "id": "7cbbbecb-5e5e-4e0b-be3c-5d205a7c7850",
       "name": "If"
     },
     {
@@ -289,47 +289,9 @@
       },
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.3,
-      "position": [-256, 176],
-      "id": "43fb7ab0-3bde-4fae-a075-9229a50a9735",
+      "position": [-400, 304],
+      "id": "d29ae4e3-8137-4c08-82a5-eb7adf5a50d3",
       "name": "Switch"
-    },
-    {
-      "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "eV4kQOaM4MTrIFvy",
-          "mode": "list",
-          "cachedResultUrl": "/workflow/eV4kQOaM4MTrIFvy",
-          "cachedResultName": "Stage A"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "applicantId": "={{ $json.applicant_id }}"
-          },
-          "matchingColumns": ["userId"],
-          "schema": [
-            {
-              "id": "applicantId",
-              "displayName": "applicantId",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "type": "string",
-              "removed": false
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": true
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1.3,
-      "position": [112, -224],
-      "id": "d96cefb1-ce0f-4b78-9817-ff90240808a3",
-      "name": "Call 'Stage A'"
     },
     {
       "parameters": {
@@ -337,24 +299,24 @@
       },
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
-      "position": [464, 176],
-      "id": "9f1d37c4-2b91-4a76-b199-1515480b1e81",
+      "position": [64, 304],
+      "id": "77096ef1-5abe-4213-bf96-4bbc72ba4ac0",
       "name": "Merge"
     },
     {
       "parameters": {
         "workflowId": {
           "__rl": true,
-          "value": "d3pwvH005RdIrKXy",
+          "value": "p84C6yGnVEkphVcC",
           "mode": "list",
-          "cachedResultUrl": "/workflow/d3pwvH005RdIrKXy",
+          "cachedResultUrl": "/workflow/p84C6yGnVEkphVcC",
           "cachedResultName": "Notify"
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",
           "value": {
             "type": "debug",
-            "contents": "={{ JSON.stringify($('Select rows from a table').item.json) }}"
+            "contents": "='Workflow Ran'"
           },
           "matchingColumns": [],
           "schema": [
@@ -365,8 +327,7 @@
               "defaultMatch": false,
               "display": true,
               "canBeUsedToMatch": true,
-              "type": "string",
-              "removed": false
+              "type": "string"
             },
             {
               "id": "contents",
@@ -375,8 +336,7 @@
               "defaultMatch": false,
               "display": true,
               "canBeUsedToMatch": true,
-              "type": "string",
-              "removed": false
+              "type": "string"
             }
           ],
           "attemptToConvertTypes": false,
@@ -386,8 +346,8 @@
       },
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.3,
-      "position": [976, 256],
-      "id": "0b7c3a26-2642-4fe6-9e79-72cfb3268417",
+      "position": [496, 384],
+      "id": "6c37ee30-86d1-4a76-ba89-9e18ac03a75d",
       "name": "Call 'Notify'"
     },
     {
@@ -398,12 +358,12 @@
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
-      "position": [688, 256],
-      "id": "7c0d483a-55e2-4577-a63a-aa1ddb0cd1ee",
+      "position": [272, 384],
+      "id": "50a6b773-01fa-4475-9360-c0e4df5dd60c",
       "name": "Set Stage Status to Processed",
       "credentials": {
         "postgres": {
-          "id": "ktu3cPZOlhvtphp3",
+          "id": "jDzjA7qKfXuIgLgC",
           "name": "Postgres account"
         }
       }
@@ -412,9 +372,9 @@
       "parameters": {
         "workflowId": {
           "__rl": true,
-          "value": "dZmda6G2AnVNAlEX",
+          "value": "wyu9mtRgOzTKknDJ",
           "mode": "list",
-          "cachedResultUrl": "/workflow/dZmda6G2AnVNAlEX",
+          "cachedResultUrl": "/workflow/wyu9mtRgOzTKknDJ",
           "cachedResultName": "Stage B"
         },
         "workflowInputs": {
@@ -444,8 +404,8 @@
       },
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.3,
-      "position": [128, -48],
-      "id": "7d866c79-12c3-42ec-8194-4eebf9804b68",
+      "position": [-176, -48],
+      "id": "b205a729-2036-4cfe-992a-4586319c4909",
       "name": "Call 'Stage B'",
       "alwaysOutputData": true
     },
@@ -453,14 +413,90 @@
       "parameters": {
         "workflowId": {
           "__rl": true,
-          "value": "c031aAzYEjgHteTX",
+          "value": "PJsMvbzfvLkIZ8En",
           "mode": "list",
-          "cachedResultUrl": "/workflow/c031aAzYEjgHteTX",
+          "cachedResultUrl": "/workflow/PJsMvbzfvLkIZ8En",
+          "cachedResultName": "Stage A"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "applicantId": "={{ $('Select rows from a table').item.json.applicant_id }}"
+          },
+          "matchingColumns": ["applicantId"],
+          "schema": [
+            {
+              "id": "applicantId",
+              "displayName": "applicantId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [-176, -240],
+      "id": "a30dac8d-bcd3-4775-8fea-a44e3693a66a",
+      "name": "Call 'Stage C'1"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "ZlduEt4x0sSKkKah",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/ZlduEt4x0sSKkKah",
+          "cachedResultName": "Stage D"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "applicantId": "={{ $('Select rows from a table').item.json.applicant_id }}"
+          },
+          "matchingColumns": ["applicantId"],
+          "schema": [
+            {
+              "id": "applicantId",
+              "displayName": "applicantId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [-176, 304],
+      "id": "9e3216dd-51f8-4b5c-9ad1-fc80a4edc643",
+      "name": "Call 'Stage D'"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "ZbS9ktl0bZTOXlJS",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/ZbS9ktl0bZTOXlJS",
           "cachedResultName": "Stage C"
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",
-          "value": {},
+          "value": {
+            "applicantId": "={{ $('Select rows from a table').item.json.applicant_id }}"
+          },
           "matchingColumns": ["applicantId"],
           "schema": [
             {
@@ -481,8 +517,8 @@
       },
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.3,
-      "position": [128, 112],
-      "id": "c5377a16-0466-43be-ba40-48244a1dca52",
+      "position": [-176, 144],
+      "id": "79815403-1de1-4133-a1da-6982173093e7",
       "name": "Call 'Stage C'"
     }
   ],
@@ -490,24 +526,21 @@
     "Postgres Trigger": [
       {
         "json": {
-          "length": 332,
-          "processId": 1003,
-          "channel": "n8n_channel_195008b0_e820_4698_bb86_c58674de36b4_manual",
+          "length": 294,
+          "processId": 7914,
+          "channel": "n8n_channel_053e23a8_35c6_4b1a_be63_ddb77a693b62",
           "payload": {
-            "id": "Tzn9h-5x2UlqXI8SJ1233k",
-            "applicant_id": "yLaEqvWZcnAPhJKinvXHh",
-            "assigned_by_id": "S91W9WV6G96xIEBPs3S77CZfqqiwDixx",
-            "stage": "b",
+            "id": "2bFj51v_FRhRTQt54_f0I",
+            "applicant_id": "RGITTZa6VTvMZLSwF-6_n",
+            "assigned_by_id": null,
+            "stage": "a",
             "processed": false,
             "deleted_at": null,
             "notes": null,
-            "updated_at": "2025-12-30T17:55:43.983359",
-            "created_at": "2025-12-30T17:55:43.983359"
+            "updated_at": "2026-01-11T11:47:43.111543",
+            "created_at": "2026-01-11T11:47:43.111543"
           },
           "name": "notification"
-        },
-        "pairedItem": {
-          "item": 0
         }
       }
     ]
@@ -561,7 +594,7 @@
       "main": [
         [
           {
-            "node": "Call 'Stage A'",
+            "node": "Call 'Stage C'1",
             "type": "main",
             "index": 0
           }
@@ -582,9 +615,9 @@
         ],
         [
           {
-            "node": "Merge",
+            "node": "Call 'Stage D'",
             "type": "main",
-            "index": 3
+            "index": 0
           }
         ],
         [
@@ -606,17 +639,6 @@
             "node": "Merge",
             "type": "main",
             "index": 6
-          }
-        ]
-      ]
-    },
-    "Call 'Stage A'": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 0
           }
         ]
       ]
@@ -654,6 +676,28 @@
         ]
       ]
     },
+    "Call 'Stage C'1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'Stage D'": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
     "Call 'Stage C'": {
       "main": [
         [
@@ -669,13 +713,15 @@
   "active": true,
   "settings": {
     "executionOrder": "v1",
-    "availableInMCP": false
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner"
   },
-  "versionId": "a92bbf77-b12e-455b-b2a1-9cfb83ff7bf5",
+  "versionId": "54a188ce-7f13-406a-8624-5dd1e7aea2d3",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "a4512ee6ff1563343826908b37348b9a50b106355aa863045dc80f7ac77c544c"
   },
-  "id": "mqCvFoRwaUlCIJhD",
+  "id": "lOZe5AyWwXODmx8J",
   "tags": []
 }
