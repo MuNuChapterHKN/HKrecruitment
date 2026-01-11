@@ -96,7 +96,7 @@ export function InterviewCard({
           <div className="flex items-start gap-2">
             <span className={labelClass}>Meeting Link:</span>
             <a
-              href={interview.meetingId}
+              href={`https://meet.google.com/${interview.meetingId}`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary hover:underline"
