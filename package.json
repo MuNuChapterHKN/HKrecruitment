@@ -50,7 +50,7 @@
     "drizzle-zod": "^0.8.3",
     "googleapis": "^160.0.0",
     "jotai": "^2.15.0",
-    "lucide-react": "^0.544.0",
+    "lucide-react": "^0.562.0",
     "nanoid": "^5.1.6",
     "neverthrow": "^8.2.0",
     "next": "15.5.4",
