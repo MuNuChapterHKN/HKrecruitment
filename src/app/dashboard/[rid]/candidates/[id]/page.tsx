@@ -85,7 +85,7 @@ export default async function CandidateDetailsPage({
 
   const detailsContent = (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <div>
+      <div key="quick-view">
         <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">
           Quick View
         </h2>
@@ -117,7 +117,7 @@ export default async function CandidateDetailsPage({
         </div>
       </div>
 
-      <div>
+      <div key="quick-actions">
         <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">
           Quick Actions
         </h2>
@@ -125,7 +125,7 @@ export default async function CandidateDetailsPage({
       </div>
 
       {interview && (
-        <div>
+        <div key="interview-details">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
               Interview Details
@@ -144,12 +144,12 @@ export default async function CandidateDetailsPage({
         </div>
       )}
 
-      <div>
+      <div key="attachments">
         <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">
           Attachments
         </h2>
         <div className="flex gap-4">
-          <div className="relative">
+          <div key="cv-file" className="relative">
             <a
               href={getFileViewUrl(applicant.cvFileId)}
               target="_blank"
@@ -176,7 +176,7 @@ export default async function CandidateDetailsPage({
             />
           </div>
 
-          <div className="relative">
+          <div key="sp-file" className="relative">
             <a
               href={getFileViewUrl(applicant.spFileId)}
               target="_blank"
@@ -205,6 +205,7 @@ export default async function CandidateDetailsPage({
 
           {interview?.reportDocId && (
             <a
+              key="report-file"
               href={getFileViewUrl(interview.reportDocId)}
               target="_blank"
               rel="noopener noreferrer"
