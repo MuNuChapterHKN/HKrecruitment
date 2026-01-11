@@ -81,7 +81,7 @@ export const bookInterview = async (
       .where(eq(schema.applicant.id, applicantId));
   });
 
-  await switchStage(applicantId, INTERVIEW_STAGE, true, null);
+  await switchStage(applicantId, INTERVIEW_STAGE, false, null);
 
   return interviewId;
 };
