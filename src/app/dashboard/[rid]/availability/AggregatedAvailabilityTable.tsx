@@ -296,7 +296,7 @@ export function AggregatedAvailabilityTable({
                   return (
                     <td
                       key={cellKey}
-                      className={`border text-center p-2 ${timeslot.interviews.length > 0 ? COLORS.CELL_WITH_INTERVIEW : cellColor}`}
+                      className={`border text-center p-2 ${timeslot.totalUsers > 0 ? cellColor : timeslot.interviews.length > 0 ? COLORS.CELL_WITH_INTERVIEW : 'bg-white'}`}
                     >
                       <div className="flex items-center justify-center gap-2">
                         {timeslot.totalUsers > 0 && (
