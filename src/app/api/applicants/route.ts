@@ -81,6 +81,7 @@ export async function POST(req: Request) {
       stage: 'a' as (typeof STAGES)[number],
       cvFileId: '',
       spFileId: '',
+      token: nanoid(),
     };
 
     if (
