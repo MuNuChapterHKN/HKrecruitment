@@ -17,6 +17,21 @@ export const findForUser = async (userId: string) => {
   return availabilities.map((a) => a.timeslotId);
 };
 
+export const findTimeslotsWithInterviewsForUser = async (userId: string) => {
+  const interviews = await db
+    .select({
+      timeslotId: schema.interview.timeslotId,
+    })
+    .from(schema.usersToInterviews)
+    .innerJoin(
+      schema.interview,
+      eq(schema.usersToInterviews.interviewId, schema.interview.id)
+    )
+    .where(eq(schema.usersToInterviews.userId, userId));
+
+  return interviews.map((i) => i.timeslotId);
+};
+
 export const findWithAggregatedAvailability = async (rid: string) => {
   const allTimeslots = await findAll(rid);
 

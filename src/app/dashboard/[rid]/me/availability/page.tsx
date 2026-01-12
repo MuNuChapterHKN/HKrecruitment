@@ -1,7 +1,11 @@
 'use server';
 
 import { AvailabilityClient } from './AvailabilityClient';
-import { findAll, findForUser } from '@/lib/services/timeslots';
+import {
+  findAll,
+  findForUser,
+  findTimeslotsWithInterviewsForUser,
+} from '@/lib/services/timeslots';
 import { submitAvailability } from '@/lib/actions/availability';
 import { auth } from '@/lib/server/auth';
 import { headers } from 'next/headers';
@@ -12,6 +16,7 @@ export type TimeslotPeek = {
   id: string;
   startingFrom: Date;
   active: boolean;
+  locked: boolean;
 };
 
 export default async function AvailabilityPage({
@@ -29,11 +34,13 @@ export default async function AvailabilityPage({
 
   const allTimeslots = await findAll(rid);
   const userTimeslotIds = await findForUser(user.id);
+  const lockedTimeslotIds = await findTimeslotsWithInterviewsForUser(user.id);
 
   const timeslots: TimeslotPeek[] = allTimeslots.map((ts) => ({
     id: ts.id,
     startingFrom: ts.startingFrom,
     active: userTimeslotIds.includes(ts.id),
+    locked: lockedTimeslotIds.includes(ts.id),
   }));
 
   async function handleSubmit(slots: TimeslotPeek[]) {

@@ -6,9 +6,9 @@ import { auth } from '@/lib/server/auth';
 import { headers } from 'next/headers';
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
+import { findTimeslotsWithInterviewsForUser } from '@/lib/services/timeslots';
 
 export async function submitAvailability(timeslotIds: string[]) {
-  /* Check Auth */
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -18,12 +18,33 @@ export async function submitAvailability(timeslotIds: string[]) {
   const { user } = session;
 
   try {
-    // Delete existing availabilities for this user
+    const lockedTimeslotIds = await findTimeslotsWithInterviewsForUser(user.id);
+
+    const existingAvailabilities = await db
+      .select()
+      .from(interviewerAvailability)
+      .where(eq(interviewerAvailability.userId, user.id));
+
+    const existingLockedTimeslots = existingAvailabilities
+      .filter((av) => lockedTimeslotIds.includes(av.timeslotId))
+      .map((av) => av.timeslotId);
+
+    const attemptingToRemoveLocked = existingLockedTimeslots.some(
+      (lockedId) => !timeslotIds.includes(lockedId)
+    );
+
+    if (attemptingToRemoveLocked) {
+      return {
+        success: false,
+        error:
+          'Cannot remove availability from timeslots with scheduled interviews',
+      };
+    }
+
     await db
       .delete(interviewerAvailability)
       .where(eq(interviewerAvailability.userId, user.id));
 
-    // Insert new availabilities
     if (timeslotIds.length > 0) {
       await db.insert(interviewerAvailability).values(
         timeslotIds.map((timeslotId) => ({

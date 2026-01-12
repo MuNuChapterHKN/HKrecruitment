@@ -10,6 +10,7 @@ type TimeslotPeek = {
   id: string;
   startingFrom: Date;
   active: boolean;
+  locked: boolean;
 };
 
 type InterviewBookingClientProps = {
