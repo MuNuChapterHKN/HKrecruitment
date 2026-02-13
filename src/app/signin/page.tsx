@@ -9,6 +9,7 @@ export default function SignUp() {
   const handleLogin = async () => {
     await authClient.signIn.social({
       provider: 'google',
+      callbackURL: '/recruitment/dashboard',
     });
 
     redirect('/dashboard');
