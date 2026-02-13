@@ -44,7 +44,7 @@ export default function TestApplyPage() {
       if (cvFile) formDataToSend.append('cvFile', cvFile);
       if (spFile) formDataToSend.append('spFile', spFile);
 
-      const res = await fetch('/api/applicants', {
+      const res = await fetch('/recruitment/api/applicants', {
         method: 'POST',
         body: formDataToSend,
       });
