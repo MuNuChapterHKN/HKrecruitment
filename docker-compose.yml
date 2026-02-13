@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   postgres:
     image: postgres:18-alpine
@@ -11,7 +13,7 @@ services:
       - DB_N8N_PASSWORD
       - DB_N8N_DATABASE
     volumes:
-      - ./n8n/initdb.sh:/docker-entrypoint-initdb.d/init-data.sh
+      - ./initdb.sh:/docker-entrypoint-initdb.d/init-data.sh
       - db_data:/var/lib/postgresql/data
     healthcheck:
       test: [ 'CMD-SHELL', 'pg_isready -h localhost -U ${POSTGRES_USER} -d ${POSTGRES_DB}' ]
@@ -30,7 +32,7 @@ services:
       - DB_POSTGRESDB_USER=${DB_N8N_USER}
       - DB_POSTGRESDB_PASSWORD=${DB_N8N_PASSWORD}
     ports:
-      - 5678:5678
+      - 127.0.0.1:5678:5678
     links:
       - postgres
     volumes:
@@ -38,6 +40,31 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+
+  db_backup:
+    build:
+      context: .
+      dockerfile: scripts/backup/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: [ 'CMD-SHELL', 'pgrep crond > /dev/null' ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - GOOGLE_CLIENT_ID
+      - GOOGLE_CLIENT_SECRET
+      - GOOGLE_REFRESH_BACKUP_TOKEN
+      - GOOGLE_DRIVE_FOLDER_ID
+      - BACKUP_CRON=0 2 * * 0
+      - BACKUP_TMP_DIR=/tmp
 
 volumes:
   db_data:
