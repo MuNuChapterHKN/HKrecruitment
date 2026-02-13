@@ -55,6 +55,7 @@ export default async function CandidateDetailsPage({
     id: ts.id,
     startingFrom: ts.startingFrom,
     active: false,
+    locked: false,
   }));
 
   async function handleManualBooking(timeslotId: string) {
