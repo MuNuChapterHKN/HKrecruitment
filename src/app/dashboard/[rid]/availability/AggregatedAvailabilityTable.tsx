@@ -1,7 +1,7 @@
 'use client';
 
 import { TimeslotWithAvailability } from './page';
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import {
   Tooltip,
   TooltipContent,
@@ -33,22 +33,24 @@ type AggregatedAvailabilityTableProps = {
 export function AggregatedAvailabilityTable({
   timeslots,
 }: AggregatedAvailabilityTableProps) {
-  const [hourLimits, setHourLimits] = useState<[number, number]>([9, 20]);
-  const [weekOffset, setWeekOffset] = useState(0);
-  const [availableWeeks, setAvailableWeeks] = useState<number[]>([]);
+  const hourLimits: [number, number] = useMemo(() => {
+    let minHour = 9,
+      maxHour = 20;
 
-  useEffect(() => {
-    let minHour = +Infinity,
+    if (timeslots.length > 0) {
+      minHour = +Infinity;
       maxHour = -Infinity;
+      timeslots.forEach((ts) => {
+        const h = ts.startingFrom.getHours();
+        minHour = Math.min(minHour, h);
+        maxHour = Math.max(maxHour, h);
+      });
+    }
 
-    timeslots.forEach((ts) => {
-      const h = ts.startingFrom.getHours();
-      minHour = Math.min(minHour, h);
-      maxHour = Math.max(maxHour, h);
-    });
+    return [minHour, maxHour];
+  }, [timeslots]);
 
-    setHourLimits([minHour, maxHour]);
-
+  const availableWeeks = useMemo(() => {
     const today = new Date();
     const todayMonday = new Date(today);
     todayMonday.setDate(today.getDate() - today.getDay() + 1);
@@ -67,13 +69,14 @@ export function AggregatedAvailabilityTable({
       weekOffsets.add(weekDiff);
     });
 
-    const sortedWeeks = Array.from(weekOffsets).sort((a, b) => a - b);
-    setAvailableWeeks(sortedWeeks);
+    return Array.from(weekOffsets).sort((a, b) => a - b);
+  }, [timeslots]);
 
-    if (sortedWeeks.length > 0 && !sortedWeeks.includes(weekOffset)) {
-      setWeekOffset(sortedWeeks[0]);
-    }
-  }, [timeslots, weekOffset]);
+  const [weekOffset, setWeekOffset] = useState(0);
+
+  const validWeekOffset = availableWeeks.includes(weekOffset)
+    ? weekOffset
+    : (availableWeeks[0] ?? 0);
 
   const hours = Array.from(
     { length: hourLimits[1] - hourLimits[0] + 1 },
@@ -82,7 +85,9 @@ export function AggregatedAvailabilityTable({
 
   const today = new Date();
   const currentMonday = new Date(today);
-  currentMonday.setDate(today.getDate() - today.getDay() + 1 + weekOffset * 7);
+  currentMonday.setDate(
+    today.getDate() - today.getDay() + 1 + validWeekOffset * 7
+  );
 
   const weekDates = WEEK_DAYS.map((_, index) => {
     const date = new Date(currentMonday);
@@ -99,22 +104,22 @@ export function AggregatedAvailabilityTable({
   });
 
   function goToPreviousWeek() {
-    const currentIndex = availableWeeks.indexOf(weekOffset);
+    const currentIndex = availableWeeks.indexOf(validWeekOffset);
     if (currentIndex > 0) {
       setWeekOffset(availableWeeks[currentIndex - 1]);
     }
   }
 
   function goToNextWeek() {
-    const currentIndex = availableWeeks.indexOf(weekOffset);
+    const currentIndex = availableWeeks.indexOf(validWeekOffset);
     if (currentIndex < availableWeeks.length - 1) {
       setWeekOffset(availableWeeks[currentIndex + 1]);
     }
   }
 
-  const canGoPrevious = availableWeeks.indexOf(weekOffset) > 0;
+  const canGoPrevious = availableWeeks.indexOf(validWeekOffset) > 0;
   const canGoNext =
-    availableWeeks.indexOf(weekOffset) < availableWeeks.length - 1;
+    availableWeeks.indexOf(validWeekOffset) < availableWeeks.length - 1;
 
   return (
     <TooltipProvider>
