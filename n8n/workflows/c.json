@@ -1,0 +1,133 @@
+{
+  "name": "Stage C",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "applicantId"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [0, 0],
+      "id": "3c44840d-e0d8-4c1c-bbc2-e44ba6178b84",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT a.id, a.name, a.surname, ts.starting_from\n  FROM applicant a, interview i, timeslot ts\n  WHERE \n    a.interview_id = i.id AND\n    i.timeslot_id = ts.id;\n  ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [208, 0],
+      "id": "800a3354-e36f-4c87-8ba5-958ed9027026",
+      "name": "Select Applicant",
+      "credentials": {
+        "postgres": {
+          "id": "jDzjA7qKfXuIgLgC",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "p84C6yGnVEkphVcC",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/p84C6yGnVEkphVcC",
+          "cachedResultName": "Notify"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "type": "hr",
+            "contents": "={{ $json.name }} {{ $json.surname }} ({{ $json.id }}) ha scelto uno slot per le interview: {{ $json.starting_from }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "type",
+              "displayName": "type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "contents",
+              "displayName": "contents",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [416, 0],
+      "id": "4ec31d44-2e2c-4665-9dd3-825511b27a03",
+      "name": "Call 'Notify'"
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "applicantId": "i3_by2n96TD6SH2YDeGQU"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Select Applicant",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select Applicant": {
+      "main": [
+        [
+          {
+            "node": "Call 'Notify'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "3f9c2818-603b-43e5-9350-2cf06086c8ed",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a4512ee6ff1563343826908b37348b9a50b106355aa863045dc80f7ac77c544c"
+  },
+  "id": "ZbS9ktl0bZTOXlJS",
+  "tags": []
+}

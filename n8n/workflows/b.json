@@ -1,0 +1,356 @@
+{
+  "name": "Stage B",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "applicantId"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [-304, -32],
+      "id": "e5900e13-c0b4-478f-947a-24d92d4debec",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "applicant",
+          "mode": "list",
+          "cachedResultName": "applicant"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "id",
+              "value": "={{ $json.applicantId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [-64, -32],
+      "id": "f572061e-cfb3-4961-b3b8-6c3fb1f1f997",
+      "name": "Select Applicant",
+      "credentials": {
+        "postgres": {
+          "id": "ktu3cPZOlhvtphp3",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "CdX4cQJJWoDSCBT7",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/CdX4cQJJWoDSCBT7",
+          "cachedResultName": "Email Formatter"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "keyId": "STAGE_B_TEMPLATE_ID",
+            "values": "={{ $input.last().json }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "keyId",
+              "displayName": "keyId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "values",
+              "displayName": "values",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "object",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [560, -32],
+      "id": "53782785-9930-4748-82fa-a727284dcd08",
+      "name": "Produce Email"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "wvUDYhfWqI8YbIGS",
+          "mode": "list",
+          "cachedResultName": "Configuration",
+          "cachedResultUrl": "/projects/w1ZISLUlzWcdlJxB/datatables/wvUDYhfWqI8YbIGS"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "key",
+              "keyValue": "HKRECRUITMENT_URL"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [144, -32],
+      "id": "3688c0eb-e027-4c36-b233-7a9b120f48df",
+      "name": "Get row(s)"
+    },
+    {
+      "parameters": {
+        "jsCode": "const baseUrl = $input.first().json.value;\nconst applicantData = $('Select Applicant').first().json;\nconst { id: applicantId, token } = applicantData;\n\nreturn {\n  ...applicantData,\n  interviewBookingUrl: `${baseUrl}/interview/book/${applicantId}?token=${token}`\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [352, -32],
+      "id": "7b5580bc-af7b-4940-931e-d18c260d8284",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Select Applicant').last().json.email }}",
+        "subject": "[IEEE-HKN] Testing",
+        "message": "={{ $json.emailContents }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [752, -32],
+      "id": "0e3fcaeb-1489-48b0-b1a1-3dc470beb4b8",
+      "name": "Send a message",
+      "webhookId": "167bdd23-9fc1-4c20-b188-551362253280",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ai2MWcp29SFR1ChN",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "d3pwvH005RdIrKXy",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/d3pwvH005RdIrKXy",
+          "cachedResultName": "Notify"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "type": "verbose",
+            "contents": "={{ JSON.stringify($input.last()) }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "type",
+              "displayName": "type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "contents",
+              "displayName": "contents",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [960, -128],
+      "id": "e211d0c7-6497-46cd-b2d7-d27bfd810466",
+      "name": "Call 'Notify'"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "d3pwvH005RdIrKXy",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/d3pwvH005RdIrKXy",
+          "cachedResultName": "Notify"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "type": "hr",
+            "contents": "=Inviato Interview Booking a {{ $('Select Applicant').item.json.name }} {{ $('Select Applicant').item.json.surname }} ({{ $('Select Applicant').item.json.email }})"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "type",
+              "displayName": "type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "contents",
+              "displayName": "contents",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [960, 128],
+      "id": "4b617a11-4a87-45e7-b7ac-19b28b8e92b5",
+      "name": "HR notify"
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "applicantId": "yLaEqvWZcnAPhJKinvXHh"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Select Applicant",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select Applicant": {
+      "main": [
+        [
+          {
+            "node": "Get row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s)": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Produce Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Produce Email": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Call 'Notify'",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HR notify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HR notify": {
+      "main": [[]]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "2d933b60-8cbc-4824-b73d-842ec97d0504",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a4512ee6ff1563343826908b37348b9a50b106355aa863045dc80f7ac77c544c"
+  },
+  "id": "dZmda6G2AnVNAlEX",
+  "tags": []
+}

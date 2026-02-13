@@ -57,3 +57,63 @@ export async function uploadFile(params: {
     });
   });
 }
+
+export async function shareFileWithDomain(
+  fileId: string,
+  domain: string
+): Promise<Result<void, Error>> {
+  const authResult = await service.getAuth();
+  if (authResult.isErr()) {
+    return err(authResult.error);
+  }
+
+  const drive = google.drive({ version: 'v3', auth: authResult.value });
+
+  return fromPromise(
+    drive.permissions.create({
+      fileId,
+      requestBody: {
+        role: 'reader',
+        type: 'domain',
+        domain,
+      },
+    }),
+    (error) =>
+      error instanceof Error ? error : new Error('Unknown error occurred')
+  ).andThen(() => ok(undefined));
+}
+
+export async function getFileMetadata(
+  fileId: string
+): Promise<Result<DriveFile, Error>> {
+  const authResult = await service.getAuth();
+  if (authResult.isErr()) {
+    return err(authResult.error);
+  }
+
+  const drive = google.drive({ version: 'v3', auth: authResult.value });
+
+  return fromPromise(
+    drive.files.get({
+      fileId,
+      fields: 'id, name, parents, mimeType',
+    }),
+    (error) =>
+      error instanceof Error ? error : new Error('Unknown error occurred')
+  ).andThen((response) => {
+    if (!response.data.id) {
+      return err(new Error('Failed to get file metadata: No ID returned'));
+    }
+
+    return ok({
+      id: response.data.id,
+      name: response.data.name || '',
+      parents: response.data.parents || undefined,
+      mimeType: response.data.mimeType || '',
+    });
+  });
+}
+
+export function getFileViewUrl(fileId: string): string {
+  return `https://drive.google.com/file/d/${fileId}/view`;
+}

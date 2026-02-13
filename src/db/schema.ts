@@ -42,6 +42,8 @@ export const recruitingSession = pgTable('recruitment_session', {
   id: text('id').primaryKey(),
   year: integer('year').notNull(),
   semester: integer('semester').notNull(),
+  start_date: timestamp('start_date').notNull(),
+  end_date: timestamp('end_date').notNull(),
 });
 
 export const recruitingSessionRelations = relations(
@@ -99,15 +101,13 @@ export const stageStatus = pgTable('stage_status', {
   applicantId: text('applicant_id')
     .notNull()
     .references(() => applicant.id),
-  assignedById: text('assigned_by_id')
-    .notNull()
-    .references(() => user.id),
+  assignedById: text('assigned_by_id').references(() => user.id),
   stage: text('stage', {
     enum: STAGES,
   }).notNull(),
-  counter: integer('counter').default(0),
   processed: boolean('processed').default(false).notNull(),
   deletedAt: timestamp('deleted_at'),
+  notes: text('notes'),
   ...timestamps,
 });
 
@@ -188,7 +188,6 @@ export const interviewerAvailability = pgTable(
     timeslotId: text('timeslot_id')
       .notNull()
       .references(() => timeslot.id),
-    isFirstTime: boolean('is_first_time').default(false).notNull(),
     ...timestamps,
   },
   (t) => [primaryKey({ columns: [t.userId, t.timeslotId] })]

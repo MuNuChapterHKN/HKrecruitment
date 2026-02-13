@@ -1,0 +1,301 @@
+{
+  "name": "Stage A",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "applicant",
+          "mode": "list",
+          "cachedResultName": "applicant"
+        },
+        "limit": 1,
+        "where": {
+          "values": [
+            {
+              "column": "id",
+              "value": "={{ $json.applicantId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [208, 0],
+      "id": "51addc34-5c12-451a-a029-e457bd149802",
+      "name": "Select rows from a table",
+      "credentials": {
+        "postgres": {
+          "id": "ktu3cPZOlhvtphp3",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Select rows from a table').item.json.email }}",
+        "subject": "[IEEE-HKN] Testing",
+        "message": "={{ $json.emailContents }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [688, 0],
+      "id": "43014c62-a278-410c-ab51-69702b0d0644",
+      "name": "Send a message",
+      "webhookId": "048b1ecd-94b5-475b-bc08-437e8d3c86ed",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ai2MWcp29SFR1ChN",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "applicantId"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [0, 0],
+      "id": "343ebe21-eb5e-4d13-adfd-57c8fcf9b000",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "d3pwvH005RdIrKXy",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/d3pwvH005RdIrKXy",
+          "cachedResultName": "Notify"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "type": "verbose",
+            "contents": "={{ JSON.stringify({ gmail: $json, applicant: $('Select rows from a table').all() }) }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "type",
+              "displayName": "type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "contents",
+              "displayName": "contents",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [896, 0],
+      "id": "a464071a-5222-429e-b126-0b6177b400b0",
+      "name": "Verbose Notify"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "d3pwvH005RdIrKXy",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/d3pwvH005RdIrKXy",
+          "cachedResultName": "Notify"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "type": "hr",
+            "contents": "=Nuovo Candidato: {{ $('Select rows from a table').item.json.name }} {{ $('Select rows from a table').item.json.surname }} ({{ $('Select rows from a table').item.json.course }})"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "type",
+              "displayName": "type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "contents",
+              "displayName": "contents",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [512, 176],
+      "id": "8e154492-8844-48d7-a362-163ae302b470",
+      "name": "HR Notification"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "CdX4cQJJWoDSCBT7",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/CdX4cQJJWoDSCBT7",
+          "cachedResultName": "Email Formatter"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "keyId": "STAGE_A_TEMPLATE_ID",
+            "values": "={{ $('Select rows from a table').last().json }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "keyId",
+              "displayName": "keyId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "values",
+              "displayName": "values",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "object",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [512, 0],
+      "id": "44d3ce83-5710-4fe6-a642-7a3a227b0ed7",
+      "name": "Produce Email"
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "applicantId": "yLaEqvWZcnAPhJKinvXHh"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Select rows from a table": {
+      "main": [
+        [
+          {
+            "node": "HR Notification",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Produce Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Select rows from a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Verbose Notify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Produce Email": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "3eb5f019-c296-48cd-8bd0-9f15f9648821",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a4512ee6ff1563343826908b37348b9a50b106355aa863045dc80f7ac77c544c"
+  },
+  "id": "KpDIdor8zUCRpxe0",
+  "tags": []
+}

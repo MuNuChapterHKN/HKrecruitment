@@ -23,6 +23,12 @@ export const auth = betterAuth({
         defaultValue: 0,
         input: false,
       },
+      isFirstTime: {
+        type: 'boolean',
+        required: false,
+        defaultValue: false,
+        input: false,
+      },
     },
   },
 });
