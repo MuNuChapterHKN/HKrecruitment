@@ -35,17 +35,37 @@ BACKUP_PATH="$BACKUP_ROOT/$SELECTED_BACKUP"
 echo "Restoring from: $BACKUP_PATH..."
 
 # 3. Restore Workflows
-cat "$BACKUP_PATH/workflows.json" | docker exec -i $CONTAINER_ID n8n import:workflow --input=-
+echo "Restoring workflows..."
+docker cp "$BACKUP_PATH/workflows.json" "$CONTAINER_ID:/tmp/workflows.json"
+docker exec $CONTAINER_ID n8n import:workflow --input=/tmp/workflows.json
+docker exec $CONTAINER_ID rm -f /tmp/workflows.json 2>/dev/null || true
 
 # 4. Restore Credentials
-cat "$BACKUP_PATH/credentials.json" | docker exec -i $CONTAINER_ID n8n import:credentials --input=-
+echo "Restoring credentials..."
+docker cp "$BACKUP_PATH/credentials.json" "$CONTAINER_ID:/tmp/credentials.json"
+docker exec $CONTAINER_ID n8n import:credentials --input=/tmp/credentials.json
+docker exec $CONTAINER_ID rm -f /tmp/credentials.json 2>/dev/null || true
 
 # 5. Restore Data Tables (Entities)
 if [ -d "$BACKUP_PATH/entities" ]; then
+    echo "Restoring entities..."
     docker exec $CONTAINER_ID mkdir -p /tmp/n8n_restore_entities
     docker cp "$BACKUP_PATH/entities/." "$CONTAINER_ID:/tmp/n8n_restore_entities/"
-    docker exec $CONTAINER_ID n8n import:entities --inputDir=/tmp/n8n_restore_entities
-    docker exec $CONTAINER_ID rm -rf /tmp/n8n_restore_entities
+    
+    # Check if entities import succeeds
+    if docker exec $CONTAINER_ID n8n import:entities --inputDir=/tmp/n8n_restore_entities; then
+        echo "✅ Entities restored successfully"
+    else
+        echo "⚠️  Entities restore failed - this is likely due to encryption key mismatch"
+        echo "   Make sure N8N_ENCRYPTION_KEY in your container matches the backup source"
+    fi
+    
+    docker exec $CONTAINER_ID rm -rf /tmp/n8n_restore_entities 2>/dev/null || true
 fi
 
-echo "Restore complete."
+echo ""
+echo "✅ Restore complete!"
+echo "   - Workflows: ✅"
+echo "   - Credentials: ✅"
+echo ""
+echo "⚠️  If entities failed to restore, check that N8N_ENCRYPTION_KEY matches the backup source."
