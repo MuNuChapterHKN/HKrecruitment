@@ -1,0 +1,306 @@
+{
+  "name": "Stage D",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "applicantId"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [0, 0],
+      "id": "abba6f64-c955-409c-875e-4dcde511eab1",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "applyhkn@hknpolito.org",
+          "mode": "list",
+          "cachedResultName": "applyhkn@hknpolito.org"
+        },
+        "start": "={{ new Date($('Find Applicant').last().json.starting_from).toDateTime().plus(5, 'hour') }}",
+        "end": "={{ new Date($('Find Applicant').last().json.starting_from).toDateTime().plus(6, 'hour') }}",
+        "useDefaultReminders": false,
+        "additionalFields": {
+          "attendees": [
+            "={{ $('Find Applicant').last().json.email }}",
+            "={{ $('Find Interview').all().map(i => i.json.email).join(',') }}"
+          ],
+          "conferenceDataUi": {
+            "conferenceDataValues": {
+              "conferenceSolution": "hangoutsMeet"
+            }
+          },
+          "description": "Prepare appropriately for the interview.",
+          "guestsCanInviteOthers": false,
+          "guestsCanModify": false,
+          "guestsCanSeeOtherGuests": true,
+          "summary": "[IEEE-HKN] Application Interview "
+        },
+        "remindersUi": {
+          "remindersValues": [
+            {
+              "method": "email",
+              "minutes": 1440
+            },
+            {
+              "method": "popup",
+              "minutes": 60
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [1120, 0],
+      "id": "36d6dd3d-7883-43d2-9a94-7180bca8430d",
+      "name": "Create an event",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "tWwnDixNeqwBsW2f",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [{}]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [688, 0],
+      "id": "75231b51-87d5-48ff-94c0-b3ec3abf2ba6",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "folderId": "={{ '1hw4BD32vcMsseb3zZ93j2GfHcfaBOqj1' }}",
+        "title": "={{ $('Find Applicant').item.json.name }} {{ $('Find Applicant').item.json.surname }} ({{ $('Find Applicant').item.json.interview_id }})"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [896, 0],
+      "id": "a9a3a3b5-bfcd-4226-9ac7-44bb52e2e16e",
+      "name": "Create a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "jDCBW6QZqyODmuHT",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "p84C6yGnVEkphVcC",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/p84C6yGnVEkphVcC",
+          "cachedResultName": "Notify"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "type": "hr",
+            "contents": "=Evento e Meeting creato per {{ $('Find Applicant').item.json.name }} {{ $('Find Applicant').item.json.surname }}: https://meet.google.com/{{ $('Create an event').item.json.conferenceData.conferenceId }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "type",
+              "displayName": "type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "contents",
+              "displayName": "contents",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [1536, 0],
+      "id": "9b130d1b-f354-4fb7-b0c5-82871ef7001b",
+      "name": "Notify HR"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT tsl.starting_from, a.name, a.surname, a.email, a.interview_id FROM applicant a, interview i, timeslot tsl WHERE \n  a.interview_id = i.id AND\n  i.timeslot_id = tsl.id AND\n  a.id = '{{ $json.applicantId }}';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [240, 0],
+      "id": "16298703-97e7-437e-bed0-56a9c89958d7",
+      "name": "Find Applicant",
+      "credentials": {
+        "postgres": {
+          "id": "jDzjA7qKfXuIgLgC",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM public.user usr, users_to_interviews ui, interview i WHERE\n  ui.interview_id = i.id AND\n  ui.user_id = usr.id AND\n  i.id = '{{ $json.interview_id }}';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [464, 0],
+      "id": "4d98b613-53ae-4b81-b056-375aebd71a80",
+      "name": "Find Interview",
+      "credentials": {
+        "postgres": {
+          "id": "jDzjA7qKfXuIgLgC",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE interview \n  SET meeting_id = '{{ $json.conferenceData.conferenceId }}',\n      report_doc_id = '{{ $('Create a document').item.json.id }}'\n  WHERE id = '{{ $('Execute a SQL query').item.json.interview_id }}';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [1328, 0],
+      "id": "41b959a3-599b-4767-bb90-0db26346d2fa",
+      "name": "Update Interview Data",
+      "credentials": {
+        "postgres": {
+          "id": "jDzjA7qKfXuIgLgC",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "applicantId": "yLaEqvWZcnAPhJKinvXHh"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Create a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a document": {
+      "main": [
+        [
+          {
+            "node": "Create an event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Find Applicant",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create an event": {
+      "main": [
+        [
+          {
+            "node": "Update Interview Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Applicant": {
+      "main": [
+        [
+          {
+            "node": "Find Interview",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Interview": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Interview Data": {
+      "main": [
+        [
+          {
+            "node": "Notify HR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "8ac8c11a-4ce9-4e93-9c86-63b53247234b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a4512ee6ff1563343826908b37348b9a50b106355aa863045dc80f7ac77c544c"
+  },
+  "id": "ZlduEt4x0sSKkKah",
+  "tags": []
+}

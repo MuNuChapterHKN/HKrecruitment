@@ -8,3 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 export function capitalize(a: string) {
   return a.charAt(0).toUpperCase() + a.slice(1);
 }
+
+export function getMeetingLink(meetingId: string) {
+  return `https://meet.google.com/${meetingId}`;
+}

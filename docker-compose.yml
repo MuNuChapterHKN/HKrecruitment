@@ -11,7 +11,7 @@ services:
       - DB_N8N_PASSWORD
       - DB_N8N_DATABASE
     volumes:
-      - ./initdb.sh:/docker-entrypoint-initdb.d/init-data.sh
+      - ./n8n/initdb.sh:/docker-entrypoint-initdb.d/init-data.sh
       - db_data:/var/lib/postgresql/data
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -h localhost -U ${POSTGRES_USER} -d ${POSTGRES_DB}']

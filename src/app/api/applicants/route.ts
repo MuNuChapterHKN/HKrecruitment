@@ -1,6 +1,12 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
-import { applicant, DEGREE_LEVELS, LANGUAGE_LEVELS, STAGES } from '@/db/schema';
+import {
+  applicant,
+  stageStatus,
+  DEGREE_LEVELS,
+  LANGUAGE_LEVELS,
+  STAGES,
+} from '@/db/schema';
 import { insertApplicantSchema } from '@/lib/services/applicants';
 import { getFolderByName, createFolder } from '@/lib/google/drive/folders';
 import { uploadFile, shareFileWithDomain } from '@/lib/google/drive/files';
@@ -75,6 +81,7 @@ export async function POST(req: Request) {
       stage: 'a' as (typeof STAGES)[number],
       cvFileId: '',
       spFileId: '',
+      token: nanoid(),
     };
 
     if (
@@ -178,9 +185,16 @@ export async function POST(req: Request) {
 
     const inserted = await db.insert(applicant).values([toInsert]).returning();
 
+    await db.insert(stageStatus).values({
+      id: nanoid(),
+      applicantId: inserted[0].id,
+      stage: 'a',
+      processed: false,
+    });
+
     return NextResponse.json(inserted[0], { status: 201 });
   } catch (error) {
-    if (error instanceof ZodError && 'issues' in (error as any)) {
+    if (error instanceof ZodError) {
       return NextResponse.json({ error: error.issues }, { status: 400 });
     }
 

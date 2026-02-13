@@ -14,7 +14,7 @@ export default function ActionButtons({ applicant }: { applicant: Applicant }) {
           <button
             key={index}
             onClick={() => button.callback(applicant)}
-            className={`w-full ${button.className} text-white px-4 py-2.5 rounded-md font-medium transition-colors`}
+            className={`w-full ${button.className} text-white px-4 py-2.5 rounded-md font-medium transition-colors cursor-pointer`}
           >
             {button.text}
           </button>

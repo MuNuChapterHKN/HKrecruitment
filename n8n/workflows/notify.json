@@ -1,0 +1,310 @@
+{
+  "name": "Notify",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "type"
+            },
+            {
+              "name": "contents"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [-192, 0],
+      "id": "a5094421-7d08-42ed-bffc-ccb582c1328f",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('When Executed by Another Workflow').first().json.type }}",
+                    "rightValue": "it",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "7a778b69-91b2-4b5e-9994-da1a3d901c17"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "5cfaeab3-5588-4e18-b906-b83e1f4988c6",
+                    "leftValue": "={{ $('When Executed by Another Workflow').last().json.type }}",
+                    "rightValue": "hr",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [560, -16],
+      "id": "65619fa1-3d12-43e7-a065-f2eeff2ffdf8",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [1088, -32],
+      "id": "6aef8ea8-e225-49ee-a4cf-02ede6bc0313",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Mapping ChatIDs').item.json.NOTIFY_TG_VERBOSE }}",
+        "text": "=**{{ $now.format('yyyy-MM-dd HH:mm') }}:** `{{ JSON.stringify($('When Executed by Another Workflow').last().json) }}`",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1296, -16],
+      "id": "6d119d02-8484-4b13-940b-9b788662c1e8",
+      "name": "Send all logs as JSON",
+      "webhookId": "03f35ae1-e785-461e-bd48-3d0aa6327bb4",
+      "credentials": {
+        "telegramApi": {
+          "id": "RVo7tNyp0v97FyWy",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Mapping ChatIDs').item.json.NOTIFY_TG_IT }}",
+        "text": "=**HKN** | {{ $('When Executed by Another Workflow').last().json.contents }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [800, -304],
+      "id": "1ac14ce3-2dea-47db-bae0-81a06b7683fa",
+      "name": "Send IT message",
+      "webhookId": "c14ba0f8-4765-4938-9cea-d76cacca04ce",
+      "credentials": {
+        "telegramApi": {
+          "id": "RVo7tNyp0v97FyWy",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Mapping ChatIDs').item.json.NOTIFY_TG_HR }}",
+        "text": "={{ $('When Executed by Another Workflow').last().json.contents }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [800, -112],
+      "id": "80f59825-130c-4b81-897a-5540f5492bd7",
+      "name": "Send HR message",
+      "webhookId": "9adb22de-380b-4313-b08c-4b1b2c30aa92",
+      "credentials": {
+        "telegramApi": {
+          "id": "RVo7tNyp0v97FyWy",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "wvUDYhfWqI8YbIGS",
+          "mode": "list",
+          "cachedResultName": "Configuration",
+          "cachedResultUrl": "/projects/w1ZISLUlzWcdlJxB/datatables/wvUDYhfWqI8YbIGS"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "key",
+              "condition": "ilike",
+              "keyValue": "NOTIFY_TG"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [32, 0],
+      "id": "663e6768-72a5-46cd-adb3-a56b57930dc8",
+      "name": "Get row(s)"
+    },
+    {
+      "parameters": {
+        "jsCode": "return Object.fromEntries($input.all().map(i => ([i.json.key, i.json.value])));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [256, 0],
+      "id": "4f1b1e15-9b19-4db7-9f77-dfa32d9eb3bc",
+      "name": "Mapping ChatIDs"
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "type": "hr",
+          "contents": "New user!"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Get row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Send IT message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send HR message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ],
+        []
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Send all logs as JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send IT message": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send HR message": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Get row(s)": {
+      "main": [
+        [
+          {
+            "node": "Mapping ChatIDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mapping ChatIDs": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "18c37f35-6dae-4079-9a83-e475953b1cd3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a4512ee6ff1563343826908b37348b9a50b106355aa863045dc80f7ac77c544c"
+  },
+  "id": "d3pwvH005RdIrKXy",
+  "tags": []
+}

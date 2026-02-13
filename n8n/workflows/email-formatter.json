@@ -1,0 +1,130 @@
+{
+  "name": "Email Formatter",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "=https://docs.google.com/feeds/download/documents/export/Export?id={{ $json.value }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-192, 32],
+      "id": "3a2d7381-fc7d-4ee5-ae64-c83bac6bea4c",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const variables = $('When Called').first().json.values;\nlet template = $input.first().json.data;\n\nconst fields = Object.keys(variables);\n\nfor (const field of fields) {\n  template = template.replaceAll(`{{${field}}}`, variables[field]);\n}\n\nreturn {\n  emailContents: template\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [16, 32],
+      "id": "9e0c0f51-f1d7-49ee-ba65-2377c06470d4",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "wvUDYhfWqI8YbIGS",
+          "mode": "list",
+          "cachedResultName": "Configuration",
+          "cachedResultUrl": "/projects/w1ZISLUlzWcdlJxB/datatables/wvUDYhfWqI8YbIGS"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "key",
+              "keyValue": "={{ $json.keyId }}"
+            }
+          ]
+        },
+        "limit": 1
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [-400, 32],
+      "id": "3f683a8d-b3e3-453b-beec-2083a8636cf9",
+      "name": "Get row(s)"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "keyId"
+            },
+            {
+              "name": "values",
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [-608, 32],
+      "id": "8f71d4e5-079e-435f-b416-8948f1ac1deb",
+      "name": "When Called"
+    }
+  ],
+  "pinData": {
+    "When Called": [
+      {
+        "json": {
+          "keyId": "STAGE_A_TEMPLATE_ID",
+          "values": {
+            "name": "Giuseppe"
+          }
+        }
+      }
+    ]
+  },
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s)": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Called": {
+      "main": [
+        [
+          {
+            "node": "Get row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "b11d707e-6c18-4b47-b1c9-3eeb2697d2ff",
+  "meta": {
+    "instanceId": "a4512ee6ff1563343826908b37348b9a50b106355aa863045dc80f7ac77c544c"
+  },
+  "id": "CdX4cQJJWoDSCBT7",
+  "tags": []
+}

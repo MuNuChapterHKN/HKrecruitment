@@ -13,7 +13,7 @@ import {
   useSidebar,
 } from '@/components';
 import { RecruitingSession } from '@/db/types';
-import { ChevronDown, ChevronsUpDown, Plus } from 'lucide-react';
+import { ChevronsUpDown, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 
@@ -73,7 +73,7 @@ export default function RecruitmentSwitcher({
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-muted-foreground text-xs">
-              Teams
+              Recruitment Sessions
             </DropdownMenuLabel>
 
             {options.map((option) => (

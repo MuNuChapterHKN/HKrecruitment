@@ -57,7 +57,12 @@ export async function approveInterview(
       );
     });
 
-    await switchStage(applicantId, INTERVIEW_AWAITING_INTERVIEW, true, user.id);
+    await switchStage(
+      applicantId,
+      INTERVIEW_AWAITING_INTERVIEW,
+      false,
+      user.id
+    );
 
     revalidatePath('/dashboard/[rid]/candidates');
 

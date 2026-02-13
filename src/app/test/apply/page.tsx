@@ -18,7 +18,11 @@ export default function TestApplyPage() {
   });
   const [cvFile, setCvFile] = useState<File | null>(null);
   const [spFile, setSpFile] = useState<File | null>(null);
-  const [response, setResponse] = useState<any>(null);
+  const [response, setResponse] = useState<{
+    status: number;
+    statusText: string;
+    data: unknown;
+  } | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {

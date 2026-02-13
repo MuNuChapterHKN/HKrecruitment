@@ -15,6 +15,7 @@ export type TimeslotPeek = {
   id: string;
   startingFrom: Date;
   active: boolean;
+  locked: boolean;
 };
 
 export type Interviewer = {
@@ -73,6 +74,7 @@ export default async function InterviewBookingPage({
     id: ts.id,
     startingFrom: ts.startingFrom,
     active: false,
+    locked: false,
   }));
 
   async function handleBooking(timeslotId: string) {

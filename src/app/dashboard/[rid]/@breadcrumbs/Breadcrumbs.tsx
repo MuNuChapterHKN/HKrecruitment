@@ -16,7 +16,7 @@ export const DEFAULT_WRAPPER = (label: string, href: string) => (
   </BreadcrumbItem>
 );
 
-export const DEFAULT_PAGE_WRAPPER = (label: string, _: string) => (
+export const DEFAULT_PAGE_WRAPPER = (label: string) => (
   <BreadcrumbItem>
     <BreadcrumbPage>{label}</BreadcrumbPage>
   </BreadcrumbItem>

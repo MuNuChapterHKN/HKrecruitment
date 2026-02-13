@@ -4,7 +4,7 @@
   "private": true,
   "packageManager": "pnpm@10.19.0",
   "engines": {
-    "node": "24",
+    "node": ">=22",
     "pnpm": "10.19.0"
   },
   "scripts": {
@@ -50,11 +50,11 @@
     "drizzle-zod": "^0.8.3",
     "googleapis": "^160.0.0",
     "jotai": "^2.15.0",
-    "lucide-react": "^0.544.0",
+    "lucide-react": "^0.562.0",
     "nanoid": "^5.1.6",
     "neverthrow": "^8.2.0",
-    "next": "15.5.4",
     "next-themes": "^0.4.6",
+    "next": "15.5.10",
     "pg": "^8.16.3",
     "react": "19.1.0",
     "react-dom": "19.1.0",
@@ -75,7 +75,7 @@
     "drizzle-kit": "^0.31.4",
     "drizzle-seed": "^0.3.1",
     "eslint": "^9",
-    "eslint-config-next": "15.5.4",
+    "eslint-config-next": "15.5.10",
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.6",
