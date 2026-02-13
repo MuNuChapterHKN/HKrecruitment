@@ -4,7 +4,7 @@ export async function fetchAvailableInterviewers(
   interviewId: string
 ): Promise<Result<Array<{ id: string; name: string }>, Error>> {
   return fromPromise(
-    fetch(`/api/users/available/interview/${interviewId}`).then(
+    fetch(`/recruitment/api/users/available/interview/${interviewId}`).then(
       async (response) => {
         if (!response.ok) {
           throw new Error('Failed to fetch available users');

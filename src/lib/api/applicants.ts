@@ -19,7 +19,7 @@ export async function updateApplicantFile(
   formData.append('fileType', fileType);
 
   return fromPromise(
-    fetch(`/api/applicants/${applicantId}/files`, {
+    fetch(`/recruitment/api/applicants/${applicantId}/files`, {
       method: 'PATCH',
       body: formData,
     }).then(async (response) => {
