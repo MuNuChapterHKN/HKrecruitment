@@ -19,7 +19,7 @@ export class GoogleService {
     if (!this.clientId || !this.clientSecret || !this.refreshToken) {
       return err(
         new Error(
-          'Missing required OAuth credentials: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, or GOOGLE_REFRESH_TOKEN'
+          'Missing required OAuth credentials: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, or GOOGLE_REFRESH_BACKUP_TOKEN'
         )
       );
     }
@@ -76,5 +76,5 @@ export class GoogleService {
 export const service = new GoogleService(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  process.env.GOOGLE_REFRESH_TOKEN
+  process.env.GOOGLE_REFRESH_BACKUP_TOKEN
 );
