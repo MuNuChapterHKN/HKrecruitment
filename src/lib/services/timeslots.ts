@@ -52,6 +52,7 @@ export const findWithAggregatedAvailability = async (rid: string) => {
       applicantSurname: schema.applicant.surname,
       interviewerId: schema.usersToInterviews.userId,
       interviewerName: schema.user.name,
+      interviewerRole: schema.user.role,
     })
     .from(schema.interview)
     .innerJoin(
@@ -74,7 +75,7 @@ export const findWithAggregatedAvailability = async (rid: string) => {
     {
       meetingId: string;
       applicant: { name: string; surname: string };
-      interviewers: string[];
+      interviewers: { id: string; name: string; role: number | null }[];
     }[]
   >();
 
@@ -97,11 +98,17 @@ export const findWithAggregatedAvailability = async (rid: string) => {
       interviews.push(interview);
     }
 
-    if (
-      record.interviewerName &&
-      !interview.interviewers.includes(record.interviewerName)
-    ) {
-      interview.interviewers.push(record.interviewerName);
+    if (record.interviewerId && record.interviewerName) {
+      const alreadyAdded = interview.interviewers.some(
+        (interviewer) => interviewer.id === record.interviewerId
+      );
+      if (!alreadyAdded) {
+        interview.interviewers.push({
+          id: record.interviewerId,
+          name: record.interviewerName,
+          role: record.interviewerRole ?? null,
+        });
+      }
     }
   });
 
@@ -124,19 +131,39 @@ export const findWithAggregatedAvailability = async (rid: string) => {
       userId: schema.interviewerAvailability.userId,
       userName: schema.user.name,
       isFirstTime: schema.user.isFirstTime,
+      userRole: schema.user.role,
     })
     .from(schema.interviewerAvailability)
     .innerJoin(
       schema.user,
       eq(schema.interviewerAvailability.userId, schema.user.id)
-    );
+    )
+    .innerJoin(
+      schema.timeslot,
+      eq(schema.interviewerAvailability.timeslotId, schema.timeslot.id)
+    )
+    .where(eq(schema.timeslot.recruitingSessionId, rid));
 
   const timeslotAvailabilityMap = new Map<
     string,
     { users: string[]; firstTimeUsers: string[]; userIds: string[] }
   >();
+  const timeslotSubmittedMap = new Map<
+    string,
+    { users: { id: string; name: string; role: number | null }[] }
+  >();
 
   availabilityData.forEach((record) => {
+    if (!timeslotSubmittedMap.has(record.timeslotId)) {
+      timeslotSubmittedMap.set(record.timeslotId, { users: [] });
+    }
+    const submitted = timeslotSubmittedMap.get(record.timeslotId)!;
+    submitted.users.push({
+      id: record.userId,
+      name: record.userName,
+      role: record.userRole ?? null,
+    });
+
     if (!timeslotAvailabilityMap.has(record.timeslotId)) {
       timeslotAvailabilityMap.set(record.timeslotId, {
         users: [],
@@ -178,6 +205,7 @@ export const findWithAggregatedAvailability = async (rid: string) => {
       firstTimeUsers: [],
       userIds: [],
     };
+    const submitted = timeslotSubmittedMap.get(ts.id) || { users: [] };
     const interviews = timeslotInterviewMap.get(ts.id) || [];
 
     return {
@@ -187,6 +215,7 @@ export const findWithAggregatedAvailability = async (rid: string) => {
       firstTimeUsers: availability.firstTimeUsers.length,
       userNames: availability.users,
       firstTimeUserNames: availability.firstTimeUsers,
+      submittedUsers: submitted.users,
       interviews,
     };
   });
