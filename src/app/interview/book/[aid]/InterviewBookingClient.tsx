@@ -80,13 +80,11 @@ export function InterviewBookingClient({
 
             {!interview && (
               <>
-                <div className="overflow-x-auto">
-                  <AvailabilitiesTable
-                    timeslots={selectedSlots}
-                    onSelectionChange={setSelectedSlots}
-                    maxSelections={1}
-                  />
-                </div>
+                <AvailabilitiesTable
+                  timeslots={selectedSlots}
+                  onSelectionChange={setSelectedSlots}
+                  maxSelections={1}
+                />
 
                 {error && (
                   <div className="rounded-md border border-destructive bg-destructive/10 p-3">
