@@ -43,14 +43,14 @@ export function AvailabilityClient({
   const activeCount = selectedSlots.filter((slot) => slot.active).length;
 
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex flex-col items-stretch gap-4 w-full">
       <AvailabilitiesTable
         timeslots={timeslots}
         onSelectionChange={setSelectedSlots}
       />
 
       <button
-        className="px-4 py-2 bg-black text-white rounded-md text-sm disabled:opacity-60"
+        className="px-4 py-2 bg-black text-white rounded-md text-sm disabled:opacity-60 w-full sm:w-auto self-center"
         onClick={handleSubmit}
         disabled={isSubmitting || activeCount === 0}
       >

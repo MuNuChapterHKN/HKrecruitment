@@ -158,16 +158,16 @@ export function AvailabilitiesTable({
   return (
     <TooltipProvider>
       <div className="space-y-2 w-full">
-        <div className="flex items-center justify-center gap-2">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
           <button
             onClick={goToPreviousWeek}
             disabled={!canGoPrevious}
-            className="p-1 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed text-lg"
+            className="p-1 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed text-base sm:text-lg"
             aria-label="Previous week"
           >
             ←
           </button>
-          <span className="text-sm font-medium min-w-[200px] text-center">
+          <span className="text-sm font-medium min-w-[200px] text-center whitespace-nowrap px-2">
             {weekDates[0].toLocaleDateString('en-US', {
               month: 'short',
               day: 'numeric',
@@ -182,86 +182,88 @@ export function AvailabilitiesTable({
           <button
             onClick={goToNextWeek}
             disabled={!canGoNext}
-            className="p-1 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed text-lg"
+            className="p-1 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed text-base sm:text-lg"
             aria-label="Next week"
           >
             →
           </button>
         </div>
 
-        <table className="border text-sm w-full table-fixed">
-          <thead>
-            <tr>
-              <th className="p-2 border">Hour</th>
-              {WEEK_DAYS.map((day, index) => (
-                <th className="p-2 border" key={day}>
-                  <div>{day}</div>
-                  <div className="text-xs font-normal text-gray-500">
-                    {weekDates[index].toLocaleDateString('en-US', {
-                      month: 'numeric',
-                      day: 'numeric',
-                    })}
-                  </div>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {hours.map((hour) => (
-              <tr key={hour}>
-                <td className="p-2 border">
-                  {hour.toString().padStart(2, '0')}:00
-                </td>
-                {WEEK_DAYS.map((day, dayIndex) => {
-                  const weekDate = weekDates[dayIndex];
-                  const dateStr = weekDate.toISOString().split('T')[0];
-                  const cellKey = `${dateStr}-${hour}`;
-                  const timeslot = timeslotMap.get(cellKey);
+        <div className="w-full overflow-x-auto">
+          <table className="border text-xs sm:text-sm w-full min-w-[820px] table-fixed">
+            <thead>
+              <tr>
+                <th className="p-1.5 sm:p-2 border whitespace-nowrap">Hour</th>
+                {WEEK_DAYS.map((day, index) => (
+                  <th className="p-1.5 sm:p-2 border" key={day}>
+                    <div>{day}</div>
+                    <div className="text-[11px] sm:text-xs font-normal text-gray-500">
+                      {weekDates[index].toLocaleDateString('en-US', {
+                        month: 'numeric',
+                        day: 'numeric',
+                      })}
+                    </div>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {hours.map((hour) => (
+                <tr key={hour}>
+                  <td className="p-1.5 sm:p-2 border whitespace-nowrap">
+                    {hour.toString().padStart(2, '0')}:00
+                  </td>
+                  {WEEK_DAYS.map((day, dayIndex) => {
+                    const weekDate = weekDates[dayIndex];
+                    const dateStr = weekDate.toISOString().split('T')[0];
+                    const cellKey = `${dateStr}-${hour}`;
+                    const timeslot = timeslotMap.get(cellKey);
 
-                  if (!timeslot) {
+                    if (!timeslot) {
+                      return (
+                        <td
+                          key={cellKey}
+                          className="border bg-gray-100 text-center"
+                        >
+                          -
+                        </td>
+                      );
+                    }
+
                     return (
                       <td
                         key={cellKey}
-                        className="border bg-gray-100 text-center"
+                        onClick={() =>
+                          !timeslot.locked && toggleSlot(timeslot.id)
+                        }
+                        className={`border text-center p-1.5 sm:p-2
+                        ${timeslot.locked ? 'bg-blue-500 text-white cursor-not-allowed' : timeslot.active ? 'bg-green-500 text-white cursor-pointer' : 'bg-white hover:bg-gray-100 cursor-pointer'}`}
                       >
-                        -
+                        {timeslot.locked ? (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div className="flex items-center justify-center">
+                                <Calendar className="w-4 h-4" />
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              Non puoi cambiare la disponibilità per questo
+                              timeslot, hai già un meeting fissato
+                            </TooltipContent>
+                          </Tooltip>
+                        ) : timeslot.active ? (
+                          '✓'
+                        ) : (
+                          ''
+                        )}
                       </td>
                     );
-                  }
-
-                  return (
-                    <td
-                      key={cellKey}
-                      onClick={() =>
-                        !timeslot.locked && toggleSlot(timeslot.id)
-                      }
-                      className={`border text-center
-                      ${timeslot.locked ? 'bg-blue-500 text-white cursor-not-allowed' : timeslot.active ? 'bg-green-500 text-white cursor-pointer' : 'bg-white hover:bg-gray-100 cursor-pointer'}`}
-                    >
-                      {timeslot.locked ? (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <div className="flex items-center justify-center">
-                              <Calendar className="w-4 h-4" />
-                            </div>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            Non puoi cambiare la disponibilità per questo
-                            timeslot, hai già un meeting fissato
-                          </TooltipContent>
-                        </Tooltip>
-                      ) : timeslot.active ? (
-                        '✓'
-                      ) : (
-                        ''
-                      )}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </TooltipProvider>
   );
