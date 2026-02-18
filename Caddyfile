@@ -1,0 +1,8 @@
+{
+	auto_https disable_redirects
+}
+
+https://localhost {
+	tls internal
+	reverse_proxy hkr:3000
+}
