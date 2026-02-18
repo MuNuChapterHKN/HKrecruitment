@@ -1,8 +1,7 @@
 {
-	auto_https disable_redirects
+	email admin@hknpolito.org
 }
 
-https://localhost {
-	tls internal
+recruitment.hknpolito.org {
 	reverse_proxy hkr:3000
 }
