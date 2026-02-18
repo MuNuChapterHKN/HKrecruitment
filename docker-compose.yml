@@ -5,16 +5,11 @@ services:
       - hkr_internal
     ports:
       - 5432:5432
-    environment:
-      - POSTGRES_USER
-      - POSTGRES_PASSWORD
-      - POSTGRES_DB
-      - DB_N8N_USER
-      - DB_N8N_PASSWORD
-      - DB_N8N_DATABASE
+    env_file: .env
     volumes:
-      - ./n8n/initdb.sh:/docker-entrypoint-initdb.d/init-data.sh
-      - ./.data/postgres:/var/lib/postgresql
+      - ./scripts/init-n8n.sh:/docker-entrypoint-initdb.d/init-n8n.sh
+      - ./scripts/init-hkr.sh:/docker-entrypoint-initdb.d/init-hkr.sh
+      - postgres_data:/var/lib/postgresql
     healthcheck:
       test:
         [
@@ -42,7 +37,7 @@ services:
     links:
       - postgres
     volumes:
-      - ./.data/n8n:/home/node/.n8n
+      - n8n_data:/home/node/.n8n
     depends_on:
       postgres:
         condition: service_healthy
@@ -70,10 +65,18 @@ services:
       - hkr_internal
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
-      - ./.data/caddy/data:/data
-      - ./.data/caddy/config:/config
+      - caddy_config:/config
+      - caddy_data:/data
     depends_on:
       - hkr
 
 networks:
   hkr_internal:
+
+volumes:
+  postgres_data:
+
+  n8n_data:
+
+  caddy_data:
+  caddy_config:
