@@ -1,0 +1,7 @@
+{
+	email admin@hknpolito.org
+}
+
+recruitment.hknpolito.org {
+	reverse_proxy hkr:3000
+}

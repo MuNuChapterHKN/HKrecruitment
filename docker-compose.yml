@@ -16,7 +16,11 @@ services:
       - ./n8n/initdb.sh:/docker-entrypoint-initdb.d/init-data.sh
       - ./.data/postgres:/var/lib/postgresql
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -h localhost -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      test:
+        [
+          'CMD-SHELL',
+          'pg_isready -h localhost -U ${POSTGRES_USER} -d ${POSTGRES_DB}',
+        ]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -55,6 +59,21 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+
+  caddy:
+    image: caddy:2-alpine
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - hkr_internal
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./.data/caddy/data:/data
+      - ./.data/caddy/config:/config
+    depends_on:
+      - hkr
 
 networks:
   hkr_internal:
