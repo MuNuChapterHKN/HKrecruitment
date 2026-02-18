@@ -14,7 +14,7 @@ services:
       - DB_N8N_DATABASE
     volumes:
       - ./n8n/initdb.sh:/docker-entrypoint-initdb.d/init-data.sh
-      - ./.data/postgres:/var/lib/postgresql
+      - postgres_data:/var/lib/postgresql
     healthcheck:
       test:
         [
@@ -42,7 +42,7 @@ services:
     links:
       - postgres
     volumes:
-      - ./.data/n8n:/home/node/.n8n
+      - n8n_data:/home/node/.n8n
     depends_on:
       postgres:
         condition: service_healthy
@@ -70,10 +70,15 @@ services:
       - hkr_internal
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
-      - ./.data/caddy/data:/data
       - ./.data/caddy/config:/config
+      - caddy_data:/data
     depends_on:
       - hkr
 
 networks:
   hkr_internal:
+
+volumes:
+  postgres_data:
+  n8n_data:
+  caddy_data:
