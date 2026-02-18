@@ -65,7 +65,7 @@ services:
       - hkr_internal
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
-      - ./.data/caddy/config:/config
+      - caddy_config:/config
       - caddy_data:/data
     depends_on:
       - hkr
@@ -75,5 +75,8 @@ networks:
 
 volumes:
   postgres_data:
+
   n8n_data:
+
   caddy_data:
+  caddy_config:
