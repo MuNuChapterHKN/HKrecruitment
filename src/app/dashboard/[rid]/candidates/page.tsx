@@ -4,6 +4,7 @@ import { findOne } from '@/lib/services/recruitmentSessions';
 import { STAGES } from '@/db/schema';
 import type { ApplicationStage } from '@/db/types';
 import { CandidatesListClient } from './CandidatesListClient';
+import { sanitizeText } from '@/lib/sanitize';
 
 export default async function CandidatesPage({
   params,
@@ -15,10 +16,10 @@ export default async function CandidatesPage({
   const applicants = await listAllApplicants(rid);
   const applicantsClient = applicants.map((applicant) => ({
     id: applicant.id,
-    name: applicant.name,
-    surname: applicant.surname,
-    email: applicant.email,
-    course: applicant.course,
+    name: sanitizeText(applicant.name),
+    surname: sanitizeText(applicant.surname),
+    email: sanitizeText(applicant.email),
+    course: sanitizeText(applicant.course),
     degreeLevel: applicant.degreeLevel,
     stage: applicant.stage,
     createdAt: applicant.createdAt ? applicant.createdAt.toISOString() : null,
@@ -28,7 +29,7 @@ export default async function CandidatesPage({
     <main className="px-6 py-4">
       <CandidatesListClient
         applicants={applicantsClient}
-        stages={STAGES as ApplicationStage[]}
+        stages={[...STAGES]}
       />
     </main>
   );
