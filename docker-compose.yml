@@ -55,6 +55,21 @@ services:
       postgres:
         condition: service_healthy
 
+  backup:
+    build:
+      context: ./scripts/backup
+    restart: unless-stopped
+    env_file: .env
+    networks:
+      - hkr_internal
+    volumes:
+      - backup_data:/backups
+      - ./scripts/backup/backup.d:/etc/backup.d:ro
+      - ./scripts/backup/rclone.conf:/config/rclone/rclone.conf:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   caddy:
     image: caddy:2-alpine
     restart: always
@@ -80,3 +95,5 @@ volumes:
 
   caddy_data:
   caddy_config:
+
+  backup_data:

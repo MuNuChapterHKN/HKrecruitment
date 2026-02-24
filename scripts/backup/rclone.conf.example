@@ -1,0 +1,13 @@
+# Copy this file to rclone.conf and fill in your credentials.
+# Generate the real config by running: rclone config
+# Then copy ~/.config/rclone/rclone.conf here.
+#
+# The token block below is what rclone writes after the OAuth2 browser flow.
+# It contains the refresh_token — rclone will auto-refresh the access_token.
+
+[gdrive]
+type = drive
+client_id =
+client_secret =
+scope = drive
+token = {"access_token":"","token_type":"Bearer","refresh_token":"YOUR_REFRESH_TOKEN","expiry":"0001-01-01T00:00:00Z"}
