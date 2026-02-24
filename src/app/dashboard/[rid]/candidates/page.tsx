@@ -59,12 +59,12 @@ export default async function CandidatesPage({
                 <div className="text-xs text-muted-foreground pt-1">
                   {applicant.createdAt
                     ? new Date(applicant.createdAt).toLocaleDateString(
-                      'en-GB',
-                      {
-                        day: 'numeric',
-                        month: 'long',
-                      }
-                    )
+                        'en-GB',
+                        {
+                          day: 'numeric',
+                          month: 'long',
+                        }
+                      )
                     : ''}
                 </div>
               </div>

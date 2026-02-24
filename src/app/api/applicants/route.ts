@@ -18,15 +18,6 @@ export async function POST(req: Request) {
   try {
     const form = await req.formData();
 
-    const sanitizeText = (value: FormDataEntryValue | null) => {
-      const text = value?.toString() ?? '';
-      return text
-        .replace(/\0/g, '')
-        .replace(/<[^>]*>/g, '')
-        .replace(/\s+/g, ' ')
-        .trim();
-    };
-
     const recruiting = await findLatest();
 
     if (!recruiting) {
@@ -64,14 +55,14 @@ export async function POST(req: Request) {
     }
 
     const data = {
-      name: sanitizeText(form.get('name')),
-      surname: sanitizeText(form.get('surname')),
-      email: sanitizeText(form.get('email')),
+      name: form.get('name')?.toString(),
+      surname: form.get('surname')?.toString(),
+      email: form.get('email')?.toString(),
       gpa: Number(form.get('gpa')),
-      degreeLevel: sanitizeText(form.get('degreeLevel')),
-      course: sanitizeText(form.get('course')),
-      courseArea: sanitizeText(form.get('courseArea')),
-      italianLevel: sanitizeText(form.get('italianLevel')),
+      degreeLevel: form.get('degreeLevel')?.toString(),
+      course: form.get('course')?.toString(),
+      courseArea: form.get('courseArea')?.toString(),
+      italianLevel: form.get('italianLevel')?.toString(),
     };
 
     const parsed = insertApplicantSchema.parse(data);
@@ -93,17 +84,14 @@ export async function POST(req: Request) {
       token: nanoid(),
     };
 
-    const cvName = cvFile.name?.toLowerCase() ?? '';
-    const spName = spFile.name?.toLowerCase() ?? '';
-    const fileErrors: string[] = [];
-    if (cvFile.type !== 'application/pdf' || !cvName.endsWith('.pdf')) {
-      fileErrors.push('CV must be a PDF file.');
-    }
-    if (spFile.type !== 'application/pdf' || !spName.endsWith('.pdf')) {
-      fileErrors.push('Study path must be a PDF file.');
-    }
-    if (fileErrors.length) {
-      return NextResponse.json({ error: fileErrors }, { status: 422 });
+    if (
+      cvFile.type !== 'application/pdf' ||
+      spFile.type !== 'application/pdf'
+    ) {
+      return NextResponse.json(
+        { error: 'CV file and SP file must be PDF documents.' },
+        { status: 422 }
+      );
     }
 
     const ROOT = process.env.CANDIDATES_DIR_ID!;

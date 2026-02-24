@@ -22,7 +22,6 @@ import { findAvailableForBooking } from '@/lib/services/timeslots';
 import { revalidatePath } from 'next/cache';
 import { INTERVIEW_BOOKING_STAGE } from '@/lib/stages';
 import { UpdateFileDialog } from './UpdateFileDialog';
-import { sanitizeText } from '@/lib/sanitize';
 
 export default async function CandidateDetailsPage({
   params,
@@ -33,15 +32,6 @@ export default async function CandidateDetailsPage({
   if (!applicant) {
     return null;
   }
-
-  const safeApplicant = {
-    ...applicant,
-    name: sanitizeText(applicant.name),
-    surname: sanitizeText(applicant.surname),
-    email: sanitizeText(applicant.email),
-    course: sanitizeText(applicant.course),
-    courseArea: sanitizeText(applicant.courseArea),
-  };
 
   const recruitmentSession = await findRecruitmentSession(
     applicant.recruitingSessionId
@@ -92,7 +82,7 @@ export default async function CandidateDetailsPage({
     );
   }
 
-  const emailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(safeApplicant.email)}&su=${encodeURIComponent(`IEEE-HKN Recruitment ${recruitmentSession?.year || ''}: `)}&body=BODY&cc=${encodeURIComponent('board@hknpolito.org,hr@hknpolito.org')}`;
+  const emailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(applicant.email)}&su=${encodeURIComponent(`IEEE-HKN Recruitment ${recruitmentSession?.year || ''}: `)}&body=BODY&cc=${encodeURIComponent('board@hknpolito.org,hr@hknpolito.org')}`;
 
   const detailsContent = (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -103,8 +93,7 @@ export default async function CandidateDetailsPage({
         <div className="bg-muted/30 rounded-lg border p-6 space-y-3">
           <div className="flex items-center justify-between">
             <div>
-              <span className="font-semibold">Email:</span>{' '}
-              {safeApplicant.email}
+              <span className="font-semibold">Email:</span> {applicant.email}
             </div>
             <Button size="sm" variant="outline" asChild>
               <a href={emailUrl} target="_blank" rel="noopener noreferrer">
@@ -117,15 +106,14 @@ export default async function CandidateDetailsPage({
             {degreeLevelMap[applicant.degreeLevel]}
           </div>
           <div>
-            <span className="font-semibold">Course:</span>{' '}
-            {safeApplicant.course}
+            <span className="font-semibold">Course:</span> {applicant.course}
           </div>
           <div>
             <span className="font-semibold">GPA:</span> {applicant.gpa}/30
           </div>
           <div>
             <span className="font-semibold">Italian Level:</span>{' '}
-            {safeApplicant.italianLevel.toUpperCase()}
+            {applicant.italianLevel.toUpperCase()}
           </div>
         </div>
       </div>
@@ -268,7 +256,7 @@ export default async function CandidateDetailsPage({
         <header className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">
-              {safeApplicant.name} {safeApplicant.surname}
+              {applicant.name} {applicant.surname}
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">
               {applicant.createdAt
