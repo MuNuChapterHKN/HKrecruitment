@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { headers } from 'next/headers';
 import { db } from '@/db';
 import { applicant } from '@/db/schema';
 import { eq } from 'drizzle-orm';
@@ -8,12 +9,18 @@ import {
   getFileMetadata,
 } from '@/lib/google/drive/files';
 import { getApplicantById } from '@/lib/services/applicants';
+import { auth } from '@/lib/server/auth';
 
 export async function PATCH(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { id } = await params;
     const form = await req.formData();
 
