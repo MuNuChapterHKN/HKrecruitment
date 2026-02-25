@@ -3,5 +3,8 @@
 }
 
 recruitment.hknpolito.org {
+	@notrecruitment not path /recruitment*
+	redir @notrecruitment /recruitment{uri}
+
 	reverse_proxy hkr:3000
 }
