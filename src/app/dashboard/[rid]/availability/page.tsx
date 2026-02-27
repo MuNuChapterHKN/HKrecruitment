@@ -12,11 +12,10 @@ export type TimeslotWithAvailability = {
   firstTimeUsers: number;
   userNames: string[];
   firstTimeUserNames: string[];
-  submittedUsers: { id: string; name: string; role: number | null }[];
   interviews: {
     meetingId: string;
     applicant: { name: string; surname: string };
-    interviewers: { id: string; name: string; role: number | null }[];
+    interviewers: string[];
   }[];
 };
 

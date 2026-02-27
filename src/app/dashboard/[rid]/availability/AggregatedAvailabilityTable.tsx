@@ -208,7 +208,7 @@ export function AggregatedAvailabilityTable({
                     const interviewerNamesInMeeting = new Set<string>();
                     timeslot.interviews.forEach((interview) => {
                       interview.interviewers.forEach((interviewer) =>
-                        interviewerNamesInMeeting.add(interviewer.name)
+                        interviewerNamesInMeeting.add(interviewer)
                       );
                     });
 
@@ -275,12 +275,12 @@ export function AggregatedAvailabilityTable({
                                   </div>
                                   <div className="space-y-0.5">
                                     {interview.interviewers.map(
-                                      (interviewer) => (
+                                      (interviewer, i) => (
                                         <div
-                                          key={interviewer.id}
+                                          key={i}
                                           className="text-sm text-gray-200"
                                         >
-                                          {interviewer.name}
+                                          {interviewer}
                                         </div>
                                       )
                                     )}
