@@ -155,190 +155,198 @@ export function AggregatedAvailabilityTable({
           </button>
         </div>
 
-        <table className="border text-sm w-full table-fixed">
-          <thead>
-            <tr>
-              <th className="p-2 border">Hour</th>
-              {WEEK_DAYS.map((day, index) => (
-                <th className="p-2 border" key={day}>
-                  <div>{day}</div>
-                  <div className="text-xs font-normal text-gray-500">
-                    {weekDates[index].toLocaleDateString('en-US', {
-                      month: 'numeric',
-                      day: 'numeric',
-                    })}
-                  </div>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {hours.map((hour) => (
-              <tr key={hour}>
-                <td className="p-2 border">
-                  {hour.toString().padStart(2, '0')}:00
-                </td>
-                {WEEK_DAYS.map((_, dayIndex) => {
-                  const weekDate = weekDates[dayIndex];
-                  const dateStr = weekDate.toISOString().split('T')[0];
-                  const cellKey = `${dateStr}-${hour}`;
-                  const timeslot = timeslotMap.get(cellKey);
-
-                  if (!timeslot) {
-                    return (
-                      <td
-                        key={cellKey}
-                        className="border bg-gray-100 text-center"
-                      >
-                        -
-                      </td>
-                    );
-                  }
-
-                  const experiencedUsers =
-                    timeslot.totalUsers - timeslot.firstTimeUsers;
-                  const isValid =
-                    timeslot.totalUsers >= 2 &&
-                    experiencedUsers >= timeslot.firstTimeUsers;
-                  const cellColor = isValid
-                    ? 'bg-green-500 text-white'
-                    : 'bg-red-400 text-white';
-
-                  const interviewerNamesInMeeting = new Set<string>();
-                  timeslot.interviews.forEach((interview) => {
-                    interview.interviewers.forEach((name) =>
-                      interviewerNamesInMeeting.add(name)
-                    );
-                  });
-
-                  const tooltipContent = (
-                    <div className="space-y-1">
-                      {timeslot.userNames.map((name) => {
-                        const isFirstTime =
-                          timeslot.firstTimeUserNames.includes(name);
-                        const isInMeeting = interviewerNamesInMeeting.has(name);
-                        return (
-                          <div
-                            key={name}
-                            className={
-                              isInMeeting ? COLORS.INTERVIEWER_IN_MEETING : ''
-                            }
-                          >
-                            {isFirstTime ? <strong>{name}</strong> : name}
-                          </div>
-                        );
+        <div className="overflow-x-auto w-full">
+          <table className="border text-sm min-w-[700px] md:min-w-full table-fixed">
+            <thead>
+              <tr>
+                <th className="p-2 border min-w-[60px]">Hour</th>
+                {WEEK_DAYS.map((day, index) => (
+                  <th className="p-2 border min-w-[110px]" key={day}>
+                    <div>{day}</div>
+                    <div className="text-xs font-normal text-gray-500">
+                      {weekDates[index].toLocaleDateString('en-US', {
+                        month: 'numeric',
+                        day: 'numeric',
                       })}
                     </div>
-                  );
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {hours.map((hour) => (
+                <tr key={hour}>
+                  <td className="p-2 border min-w-[60px]">
+                    {hour.toString().padStart(2, '0')}:00
+                  </td>
+                  {WEEK_DAYS.map((_, dayIndex) => {
+                    const weekDate = weekDates[dayIndex];
+                    const dateStr = weekDate.toISOString().split('T')[0];
+                    const cellKey = `${dateStr}-${hour}`;
+                    const timeslot = timeslotMap.get(cellKey);
 
-                  if (timeslot.totalUsers === 0) {
-                    if (timeslot.interviews.length === 0) {
+                    if (!timeslot) {
                       return (
                         <td
                           key={cellKey}
-                          className="border text-center p-2 bg-white"
+                          className="border bg-gray-100 text-center"
                         >
-                          <X className="w-4 h-4 mx-auto text-gray-400" />
+                          -
                         </td>
                       );
                     }
-                  }
 
-                  const interviewsTooltip = timeslot.interviews.length > 0 && (
-                    <div className="space-y-4 min-w-[250px]">
-                      {timeslot.interviews.map((interview, idx) => (
-                        <div key={idx} className="space-y-3">
-                          {idx > 0 && <hr className="border-gray-600" />}
-                          <div className="space-y-2">
-                            <div className="text-xs font-semibold uppercase tracking-wide text-gray-400">
-                              Interview{' '}
-                              {timeslot.interviews.length > 1
-                                ? `#${idx + 1}`
-                                : ''}
+                    const experiencedUsers =
+                      timeslot.totalUsers - timeslot.firstTimeUsers;
+                    const isValid =
+                      timeslot.totalUsers >= 2 &&
+                      experiencedUsers >= timeslot.firstTimeUsers;
+                    const cellColor = isValid
+                      ? 'bg-green-500 text-white'
+                      : 'bg-red-400 text-white';
+
+                    const interviewerNamesInMeeting = new Set<string>();
+                    timeslot.interviews.forEach((interview) => {
+                      interview.interviewers.forEach((interviewer) =>
+                        interviewerNamesInMeeting.add(interviewer.name)
+                      );
+                    });
+
+                    const tooltipContent = (
+                      <div className="space-y-1">
+                        {timeslot.userNames.map((name) => {
+                          const isFirstTime =
+                            timeslot.firstTimeUserNames.includes(name);
+                          const isInMeeting =
+                            interviewerNamesInMeeting.has(name);
+                          return (
+                            <div
+                              key={name}
+                              className={
+                                isInMeeting ? COLORS.INTERVIEWER_IN_MEETING : ''
+                              }
+                            >
+                              {isFirstTime ? <strong>{name}</strong> : name}
                             </div>
+                          );
+                        })}
+                      </div>
+                    );
+
+                    if (timeslot.totalUsers === 0) {
+                      if (timeslot.interviews.length === 0) {
+                        return (
+                          <td
+                            key={cellKey}
+                            className="border text-center p-2 bg-white"
+                          >
+                            <X className="w-4 h-4 mx-auto text-gray-400" />
+                          </td>
+                        );
+                      }
+                    }
+
+                    const interviewsTooltip = timeslot.interviews.length >
+                      0 && (
+                      <div className="space-y-4 min-w-[250px]">
+                        {timeslot.interviews.map((interview, idx) => (
+                          <div key={idx} className="space-y-3">
+                            {idx > 0 && <hr className="border-gray-600" />}
                             <div className="space-y-2">
-                              <div>
-                                <div className="text-xs text-gray-400 mb-0.5">
-                                  Applicant
-                                </div>
-                                <div className="font-semibold text-base text-white">
-                                  {interview.applicant.name}{' '}
-                                  {interview.applicant.surname}
-                                </div>
-                              </div>
-                              <div>
-                                <div className="text-xs text-gray-400 mb-0.5">
-                                  Interviewers
-                                </div>
-                                <div className="space-y-0.5">
-                                  {interview.interviewers.map((interviewer) => (
-                                    <div
-                                      key={interviewer}
-                                      className="text-sm text-gray-200"
-                                    >
-                                      {interviewer}
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            </div>
-                            {interview.meetingId && (
-                              <a
-                                href={getMeetingLink(interview.meetingId)}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-block mt-2 text-xs font-medium bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 transition-colors"
-                              >
-                                Join Meeting
-                              </a>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  );
-
-                  return (
-                    <td
-                      key={cellKey}
-                      className={`border text-center p-2 ${timeslot.totalUsers > 0 ? cellColor : timeslot.interviews.length > 0 ? COLORS.CELL_WITH_INTERVIEW : 'bg-white'}`}
-                    >
-                      <div className="flex items-center justify-center gap-2">
-                        {timeslot.totalUsers > 0 && (
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <div className="cursor-help">
-                                {timeslot.totalUsers}
-                                {timeslot.firstTimeUsers > 0
-                                  ? ` (${timeslot.firstTimeUsers})`
+                              <div className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                                Interview{' '}
+                                {timeslot.interviews.length > 1
+                                  ? `#${idx + 1}`
                                   : ''}
                               </div>
-                            </TooltipTrigger>
-                            <TooltipContent>{tooltipContent}</TooltipContent>
-                          </Tooltip>
-                        )}
-                        {timeslot.interviews.length > 0 && (
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <div className="cursor-pointer">
-                                {timeslot.interviews.length === 1 ? (
-                                  <Calendar className="w-4 h-4" />
-                                ) : (
-                                  <Calendars className="w-4 h-4" />
-                                )}
+                              <div className="space-y-2">
+                                <div>
+                                  <div className="text-xs text-gray-400 mb-0.5">
+                                    Applicant
+                                  </div>
+                                  <div className="font-semibold text-base text-white">
+                                    {interview.applicant.name}{' '}
+                                    {interview.applicant.surname}
+                                  </div>
+                                </div>
+                                <div>
+                                  <div className="text-xs text-gray-400 mb-0.5">
+                                    Interviewers
+                                  </div>
+                                  <div className="space-y-0.5">
+                                    {interview.interviewers.map(
+                                      (interviewer) => (
+                                        <div
+                                          key={interviewer.id}
+                                          className="text-sm text-gray-200"
+                                        >
+                                          {interviewer.name}
+                                        </div>
+                                      )
+                                    )}
+                                  </div>
+                                </div>
                               </div>
-                            </TooltipTrigger>
-                            <TooltipContent>{interviewsTooltip}</TooltipContent>
-                          </Tooltip>
-                        )}
+                              {interview.meetingId && (
+                                <a
+                                  href={getMeetingLink(interview.meetingId)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-block mt-2 text-xs font-medium bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 transition-colors"
+                                >
+                                  Join Meeting
+                                </a>
+                              )}
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                    );
+
+                    return (
+                      <td
+                        key={cellKey}
+                        className={`border text-center p-2 ${timeslot.totalUsers > 0 ? cellColor : timeslot.interviews.length > 0 ? COLORS.CELL_WITH_INTERVIEW : 'bg-white'}`}
+                      >
+                        <div className="flex items-center justify-center gap-2">
+                          {timeslot.totalUsers > 0 && (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="cursor-help">
+                                  {timeslot.totalUsers}
+                                  {timeslot.firstTimeUsers > 0
+                                    ? ` (${timeslot.firstTimeUsers})`
+                                    : ''}
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>{tooltipContent}</TooltipContent>
+                            </Tooltip>
+                          )}
+                          {timeslot.interviews.length > 0 && (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="cursor-pointer">
+                                  {timeslot.interviews.length === 1 ? (
+                                    <Calendar className="w-4 h-4" />
+                                  ) : (
+                                    <Calendars className="w-4 h-4" />
+                                  )}
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                {interviewsTooltip}
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
+                        </div>
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </TooltipProvider>
   );

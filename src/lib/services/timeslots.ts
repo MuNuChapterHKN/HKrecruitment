@@ -52,6 +52,7 @@ export const findWithAggregatedAvailability = async (rid: string) => {
       applicantSurname: schema.applicant.surname,
       interviewerId: schema.usersToInterviews.userId,
       interviewerName: schema.user.name,
+      interviewerRole: schema.user.role,
     })
     .from(schema.interview)
     .innerJoin(
@@ -74,7 +75,7 @@ export const findWithAggregatedAvailability = async (rid: string) => {
     {
       meetingId: string;
       applicant: { name: string; surname: string };
-      interviewers: string[];
+      interviewers: { id: string; name: string; role: number | null }[];
     }[]
   >();
 
@@ -98,10 +99,14 @@ export const findWithAggregatedAvailability = async (rid: string) => {
     }
 
     if (
-      record.interviewerName &&
-      !interview.interviewers.includes(record.interviewerName)
+      record.interviewerId &&
+      !interview.interviewers.some((i) => i.id === record.interviewerId)
     ) {
-      interview.interviewers.push(record.interviewerName);
+      interview.interviewers.push({
+        id: record.interviewerId,
+        name: record.interviewerName,
+        role: record.interviewerRole ?? null,
+      });
     }
   });
 
@@ -188,6 +193,7 @@ export const findWithAggregatedAvailability = async (rid: string) => {
       userNames: availability.users,
       firstTimeUserNames: availability.firstTimeUsers,
       interviews,
+      submittedUsers: [],
     };
   });
 };
