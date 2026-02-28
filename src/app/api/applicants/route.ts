@@ -54,15 +54,25 @@ export async function POST(req: Request) {
       );
     }
 
+    // Import DOMPurify e jsdom per sanitizzazione lato server
+    const createDOMPurify = (await import('dompurify')).default;
+    const { JSDOM } = await import('jsdom');
+    const window = new JSDOM('').window;
+    const DOMPurify = createDOMPurify(window);
+    function sanitizeField(val: unknown) {
+      if (typeof val !== 'string') return '';
+      return DOMPurify.sanitize(val, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+    }
+
     const data = {
-      name: form.get('name')?.toString(),
-      surname: form.get('surname')?.toString(),
-      email: form.get('email')?.toString(),
+      name: sanitizeField(form.get('name')),
+      surname: sanitizeField(form.get('surname')),
+      email: sanitizeField(form.get('email')),
       gpa: Number(form.get('gpa')),
-      degreeLevel: form.get('degreeLevel')?.toString(),
-      course: form.get('course')?.toString(),
-      courseArea: form.get('courseArea')?.toString(),
-      italianLevel: form.get('italianLevel')?.toString(),
+      degreeLevel: sanitizeField(form.get('degreeLevel')),
+      course: sanitizeField(form.get('course')),
+      courseArea: sanitizeField(form.get('courseArea')),
+      italianLevel: sanitizeField(form.get('italianLevel')),
     };
 
     const parsed = insertApplicantSchema.parse(data);
