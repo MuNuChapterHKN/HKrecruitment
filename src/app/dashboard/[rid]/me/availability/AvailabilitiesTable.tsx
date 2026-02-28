@@ -189,79 +189,81 @@ export function AvailabilitiesTable({
           </button>
         </div>
 
-        <table className="border text-sm w-full table-fixed">
-          <thead>
-            <tr>
-              <th className="p-2 border">Hour</th>
-              {WEEK_DAYS.map((day, index) => (
-                <th className="p-2 border" key={day}>
-                  <div>{day}</div>
-                  <div className="text-xs font-normal text-gray-500">
-                    {weekDates[index].toLocaleDateString('en-US', {
-                      month: 'numeric',
-                      day: 'numeric',
-                    })}
-                  </div>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {hours.map((hour) => (
-              <tr key={hour}>
-                <td className="p-2 border">
-                  {hour.toString().padStart(2, '0')}:00
-                </td>
-                {WEEK_DAYS.map((day, dayIndex) => {
-                  const weekDate = weekDates[dayIndex];
-                  const dateStr = weekDate.toISOString().split('T')[0];
-                  const cellKey = `${dateStr}-${hour}`;
-                  const timeslot = timeslotMap.get(cellKey);
+        <div className="overflow-x-auto w-full">
+          <table className="border text-sm min-w-[700px] md:min-w-full table-fixed">
+            <thead>
+              <tr>
+                <th className="p-2 border min-w-[60px]">Hour</th>
+                {WEEK_DAYS.map((day, index) => (
+                  <th className="p-2 border min-w-[110px]" key={day}>
+                    <div>{day}</div>
+                    <div className="text-xs font-normal text-gray-500">
+                      {weekDates[index].toLocaleDateString('en-US', {
+                        month: 'numeric',
+                        day: 'numeric',
+                      })}
+                    </div>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {hours.map((hour) => (
+                <tr key={hour}>
+                  <td className="p-2 border min-w-[60px]">
+                    {hour.toString().padStart(2, '0')}:00
+                  </td>
+                  {WEEK_DAYS.map((day, dayIndex) => {
+                    const weekDate = weekDates[dayIndex];
+                    const dateStr = weekDate.toISOString().split('T')[0];
+                    const cellKey = `${dateStr}-${hour}`;
+                    const timeslot = timeslotMap.get(cellKey);
 
-                  if (!timeslot) {
+                    if (!timeslot) {
+                      return (
+                        <td
+                          key={cellKey}
+                          className="border bg-gray-100 text-center min-w-[110px]"
+                        >
+                          -
+                        </td>
+                      );
+                    }
+
                     return (
                       <td
                         key={cellKey}
-                        className="border bg-gray-100 text-center"
+                        onClick={() =>
+                          !timeslot.locked && toggleSlot(timeslot.id)
+                        }
+                        className={`border text-center min-w-[110px]
+                        ${timeslot.locked ? 'bg-blue-500 text-white cursor-not-allowed' : timeslot.active ? 'bg-green-500 text-white cursor-pointer' : 'bg-white hover:bg-gray-100 cursor-pointer'}`}
                       >
-                        -
+                        {timeslot.locked ? (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div className="flex items-center justify-center">
+                                <Calendar className="w-4 h-4" />
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              Non puoi cambiare la disponibilità per questo
+                              timeslot, hai già un meeting fissato
+                            </TooltipContent>
+                          </Tooltip>
+                        ) : timeslot.active ? (
+                          '✓'
+                        ) : (
+                          ''
+                        )}
                       </td>
                     );
-                  }
-
-                  return (
-                    <td
-                      key={cellKey}
-                      onClick={() =>
-                        !timeslot.locked && toggleSlot(timeslot.id)
-                      }
-                      className={`border text-center
-                      ${timeslot.locked ? 'bg-blue-500 text-white cursor-not-allowed' : timeslot.active ? 'bg-green-500 text-white cursor-pointer' : 'bg-white hover:bg-gray-100 cursor-pointer'}`}
-                    >
-                      {timeslot.locked ? (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <div className="flex items-center justify-center">
-                              <Calendar className="w-4 h-4" />
-                            </div>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            Non puoi cambiare la disponibilità per questo
-                            timeslot, hai già un meeting fissato
-                          </TooltipContent>
-                        </Tooltip>
-                      ) : timeslot.active ? (
-                        '✓'
-                      ) : (
-                        ''
-                      )}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </TooltipProvider>
   );
