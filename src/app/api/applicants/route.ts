@@ -54,8 +54,11 @@ export async function POST(req: Request) {
       );
     }
 
-    // Import DOMPurify
-    const DOMPurify = (await import('dompurify')).default;
+    // Import DOMPurify e jsdom per sanitizzazione lato server
+    const createDOMPurify = (await import('dompurify')).default;
+    const { JSDOM } = await import('jsdom');
+    const window = new JSDOM('').window;
+    const DOMPurify = createDOMPurify(window);
     function sanitizeField(val: unknown) {
       if (typeof val !== 'string') return '';
       return DOMPurify.sanitize(val, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
