@@ -289,15 +289,15 @@ export const findAvailableForBooking = async (rid: string) => {
       return true;
     });
 
-    if (actuallyAvailableUsers.length >= 2) {
-      const firstTimeCount = actuallyAvailableUsers.filter(
-        (user) => user.isFirstTime
-      ).length;
+    const firstTimeCount = actuallyAvailableUsers.filter(
+      (user) => user.isFirstTime
+    ).length;
 
-      if (firstTimeCount < 2) {
-        availableTimeslots.push(timeslot.id);
-      }
-    }
+    let count = actuallyAvailableUsers.length - firstTimeCount;
+
+    if (firstTimeCount > 0) count++;
+
+    if (count >= 2) availableTimeslots.push(timeslot.id);
   }
 
   return futureTimeslots.filter((ts) => availableTimeslots.includes(ts.id));

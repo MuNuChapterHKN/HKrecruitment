@@ -196,14 +196,15 @@ export function AggregatedAvailabilityTable({
                       );
                     }
 
-                    const experiencedUsers =
+                    let userCount =
                       timeslot.totalUsers - timeslot.firstTimeUsers;
-                    const isValid =
-                      timeslot.totalUsers >= 2 &&
-                      experiencedUsers >= timeslot.firstTimeUsers;
-                    const cellColor = isValid
-                      ? 'bg-green-500 text-white'
-                      : 'bg-red-400 text-white';
+
+                    if (timeslot.firstTimeUsers > 0) userCount++;
+
+                    const cellColor =
+                      userCount >= 2
+                        ? 'bg-green-500 text-white'
+                        : 'bg-red-400 text-white';
 
                     const interviewerNamesInMeeting = new Set<string>();
                     timeslot.interviews.forEach((interview) => {
