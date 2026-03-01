@@ -13,6 +13,8 @@ import { uploadFile, shareFileWithDomain } from '@/lib/google/drive/files';
 import { ZodError } from 'zod';
 import { findLatest } from '@/lib/services/recruitmentSessions';
 import { nanoid } from 'nanoid';
+import createDOMPurify from 'dompurify';
+import { JSDOM } from 'jsdom';
 
 export async function POST(req: Request) {
   try {
@@ -54,9 +56,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Import DOMPurify e jsdom per sanitizzazione lato server
-    const createDOMPurify = (await import('dompurify')).default;
-    const { JSDOM } = await import('jsdom');
+    // Import DOMPurify and jsdom for server-side sanitization
     const window = new JSDOM('').window;
     const DOMPurify = createDOMPurify(window);
     function sanitizeField(val: unknown) {
