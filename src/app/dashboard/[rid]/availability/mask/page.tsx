@@ -1,6 +1,6 @@
 'use server';
 
-import { AggregatedAvailabilityTable } from './AggregatedAvailabilityTable';
+import { AggregatedAvailabilityTable } from '../AggregatedAvailabilityTable';
 import { findWithMaskedAggregatedAvailability } from '@/lib/services/timeslots';
 import { findOne } from '@/lib/services/recruitmentSessions';
 import { notFound } from 'next/navigation';
