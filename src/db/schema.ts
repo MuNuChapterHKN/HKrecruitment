@@ -51,6 +51,7 @@ export const recruitingSessionRelations = relations(
   ({ many }) => ({
     applicants: many(applicant),
     timeslots: many(timeslot),
+    availabilityTimeslotMasks: many(availabilityTimeslotMask),
   })
 );
 
@@ -126,7 +127,35 @@ export const timeslotRelations = relations(timeslot, ({ many, one }) => ({
   }),
   interviews: many(interview),
   interviewerAvailability: many(interviewerAvailability),
+  availabilityTimeslotMasks: many(availabilityTimeslotMask),
 }));
+
+export const availabilityTimeslotMask = pgTable(
+  'availability_timeslot_mask',
+  {
+    recruitingSessionId: text('recruiting_session_id')
+      .notNull()
+      .references(() => recruitingSession.id),
+    timeslotId: text('timeslot_id')
+      .notNull()
+      .references(() => timeslot.id),
+  },
+  (t) => [primaryKey({ columns: [t.recruitingSessionId, t.timeslotId] })]
+);
+
+export const availabilityTimeslotMaskRelations = relations(
+  availabilityTimeslotMask,
+  ({ one }) => ({
+    recruitingSession: one(recruitingSession, {
+      fields: [availabilityTimeslotMask.recruitingSessionId],
+      references: [recruitingSession.id],
+    }),
+    timeslot: one(timeslot, {
+      fields: [availabilityTimeslotMask.timeslotId],
+      references: [timeslot.id],
+    }),
+  })
+);
 
 export const interview = pgTable('interview', {
   id: text('id').primaryKey(),
