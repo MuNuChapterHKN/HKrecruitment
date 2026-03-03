@@ -195,7 +195,7 @@ export const findWithAggregatedAvailability = async (rid: string) => {
 export const findAvailableForBooking = async (rid: string) => {
   const now = new Date();
   const tomorrow = new Date(now);
-  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setDate(tomorrow.getDate() + 2);
   tomorrow.setHours(0, 0, 0, 0);
 
   const allTimeslots = await findAll(rid);

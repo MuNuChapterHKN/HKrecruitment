@@ -1,3 +1,5 @@
+'use client';
+
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui';
 import { getMeetingLink } from '@/lib/utils';
 
