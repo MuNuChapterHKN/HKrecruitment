@@ -10,6 +10,7 @@ export default function SignUp() {
     await authClient.signIn.social({
       provider: 'google',
       callbackURL: '/recruitment/dashboard',
+      urlCallback: (url) => { window.location.href = url; },
     });
 
     redirect('/dashboard');
