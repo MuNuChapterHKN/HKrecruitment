@@ -207,4 +207,33 @@ export const interviewerAvailabilityRelations = relations(
   })
 );
 
+export const usersToRecruitingSessions = pgTable(
+  'users_to_recruiting_sessions',
+  {
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id),
+    recruitingSessionId: text('recruiting_session_id')
+      .notNull()
+      .references(() => recruitingSession.id),
+    role: integer('role').notNull(),
+    ...timestamps,
+  },
+  (t) => [primaryKey({ columns: [t.recruitingSessionId, t.userId] })]
+);
+
+export const usersToRecruitingSessionsRelations = relations(
+  usersToRecruitingSessions,
+  ({ one }) => ({
+    user: one(user, {
+      fields: [usersToRecruitingSessions.userId],
+      references: [user.id],
+    }),
+    recruitingSession: one(recruitingSession, {
+      fields: [usersToRecruitingSessions.recruitingSessionId],
+      references: [recruitingSession.id],
+    }),
+  })
+);
+
 export { account, user, session, verification };

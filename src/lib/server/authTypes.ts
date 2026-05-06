@@ -6,16 +6,16 @@ export type AuthUser = AuthSessionUser['user'];
 
 export enum AuthUserRole {
   Guest = 0,
-  User = 1,
+  Member = 1,
   Clerk = 2,
   Admin = 3,
-  God = 4,
+  // God = 4,   // not currently used, reserved for potential future use
 }
 
 export const AuthUserRoleName: Record<number, string> = {
   [AuthUserRole.Guest]: 'guest',
-  [AuthUserRole.User]: 'user',
+  [AuthUserRole.Member]: 'member',
   [AuthUserRole.Clerk]: 'clerk',
   [AuthUserRole.Admin]: 'admin',
-  [AuthUserRole.God]: 'god',
+  // [AuthUserRole.God]: 'god',    // not currently used, reserved for potential future use
 };

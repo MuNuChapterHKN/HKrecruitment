@@ -1,7 +1,8 @@
 <div align="center">
   <img src="/docs/img/cover.svg" alt="HKRecruitment">
 
-  ![](https://img.shields.io/badge/HKN_Chapter-MuNu-blue) ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/MuNuChapterHKN/HKrecruitment) ![GitHub contributors](https://img.shields.io/github/contributors/MuNuChapterHKN/HKrecruitment) 
+![](https://img.shields.io/badge/HKN_Chapter-MuNu-blue) ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/MuNuChapterHKN/HKrecruitment) ![GitHub contributors](https://img.shields.io/github/contributors/MuNuChapterHKN/HKrecruitment)
+
 </div>
 
 A recruitment platform used by the Mu Nu Chapter of Eta Kappa Nu, check out our website to learn more about our chapter [hknpolito.org](https://hknpolito.org).
@@ -26,9 +27,9 @@ In order to manage multiple versions of node.js and pnpm, I'd suggest using [asd
 4. Push the migrations to the database with `pnpm db:push`;
 5. Start the development server with `pnpm dev`;
 6. Go to `https://localhost:3000/recruitment/dashboard` and log in with your Google account;
-7. (Optional) If you want to seed the database, you can use `pnpm db:seed`. You can also set your account as admin by passing `pnpm db:seed --admin-email=your.email@hknpolito.org`.
+7. (Optional) If you want to seed the database, you can use `pnpm db:seed`. You can also set your account as admin by passing `pnpm db:seed --admin-email=your.email@hknpolito.org`. For the session-based dashboard roles, you can assign yourself a role for the latest recruitment session with `pnpm db:seed --session-role-email=your.email@hknpolito.org --session-role=guest|member|clerk|admin`, or target a specific session with `--session-id=<session-id>`.
 
-### Development 
+### Development
 
 Whenever you make any change to the codebase, try to follow these guidelines:
 

@@ -22,11 +22,22 @@ import { findAvailableForBooking } from '@/lib/services/timeslots';
 import { revalidatePath } from 'next/cache';
 import { INTERVIEW_BOOKING_STAGE } from '@/lib/stages';
 import { UpdateFileDialog } from './UpdateFileDialog';
+import { auth } from '@/lib/server/auth';
+import { headers } from 'next/headers';
+import { requirePageAccess } from '@/lib/helpers/pageAuthorization';
 
 export default async function CandidateDetailsPage({
   params,
 }: PageProps<'/dashboard/[rid]/candidates/[id]'>) {
-  const { id } = await params;
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session) return null;
+
+  const { id, rid } = await params;
+
+  await requirePageAccess(session.user.id, rid, 'CandidateDetailsPage');
+
   const applicant = await getApplicantById(id);
 
   if (!applicant) {

@@ -71,39 +71,39 @@ export function DashboardSidebar({ user, recruitment }: DashboardSidebarProps) {
       </SidebarHeader>
       <SidebarContent>
         {Object.entries(LINKS).map(([groupName, group], i) => (
-          <Can I="read" this={group} key={i}>
-            <SidebarGroup>
-              <SidebarGroupLabel>{capitalize(groupName)}</SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {group.links.map((link, j) => (
-                    <Can I="read" this={link} key={j}>
-                      <SidebarMenuItem key={link.label}>
-                        <SidebarMenuButton asChild>
-                          <DashboardLink href={link.href}>
-                            {link.icon}
-                            <span>{link.label}</span>
-                          </DashboardLink>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    </Can>
-                  ))}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          </Can>
+          <SidebarGroup key={i}>
+            <SidebarGroupLabel>{capitalize(groupName)}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {group.links.map((link, j) => (
+                  <Can I="read" a={link.subject} key={j}>
+                    <SidebarMenuItem key={link.label}>
+                      <SidebarMenuButton asChild>
+                        <DashboardLink href={link.href}>
+                          {link.icon}
+                          <span>{link.label}</span>
+                        </DashboardLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </Can>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
         ))}
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <DashboardLink href={'/users'}>
-                <Users />
-                <span>Members</span>
-              </DashboardLink>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          <Can I="read" a="MembersPage">
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <DashboardLink href={'/members'}>
+                  <Users />
+                  <span>Members</span>
+                </DashboardLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </Can>
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

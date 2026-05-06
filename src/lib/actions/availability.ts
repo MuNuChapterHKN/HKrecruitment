@@ -1,12 +1,13 @@
 'use server';
 
-import { db } from '@/db';
+import { db, schema } from '@/db';
 import { interviewerAvailability } from '@/db/schema';
 import { auth } from '@/lib/server/auth';
 import { headers } from 'next/headers';
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { findTimeslotsWithInterviewsForUser } from '@/lib/services/timeslots';
+import { abilityForUserInSession } from '@/lib/abilities/server';
 
 export async function submitAvailability(timeslotIds: string[]) {
   const session = await auth.api.getSession({
@@ -18,6 +19,25 @@ export async function submitAvailability(timeslotIds: string[]) {
   const { user } = session;
 
   try {
+    if (!timeslotIds || timeslotIds.length === 0) {
+      return { success: false, error: 'No timeslots provided' };
+    }
+
+    // infer recruitment session from first timeslot
+    const ts = await db
+      .select({ recruitingSessionId: schema.timeslot.recruitingSessionId })
+      .from(schema.timeslot)
+      .where(eq(schema.timeslot.id, timeslotIds[0]))
+      .limit(1);
+
+    const rid = ts.at(0)?.recruitingSessionId;
+    if (!rid) return { success: false, error: 'Invalid timeslot' };
+
+    const ability = await abilityForUserInSession(user.id, rid);
+    if (!ability.can('submit', 'AvailabilityActions')) {
+      return { success: false, error: 'Forbidden' };
+    }
+
     const lockedTimeslotIds = await findTimeslotsWithInterviewsForUser(user.id);
 
     const existingAvailabilities = await db
