@@ -1,7 +1,6 @@
 'use client';
 
 import { authClient } from '@/lib/auth';
-import { redirect } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import LogoLong from '@/components/logo/LogoLong';
 
@@ -11,8 +10,6 @@ export default function SignUp() {
       provider: 'google',
       callbackURL: '/recruitment/dashboard',
     });
-
-    redirect('/dashboard');
   };
 
   return (
