@@ -1,7 +1,7 @@
 <div align="center">
   <img src="/docs/img/cover.svg" alt="HKRecruitment">
 
-![](https://img.shields.io/badge/HKN_Chapter-MuNu-blue) ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/MuNuChapterHKN/HKrecruitment) ![GitHub contributors](https://img.shields.io/github/contributors/MuNuChapterHKN/HKrecruitment) [![All Contributors](https://img.shields.io/github/all-contributors/MuNuChapterHKN/HKrecruitment?color=ee8449&style=flat-square)](#contributors)
+![](https://img.shields.io/badge/HKN_Chapter-MuNu-blue) ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/MuNuChapterHKN/HKrecruitment) ![GitHub contributors](https://img.shields.io/github/contributors/MuNuChapterHKN/HKrecruitment)
 
 </div>
 
