@@ -1,0 +1,27 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "pasc4le",
+      "name": "Giuseppe Pascale",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14334976?v=4",
+      "profile": "https://peppe.dev",
+      "contributions": [
+        "code",
+        "ideas"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "skipCi": true,
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "projectName": "HKrecruitment",
+  "projectOwner": "MuNuChapterHKN"
+}
