@@ -3,6 +3,7 @@
   "projectOwner": "HKrecruitment",
   "repoType": "github",
   "commitConvention": "angular",
+  "contributorTemplate": "<a href=\"<%= contributor.profile %>\"><img src=\"<%= contributor.avatar_url %>\" width=\"<%= options.imageSize %>px;\" alt=\"\"/><br /></a>",
   "contributors": [
     {
       "login": "pasc4le",
@@ -41,4 +42,3 @@
     }
   ]
 }
-

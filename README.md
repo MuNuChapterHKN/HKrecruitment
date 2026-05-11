@@ -27,11 +27,11 @@ For approved contributors, check out the contributing guidelines in [CONTRIBUTIN
 <table>
   <tbody>
     <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://peppe.dev/"><img src="https://avatars.githubusercontent.com/u/14334976?v=4?s=100" width="100px;" alt="Giuseppe Pascale"/><br /><sub><b>Giuseppe Pascale</b></sub></a><br /><a href="https://github.com/HKrecruitment/MuNuChapterHKN/commits?author=pasc4le" title="Code">💻</a> <a href="#ideas-pasc4le" title="Ideas, Planning, & Feedback">🤔</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/erdragone430"><img src="https://avatars.githubusercontent.com/u/132825589?v=4?s=100" width="100px;" alt="Fabio Tommaselli"/><br /><sub><b>Fabio Tommaselli</b></sub></a><br /><a href="https://github.com/HKrecruitment/MuNuChapterHKN/commits?author=erdragone430" title="Code">💻</a> <a href="#ideas-erdragone430" title="Ideas, Planning, & Feedback">🤔</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/cristiansap"><img src="https://avatars.githubusercontent.com/u/152631767?v=4?s=100" width="100px;" alt="Cristian Sapia"/><br /><sub><b>Cristian Sapia</b></sub></a><br /><a href="https://github.com/HKrecruitment/MuNuChapterHKN/commits?author=cristiansap" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/pippotadde"><img src="https://avatars.githubusercontent.com/u/199654936?v=4?s=100" width="100px;" alt="Filippo Taddei"/><br /><sub><b>Filippo Taddei</b></sub></a><br /><a href="https://github.com/HKrecruitment/MuNuChapterHKN/commits?author=pippotadde" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/LucaScibetta"><img src="https://avatars.githubusercontent.com/u/100673348?v=4?s=100" width="100px;" alt="Luca"/><br /><sub><b>Luca</b></sub></a><br /><a href="https://github.com/HKrecruitment/MuNuChapterHKN/commits?author=LucaScibetta" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://peppe.dev/"><img src="https://avatars.githubusercontent.com/u/14334976?v=4" width="100px;" alt=""/><br /></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/erdragone430"><img src="https://avatars.githubusercontent.com/u/132825589?v=4" width="100px;" alt=""/><br /></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/cristiansap"><img src="https://avatars.githubusercontent.com/u/152631767?v=4" width="100px;" alt=""/><br /></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/pippotadde"><img src="https://avatars.githubusercontent.com/u/199654936?v=4" width="100px;" alt=""/><br /></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/LucaScibetta"><img src="https://avatars.githubusercontent.com/u/100673348?v=4" width="100px;" alt=""/><br /></a></td>
     </tr>
   </tbody>
 </table>
