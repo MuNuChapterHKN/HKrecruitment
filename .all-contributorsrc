@@ -1,4 +1,47 @@
 {
   "projectName": "MuNuChapterHKN",
-  "projectOwner": "HKrecruitment"
+  "projectOwner": "HKrecruitment",
+  "repoType": "github",
+  "commitConvention": "angular",
+  "contributorsPerLine": 9999,
+  "contributorTemplate": "<a href=\"<%= contributor.profile %>\"><img src=\"<%= contributor.avatar_url %>\" width=\"<%= options.imageSize %>px;\" alt=\"\" /></a>",
+  "wrapperTemplate": "<div style=\"display: flex; flex-wrap: wrap; gap: 10px;\">\n<%= bodyContent.replace('<tr>', '').replace('</tr>', '').trim() %>\n</div>",
+  "imageSize": 75,
+  "contributors": [
+    {
+      "login": "pasc4le",
+      "name": "Giuseppe Pascale",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14334976?v=4",
+      "profile": "https://peppe.dev/",
+      "contributions": ["code", "ideas"]
+    },
+    {
+      "login": "erdragone430",
+      "name": "Fabio Tommaselli",
+      "avatar_url": "https://avatars.githubusercontent.com/u/132825589?v=4",
+      "profile": "https://github.com/erdragone430",
+      "contributions": ["code", "ideas"]
+    },
+    {
+      "login": "cristiansap",
+      "name": "Cristian Sapia",
+      "avatar_url": "https://avatars.githubusercontent.com/u/152631767?v=4",
+      "profile": "https://github.com/cristiansap",
+      "contributions": ["code"]
+    },
+    {
+      "login": "pippotadde",
+      "name": "Filippo Taddei",
+      "avatar_url": "https://avatars.githubusercontent.com/u/199654936?v=4",
+      "profile": "https://github.com/pippotadde",
+      "contributions": ["code"]
+    },
+    {
+      "login": "LucaScibetta",
+      "name": "Luca",
+      "avatar_url": "https://avatars.githubusercontent.com/u/100673348?v=4",
+      "profile": "https://github.com/LucaScibetta",
+      "contributions": ["code"]
+    }
+  ]
 }
