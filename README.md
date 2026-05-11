@@ -24,17 +24,13 @@ For approved contributors, check out the contributing guidelines in [CONTRIBUTIN
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
-<table>
-  <tbody>
-    <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://peppe.dev/"><img src="https://avatars.githubusercontent.com/u/14334976?v=4" width="100px;" alt=""/><br /></a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/erdragone430"><img src="https://avatars.githubusercontent.com/u/132825589?v=4" width="100px;" alt=""/><br /></a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/cristiansap"><img src="https://avatars.githubusercontent.com/u/152631767?v=4" width="100px;" alt=""/><br /></a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/pippotadde"><img src="https://avatars.githubusercontent.com/u/199654936?v=4" width="100px;" alt=""/><br /></a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/LucaScibetta"><img src="https://avatars.githubusercontent.com/u/100673348?v=4" width="100px;" alt=""/><br /></a></td>
-    </tr>
-  </tbody>
-</table>
+<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+<td align="center" valign="top" width="0.01%"><a href="https://peppe.dev/"><img src="https://avatars.githubusercontent.com/u/14334976?v=4" width="100px;" alt="" /></a></td>
+      <td align="center" valign="top" width="0.01%"><a href="https://github.com/erdragone430"><img src="https://avatars.githubusercontent.com/u/132825589?v=4" width="100px;" alt="" /></a></td>
+      <td align="center" valign="top" width="0.01%"><a href="https://github.com/cristiansap"><img src="https://avatars.githubusercontent.com/u/152631767?v=4" width="100px;" alt="" /></a></td>
+      <td align="center" valign="top" width="0.01%"><a href="https://github.com/pippotadde"><img src="https://avatars.githubusercontent.com/u/199654936?v=4" width="100px;" alt="" /></a></td>
+      <td align="center" valign="top" width="0.01%"><a href="https://github.com/LucaScibetta"><img src="https://avatars.githubusercontent.com/u/100673348?v=4" width="100px;" alt="" /></a></td>
+</div>
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->

@@ -3,7 +3,9 @@
   "projectOwner": "HKrecruitment",
   "repoType": "github",
   "commitConvention": "angular",
-  "contributorTemplate": "<a href=\"<%= contributor.profile %>\"><img src=\"<%= contributor.avatar_url %>\" width=\"<%= options.imageSize %>px;\" alt=\"\"/><br /></a>",
+  "contributorsPerLine": 9999,
+  "contributorTemplate": "<a href=\"<%= contributor.profile %>\"><img src=\"<%= contributor.avatar_url %>\" width=\"<%= options.imageSize %>px;\" alt=\"\" /></a>",
+  "wrapperTemplate": "<div style=\"display: flex; flex-wrap: wrap; gap: 10px;\">\n<%= bodyContent.replace('<tr>', '').replace('</tr>', '').trim() %>\n</div>",
   "contributors": [
     {
       "login": "pasc4le",
