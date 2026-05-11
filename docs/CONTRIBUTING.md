@@ -3,7 +3,7 @@
 This project is gonna be managed by multiple people at the same time, thus we all have to follow some rules in order to keep the codebase clean and not loose trace of what is happening. Therefore, try to follow these guidelines whenever you contribute to the project:
 
 1. Every new feature is gonna have an issue describing in brief terms the task. _E.g. Adding logout button in the dashboard._
-2. Every new feature has a branch assigned to it that is followed by only one contributor, and its name has to be `yournickname/name-feature`. _E.g. peppe/dashboard-logout._ 
+2. Every new feature has a branch assigned to it that is followed by only one contributor, and its name has to be `yournickname/name-feature`. _E.g. peppe/dashboard-logout._
 3. When you think your feature is ready to be merged, open a pull request to `dev` and add one of the Project Leads as a reviewer.
 
 Regarding the code, as also defined in the [README](/docs/README.md):
@@ -19,3 +19,20 @@ Regarding the code, as also defined in the [README](/docs/README.md):
 You're completely free to use AI whenever you see fit. The only suggestion is to give it enough context not to go against the points described above. Sometimes AIs tend to rewrite whole files when it isn't really needed, try to review your AI generated code before submitting it for approval.
 
 With that said, [opencode](https://opencode.ai/) seems to be a good tool, especially if combined with [Context7](https://context7.com/) and [Vercel Grep](https://grep.app/). The program is open source, and it can be used for free with GitHub Copilot if you're a student, learn more [here](https://github.com/education).
+
+## Contributors
+
+We use the [all-contributors](https://allcontributors.org) bot to acknowledge every contribution. Once your pull request is merged, a Project Manager will add your name to the project's README.
+
+If you are a Project Manager or want to help us keep track of contributions, you can trigger the bot by commenting on any Issue or Pull Request with the following command:
+
+```text
+@all-contributors please add @<username> for <contribution-types>
+```
+
+For example:
+
+- `@all-contributors please add @peppe for code, docs`
+- `@all-contributors please add @janesmith for design`
+
+The bot will then open a pull request to update the README. You can find a full list of contribution types [here](https://allcontributors.org/docs/en/emoji-key).
