@@ -25,11 +25,11 @@ For approved contributors, check out the contributing guidelines in [CONTRIBUTIN
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
 <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-<td align="center" valign="top" width="0.01%"><a href="https://peppe.dev/"><img src="https://avatars.githubusercontent.com/u/14334976?v=4" width="100px;" alt="" /></a></td>
-      <td align="center" valign="top" width="0.01%"><a href="https://github.com/erdragone430"><img src="https://avatars.githubusercontent.com/u/132825589?v=4" width="100px;" alt="" /></a></td>
-      <td align="center" valign="top" width="0.01%"><a href="https://github.com/cristiansap"><img src="https://avatars.githubusercontent.com/u/152631767?v=4" width="100px;" alt="" /></a></td>
-      <td align="center" valign="top" width="0.01%"><a href="https://github.com/pippotadde"><img src="https://avatars.githubusercontent.com/u/199654936?v=4" width="100px;" alt="" /></a></td>
-      <td align="center" valign="top" width="0.01%"><a href="https://github.com/LucaScibetta"><img src="https://avatars.githubusercontent.com/u/100673348?v=4" width="100px;" alt="" /></a></td>
+<td align="center" valign="top" width="0.01%"><a href="https://peppe.dev/"><img src="https://avatars.githubusercontent.com/u/14334976?v=4" width="75px;" alt="" /></a></td>
+      <td align="center" valign="top" width="0.01%"><a href="https://github.com/erdragone430"><img src="https://avatars.githubusercontent.com/u/132825589?v=4" width="75px;" alt="" /></a></td>
+      <td align="center" valign="top" width="0.01%"><a href="https://github.com/cristiansap"><img src="https://avatars.githubusercontent.com/u/152631767?v=4" width="75px;" alt="" /></a></td>
+      <td align="center" valign="top" width="0.01%"><a href="https://github.com/pippotadde"><img src="https://avatars.githubusercontent.com/u/199654936?v=4" width="75px;" alt="" /></a></td>
+      <td align="center" valign="top" width="0.01%"><a href="https://github.com/LucaScibetta"><img src="https://avatars.githubusercontent.com/u/100673348?v=4" width="75px;" alt="" /></a></td>
 </div>
 
 <!-- markdownlint-restore -->
