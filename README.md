@@ -1,7 +1,7 @@
 <div align="center">
   <img src="/docs/img/cover.svg" alt="HKRecruitment">
 
-  ![](https://img.shields.io/badge/HKN_Chapter-MuNu-blue) ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/MuNuChapterHKN/HKrecruitment) ![GitHub contributors](https://img.shields.io/github/contributors/MuNuChapterHKN/HKrecruitment) 
+![](https://img.shields.io/badge/HKN_Chapter-MuNu-blue) ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/MuNuChapterHKN/HKrecruitment) ![GitHub contributors](https://img.shields.io/github/contributors/MuNuChapterHKN/HKrecruitment) [![All Contributors](https://img.shields.io/github/all-contributors/MuNuChapterHKN/HKrecruitment?color=ee8449&style=flat-square)](#contributors)
 
 </div>
 
@@ -21,9 +21,14 @@ This project is managed by the IT area and usually only accepts internal contrib
 
 For approved contributors, check out the contributing guidelines in [CONTRIBUTING](/docs/CONTRIBUTING.md). Thank you for contributing to this project 💙
 
-<a href="https://github.com/MuNuChapterHKN/HKrecruitment/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=MuNuChapterHKN/HKrecruitment" />
-</a>
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ## License
 
