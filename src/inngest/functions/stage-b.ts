@@ -59,9 +59,6 @@ export const stageBInterviewBookingEmail = inngest.createFunction(
         templateId: process.env.STAGE_B_TEMPLATE_ID,
         values: {
           ...context.applicant,
-          name: context.applicant.name,
-          surname: context.applicant.surname,
-          email: context.applicant.email,
           interviewBookingUrl,
         },
       });

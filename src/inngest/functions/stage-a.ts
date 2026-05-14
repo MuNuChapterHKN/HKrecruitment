@@ -41,12 +41,7 @@ export const stageAApplicationReceipt = inngest.createFunction(
     const html = await step.run('render-email-template', async () => {
       return await renderGoogleDocTemplate({
         templateId: process.env.STAGE_A_TEMPLATE_ID,
-        values: {
-          ...context.applicant,
-          name: context.applicant.name,
-          surname: context.applicant.surname,
-          email: context.applicant.email,
-        },
+        values: context.applicant,
       });
     });
 
