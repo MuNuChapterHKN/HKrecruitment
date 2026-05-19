@@ -17,8 +17,8 @@ export function SearchInput() {
       />
       <Input
         type="search"
-        placeholder="Cerca per nome o email…"
-        aria-label="Cerca candidati"
+        placeholder="Search by name or email..."
+        aria-label="Search candidates"
         value={filters.search}
         onChange={(e) =>
           setFilters((prev) => ({ ...prev, search: e.target.value }))
@@ -30,7 +30,7 @@ export function SearchInput() {
           type="button"
           variant="ghost"
           size="icon"
-          aria-label="Cancella ricerca"
+          aria-label="Clear search"
           onClick={() => setFilters((prev) => ({ ...prev, search: '' }))}
           className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2"
         >
