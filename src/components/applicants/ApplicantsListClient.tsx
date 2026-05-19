@@ -4,7 +4,7 @@ import { useDeferredValue, useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import type { Applicant } from '@/db/types';
 import { applicantsFiltersAtom } from '@/state/applicantsFiltersAtoms';
-import { SearchInput } from './SearchInput';
+import { ApplicantsFilters } from './ApplicantsFilters';
 import { ApplicantCard } from './ApplicantCard';
 
 export function ApplicantsListClient({
@@ -17,29 +17,65 @@ export function ApplicantsListClient({
 
   const filtered = useMemo(() => {
     const q = deferredSearch.trim().toLowerCase();
-    if (!q) return applicants;
     return applicants.filter((a) => {
-      const haystack = `${a.name} ${a.surname} ${a.email}`.toLowerCase();
-      return haystack.includes(q);
+      // archived
+      const isArchived =
+        (a as Applicant & { archived?: boolean }).archived ?? false;
+      if (!filters.showArchived && isArchived) return false;
+
+      // search (name, surname, email, course)
+      if (q) {
+        const haystack =
+          `${a.name} ${a.surname} ${a.email} ${a.course ?? ''}`.toLowerCase();
+        if (!haystack.includes(q)) return false;
+      }
+
+      // stages
+      if (filters.stages.length > 0 && !filters.stages.includes(a.stage)) {
+        return false;
+      }
+
+      // degree levels
+      if (
+        filters.degreeLevels.length > 0 &&
+        !filters.degreeLevels.includes(a.degreeLevel)
+      ) {
+        return false;
+      }
+
+      // areas
+      if (filters.areas.length > 0) {
+        const chosenArea = (a as Applicant & { chosenArea?: string | null })
+          .chosenArea;
+        if (!chosenArea || !filters.areas.includes(chosenArea as never)) {
+          return false;
+        }
+      }
+
+      return true;
     });
-  }, [applicants, deferredSearch]);
+  }, [applicants, deferredSearch, filters]);
 
   const isStale = filters.search !== deferredSearch;
-  const hasQuery = deferredSearch.trim().length > 0;
+  const hasAnyFilter =
+    deferredSearch.trim().length > 0 ||
+    filters.stages.length > 0 ||
+    filters.degreeLevels.length > 0 ||
+    filters.areas.length > 0 ||
+    filters.showArchived;
 
   return (
     <>
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-        <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold">Candidates</h1>
-          <div className="text-sm text-muted-foreground">
-            {hasQuery
-              ? `${filtered.length} of ${applicants.length}`
-              : `${applicants.length} candidate${applicants.length !== 1 ? 's' : ''}`}
-          </div>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-bold">Candidates</h1>
+        <div className="text-sm text-muted-foreground">
+          {hasAnyFilter
+            ? `${filtered.length} of ${applicants.length}`
+            : `${applicants.length} candidate${applicants.length !== 1 ? 's' : ''}`}
         </div>
-        <SearchInput />
       </div>
+
+      <ApplicantsFilters />
 
       <div
         className="flex flex-wrap gap-4"
@@ -50,8 +86,8 @@ export function ApplicantsListClient({
         ))}
         {filtered.length === 0 && (
           <div className="w-full text-center text-muted-foreground py-12">
-            {hasQuery
-              ? 'No candidates match your search.'
+            {hasAnyFilter
+              ? 'No candidates match the current filters.'
               : 'No candidates found.'}
           </div>
         )}
