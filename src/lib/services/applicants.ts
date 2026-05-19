@@ -1,6 +1,6 @@
 import { db, schema } from '@/db';
 import { applicant } from '@/db/schema';
-import { desc, eq } from 'drizzle-orm';
+import { and, desc, eq } from 'drizzle-orm';
 import { createInsertSchema } from 'drizzle-zod';
 import { z } from 'zod';
 import { DEGREE_LEVELS, LANGUAGE_LEVELS } from '@/db/schema';
@@ -42,3 +42,14 @@ export const insertApplicantSchema = createInsertSchema(applicant)
   });
 
 export type InsertApplicant = z.infer<typeof insertApplicantSchema>;
+
+export async function setApplicantArchived(
+  rid: string,
+  applicantId: string,
+  archived: boolean
+) {
+  await db
+    .update(appl)
+    .set({ archived })
+    .where(and(eq(appl.id, applicantId), eq(appl.recruitingSessionId, rid)));
+}
