@@ -82,6 +82,7 @@ export const applicant = pgTable('applicant', {
     enum: AREAS,
   }),
   accepted: boolean('accepted'),
+  archived: boolean('archived').notNull().default(false),
   ...timestamps,
 });
 
