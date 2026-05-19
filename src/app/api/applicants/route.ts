@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { db } from '@/db';
 import {
   applicant,
@@ -13,6 +13,7 @@ import { uploadFile, shareFileWithDomain } from '@/lib/google/drive/files';
 import { ZodError } from 'zod';
 import { findLatest } from '@/lib/services/recruitmentSessions';
 import { nanoid } from 'nanoid';
+import { emitStageChangedEventForStageStatus } from '@/lib/automation/stageEvents';
 
 export async function POST(req: Request) {
   try {
@@ -182,17 +183,31 @@ export async function POST(req: Request) {
       await shareFileWithDomain(spUploadResult.value.id, domain);
       await shareFileWithDomain(infoUploadResult.value.id, domain);
     }
+    const result = await db.transaction(async (tx) => {
+      const insertedApplicants = await tx
+        .insert(applicant)
+        .values([toInsert])
+        .returning();
 
-    const inserted = await db.insert(applicant).values([toInsert]).returning();
+      const insertedStatuses = await tx
+        .insert(stageStatus)
+        .values({
+          id: nanoid(),
+          applicantId: insertedApplicants[0].id,
+          stage: 'a',
+          processed: false,
+        })
+        .returning();
 
-    await db.insert(stageStatus).values({
-      id: nanoid(),
-      applicantId: inserted[0].id,
-      stage: 'a',
-      processed: false,
+      return {
+        applicant: insertedApplicants[0],
+        stageStatus: insertedStatuses[0],
+      };
     });
 
-    return NextResponse.json(inserted[0], { status: 201 });
+    await emitStageChangedEventForStageStatus(result.stageStatus);
+
+    return NextResponse.json(result.applicant, { status: 201 });
   } catch (error) {
     if (error instanceof ZodError) {
       return NextResponse.json({ error: error.issues }, { status: 400 });
