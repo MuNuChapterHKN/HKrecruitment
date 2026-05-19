@@ -1,12 +1,27 @@
-import { Applicant } from '@/db/types';
+import type { Applicant } from '@/db/types';
 import { DashboardLink } from '@/components/dashboard/DashboardLink';
 import { getStageLabel, getStageColor } from '@/lib/stages';
 import { getDegreeLabel } from '@/lib/degrees';
+import { cn } from '@/lib/utils';
+import { ArchiveButton } from './ArchiveButton';
 
-export function ApplicantCard({ applicant }: { applicant: Applicant }) {
+export function ApplicantCard({
+  applicant,
+  archived,
+  onToggleArchive,
+}: {
+  applicant: Applicant;
+  archived: boolean;
+  onToggleArchive: () => void;
+}) {
   return (
     <DashboardLink href={`/candidates/${applicant.id}`} className="block">
-      <div className="bg-card rounded-lg shadow-sm hover:shadow-md transition-shadow p-4 w-[300px] border border-border">
+      <div
+        className={cn(
+          'bg-card rounded-lg shadow-sm hover:shadow-md transition-shadow p-4 w-[300px] border border-border',
+          archived && 'opacity-60'
+        )}
+      >
         <div className="flex items-start gap-2 mb-3">
           <div
             className="w-3 h-3 rounded-sm shrink-0 mt-1"
@@ -20,6 +35,7 @@ export function ApplicantCard({ applicant }: { applicant: Applicant }) {
               {getStageLabel(applicant.stage)}
             </div>
           </div>
+          <ArchiveButton archived={archived} onToggle={onToggleArchive} />
         </div>
         <div className="space-y-1.5 text-sm">
           <div className="text-foreground font-medium">
