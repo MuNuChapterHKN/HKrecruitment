@@ -1,9 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { toggleIsFirstTimeCheckbox } from '@/lib/actions/users';
+import { AuthUserRole, AuthUserRoleName } from '@/lib/auth';
+import {
+  toggleIsFirstTimeCheckbox,
+  updateSessionMemberRole,
+} from '@/lib/actions/users';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@/components/ui/select';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -16,23 +27,34 @@ interface UserDB {
   image: string | null;
   createdAt: Date;
   updatedAt: Date;
+  role: number | null;
   isFirstTime: boolean;
 }
 
 interface MembersTableProps {
   users: UserDB[];
   rid: string;
+  currentUserId: string;
 }
 
 export default function MembersTable({
   users: initialUsers,
   rid,
+  currentUserId,
 }: MembersTableProps) {
   const [users, setUsers] = useState(initialUsers);
+  const [isPending, startTransition] = useTransition();
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
   const pageSize = 5; // number of users per page (editable)
+
+  const editableRoles = [
+    AuthUserRole.Guest,
+    AuthUserRole.Member,
+    AuthUserRole.Clerk,
+    AuthUserRole.Admin,
+  ];
 
   const filtered = users.filter((u) =>
     u.name.toLowerCase().includes(search.toLowerCase())
@@ -51,7 +73,7 @@ export default function MembersTable({
           {/* Header row for search */}
           <thead>
             <tr>
-              <th colSpan={4} className="p-4 bg-white">
+              <th colSpan={5} className="p-4 bg-white">
                 <div className="flex justify-center items-center relative">
                   {/* Search bar */}
                   <div className="w-full max-w-md">
@@ -68,16 +90,58 @@ export default function MembersTable({
                       />
                     </div>
                   </div>
+
+                  {/* Role filter */}
+                  <div className="ml-auto flex items-center space-x-2">
+                    <span className="text-sm font-medium text-gray-600">
+                      Role:
+                    </span>
+
+                    <Select
+                      onValueChange={(value) => {
+                        if (value === 'all') {
+                          setUsers(initialUsers);
+                        } else {
+                          setUsers(
+                            initialUsers.filter(
+                              (u) =>
+                                u.role !== null &&
+                                AuthUserRoleName[u.role] === value
+                            )
+                          );
+                        }
+                        setCurrentPage(1);
+                      }}
+                    >
+                      <SelectTrigger className="w-[140px]">
+                        <SelectValue placeholder="All roles" />
+                      </SelectTrigger>
+
+                      <SelectContent>
+                        <SelectItem value="all">All</SelectItem>
+
+                        {/* Show ONLY <= Admin and >= User roles to exclude "Guest" and "God" */}
+                        {Object.entries(AuthUserRoleName)
+                          //.filter(([key]) => AuthUserRole.User <= Number(key) && Number(key) <= AuthUserRole.Admin)
+                          .map(([key, label]) => (
+                            <SelectItem key={key} value={label}>
+                              {label}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </th>
             </tr>
 
             {/* Columns row */}
             <tr className="bg-gray-100 text-left">
-              <th className="p-3 pl-4 w-50 pr-10">Profile</th>
-              <th className="p-3 w-80">Name</th>
-              <th className="p-3 w-80">Email</th>
-              <th className="p-3 w-60 pr-20 text-center">First Interview</th>
+              <th className="p-3 pl-4 pr-10">Profile</th>
+              <th className="p-3 w-40">Name</th>
+              <th className="p-3 w-52">Email</th>
+              <th className="p-3 w-32 pr-20 text-center">First Interview</th>
+              <th className="p-3">Role</th>
             </tr>
           </thead>
 
@@ -98,9 +162,9 @@ export default function MembersTable({
                     </AvatarFallback>
                   </Avatar>
                 </td>
-                <td className="p-3 w-80">{user.name}</td>
-                <td className="p-3 w-80">{user.email}</td>
-                <td className="p-3 w-60">
+                <td className="p-3 w-40">{user.name}</td>
+                <td className="p-3 w-52">{user.email}</td>
+                <td className="p-3 w-32">
                   <div className="flex pr-20 justify-center">
                     <Checkbox
                       checked={user.isFirstTime}
@@ -124,19 +188,64 @@ export default function MembersTable({
                     />
                   </div>
                 </td>
+                <td className="p-3 w-32">
+                  <div className="space-y-1">
+                    <Select
+                      value={String(user.role ?? AuthUserRole.Guest)}
+                      disabled={isPending || user.id === currentUserId}
+                      onValueChange={(value) => {
+                        const nextRole = Number(value) as AuthUserRole;
+
+                        startTransition(async () => {
+                          const response = await updateSessionMemberRole(
+                            user.id,
+                            nextRole,
+                            rid
+                          );
+
+                          if (!response.success) {
+                            return;
+                          }
+
+                          setUsers(
+                            users.map((u) =>
+                              u.id === user.id ? { ...u, role: nextRole } : u
+                            )
+                          );
+                        });
+                      }}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="No role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {editableRoles.map((role) => (
+                          <SelectItem key={role} value={String(role)}>
+                            {AuthUserRoleName[role]}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {user.id === currentUserId && (
+                      <p className="text-xs text-muted-foreground">
+                        You cannot edit your own role.
+                      </p>
+                    )}
+                  </div>
+                </td>
               </tr>
             ))}
 
             {/* Separator line below the last row of the table */}
             <tr>
-              <td colSpan={4}>
+              <td colSpan={5}>
                 <hr className="border-t border-gray-200" />
               </td>
             </tr>
 
             {/* Pagination row */}
             <tr>
-              <td colSpan={4} className="p-4 bg-white">
+              <td colSpan={5} className="p-4 bg-white">
                 <div className="flex justify-between items-center">
                   {/* Showing X of Y */}
                   <div className="flex items-center space-x-2 text-sm text-gray-700">

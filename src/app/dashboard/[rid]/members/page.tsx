@@ -19,13 +19,13 @@ export default async function MembersPage({
 
   await requirePageAccess(session.user.id, rid, 'MembersPage');
 
-  const users = await listAllUsers();
+  const users = await listAllUsers(rid);
 
   return (
     <main className="p-6">
       <h1 className="text-2xl font-bold mb-6">Members</h1>
 
-      <MembersTable users={users} rid={rid} />
+      <MembersTable users={users} rid={rid} currentUserId={session.user.id} />
     </main>
   );
 }

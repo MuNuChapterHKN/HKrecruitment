@@ -151,7 +151,7 @@ async function main() {
     console.log('Setting admin user with email ', adminEmail);
     await db
       .update(schema.user)
-      .set({ role: 4 })
+      .set({ role: roleToValue('admin') })
       .where(eq(schema.user.email, adminEmail));
   }
 

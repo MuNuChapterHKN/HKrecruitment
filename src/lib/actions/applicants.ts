@@ -6,6 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { INTERVIEW_BOOKING_STAGE, INTERVIEW_DONE_STAGE } from '@/lib/stages';
 import { switchStage, switchToLimbo } from '@/lib/services/stages';
 import { getApplicantById } from '@/lib/services/applicants';
+import { abilityForUserInSession } from '@/lib/abilities/server';
 import type { ApplicationStage } from '@/db/types';
 
 export async function acceptApplication(applicantId: string) {
@@ -21,7 +22,6 @@ export async function acceptApplication(applicantId: string) {
     const applicant = await getApplicantById(applicantId);
     if (!applicant) return { success: false, error: 'Applicant not found' };
 
-    const { abilityForUserInSession } = await import('@/lib/abilities/server');
     const ability = await abilityForUserInSession(
       user.id,
       applicant.recruitingSessionId
@@ -54,7 +54,6 @@ export async function submitInterviewReport(applicantId: string) {
     const applicant = await getApplicantById(applicantId);
     if (!applicant) return { success: false, error: 'Applicant not found' };
 
-    const { abilityForUserInSession } = await import('@/lib/abilities/server');
     const ability = await abilityForUserInSession(
       user.id,
       applicant.recruitingSessionId
@@ -87,7 +86,6 @@ export async function moveToLimbo(applicantId: string) {
     const applicant = await getApplicantById(applicantId);
     if (!applicant) return { success: false, error: 'Applicant not found' };
 
-    const { abilityForUserInSession } = await import('@/lib/abilities/server');
     const ability = await abilityForUserInSession(
       user.id,
       applicant.recruitingSessionId
@@ -124,7 +122,6 @@ export async function removeFromLimbo(
     const applicant = await getApplicantById(applicantId);
     if (!applicant) return { success: false, error: 'Applicant not found' };
 
-    const { abilityForUserInSession } = await import('@/lib/abilities/server');
     const ability = await abilityForUserInSession(
       user.id,
       applicant.recruitingSessionId

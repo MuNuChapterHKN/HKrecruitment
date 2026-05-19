@@ -2,5 +2,5 @@ import { createAuthClient } from 'better-auth/react';
 export * from './server/authTypes';
 
 export const authClient = createAuthClient({
-  basePath: '/api/auth',
+  basePath: '/recruitment/api/auth',
 });
