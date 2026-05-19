@@ -1,10 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { AuthUserRole, AuthUserRoleName } from '@/lib/auth';
-import { toggleIsFirstTimeCheckbox } from '@/lib/actions/users';
+import {
+  toggleIsFirstTimeCheckbox,
+  updateSessionMemberRole,
+} from '@/lib/actions/users';
 import {
   Select,
   SelectTrigger,
@@ -28,12 +31,19 @@ interface UserDB {
   isFirstTime: boolean;
 }
 
-interface UsersTableProps {
+interface MembersTableProps {
   users: UserDB[];
+  rid: string;
+  currentUserId: string;
 }
 
-export default function UsersTable({ users: initialUsers }: UsersTableProps) {
+export default function MembersTable({
+  users: initialUsers,
+  rid,
+  currentUserId,
+}: MembersTableProps) {
   const [users, setUsers] = useState(initialUsers);
+  const [isPending, startTransition] = useTransition();
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -41,11 +51,10 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
 
   const editableRoles = [
     AuthUserRole.Guest,
-    AuthUserRole.User,
+    AuthUserRole.Member,
     AuthUserRole.Clerk,
     AuthUserRole.Admin,
-    AuthUserRole.God,
-  ]; // "Guest" and "God" may be excluded in the future
+  ];
 
   const filtered = users.filter((u) =>
     u.name.toLowerCase().includes(search.toLowerCase())
@@ -61,7 +70,7 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
       {/* Table */}
       <div className="overflow-x-auto rounded-xl border shadow-sm">
         <table className="w-full text-sm">
-          {/* Header row for search + role filter */}
+          {/* Header row for search */}
           <thead>
             <tr>
               <th colSpan={5} className="p-4 bg-white">
@@ -71,7 +80,7 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
                     <div className="relative">
                       <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                       <Input
-                        placeholder="Search users"
+                        placeholder="Search members by name"
                         value={search}
                         onChange={(e) => {
                           setSearch(e.target.value);
@@ -163,7 +172,8 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
                         // Update the db
                         await toggleIsFirstTimeCheckbox(
                           user.id,
-                          user.isFirstTime
+                          user.isFirstTime,
+                          rid
                         );
 
                         // Update local status immediately for visual feedback (optimistic update)
@@ -179,22 +189,49 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
                   </div>
                 </td>
                 <td className="p-3 w-32">
-                  <Select
-                    value={
-                      user.role !== null ? AuthUserRoleName[user.role] : ''
-                    }
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="No role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {editableRoles.map((role) => (
-                        <SelectItem key={role} value={AuthUserRoleName[role]}>
-                          {AuthUserRoleName[role]}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <div className="space-y-1">
+                    <Select
+                      value={String(user.role ?? AuthUserRole.Guest)}
+                      disabled={isPending || user.id === currentUserId}
+                      onValueChange={(value) => {
+                        const nextRole = Number(value) as AuthUserRole;
+
+                        startTransition(async () => {
+                          const response = await updateSessionMemberRole(
+                            user.id,
+                            nextRole,
+                            rid
+                          );
+
+                          if (!response.success) {
+                            return;
+                          }
+
+                          setUsers(
+                            users.map((u) =>
+                              u.id === user.id ? { ...u, role: nextRole } : u
+                            )
+                          );
+                        });
+                      }}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="No role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {editableRoles.map((role) => (
+                          <SelectItem key={role} value={String(role)}>
+                            {AuthUserRoleName[role]}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {user.id === currentUserId && (
+                      <p className="text-xs text-muted-foreground">
+                        You cannot edit your own role.
+                      </p>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}

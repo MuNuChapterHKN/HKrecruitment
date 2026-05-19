@@ -6,6 +6,7 @@ import {
   interview,
   usersToInterviews,
   interviewerAvailability,
+  usersToRecruitingSessions,
 } from './schema';
 
 export type RecruitingSession = typeof recruitingSession.$inferSelect;
@@ -16,6 +17,11 @@ export type Interview = typeof interview.$inferSelect;
 export type UsersToInterviews = typeof usersToInterviews.$inferSelect;
 export type InterviewerAvailability =
   typeof interviewerAvailability.$inferSelect;
+
+export type UsersToRecruitingSessions =
+  typeof usersToRecruitingSessions.$inferSelect;
+
+export type RecruitingSessionMemberRole = UsersToRecruitingSessions['role'];
 
 export type DegreeLevel = Applicant['degreeLevel'];
 export type LanguageLevel = Applicant['italianLevel'];
