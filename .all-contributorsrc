@@ -1,6 +1,6 @@
 {
-  "projectName": "MuNuChapterHKN",
-  "projectOwner": "HKrecruitment",
+  "projectName": "HKrecruitment",
+  "projectOwner": "MuNuChapterHKN",
   "repoType": "github",
   "commitConvention": "angular",
   "contributorsPerLine": 9999,
@@ -13,35 +13,60 @@
       "name": "Giuseppe Pascale",
       "avatar_url": "https://avatars.githubusercontent.com/u/14334976?v=4",
       "profile": "https://peppe.dev/",
-      "contributions": ["code", "ideas"]
+      "contributions": [
+        "code",
+        "ideas"
+      ]
     },
     {
       "login": "erdragone430",
       "name": "Fabio Tommaselli",
       "avatar_url": "https://avatars.githubusercontent.com/u/132825589?v=4",
       "profile": "https://github.com/erdragone430",
-      "contributions": ["code", "ideas"]
+      "contributions": [
+        "code",
+        "ideas"
+      ]
     },
     {
       "login": "cristiansap",
       "name": "Cristian Sapia",
       "avatar_url": "https://avatars.githubusercontent.com/u/152631767?v=4",
       "profile": "https://github.com/cristiansap",
-      "contributions": ["code"]
+      "contributions": [
+        "code"
+      ]
     },
     {
       "login": "pippotadde",
       "name": "Filippo Taddei",
       "avatar_url": "https://avatars.githubusercontent.com/u/199654936?v=4",
       "profile": "https://github.com/pippotadde",
-      "contributions": ["code"]
+      "contributions": [
+        "code"
+      ]
     },
     {
       "login": "LucaScibetta",
       "name": "Luca",
       "avatar_url": "https://avatars.githubusercontent.com/u/100673348?v=4",
       "profile": "https://github.com/LucaScibetta",
-      "contributions": ["code"]
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "StefanoFalco",
+      "name": "Stefano Falco",
+      "avatar_url": "https://avatars.githubusercontent.com/u/185826235?v=4",
+      "profile": "https://www.linkedin.com/in/stefano-falco-763783334",
+      "contributions": [
+        "code"
+      ]
     }
-  ]
+  ],
+  "files": [
+    "README.md"
+  ],
+  "commitType": "docs"
 }
