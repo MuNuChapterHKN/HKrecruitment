@@ -47,7 +47,7 @@ jobs:
       - name: Compute short commit SHA
         id: sha
         if: startsWith(github.ref, 'refs/tags/')
-        run: echo "short=${GITHUB_SHA:0:12}" >> "$GITHUB_OUTPUT"
+        run: echo "short=${GITHUB_SHA:0:7}" >> "$GITHUB_OUTPUT"
 
       - name: Check if image for this commit was already built
         id: existing
