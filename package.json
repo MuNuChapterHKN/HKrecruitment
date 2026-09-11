@@ -12,6 +12,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint src",
+    "typecheck": "tsc --noEmit",
     "pretty": "prettier --check \"src/**/*\" \"*.{ts,mjs,js}\"",
     "pretty:fix": "prettier --write \"src/**/*\" \"*.{ts,mjs,js}\"",
     "db:push": "drizzle-kit push",
