@@ -54,7 +54,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         run: |
           IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:dev-${{ steps.sha.outputs.short }}"
-          if docker manifest inspect "$IMAGE" >/dev/null 2>&1; then
+          if [ -n "$(docker manifest inspect "$IMAGE" 2>/dev/null)" ]; then
             echo "found=true" >> "$GITHUB_OUTPUT"
             echo "image=$IMAGE" >> "$GITHUB_OUTPUT"
           else
