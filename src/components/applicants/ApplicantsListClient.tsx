@@ -6,12 +6,16 @@ import { useParams } from 'next/navigation';
 import { toast } from 'sonner';
 import type { Applicant } from '@/db/types';
 import { applicantsFiltersAtom } from '@/state/applicantsFiltersAtoms';
+import { applicantsViewAtom } from '@/state/applicantsViewAtoms';
+import { useMounted } from '@/hooks/use-mounted';
 import {
   archiveApplicantAction,
   unarchiveApplicantAction,
 } from '@/lib/actions/applicants';
 import { ApplicantsFilters } from './ApplicantsFilters';
 import { ApplicantCard } from './ApplicantCard';
+import { CandidatesTable } from './CandidatesTable';
+import { ViewToggle } from './ViewToggle';
 
 type ArchiveUpdate = { id: string; archived: boolean };
 
@@ -23,6 +27,9 @@ export function ApplicantsListClient({
   const params = useParams();
   const rid = params.rid as string;
   const filters = useAtomValue(applicantsFiltersAtom);
+  const view = useAtomValue(applicantsViewAtom);
+  const mounted = useMounted();
+  const activeView = mounted ? view : 'grid';
   const deferredSearch = useDeferredValue(filters.search);
   const [, startTransition] = useTransition();
 
@@ -110,39 +117,62 @@ export function ApplicantsListClient({
     <>
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">Candidates</h1>
-        <div className="text-sm text-muted-foreground">
-          {hasAnyFilter
-            ? `${filtered.length} of ${applicants.length}`
-            : `${applicants.length} candidate${applicants.length !== 1 ? 's' : ''}`}
+        <div className="flex items-center gap-3">
+          <div className="text-sm text-muted-foreground">
+            {hasAnyFilter
+              ? `${filtered.length} of ${applicants.length}`
+              : `${applicants.length} candidate${applicants.length !== 1 ? 's' : ''}`}
+          </div>
+          <ViewToggle />
         </div>
       </div>
 
       <ApplicantsFilters />
 
-      <div
-        className="flex flex-wrap gap-4"
-        style={{ opacity: isStale ? 0.7 : 1, transition: 'opacity 120ms' }}
-      >
-        {filtered.map((applicant) => {
-          const archived =
-            (applicant as Applicant & { archived?: boolean }).archived ?? false;
-          return (
-            <ApplicantCard
-              key={applicant.id}
-              applicant={applicant}
-              archived={archived}
-              onToggleArchive={() => toggleArchive(applicant.id, archived)}
+      {activeView === 'table' ? (
+        <div
+          style={{ opacity: isStale ? 0.7 : 1, transition: 'opacity 120ms' }}
+        >
+          {filtered.length > 0 ? (
+            <CandidatesTable
+              applicants={filtered}
+              onToggleArchive={toggleArchive}
             />
-          );
-        })}
-        {filtered.length === 0 && (
-          <div className="w-full text-center text-muted-foreground py-12">
-            {hasAnyFilter
-              ? 'No candidates match the current filters.'
-              : 'No candidates found.'}
-          </div>
-        )}
-      </div>
+          ) : (
+            <div className="w-full text-center text-muted-foreground py-12">
+              {hasAnyFilter
+                ? 'No candidates match the current filters.'
+                : 'No candidates found.'}
+            </div>
+          )}
+        </div>
+      ) : (
+        <div
+          className="flex flex-wrap gap-4"
+          style={{ opacity: isStale ? 0.7 : 1, transition: 'opacity 120ms' }}
+        >
+          {filtered.map((applicant) => {
+            const archived =
+              (applicant as Applicant & { archived?: boolean }).archived ??
+              false;
+            return (
+              <ApplicantCard
+                key={applicant.id}
+                applicant={applicant}
+                archived={archived}
+                onToggleArchive={() => toggleArchive(applicant.id, archived)}
+              />
+            );
+          })}
+          {filtered.length === 0 && (
+            <div className="w-full text-center text-muted-foreground py-12">
+              {hasAnyFilter
+                ? 'No candidates match the current filters.'
+                : 'No candidates found.'}
+            </div>
+          )}
+        </div>
+      )}
     </>
   );
 }
