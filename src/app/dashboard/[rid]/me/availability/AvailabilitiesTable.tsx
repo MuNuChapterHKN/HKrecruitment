@@ -2,11 +2,7 @@
 
 import { TimeslotPeek } from './page';
 import { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic';
-const Calendar = dynamic(
-  () => import('lucide-react').then((mod) => ({ default: mod.Calendar })),
-  { ssr: false }
-);
+import { Calendar } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
