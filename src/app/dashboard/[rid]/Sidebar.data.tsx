@@ -1,39 +1,39 @@
-import { A } from '@/lib/abilities';
-import { AuthUserRole } from '@/lib/auth';
+import type { AppSubject } from '@/lib/abilities';
 import { Calendar, CalendarClock, Gauge, Users } from 'lucide-react';
 
-export const LINKS: Record<
-  string,
-  A<{
-    links: A<{ label: string; href: string; icon?: React.ReactNode }>[];
-  }>
-> = {
+type SidebarLink = {
+  label: string;
+  href: string;
+  icon?: React.ReactNode;
+  subject: AppSubject;
+};
+
+export const LINKS: Record<string, { links: SidebarLink[] }> = {
   platform: {
-    canRead: AuthUserRole.Guest,
     links: [
       {
         label: 'Overview',
         href: '/',
         icon: <Gauge />,
-        canRead: AuthUserRole.Guest,
+        subject: 'DashboardOverviewPage',
       },
       {
         label: 'Candidates',
         href: '/candidates',
         icon: <Users />,
-        canRead: AuthUserRole.Guest,
+        subject: 'CandidatesPage',
       },
       {
         label: 'Availability Overview',
         href: '/availability',
         icon: <CalendarClock />,
-        canRead: AuthUserRole.Guest,
+        subject: 'AvailabilityOverviewPage',
       },
       {
         label: 'My Availability',
         href: '/me/availability',
         icon: <Calendar />,
-        canRead: AuthUserRole.Guest,
+        subject: 'MyAvailabilityPage',
       },
     ],
   },

@@ -1,12 +1,11 @@
 'use client';
 
 import { createContext, useMemo } from 'react';
-import type { AnyAbility } from '@casl/ability';
-import { defineAbilityFor } from '@/lib/abilities';
+import { defineAbilityFor, type AppAbility } from '@/lib/abilities';
 import { AuthUser, AuthUserRole } from '@/lib/auth';
 
 const defaultAbility = defineAbilityFor({ role: AuthUserRole.Guest });
-export const AbilityContext = createContext<AnyAbility>(defaultAbility);
+export const AbilityContext = createContext<AppAbility>(defaultAbility);
 
 export function AbilityProvider({
   user,

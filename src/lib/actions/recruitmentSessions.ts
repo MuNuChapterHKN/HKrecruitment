@@ -4,6 +4,9 @@ import { db, schema } from '@/db';
 import { nanoid } from 'nanoid';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
+import { auth } from '@/lib/server/auth';
+import { defineAbilityFor } from '@/lib/abilities/user';
+import { headers } from 'next/headers';
 
 const createRecruitmentSessionSchema = z
   .object({
@@ -78,6 +81,15 @@ export async function createRecruitmentSession(
   startHour?: number,
   endHour?: number
 ) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) return { success: false, error: 'Unauthorized' };
+
+  const ability = defineAbilityFor(
+    session.user as unknown as { role?: number | null }
+  );
+  if (!ability.can('manage', 'RecruitmentActions')) {
+    return { success: false, error: 'Forbidden' };
+  }
   try {
     const rawData = {
       year: formData.get('year'),

@@ -4,6 +4,9 @@ import { AggregatedAvailabilityTable } from './AggregatedAvailabilityTable';
 import { findWithAggregatedAvailability } from '@/lib/services/timeslots';
 import { findOne } from '@/lib/services/recruitmentSessions';
 import { notFound } from 'next/navigation';
+import { auth } from '@/lib/server/auth';
+import { headers } from 'next/headers';
+import { requirePageAccess } from '@/lib/helpers/pageAuthorization';
 
 export type TimeslotWithAvailability = {
   id: string;
@@ -22,7 +25,15 @@ export type TimeslotWithAvailability = {
 export default async function AvailabilityOverviewPage({
   params,
 }: PageProps<'/dashboard/[rid]/availability'>) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session) return null;
+
   const { rid } = await params;
+
+  await requirePageAccess(session.user.id, rid, 'AvailabilityOverviewPage');
+
   const recruitmentSession = await findOne(rid);
   if (!recruitmentSession) notFound();
 

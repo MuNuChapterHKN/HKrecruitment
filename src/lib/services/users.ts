@@ -1,9 +1,34 @@
 import { db, schema } from '@/db';
-import { asc, eq } from 'drizzle-orm';
+import { asc, eq, and } from 'drizzle-orm';
 import { TIMESLOT_AVAILABILITY_MARGIN } from './timeslots';
 
-export const listAllUsers = async () =>
-  await db.select().from(schema.user).orderBy(asc(schema.user.name));
+export const listAllUsers = async (rid?: string) => {
+  if (!rid) {
+    return await db.select().from(schema.user).orderBy(asc(schema.user.name));
+  }
+
+  return await db
+    .select({
+      id: schema.user.id,
+      name: schema.user.name,
+      email: schema.user.email,
+      emailVerified: schema.user.emailVerified,
+      image: schema.user.image,
+      createdAt: schema.user.createdAt,
+      updatedAt: schema.user.updatedAt,
+      isFirstTime: schema.user.isFirstTime,
+      role: schema.usersToRecruitingSessions.role,
+    })
+    .from(schema.user)
+    .leftJoin(
+      schema.usersToRecruitingSessions,
+      and(
+        eq(schema.user.id, schema.usersToRecruitingSessions.userId),
+        eq(schema.usersToRecruitingSessions.recruitingSessionId, rid)
+      )
+    )
+    .orderBy(asc(schema.user.name));
+};
 
 export const findForTimeslot = async (timeslotId: string) => {
   const timeslot = await db

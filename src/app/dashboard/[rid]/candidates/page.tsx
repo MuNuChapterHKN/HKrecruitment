@@ -5,11 +5,22 @@ import { getStageLabel, getStageColor } from '@/lib/stages';
 import { notFound } from 'next/navigation';
 import { findOne } from '@/lib/services/recruitmentSessions';
 import { getDegreeLabel } from '@/lib/degrees';
+import { auth } from '@/lib/server/auth';
+import { headers } from 'next/headers';
+import { requirePageAccess } from '@/lib/helpers/pageAuthorization';
 
 export default async function CandidatesPage({
   params,
 }: PageProps<'/dashboard/[rid]/candidates'>) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session) return null;
+
   const { rid } = await params;
+
+  await requirePageAccess(session.user.id, rid, 'CandidatesPage');
+
   const recruitmentSession = await findOne(rid);
   if (!recruitmentSession) notFound();
 

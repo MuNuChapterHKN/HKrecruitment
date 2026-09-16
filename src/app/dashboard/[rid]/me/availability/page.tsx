@@ -59,7 +59,7 @@ export default async function AvailabilityPage({
             Interview availability
           </h1>
           <p className="mt-1 text-sm text-gray-500">
-            Seleziona le tue disponibilità settimanali per le interview.
+            Select your weekly availability for interviews.
           </p>
         </header>
 
