@@ -84,9 +84,7 @@ export async function createRecruitmentSession(
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) return { success: false, error: 'Unauthorized' };
 
-  const ability = defineAbilityFor(
-    session.user as unknown as { role?: number | null }
-  );
+  const ability = defineAbilityFor(session.user);
   if (!ability.can('manage', 'RecruitmentActions')) {
     return { success: false, error: 'Forbidden' };
   }

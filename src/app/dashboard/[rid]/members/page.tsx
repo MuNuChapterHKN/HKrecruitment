@@ -6,16 +6,13 @@ import MembersTable from './MembersTable';
 
 export default async function MembersPage({
   params,
-}: {
-  params: Promise<{ rid: string }> | { rid: string };
-}) {
+}: PageProps<'/dashboard/[rid]/members'>) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
   if (!session) return null;
 
-  const resolvedParams = await Promise.resolve(params);
-  const { rid } = resolvedParams;
+  const { rid } = await params;
 
   await requirePageAccess(session.user.id, rid, 'MembersPage');
 
