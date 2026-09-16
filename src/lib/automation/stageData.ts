@@ -84,3 +84,31 @@ export async function loadInterviewers(interviewId: string) {
     .innerJoin(schema.user, eq(schema.usersToInterviews.userId, schema.user.id))
     .where(eq(schema.usersToInterviews.interviewId, interviewId));
 }
+
+export async function updateInterviewGeneratedData(params: {
+  interviewId: string;
+  meetingId?: string | null;
+  reportDocId?: string | null;
+}): Promise<void> {
+  const values: {
+    meetingId?: string | null;
+    reportDocId?: string | null;
+  } = {};
+
+  if (params.meetingId !== undefined) {
+    values.meetingId = params.meetingId;
+  }
+
+  if (params.reportDocId !== undefined) {
+    values.reportDocId = params.reportDocId;
+  }
+
+  if (Object.keys(values).length === 0) {
+    return;
+  }
+
+  await db
+    .update(schema.interview)
+    .set(values)
+    .where(eq(schema.interview.id, params.interviewId));
+}
