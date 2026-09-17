@@ -1,10 +1,15 @@
-import { google } from 'googleapis';
+﻿import { google } from 'googleapis';
 import { Result, ok, err, fromPromise } from 'neverthrow';
 
 export type GoogleAuth = InstanceType<typeof google.auth.OAuth2>;
 
 export class GoogleService {
-  static scopes = ['https://www.googleapis.com/auth/drive.file'];
+  static scopes = [
+    'https://www.googleapis.com/auth/drive.file',
+    'https://www.googleapis.com/auth/drive.readonly',
+    'https://www.googleapis.com/auth/gmail.send',
+    'https://www.googleapis.com/auth/calendar.events',
+  ];
   private oauth2Client: GoogleAuth | null = null;
   private lastRefreshTime: number | null = null;
   private readonly TOKEN_EXPIRY_HOURS = 12;

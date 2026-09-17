@@ -4,7 +4,10 @@ import { auth } from '@/lib/server/auth';
 import { headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
 import { INTERVIEW_BOOKING_STAGE, INTERVIEW_DONE_STAGE } from '@/lib/stages';
+import { setApplicantArchived } from '@/lib/services/applicants';
 import { switchStage, switchToLimbo } from '@/lib/services/stages';
+import { getApplicantById } from '@/lib/services/applicants';
+import { abilityForUserInSession } from '@/lib/abilities/server';
 import type { ApplicationStage } from '@/db/types';
 
 export async function acceptApplication(applicantId: string) {
@@ -17,6 +20,17 @@ export async function acceptApplication(applicantId: string) {
   const { user } = session;
 
   try {
+    const applicant = await getApplicantById(applicantId);
+    if (!applicant) return { success: false, error: 'Applicant not found' };
+
+    const ability = await abilityForUserInSession(
+      user.id,
+      applicant.recruitingSessionId
+    );
+    if (!ability.can('manage', 'CandidatesActions')) {
+      return { success: false, error: 'Forbidden' };
+    }
+
     await switchStage(applicantId, INTERVIEW_BOOKING_STAGE, false, user.id);
 
     revalidatePath('/dashboard/[rid]/candidates');
@@ -38,6 +52,17 @@ export async function submitInterviewReport(applicantId: string) {
   const { user } = session;
 
   try {
+    const applicant = await getApplicantById(applicantId);
+    if (!applicant) return { success: false, error: 'Applicant not found' };
+
+    const ability = await abilityForUserInSession(
+      user.id,
+      applicant.recruitingSessionId
+    );
+    if (!ability.can('manage', 'CandidatesActions')) {
+      return { success: false, error: 'Forbidden' };
+    }
+
     await switchStage(applicantId, INTERVIEW_DONE_STAGE, false, user.id);
 
     revalidatePath('/dashboard/[rid]/candidates');
@@ -59,6 +84,17 @@ export async function moveToLimbo(applicantId: string) {
   const { user } = session;
 
   try {
+    const applicant = await getApplicantById(applicantId);
+    if (!applicant) return { success: false, error: 'Applicant not found' };
+
+    const ability = await abilityForUserInSession(
+      user.id,
+      applicant.recruitingSessionId
+    );
+    if (!ability.can('manage', 'CandidatesActions')) {
+      return { success: false, error: 'Forbidden' };
+    }
+
     await switchToLimbo(applicantId, user.id);
 
     revalidatePath('/dashboard/[rid]/candidates');
@@ -84,6 +120,17 @@ export async function removeFromLimbo(
   const { user } = session;
 
   try {
+    const applicant = await getApplicantById(applicantId);
+    if (!applicant) return { success: false, error: 'Applicant not found' };
+
+    const ability = await abilityForUserInSession(
+      user.id,
+      applicant.recruitingSessionId
+    );
+    if (!ability.can('manage', 'CandidatesActions')) {
+      return { success: false, error: 'Forbidden' };
+    }
+
     await switchStage(
       applicantId,
       targetStage.toLowerCase() as ApplicationStage,
@@ -98,5 +145,36 @@ export async function removeFromLimbo(
   } catch (error) {
     console.error('Error removing from limbo:', error);
     return { success: false, error: 'Failed to remove from limbo' };
+  }
+}
+
+export async function archiveApplicantAction(rid: string, applicantId: string) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) return { success: false, error: 'Unauthorized' };
+
+  try {
+    await setApplicantArchived(rid, applicantId, true);
+    revalidatePath(`/dashboard/${rid}/candidates`);
+    return { success: true };
+  } catch (error) {
+    console.error('Error archiving applicant:', error);
+    return { success: false, error: 'Failed to archive applicant' };
+  }
+}
+
+export async function unarchiveApplicantAction(
+  rid: string,
+  applicantId: string
+) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) return { success: false, error: 'Unauthorized' };
+
+  try {
+    await setApplicantArchived(rid, applicantId, false);
+    revalidatePath(`/dashboard/${rid}/candidates`);
+    return { success: true };
+  } catch (error) {
+    console.error('Error unarchiving applicant:', error);
+    return { success: false, error: 'Failed to unarchive applicant' };
   }
 }

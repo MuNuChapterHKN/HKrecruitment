@@ -51,6 +51,7 @@ export const recruitingSessionRelations = relations(
   ({ many }) => ({
     applicants: many(applicant),
     timeslots: many(timeslot),
+    availabilityTimeslotMasks: many(availabilityTimeslotMask),
   })
 );
 
@@ -82,6 +83,7 @@ export const applicant = pgTable('applicant', {
     enum: AREAS,
   }),
   accepted: boolean('accepted'),
+  archived: boolean('archived').notNull().default(false),
   ...timestamps,
 });
 
@@ -126,7 +128,35 @@ export const timeslotRelations = relations(timeslot, ({ many, one }) => ({
   }),
   interviews: many(interview),
   interviewerAvailability: many(interviewerAvailability),
+  availabilityTimeslotMasks: many(availabilityTimeslotMask),
 }));
+
+export const availabilityTimeslotMask = pgTable(
+  'availability_timeslot_mask',
+  {
+    recruitingSessionId: text('recruiting_session_id')
+      .notNull()
+      .references(() => recruitingSession.id),
+    timeslotId: text('timeslot_id')
+      .notNull()
+      .references(() => timeslot.id),
+  },
+  (t) => [primaryKey({ columns: [t.recruitingSessionId, t.timeslotId] })]
+);
+
+export const availabilityTimeslotMaskRelations = relations(
+  availabilityTimeslotMask,
+  ({ one }) => ({
+    recruitingSession: one(recruitingSession, {
+      fields: [availabilityTimeslotMask.recruitingSessionId],
+      references: [recruitingSession.id],
+    }),
+    timeslot: one(timeslot, {
+      fields: [availabilityTimeslotMask.timeslotId],
+      references: [timeslot.id],
+    }),
+  })
+);
 
 export const interview = pgTable('interview', {
   id: text('id').primaryKey(),
@@ -203,6 +233,35 @@ export const interviewerAvailabilityRelations = relations(
     timeslot: one(timeslot, {
       fields: [interviewerAvailability.timeslotId],
       references: [timeslot.id],
+    }),
+  })
+);
+
+export const usersToRecruitingSessions = pgTable(
+  'users_to_recruiting_sessions',
+  {
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id),
+    recruitingSessionId: text('recruiting_session_id')
+      .notNull()
+      .references(() => recruitingSession.id),
+    role: integer('role').notNull(),
+    ...timestamps,
+  },
+  (t) => [primaryKey({ columns: [t.recruitingSessionId, t.userId] })]
+);
+
+export const usersToRecruitingSessionsRelations = relations(
+  usersToRecruitingSessions,
+  ({ one }) => ({
+    user: one(user, {
+      fields: [usersToRecruitingSessions.userId],
+      references: [user.id],
+    }),
+    recruitingSession: one(recruitingSession, {
+      fields: [usersToRecruitingSessions.recruitingSessionId],
+      references: [recruitingSession.id],
     }),
   })
 );

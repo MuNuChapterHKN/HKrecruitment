@@ -9,7 +9,11 @@ import {
 import { DashboardSidebar } from './Sidebar';
 import { auth } from '@/lib/server/auth';
 import { headers } from 'next/headers';
-import { findAllAsOptions, findOne } from '@/lib/services/recruitmentSessions';
+import {
+  findAllAsOptions,
+  findOne,
+  findUserRoleForSession,
+} from '@/lib/services/recruitmentSessions';
 import { notFound } from 'next/navigation';
 
 type DashboardLayoutProps = {
@@ -40,11 +44,19 @@ export default async function DashboardLayout({
   /* Get All Recruitments as Options for Sidebar */
   const recruitmentOptions = await findAllAsOptions();
 
+  /* Resolve user role for this recruitment session (if any) */
+  const sessionRole = await findUserRoleForSession(user.id, rid);
+
+  const userForAbility = {
+    ...user,
+    role: sessionRole,
+  };
+
   return (
     <SidebarProvider>
-      <AbilityProvider user={user}>
+      <AbilityProvider user={userForAbility}>
         <DashboardSidebar
-          user={user}
+          user={userForAbility}
           recruitment={{ selected: recruitment, options: recruitmentOptions }}
         />
         <main className="w-full">

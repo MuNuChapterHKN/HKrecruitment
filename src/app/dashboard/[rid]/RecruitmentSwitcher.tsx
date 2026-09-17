@@ -15,7 +15,7 @@ import {
 import { RecruitingSession } from '@/db/types';
 import { ChevronsUpDown, Plus } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 export type RecruitmentSwitcherProps = {
   selected: RecruitingSession;
@@ -31,14 +31,9 @@ export default function RecruitmentSwitcher({
 }: RecruitmentSwitcherProps) {
   const { isMobile } = useSidebar();
   const router = useRouter();
-  const pathname = usePathname();
 
   const switchTo = (option: RecruitmentSwitcherProps['options'][number]) => {
-    const segments = pathname.split('/');
-    segments[2] = option.id;
-    const newPath = segments.join('/');
-
-    router.push(newPath);
+    router.push(`/dashboard/${option.id}`);
   };
 
   return (

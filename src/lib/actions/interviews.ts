@@ -7,6 +7,7 @@ import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { INTERVIEW_AWAITING_INTERVIEW } from '@/lib/stages';
 import { switchStage } from '@/lib/services/stages';
+import { getApplicantById } from '@/lib/services/applicants';
 
 export type ApproveInterviewState = {
   message: string;
@@ -41,6 +42,18 @@ export async function approveInterview(
   }
 
   try {
+    const applicant = await getApplicantById(applicantId);
+    if (!applicant) return { message: 'Applicant not found', success: false };
+
+    const { abilityForUserInSession } = await import('@/lib/abilities/server');
+    const ability = await abilityForUserInSession(
+      user.id,
+      applicant.recruitingSessionId
+    );
+    if (!ability.can('manage', 'CandidatesActions')) {
+      return { message: 'Forbidden', success: false };
+    }
+
     await db.transaction(async (tx) => {
       await tx
         .update(schema.interview)

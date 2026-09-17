@@ -1,7 +1,11 @@
-import { ApplicationStage } from '@/db/types';
+﻿import { ApplicationStage } from '@/db/types';
 import { db, schema } from '@/db';
-import { eq, desc } from 'drizzle-orm';
+import { and, desc, eq, isNull } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
+import {
+  emitStageCancelledEventsForStageStatuses,
+  emitStageChangedEventForStageStatus,
+} from '@/lib/automation/stageEvents';
 
 export const switchStage = async (
   aid: string,
@@ -10,23 +14,60 @@ export const switchStage = async (
   userId: string | null = null,
   notes: string | null = null
 ) => {
-  await db.transaction(async (tx) => {
+  const now = new Date();
+
+  const result = await db.transaction(async (tx) => {
+    const oldPendingStatuses = await tx
+      .select()
+      .from(schema.stageStatus)
+      .where(
+        and(
+          eq(schema.stageStatus.applicantId, aid),
+          eq(schema.stageStatus.processed, false),
+          isNull(schema.stageStatus.deletedAt)
+        )
+      );
+
+    if (oldPendingStatuses.length > 0) {
+      await tx
+        .update(schema.stageStatus)
+        .set({ deletedAt: now })
+        .where(
+          and(
+            eq(schema.stageStatus.applicantId, aid),
+            eq(schema.stageStatus.processed, false),
+            isNull(schema.stageStatus.deletedAt)
+          )
+        );
+    }
+
     await tx
       .update(schema.applicant)
-      .set({
-        stage,
-      })
+      .set({ stage })
       .where(eq(schema.applicant.id, aid));
 
-    await tx.insert(schema.stageStatus).values({
-      id: nanoid(),
-      applicantId: aid,
-      assignedById: userId,
-      stage,
-      processed,
-      notes,
-    });
+    const insertedStatuses = await tx
+      .insert(schema.stageStatus)
+      .values({
+        id: nanoid(),
+        applicantId: aid,
+        assignedById: userId,
+        stage,
+        processed,
+        notes,
+      })
+      .returning();
+
+    return {
+      oldPendingStatuses,
+      newStageStatus: insertedStatuses[0],
+    };
   });
+
+  await emitStageCancelledEventsForStageStatuses(result.oldPendingStatuses);
+  await emitStageChangedEventForStageStatus(result.newStageStatus);
+
+  return result.newStageStatus;
 };
 
 export const switchToLimbo = async (
