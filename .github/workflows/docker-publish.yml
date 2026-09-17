@@ -78,3 +78,54 @@ jobs:
             [ -n "$line" ] && TAGS+=(--tag "$line")
           done <<< "${{ steps.meta.outputs.tags }}"
           docker buildx imagetools create "${TAGS[@]}" "${{ steps.existing.outputs.image }}"
+
+  deploy-prod:
+    name: Update Komodo variable & deploy
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update image tag variable
+        env:
+          KOMODO_HOST: ${{ secrets.KOMODO_HOST }}
+          KOMODO_API_KEY: ${{ secrets.KOMODO_API_KEY }}
+          KOMODO_API_SECRET: ${{ secrets.KOMODO_API_SECRET }}
+          IMAGE_TAG: ${{ github.ref_name }}
+        run: |
+          curl -sf -X POST "$KOMODO_HOST/write/UpdateVariableValue" \
+            -H "Content-Type: application/json" \
+            -H "X-Api-Key: $KOMODO_API_KEY" \
+            -H "X-Api-Secret: $KOMODO_API_SECRET" \
+            -d "{\"name\":\"hkr_version\",\"value\":\"$IMAGE_TAG\"}"
+
+      - name: Deploy stack
+        env:
+          KOMODO_HOST: ${{ secrets.KOMODO_HOST }}
+          KOMODO_API_KEY: ${{ secrets.KOMODO_API_KEY }}
+          KOMODO_API_SECRET: ${{ secrets.KOMODO_API_SECRET }}
+          STACK_ID: ${{ secrets.KOMODO_STACK_ID_PROD }}
+        run: |
+          curl -sf -X POST "$KOMODO_HOST/execute/DeployStack" \
+            -H "Content-Type: application/json" \
+            -H "X-Api-Key: $KOMODO_API_KEY" \
+            -H "X-Api-Secret: $KOMODO_API_SECRET" \
+            -d "{\"stack\":\"$STACK_ID\"}"
+
+  deploy-dev:
+    name: Redeploy dev stack
+    needs: build
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy stack
+        env:
+          KOMODO_HOST: ${{ secrets.KOMODO_HOST }}
+          KOMODO_API_KEY: ${{ secrets.KOMODO_API_KEY }}
+          KOMODO_API_SECRET: ${{ secrets.KOMODO_API_SECRET }}
+          STACK_ID: ${{ secrets.KOMODO_STACK_ID_DEV }}
+        run: |
+          curl -sf -X POST "$KOMODO_HOST/execute/DeployStack" \
+            -H "Content-Type: application/json" \
+            -H "X-Api-Key: $KOMODO_API_KEY" \
+            -H "X-Api-Secret: $KOMODO_API_SECRET" \
+            -d "{\"stack\":\"$STACK_ID\"}"

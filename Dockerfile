@@ -24,6 +24,11 @@ ENV NEXT_TELEMETRY_DISABLED 1
 
 RUN corepack enable pnpm && pnpm build
 
+FROM base AS prod-deps
+WORKDIR /app
+COPY package.json pnpm-lock.yaml* ./
+RUN corepack enable pnpm && pnpm i --prod --frozen-lockfile --ignore-scripts
+
 # Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app
@@ -39,10 +44,17 @@ RUN adduser --system --uid 1001 nextjs
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
+COPY --from=prod-deps --chown=nextjs:nodejs /app/node_modules ./node_modules
+
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+COPY --from=builder --chown=nextjs:nodejs /app/drizzle ./drizzle
+COPY --from=builder --chown=nextjs:nodejs /app/scripts/migrate.mjs ./scripts/migrate.mjs
+COPY --chown=nextjs:nodejs scripts/docker-entrypoint.sh ./docker-entrypoint.sh
+RUN chmod +x ./docker-entrypoint.sh
 
 USER nextjs
 
@@ -51,4 +63,5 @@ EXPOSE 3000
 ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
+ENTRYPOINT ["./docker-entrypoint.sh"]
 CMD ["node", "server.js"]
