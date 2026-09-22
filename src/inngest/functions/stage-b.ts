@@ -1,6 +1,6 @@
 ﻿import { inngest } from '@/inngest/client';
 import { STAGE_CANCELLED_EVENT, STAGE_CHANGED_EVENT } from '@/inngest/events';
-import { sendTemplatedEmail } from '@/lib/automation/email';
+import { notifyEmailFailure, sendLoggedEmail } from '@/lib/automation/email';
 import { renderGoogleDocTemplate } from '@/lib/automation/emailTemplates';
 import { notifyTelegram } from '@/lib/automation/notifications';
 import {
@@ -29,6 +29,13 @@ export const stageBInterviewBookingEmail = inngest.createFunction(
     id: 'stage-b-interview-booking-email',
     triggers: { event: STAGE_CHANGED_EVENT, if: "event.data.stage == 'b'" },
     cancelOn: [{ event: STAGE_CANCELLED_EVENT, match: 'data.stageStatusId' }],
+    onFailure: async ({ event, error }) => {
+      await notifyEmailFailure({
+        type: 'interview_booking',
+        stageStatusId: (event.data.event.data as StageEventData).stageStatusId,
+        error,
+      });
+    },
   },
   async ({ event, step }) => {
     const data = event.data as StageEventData;
@@ -65,8 +72,11 @@ export const stageBInterviewBookingEmail = inngest.createFunction(
     });
 
     await step.run('send-interview-booking-email', async () => {
-      await sendTemplatedEmail({
+      await sendLoggedEmail({
+        type: 'interview_booking',
         to: context.applicant.email,
+        applicantId: context.applicant.id,
+        stageStatusId: context.stageStatus.id,
         subject:
           process.env.STAGE_B_EMAIL_SUBJECT ||
           'HKN Mu Nu Chapter - Book your interview',

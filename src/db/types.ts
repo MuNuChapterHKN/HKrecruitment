@@ -7,6 +7,7 @@ import {
   usersToInterviews,
   interviewerAvailability,
   usersToRecruitingSessions,
+  emailLog,
 } from './schema';
 
 export type RecruitingSession = typeof recruitingSession.$inferSelect;
@@ -20,6 +21,10 @@ export type InterviewerAvailability =
 
 export type UsersToRecruitingSessions =
   typeof usersToRecruitingSessions.$inferSelect;
+
+export type EmailLog = typeof emailLog.$inferSelect;
+export type EmailStatus = EmailLog['status'];
+export type EmailType = EmailLog['type'];
 
 export type RecruitingSessionMemberRole = UsersToRecruitingSessions['role'];
 
