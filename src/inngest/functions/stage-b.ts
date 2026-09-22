@@ -14,7 +14,18 @@ type StageEventData = {
 };
 
 function buildBookingUrl(applicantId: string, token: string | null): string {
-  const baseUrl = process.env.HKRECRUITMENT_URL || 'http://localhost:3000';
+  const baseUrl =
+    process.env.HKRECRUITMENT_URL ||
+    (process.env.NODE_ENV === 'production'
+      ? undefined
+      : 'http://localhost:3000');
+
+  if (!baseUrl) {
+    throw new Error(
+      'HKRECRUITMENT_URL is not set; cannot build the interview booking link'
+    );
+  }
+
   const url = new URL(`/recruitment/interview/book/${applicantId}`, baseUrl);
 
   if (token) {
