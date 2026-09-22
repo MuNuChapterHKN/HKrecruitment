@@ -29,6 +29,13 @@ function buildRawMessage(params: {
 
 const DRY_RUN_MESSAGE_ID = 'dry-run';
 
+function escapeTelegramHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
 async function deliverEmail(params: {
   to: string;
   subject: string;
@@ -151,7 +158,10 @@ export async function notifyEmailFailure(params: {
   error: Error;
 }): Promise<void> {
   const rows = await db
-    .select({ recipient: schema.applicant.email })
+    .select({
+      recipient: schema.applicant.email,
+      applicantId: schema.applicant.id,
+    })
     .from(schema.stageStatus)
     .innerJoin(
       schema.applicant,
@@ -161,10 +171,53 @@ export async function notifyEmailFailure(params: {
     .limit(1);
 
   const recipient = rows[0]?.recipient ?? 'unknown';
+  let alreadySent = false;
+
+  try {
+    if (rows[0]) {
+      await db
+        .insert(schema.emailLog)
+        .values({
+          id: nanoid(),
+          type: params.type,
+          recipient: rows[0].recipient,
+          subject: '',
+          html: '',
+          status: 'failed',
+          lastError: params.error.message,
+          applicantId: rows[0].applicantId,
+          stageStatusId: params.stageStatusId,
+        })
+        .onConflictDoUpdate({
+          target: [schema.emailLog.stageStatusId, schema.emailLog.type],
+          set: { status: 'failed', lastError: params.error.message },
+          setWhere: ne(schema.emailLog.status, 'sent'),
+        });
+    }
+
+    const existing = await db
+      .select({ status: schema.emailLog.status })
+      .from(schema.emailLog)
+      .where(
+        and(
+          eq(schema.emailLog.stageStatusId, params.stageStatusId),
+          eq(schema.emailLog.type, params.type)
+        )
+      )
+      .limit(1);
+
+    alreadySent = existing[0]?.status === 'sent';
+  } catch (logError) {
+    console.error('[email] Failed to record email failure:', logError);
+  }
+
+  const details = `type=${escapeTelegramHtml(params.type)} to=${escapeTelegramHtml(recipient)} stageStatusId=${escapeTelegramHtml(params.stageStatusId)}\nerror: ${escapeTelegramHtml(params.error.message)}`;
 
   await notifyTelegram({
     channel: 'it',
-    text: `[Email failed] type=${params.type} to=${recipient} stageStatusId=${params.stageStatusId}\nerror: ${params.error.message}`,
+    text: alreadySent
+      ? `[Email sent, follow-up failed] ${details}\nThe email was delivered; a later step of the workflow failed.`
+      : `[Email failed] ${details}`,
   });
 }
 
@@ -176,10 +229,9 @@ export async function recordEmailDispatchFailure(params: {
   stageStatusId: string;
   error: unknown;
 }): Promise<void> {
-  const error =
-    params.error instanceof Error
-      ? params.error
-      : new Error(String(params.error));
+  const error = new Error(
+    `Dispatch failed: ${params.error instanceof Error ? params.error.message : String(params.error)}`
+  );
 
   await db
     .insert(schema.emailLog)
@@ -190,7 +242,7 @@ export async function recordEmailDispatchFailure(params: {
       subject: params.subject,
       html: '',
       status: 'failed',
-      lastError: `Dispatch failed: ${error.message}`,
+      lastError: error.message,
       applicantId: params.applicantId,
       stageStatusId: params.stageStatusId,
     })
