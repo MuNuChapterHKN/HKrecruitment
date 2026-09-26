@@ -1,6 +1,6 @@
 ﻿import { inngest } from '@/inngest/client';
-import { STAGE_CANCELLED_EVENT, STAGE_CHANGED_EVENT } from '@/inngest/events';
-import { sendTemplatedEmail } from '@/lib/automation/email';
+import { STAGE_CHANGED_EVENT } from '@/inngest/events';
+import { notifyEmailFailure, sendLoggedEmail } from '@/lib/automation/email';
 import { renderGoogleDocTemplate } from '@/lib/automation/emailTemplates';
 import { notifyTelegram } from '@/lib/automation/notifications';
 import {
@@ -10,22 +10,22 @@ import {
 
 type StageEventData = {
   stageStatusId: string;
-  scheduledAt: string;
 };
 
 export const stageAApplicationReceipt = inngest.createFunction(
   {
     id: 'stage-a-application-receipt',
     triggers: { event: STAGE_CHANGED_EVENT, if: "event.data.stage == 'a'" },
-    cancelOn: [{ event: STAGE_CANCELLED_EVENT, match: 'data.stageStatusId' }],
+    onFailure: async ({ event, error }) => {
+      await notifyEmailFailure({
+        type: 'application_receipt',
+        stageStatusId: (event.data.event.data as StageEventData).stageStatusId,
+        error,
+      });
+    },
   },
   async ({ event, step }) => {
     const data = event.data as StageEventData;
-
-    await step.sleepUntil(
-      'wait-until-scheduled-time',
-      new Date(data.scheduledAt)
-    );
 
     const context = await step.run('load-and-validate-stage', async () => {
       return await loadActiveStageContext({
@@ -46,8 +46,11 @@ export const stageAApplicationReceipt = inngest.createFunction(
     });
 
     await step.run('send-application-receipt-email', async () => {
-      await sendTemplatedEmail({
+      await sendLoggedEmail({
+        type: 'application_receipt',
         to: context.applicant.email,
+        applicantId: context.applicant.id,
+        stageStatusId: context.stageStatus.id,
         subject:
           process.env.STAGE_A_EMAIL_SUBJECT ||
           'HKN Mu Nu Chapter - Application received',

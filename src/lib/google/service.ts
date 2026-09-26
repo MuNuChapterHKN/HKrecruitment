@@ -65,7 +65,13 @@ export class GoogleService {
   }
 
   async getAuth(): Promise<Result<GoogleAuth, Error>> {
-    if (!this.oauth2Client) await this.initialize();
+    if (!this.oauth2Client) {
+      const initResult = await this.initialize();
+      if (initResult.isErr()) {
+        this.oauth2Client = null;
+        return err(initResult.error);
+      }
+    }
 
     if (this.isTokenExpired()) {
       const refreshResult = await this.refresh();
