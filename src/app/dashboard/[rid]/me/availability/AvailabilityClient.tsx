@@ -16,7 +16,7 @@ export function AvailabilityClient({
   timeslots,
   onSubmitAction,
 }: AvailabilityClientProps) {
-  const [selectedSlots, setSelectedSlots] = useState<TimeslotPeek[]>([]);
+  const [selectedSlots, setSelectedSlots] = useState<TimeslotPeek[]>(timeslots);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function handleSubmit() {
@@ -42,6 +42,19 @@ export function AvailabilityClient({
 
   const activeCount = selectedSlots.filter((slot) => slot.active).length;
 
+  const initialActiveIds = timeslots
+    .filter((slot) => slot.active)
+    .map((slot) => slot.id)
+    .sort();
+  const currentActiveIds = selectedSlots
+    .filter((slot) => slot.active)
+    .map((slot) => slot.id)
+    .sort();
+
+  const hasChanges =
+    initialActiveIds.length !== currentActiveIds.length ||
+    initialActiveIds.some((id, index) => id !== currentActiveIds[index]);
+
   return (
     <div className="flex flex-col items-center gap-4">
       <AvailabilitiesTable
@@ -49,13 +62,21 @@ export function AvailabilityClient({
         onSelectionChange={setSelectedSlots}
       />
 
-      <button
-        className="px-4 py-2 bg-black text-white rounded-md text-sm disabled:opacity-60"
-        onClick={handleSubmit}
-        disabled={isSubmitting || activeCount === 0}
-      >
-        {isSubmitting ? 'Saving...' : `Submit (${activeCount} selected)`}
-      </button>
+      <div className="flex flex-col items-center gap-2">
+        <button
+          className="px-4 py-2 bg-black text-white rounded-md text-sm disabled:opacity-60"
+          onClick={handleSubmit}
+          disabled={isSubmitting || !hasChanges}
+        >
+          {isSubmitting ? 'Saving...' : `Submit (${activeCount} selected)`}
+        </button>
+
+        {!hasChanges && !isSubmitting && (
+          <p className="text-sm text-gray-500">
+            Your availability is already up to date.
+          </p>
+        )}
+      </div>
     </div>
   );
 }

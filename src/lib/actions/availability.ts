@@ -4,12 +4,12 @@ import { db, schema } from '@/db';
 import { interviewerAvailability } from '@/db/schema';
 import { auth } from '@/lib/server/auth';
 import { headers } from 'next/headers';
-import { eq, inArray } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { findTimeslotsWithInterviewsForUser } from '@/lib/services/timeslots';
 import { abilityForUserInSession } from '@/lib/abilities/server';
 
-export async function submitAvailability(timeslotIds: string[]) {
+export async function submitAvailability(rid: string, timeslotIds: string[]) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -19,10 +19,6 @@ export async function submitAvailability(timeslotIds: string[]) {
   const { user } = session;
 
   try {
-    if (!timeslotIds || timeslotIds.length === 0) {
-      return { success: false, error: 'No timeslots provided' };
-    }
-
     // Validate all timeslots belong to the same recruiting session
     const timeslotRows = await db
       .select({ recruitingSessionId: schema.timeslot.recruitingSessionId })
@@ -39,18 +35,19 @@ export async function submitAvailability(timeslotIds: string[]) {
     const uniqueSessions = new Set(
       timeslotRows.map((t) => t.recruitingSessionId)
     );
-    if (uniqueSessions.size !== 1) {
+
+    if (uniqueSessions.size > 1) {
       return {
         success: false,
         error: 'Timeslots must belong to the same session',
       };
     }
 
-    // Get the recruiting session ID (we know there's exactly one because of the previous check)
-    const rid = [...uniqueSessions][0];
-
-    if (!rid) {
-      return { success: false, error: 'Invalid timeslot' };
+    if (uniqueSessions.size === 1 && !uniqueSessions.has(rid)) {
+      return {
+        success: false,
+        error: 'Timeslots must belong to the requested session',
+      };
     }
 
     const ability = await abilityForUserInSession(user.id, rid);
@@ -65,7 +62,17 @@ export async function submitAvailability(timeslotIds: string[]) {
       .from(interviewerAvailability)
       .where(eq(interviewerAvailability.userId, user.id));
 
-    const existingLockedTimeslots = existingAvailabilities
+    const sessionTimeslotIds = (
+      await db
+        .select({ id: schema.timeslot.id })
+        .from(schema.timeslot)
+        .where(eq(schema.timeslot.recruitingSessionId, rid))
+    ).map((timeslot) => timeslot.id);
+
+    const existingSessionAvailabilities = existingAvailabilities.filter((av) =>
+      sessionTimeslotIds.includes(av.timeslotId)
+    );
+    const existingLockedTimeslots = existingSessionAvailabilities
       .filter((av) => lockedTimeslotIds.includes(av.timeslotId))
       .map((av) => av.timeslotId);
 
@@ -81,9 +88,16 @@ export async function submitAvailability(timeslotIds: string[]) {
       };
     }
 
-    await db
-      .delete(interviewerAvailability)
-      .where(eq(interviewerAvailability.userId, user.id));
+    if (sessionTimeslotIds.length > 0) {
+      await db
+        .delete(interviewerAvailability)
+        .where(
+          and(
+            eq(interviewerAvailability.userId, user.id),
+            inArray(interviewerAvailability.timeslotId, sessionTimeslotIds)
+          )
+        );
+    }
 
     if (timeslotIds.length > 0) {
       await db.insert(interviewerAvailability).values(
@@ -94,7 +108,7 @@ export async function submitAvailability(timeslotIds: string[]) {
       );
     }
 
-    revalidatePath('/dashboard/[rid]/me/availability');
+    revalidatePath(`/dashboard/${rid}/me/availability`);
 
     return { success: true };
   } catch (error) {
