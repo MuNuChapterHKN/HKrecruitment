@@ -1,12 +1,12 @@
-import { db, schema } from '@/db';
+import { db, schema, type DbExecutor } from '@/db';
 import { and, eq } from 'drizzle-orm';
 
 const tsl = schema.timeslot;
 
 export const TIMESLOT_AVAILABILITY_MARGIN = 1;
 
-export const findAll = async (rid: string) =>
-  await db.select().from(tsl).where(eq(tsl.recruitingSessionId, rid));
+export const findAll = async (rid: string, executor: DbExecutor = db) =>
+  await executor.select().from(tsl).where(eq(tsl.recruitingSessionId, rid));
 
 export const findAllMasked = async (rid: string) =>
   await db
@@ -260,18 +260,37 @@ export const findWithMaskedAggregatedAvailability = async (rid: string) => {
   return await buildAggregatedAvailability(rid, await findAllMasked(rid));
 };
 
-export const findAvailableForBooking = async (rid: string) => {
+const hasInterviewWithinMargin = (
+  interviewIndices: Set<number>,
+  currentIndex: number
+) => {
+  for (
+    let i = currentIndex - TIMESLOT_AVAILABILITY_MARGIN;
+    i <= currentIndex + TIMESLOT_AVAILABILITY_MARGIN;
+    i++
+  ) {
+    if (interviewIndices.has(i)) {
+      return true;
+    }
+  }
+  return false;
+};
+
+export const findAvailableForBooking = async (
+  rid: string,
+  executor: DbExecutor = db
+) => {
   const now = new Date();
   const tomorrow = new Date(now);
   tomorrow.setDate(tomorrow.getDate() + 2);
   tomorrow.setHours(0, 0, 0, 0);
 
-  const allTimeslots = await findAll(rid);
+  const allTimeslots = await findAll(rid, executor);
   const futureTimeslots = allTimeslots.filter(
     (ts) => ts.startingFrom >= tomorrow
   );
 
-  const allTimeslotsWithInterviews = await db
+  const allTimeslotsWithInterviews = await executor
     .select({
       timeslotId: schema.timeslot.id,
       startingFrom: schema.timeslot.startingFrom,
@@ -299,10 +318,13 @@ export const findAvailableForBooking = async (rid: string) => {
   });
 
   const userInterviews = new Map<string, Set<number>>();
-  const pendingTimeslotIds = new Set<string>();
+  const pendingTimeslotIndices = new Set<number>();
   allTimeslotsWithInterviews.forEach((row) => {
     if (row.interviewId && row.confirmed === false) {
-      pendingTimeslotIds.add(row.timeslotId);
+      const timeslotIndex = timeslotIndices.get(row.timeslotId);
+      if (timeslotIndex !== undefined) {
+        pendingTimeslotIndices.add(timeslotIndex);
+      }
     }
 
     if (row.userId && row.interviewId && row.timeslotId) {
@@ -316,7 +338,7 @@ export const findAvailableForBooking = async (rid: string) => {
     }
   });
 
-  const availabilities = await db
+  const availabilities = await executor
     .select({
       userId: schema.interviewerAvailability.userId,
       timeslotId: schema.interviewerAvailability.timeslotId,
@@ -336,9 +358,11 @@ export const findAvailableForBooking = async (rid: string) => {
   const availableTimeslots: string[] = [];
 
   for (const timeslot of futureTimeslots) {
-    if (pendingTimeslotIds.has(timeslot.id)) continue;
-
     const currentIndex = timeslotIndices.get(timeslot.id)!;
+
+    if (hasInterviewWithinMargin(pendingTimeslotIndices, currentIndex)) {
+      continue;
+    }
 
     const usersAvailableInSlot = availabilities.filter(
       (a) => a.timeslotId === timeslot.id
@@ -348,16 +372,7 @@ export const findAvailableForBooking = async (rid: string) => {
       const userInterviewIndices = userInterviews.get(user.userId);
       if (!userInterviewIndices) return true;
 
-      for (
-        let i = currentIndex - TIMESLOT_AVAILABILITY_MARGIN;
-        i <= currentIndex + TIMESLOT_AVAILABILITY_MARGIN;
-        i++
-      ) {
-        if (userInterviewIndices.has(i)) {
-          return false;
-        }
-      }
-      return true;
+      return !hasInterviewWithinMargin(userInterviewIndices, currentIndex);
     });
 
     const firstTimeCount = actuallyAvailableUsers.filter(

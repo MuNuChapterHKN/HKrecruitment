@@ -40,6 +40,7 @@ export default async function InterviewBookingPage({
   const { token } = await searchParams;
 
   if (!aid || !token || Array.isArray(token)) unauthorized();
+  const bookingToken: string = token;
 
   const applicant = await getApplicantById(aid);
   if (
@@ -80,7 +81,7 @@ export default async function InterviewBookingPage({
   async function handleBooking(timeslotId: string) {
     'use server';
 
-    await bookInterview(aid, timeslotId, { token });
+    await bookInterview(aid, timeslotId, { token: bookingToken });
     revalidatePath(`/interview/book/${aid}`);
   }
 

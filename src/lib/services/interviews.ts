@@ -1,5 +1,5 @@
 import { db, schema } from '@/db';
-import { eq } from 'drizzle-orm';
+import { and, eq, isNull, sql } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import { INTERVIEW_STAGE, INTERVIEW_BOOKING_STAGE } from '../stages';
 import { switchStage } from './stages';
@@ -82,17 +82,22 @@ export const bookInterview = async (
     throw new Error('Timeslot does not belong to the applicant session');
   }
 
-  const availableTimeslots = await findAvailableForBooking(
-    applicant.recruitingSessionId
-  );
-
-  if (!availableTimeslots.some((ts) => ts.id === timeslotId)) {
-    throw new Error('Timeslot is not available for booking');
-  }
-
   const interviewId = nanoid();
 
   await db.transaction(async (tx) => {
+    await tx.execute(
+      sql`select pg_advisory_xact_lock(hashtext(${applicant.recruitingSessionId}))`
+    );
+
+    const availableTimeslots = await findAvailableForBooking(
+      applicant.recruitingSessionId,
+      tx
+    );
+
+    if (!availableTimeslots.some((ts) => ts.id === timeslotId)) {
+      throw new Error('Timeslot is not available for booking');
+    }
+
     await tx.insert(schema.interview).values({
       id: interviewId,
       timeslotId,
@@ -101,12 +106,22 @@ export const bookInterview = async (
       confirmed: false,
     });
 
-    await tx
+    const updatedApplicants = await tx
       .update(schema.applicant)
       .set({
         interviewId,
       })
-      .where(eq(schema.applicant.id, applicantId));
+      .where(
+        and(
+          eq(schema.applicant.id, applicantId),
+          isNull(schema.applicant.interviewId)
+        )
+      )
+      .returning({ id: schema.applicant.id });
+
+    if (updatedApplicants.length === 0) {
+      throw new Error('Applicant already has an interview');
+    }
   });
 
   await switchStage(applicantId, INTERVIEW_STAGE, false, null);
