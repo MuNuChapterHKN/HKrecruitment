@@ -10,7 +10,6 @@ import {
   Command,
   CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
@@ -28,8 +27,6 @@ type FilterPopoverProps<T extends string> = {
   options: FilterOption<T>[];
   selected: T[];
   onChange: (next: T[]) => void;
-  searchable?: boolean;
-  searchPlaceholder?: string;
   emptyText?: string;
   width?: string;
 };
@@ -39,8 +36,6 @@ export function FilterPopover<T extends string>({
   options,
   selected,
   onChange,
-  searchable = false,
-  searchPlaceholder = 'Search…',
   emptyText = 'No results.',
   width = 'w-[220px]',
 }: FilterPopoverProps<T>) {
@@ -81,7 +76,6 @@ export function FilterPopover<T extends string>({
       </PopoverTrigger>
       <PopoverContent className={cn('p-0', width)} align="start">
         <Command>
-          {searchable && <CommandInput placeholder={searchPlaceholder} />}
           <CommandList>
             <CommandEmpty>{emptyText}</CommandEmpty>
             <CommandGroup>

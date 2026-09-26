@@ -9,10 +9,9 @@ import {
   applicantsFiltersAtom,
   defaultApplicantsFilters,
 } from '@/state/applicantsFiltersAtoms';
-import { STAGES, AREAS } from '@/db/schema';
+import { STAGES } from '@/db/schema';
 import { stageLabels } from '@/lib/stages';
 import { degreeLevelMap } from '@/lib/degrees';
-import { areaLabels } from '@/lib/areas';
 import type { ApplicationStage, DegreeLevel } from '@/db/types';
 import { SearchInput } from './SearchInput';
 import { FilterPopover } from './FilterPopover';
@@ -26,8 +25,6 @@ const degreeOptions = (Object.keys(degreeLevelMap) as DegreeLevel[]).map(
   (d) => ({ value: d, label: degreeLevelMap[d] })
 );
 
-const areaOptions = AREAS.map((a) => ({ value: a, label: areaLabels[a] }));
-
 export function ApplicantsFilters() {
   const [filters, setFilters] = useAtom(applicantsFiltersAtom);
 
@@ -35,7 +32,6 @@ export function ApplicantsFilters() {
     filters.search.length > 0 ||
     filters.stages.length > 0 ||
     filters.degreeLevels.length > 0 ||
-    filters.areas.length > 0 ||
     filters.showArchived;
 
   return (
@@ -56,14 +52,6 @@ export function ApplicantsFilters() {
           onChange={(degreeLevels) =>
             setFilters((p) => ({ ...p, degreeLevels }))
           }
-        />
-        <FilterPopover
-          label="Area"
-          options={areaOptions}
-          selected={filters.areas}
-          onChange={(areas) => setFilters((p) => ({ ...p, areas }))}
-          searchable
-          searchPlaceholder="Search area…"
         />
         <div className="flex items-center gap-2 ml-1">
           <Switch
