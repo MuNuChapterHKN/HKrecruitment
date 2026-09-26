@@ -49,9 +49,34 @@ export const findTimeslotsWithInterviewsForUser = async (userId: string) => {
   return interviews.map((i) => i.timeslotId);
 };
 
-export const findWithAggregatedAvailability = async (rid: string) => {
-  const allTimeslots = await findAll(rid);
+const findPendingInterviewSummaries = async (rid: string) => {
+  return await db
+    .select({
+      timeslotId: schema.interview.timeslotId,
+      applicantName: schema.applicant.name,
+      applicantSurname: schema.applicant.surname,
+    })
+    .from(schema.interview)
+    .innerJoin(
+      schema.applicant,
+      eq(schema.interview.id, schema.applicant.interviewId)
+    )
+    .innerJoin(
+      schema.timeslot,
+      eq(schema.interview.timeslotId, schema.timeslot.id)
+    )
+    .where(
+      and(
+        eq(schema.timeslot.recruitingSessionId, rid),
+        eq(schema.interview.confirmed, false)
+      )
+    );
+};
 
+const buildAggregatedAvailability = async (
+  rid: string,
+  allTimeslots: Awaited<ReturnType<typeof findAll>>
+) => {
   const timeslotIndices = new Map<string, number>();
   const sortedTimeslots = [...allTimeslots].sort(
     (a, b) => a.startingFrom.getTime() - b.startingFrom.getTime()
@@ -92,6 +117,7 @@ export const findWithAggregatedAvailability = async (rid: string) => {
       meetingId: string;
       applicant: { name: string; surname: string };
       interviewers: string[];
+      confirmed: boolean;
     }[]
   >();
 
@@ -110,6 +136,7 @@ export const findWithAggregatedAvailability = async (rid: string) => {
           surname: record.applicantSurname,
         },
         interviewers: [],
+        confirmed: true,
       };
       interviews.push(interview);
     }
@@ -120,6 +147,22 @@ export const findWithAggregatedAvailability = async (rid: string) => {
     ) {
       interview.interviewers.push(record.interviewerName);
     }
+  });
+
+  const pendingInterviewData = await findPendingInterviewSummaries(rid);
+  pendingInterviewData.forEach((record) => {
+    if (!timeslotInterviewMap.has(record.timeslotId)) {
+      timeslotInterviewMap.set(record.timeslotId, []);
+    }
+    timeslotInterviewMap.get(record.timeslotId)!.push({
+      meetingId: '',
+      applicant: {
+        name: record.applicantName,
+        surname: record.applicantSurname,
+      },
+      interviewers: [],
+      confirmed: false,
+    });
   });
 
   const userInterviews = new Map<string, Set<number>>();
@@ -209,164 +252,12 @@ export const findWithAggregatedAvailability = async (rid: string) => {
   });
 };
 
+export const findWithAggregatedAvailability = async (rid: string) => {
+  return await buildAggregatedAvailability(rid, await findAll(rid));
+};
+
 export const findWithMaskedAggregatedAvailability = async (rid: string) => {
-  const allTimeslots = await findAllMasked(rid);
-
-  const timeslotIndices = new Map<string, number>();
-  const sortedTimeslots = [...allTimeslots].sort(
-    (a, b) => a.startingFrom.getTime() - b.startingFrom.getTime()
-  );
-  sortedTimeslots.forEach((ts, index) => {
-    timeslotIndices.set(ts.id, index);
-  });
-
-  const interviewData = await db
-    .select({
-      timeslotId: schema.interview.timeslotId,
-      interviewId: schema.interview.id,
-      meetingId: schema.interview.meetingId,
-      applicantName: schema.applicant.name,
-      applicantSurname: schema.applicant.surname,
-      interviewerId: schema.usersToInterviews.userId,
-      interviewerName: schema.user.name,
-    })
-    .from(schema.interview)
-    .innerJoin(
-      schema.applicant,
-      eq(schema.interview.id, schema.applicant.interviewId)
-    )
-    .innerJoin(
-      schema.usersToInterviews,
-      eq(schema.interview.id, schema.usersToInterviews.interviewId)
-    )
-    .innerJoin(schema.user, eq(schema.usersToInterviews.userId, schema.user.id))
-    .innerJoin(
-      schema.timeslot,
-      eq(schema.interview.timeslotId, schema.timeslot.id)
-    )
-    .where(eq(schema.timeslot.recruitingSessionId, rid));
-
-  const timeslotInterviewMap = new Map<
-    string,
-    {
-      meetingId: string;
-      applicant: { name: string; surname: string };
-      interviewers: string[];
-    }[]
-  >();
-
-  interviewData.forEach((record) => {
-    if (!timeslotInterviewMap.has(record.timeslotId)) {
-      timeslotInterviewMap.set(record.timeslotId, []);
-    }
-    const interviews = timeslotInterviewMap.get(record.timeslotId)!;
-
-    let interview = interviews.find((i) => i.meetingId === record.meetingId);
-    if (!interview) {
-      interview = {
-        meetingId: record.meetingId || '',
-        applicant: {
-          name: record.applicantName,
-          surname: record.applicantSurname,
-        },
-        interviewers: [],
-      };
-      interviews.push(interview);
-    }
-
-    if (
-      record.interviewerName &&
-      !interview.interviewers.includes(record.interviewerName)
-    ) {
-      interview.interviewers.push(record.interviewerName);
-    }
-  });
-
-  const userInterviews = new Map<string, Set<number>>();
-  interviewData.forEach((row) => {
-    if (row.interviewerId && row.timeslotId) {
-      const timeslotIndex = timeslotIndices.get(row.timeslotId);
-      if (timeslotIndex !== undefined) {
-        if (!userInterviews.has(row.interviewerId)) {
-          userInterviews.set(row.interviewerId, new Set());
-        }
-        userInterviews.get(row.interviewerId)!.add(timeslotIndex);
-      }
-    }
-  });
-
-  const availabilityData = await db
-    .select({
-      timeslotId: schema.interviewerAvailability.timeslotId,
-      userId: schema.interviewerAvailability.userId,
-      userName: schema.user.name,
-      isFirstTime: schema.user.isFirstTime,
-    })
-    .from(schema.interviewerAvailability)
-    .innerJoin(
-      schema.user,
-      eq(schema.interviewerAvailability.userId, schema.user.id)
-    );
-
-  const timeslotAvailabilityMap = new Map<
-    string,
-    { users: string[]; firstTimeUsers: string[]; userIds: string[] }
-  >();
-
-  availabilityData.forEach((record) => {
-    if (!timeslotAvailabilityMap.has(record.timeslotId)) {
-      timeslotAvailabilityMap.set(record.timeslotId, {
-        users: [],
-        firstTimeUsers: [],
-        userIds: [],
-      });
-    }
-    const data = timeslotAvailabilityMap.get(record.timeslotId)!;
-
-    const currentIndex = timeslotIndices.get(record.timeslotId)!;
-    const userInterviewIndices = userInterviews.get(record.userId);
-
-    let isAvailable = true;
-    if (userInterviewIndices) {
-      for (
-        let i = currentIndex - TIMESLOT_AVAILABILITY_MARGIN;
-        i <= currentIndex + TIMESLOT_AVAILABILITY_MARGIN;
-        i++
-      ) {
-        if (userInterviewIndices.has(i)) {
-          isAvailable = false;
-          break;
-        }
-      }
-    }
-
-    if (isAvailable) {
-      data.users.push(record.userName);
-      data.userIds.push(record.userId);
-      if (record.isFirstTime) {
-        data.firstTimeUsers.push(record.userName);
-      }
-    }
-  });
-
-  return allTimeslots.map((ts) => {
-    const availability = timeslotAvailabilityMap.get(ts.id) || {
-      users: [],
-      firstTimeUsers: [],
-      userIds: [],
-    };
-    const interviews = timeslotInterviewMap.get(ts.id) || [];
-
-    return {
-      id: ts.id,
-      startingFrom: ts.startingFrom,
-      totalUsers: availability.users.length,
-      firstTimeUsers: availability.firstTimeUsers.length,
-      userNames: availability.users,
-      firstTimeUserNames: availability.firstTimeUsers,
-      interviews,
-    };
-  });
+  return await buildAggregatedAvailability(rid, await findAllMasked(rid));
 };
 
 export const findAvailableForBooking = async (rid: string) => {
@@ -386,6 +277,7 @@ export const findAvailableForBooking = async (rid: string) => {
       startingFrom: schema.timeslot.startingFrom,
       interviewId: schema.interview.id,
       userId: schema.usersToInterviews.userId,
+      confirmed: schema.interview.confirmed,
     })
     .from(schema.timeslot)
     .leftJoin(
@@ -398,11 +290,6 @@ export const findAvailableForBooking = async (rid: string) => {
     )
     .where(eq(schema.timeslot.recruitingSessionId, rid));
 
-  const timeslotMap = new Map<string, Date>();
-  allTimeslots.forEach((ts) => {
-    timeslotMap.set(ts.id, ts.startingFrom);
-  });
-
   const timeslotIndices = new Map<string, number>();
   const sortedTimeslots = [...allTimeslots].sort(
     (a, b) => a.startingFrom.getTime() - b.startingFrom.getTime()
@@ -412,7 +299,12 @@ export const findAvailableForBooking = async (rid: string) => {
   });
 
   const userInterviews = new Map<string, Set<number>>();
+  const pendingTimeslotIds = new Set<string>();
   allTimeslotsWithInterviews.forEach((row) => {
+    if (row.interviewId && row.confirmed === false) {
+      pendingTimeslotIds.add(row.timeslotId);
+    }
+
     if (row.userId && row.interviewId && row.timeslotId) {
       const timeslotIndex = timeslotIndices.get(row.timeslotId);
       if (timeslotIndex !== undefined) {
@@ -444,6 +336,8 @@ export const findAvailableForBooking = async (rid: string) => {
   const availableTimeslots: string[] = [];
 
   for (const timeslot of futureTimeslots) {
+    if (pendingTimeslotIds.has(timeslot.id)) continue;
+
     const currentIndex = timeslotIndices.get(timeslot.id)!;
 
     const usersAvailableInSlot = availabilities.filter(
