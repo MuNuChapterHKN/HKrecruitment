@@ -10,9 +10,8 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/',
-        destination: '/recruitment/signin',
-        basePath: false,
-        permanent: true,
+        destination: '/dashboard',
+        permanent: false,
       },
     ];
   },
