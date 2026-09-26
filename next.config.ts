@@ -10,6 +10,12 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/',
+        destination: '/recruitment/dashboard',
+        basePath: false,
+        permanent: false,
+      },
+      {
+        source: '/',
         destination: '/dashboard',
         permanent: false,
       },
