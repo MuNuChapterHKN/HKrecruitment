@@ -94,13 +94,6 @@ export function ApplicantsListClient({
       )
         return false;
 
-      if (filters.areas.length > 0) {
-        const chosenArea = (a as Applicant & { chosenArea?: string | null })
-          .chosenArea;
-        if (!chosenArea || !filters.areas.includes(chosenArea as never))
-          return false;
-      }
-
       return true;
     });
   }, [optimisticApplicants, deferredSearch, filters]);
@@ -110,7 +103,6 @@ export function ApplicantsListClient({
     deferredSearch.trim().length > 0 ||
     filters.stages.length > 0 ||
     filters.degreeLevels.length > 0 ||
-    filters.areas.length > 0 ||
     filters.showArchived;
 
   return (
