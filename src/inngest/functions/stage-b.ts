@@ -14,8 +14,10 @@ type StageEventData = {
 };
 
 function buildBookingUrl(applicantId: string, token: string | null): string {
-  const baseUrl = process.env.HKRECRUITMENT_URL || 'http://localhost:3000';
-  const url = new URL(`/interview/book/${applicantId}`, baseUrl);
+  const baseUrl =
+    process.env.HKRECRUITMENT_URL || 'http://localhost:3000/recruitment';
+  const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+  const url = new URL(`interview/book/${applicantId}`, normalizedBaseUrl);
 
   if (token) {
     url.searchParams.set('token', token);
