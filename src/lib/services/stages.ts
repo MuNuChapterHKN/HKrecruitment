@@ -1,5 +1,5 @@
 ﻿import { ApplicationStage } from '@/db/types';
-import { db, schema } from '@/db';
+import { db, schema, type DbExecutor } from '@/db';
 import { and, desc, eq, isNull } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import {
@@ -12,11 +12,12 @@ export const switchStage = async (
   stage: ApplicationStage,
   processed: boolean = false,
   userId: string | null = null,
-  notes: string | null = null
+  notes: string | null = null,
+  executor: DbExecutor = db
 ) => {
   const now = new Date();
 
-  const result = await db.transaction(async (tx) => {
+  const result = await executor.transaction(async (tx) => {
     const oldPendingStatuses = await tx
       .select()
       .from(schema.stageStatus)

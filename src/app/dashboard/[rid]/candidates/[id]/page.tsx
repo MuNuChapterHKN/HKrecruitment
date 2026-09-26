@@ -25,6 +25,7 @@ import { UpdateFileDialog } from './UpdateFileDialog';
 import { auth } from '@/lib/server/auth';
 import { headers } from 'next/headers';
 import { requirePageAccess } from '@/lib/helpers/pageAuthorization';
+import { abilityForUserInSession } from '@/lib/abilities/server';
 
 export default async function CandidateDetailsPage({
   params,
@@ -72,8 +73,19 @@ export default async function CandidateDetailsPage({
   async function handleManualBooking(timeslotId: string) {
     'use server';
 
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+    if (!session) return;
+
     const currentApplicant = await getApplicantById(id);
     if (!currentApplicant) return;
+
+    const ability = await abilityForUserInSession(
+      session.user.id,
+      currentApplicant.recruitingSessionId
+    );
+    if (!ability.can('manage', 'CandidatesActions')) return;
 
     await bookInterview(id, timeslotId);
     revalidatePath(
