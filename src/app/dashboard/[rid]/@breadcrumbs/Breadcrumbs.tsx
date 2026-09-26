@@ -9,10 +9,13 @@ import {
   BreadcrumbSeparator,
 } from '@/components';
 import { Fragment } from 'react';
+import Link from 'next/link';
 
 export const DEFAULT_WRAPPER = (label: string, href: string) => (
   <BreadcrumbItem>
-    <BreadcrumbLink href={href}>{label}</BreadcrumbLink>
+    <BreadcrumbLink asChild>
+      <Link href={href}>{label}</Link>
+    </BreadcrumbLink>
   </BreadcrumbItem>
 );
 
