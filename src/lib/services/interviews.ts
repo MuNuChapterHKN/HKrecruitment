@@ -3,6 +3,8 @@ import { eq } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import { INTERVIEW_STAGE, INTERVIEW_BOOKING_STAGE } from '../stages';
 import { switchStage } from './stages';
+import { compare } from '../server/token';
+import { findAvailableForBooking } from './timeslots';
 
 export const findOne = async (interviewId: string) => {
   const result = await db
@@ -41,25 +43,51 @@ export const findInterviewers = async (interviewId: string) => {
 
 export const bookInterview = async (
   applicantId: string,
-  timeslotId: string
+  timeslotId: string,
+  options: { token?: string } = {}
 ) => {
-  const timeslot = await db
+  const applicantRows = await db
+    .select()
+    .from(schema.applicant)
+    .where(eq(schema.applicant.id, applicantId))
+    .limit(1);
+  const applicant = applicantRows[0];
+
+  if (!applicant) {
+    throw new Error('Applicant not found');
+  }
+
+  if (options.token !== undefined) {
+    if (!applicant.token || !(await compare(options.token, applicant.token))) {
+      throw new Error('Invalid booking token');
+    }
+  }
+
+  if (applicant.interviewId) {
+    throw new Error('Applicant already has an interview');
+  }
+
+  const timeslotRows = await db
     .select()
     .from(schema.timeslot)
     .where(eq(schema.timeslot.id, timeslotId))
     .limit(1);
+  const timeslot = timeslotRows[0];
 
-  if (!timeslot[0]) {
+  if (!timeslot) {
     throw new Error('Timeslot not found');
   }
 
-  const now = new Date();
-  const tomorrow = new Date(now);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  tomorrow.setHours(0, 0, 0, 0);
+  if (timeslot.recruitingSessionId !== applicant.recruitingSessionId) {
+    throw new Error('Timeslot does not belong to the applicant session');
+  }
 
-  if (timeslot[0].startingFrom < tomorrow) {
-    throw new Error('Cannot book interview for past or current day');
+  const availableTimeslots = await findAvailableForBooking(
+    applicant.recruitingSessionId
+  );
+
+  if (!availableTimeslots.some((ts) => ts.id === timeslotId)) {
+    throw new Error('Timeslot is not available for booking');
   }
 
   const interviewId = nanoid();

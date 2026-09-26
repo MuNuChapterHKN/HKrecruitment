@@ -80,7 +80,7 @@ export default async function InterviewBookingPage({
   async function handleBooking(timeslotId: string) {
     'use server';
 
-    await bookInterview(aid, timeslotId);
+    await bookInterview(aid, timeslotId, { token });
     revalidatePath(`/interview/book/${aid}`);
   }
 
