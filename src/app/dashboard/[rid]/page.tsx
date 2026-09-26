@@ -61,7 +61,7 @@ export default async function Dashboard({
         <CourseSummary courseCounts={courseCounts} />
       </section>
 
-      <AutomationsSection automations={automations} />
+      {/* <AutomationsSection automations={automations} /> */}
 
       <LatestApplicantsSection applicants={latestApplicants} />
     </main>
