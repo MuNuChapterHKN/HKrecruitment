@@ -5,7 +5,7 @@ import { applicant } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import {
   uploadFile,
-  shareFileWithDomain,
+  shareFileWithGroup,
   getFileMetadata,
 } from '@/lib/google/drive/files';
 import { getApplicantById } from '@/lib/services/applicants';
@@ -99,9 +99,9 @@ export async function PATCH(
 
     const newFileId = uploadResult.value.id;
 
-    const domain = process.env.GOOGLE_WORKSPACE_DOMAIN;
-    if (domain) {
-      await shareFileWithDomain(newFileId, domain);
+    const shareGroup = process.env.GOOGLE_DRIVE_SHARE_GROUP;
+    if (shareGroup) {
+      await shareFileWithGroup(newFileId, shareGroup);
     }
 
     const updateData =

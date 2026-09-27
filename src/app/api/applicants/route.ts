@@ -9,7 +9,7 @@ import {
 } from '@/db/schema';
 import { insertApplicantSchema } from '@/lib/services/applicants';
 import { getFolderByName, createFolder } from '@/lib/google/drive/folders';
-import { uploadFile, shareFileWithDomain } from '@/lib/google/drive/files';
+import { uploadFile, shareFileWithGroup } from '@/lib/google/drive/files';
 import { ZodError } from 'zod';
 import { findLatest } from '@/lib/services/recruitmentSessions';
 import { nanoid } from 'nanoid';
@@ -177,11 +177,11 @@ export async function POST(req: Request) {
     toInsert.cvFileId = cvUploadResult.value.id;
     toInsert.spFileId = spUploadResult.value.id;
 
-    const domain = process.env.GOOGLE_WORKSPACE_DOMAIN;
-    if (domain) {
-      await shareFileWithDomain(cvUploadResult.value.id, domain);
-      await shareFileWithDomain(spUploadResult.value.id, domain);
-      await shareFileWithDomain(infoUploadResult.value.id, domain);
+    const shareGroup = process.env.GOOGLE_DRIVE_SHARE_GROUP;
+    if (shareGroup) {
+      await shareFileWithGroup(cvUploadResult.value.id, shareGroup);
+      await shareFileWithGroup(spUploadResult.value.id, shareGroup);
+      await shareFileWithGroup(infoUploadResult.value.id, shareGroup);
     }
     const result = await db.transaction(async (tx) => {
       const insertedApplicants = await tx
