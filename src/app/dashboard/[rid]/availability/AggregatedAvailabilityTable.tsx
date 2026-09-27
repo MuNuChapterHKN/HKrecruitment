@@ -1,6 +1,5 @@
 'use client';
 
-import { TimeslotWithAvailability } from './page';
 import { useState, useMemo } from 'react';
 import {
   Tooltip,
@@ -8,8 +7,23 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { X, Calendar, Calendars } from 'lucide-react';
+import { X, Calendar, Calendars, Lock } from 'lucide-react';
 import { getMeetingLink } from '@/lib/utils';
+
+export type TimeslotWithAvailability = {
+  id: string;
+  startingFrom: Date;
+  totalUsers: number;
+  firstTimeUsers: number;
+  userNames: string[];
+  firstTimeUserNames: string[];
+  interviews: {
+    meetingId: string;
+    applicant: { name: string; surname: string };
+    interviewers: string[];
+    confirmed: boolean;
+  }[];
+};
 
 const WEEK_DAYS = [
   'Monday',
@@ -192,6 +206,47 @@ export function AggregatedAvailabilityTable({
                           className="border bg-gray-100 text-center"
                         >
                           -
+                        </td>
+                      );
+                    }
+
+                    const pendingInterviews = timeslot.interviews.filter(
+                      (interview) => !interview.confirmed
+                    );
+
+                    if (pendingInterviews.length > 0) {
+                      return (
+                        <td
+                          key={cellKey}
+                          className="border text-center p-2 bg-gray-300 text-gray-700"
+                        >
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div className="flex items-center justify-center gap-1 cursor-help">
+                                <Lock className="w-4 h-4" />
+                                <span className="text-xs font-medium">
+                                  Blocked
+                                </span>
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <div className="space-y-1">
+                                <div className="font-semibold">
+                                  Temporarily blocked
+                                </div>
+                                <div className="text-xs text-gray-300">
+                                  Reserved until the interview is confirmed, to
+                                  avoid overbooking.
+                                </div>
+                                {pendingInterviews.map((interview, index) => (
+                                  <div key={index} className="text-sm">
+                                    {interview.applicant.name}{' '}
+                                    {interview.applicant.surname}
+                                  </div>
+                                ))}
+                              </div>
+                            </TooltipContent>
+                          </Tooltip>
                         </td>
                       );
                     }

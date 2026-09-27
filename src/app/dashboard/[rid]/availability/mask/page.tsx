@@ -5,20 +5,6 @@ import { findWithMaskedAggregatedAvailability } from '@/lib/services/timeslots';
 import { findOne } from '@/lib/services/recruitmentSessions';
 import { notFound } from 'next/navigation';
 
-export type TimeslotWithAvailability = {
-  id: string;
-  startingFrom: Date;
-  totalUsers: number;
-  firstTimeUsers: number;
-  userNames: string[];
-  firstTimeUserNames: string[];
-  interviews: {
-    meetingId: string;
-    applicant: { name: string; surname: string };
-    interviewers: string[];
-  }[];
-};
-
 export default async function AvailabilityOverviewPage({
   params,
 }: PageProps<'/dashboard/[rid]/availability'>) {
