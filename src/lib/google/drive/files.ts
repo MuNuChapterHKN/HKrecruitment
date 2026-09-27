@@ -58,9 +58,9 @@ export async function uploadFile(params: {
   });
 }
 
-export async function shareFileWithDomain(
+export async function shareFileWithGroup(
   fileId: string,
-  domain: string
+  groupEmail: string
 ): Promise<Result<void, Error>> {
   const authResult = await service.getAuth();
   if (authResult.isErr()) {
@@ -72,10 +72,11 @@ export async function shareFileWithDomain(
   return fromPromise(
     drive.permissions.create({
       fileId,
+      sendNotificationEmail: false,
       requestBody: {
         role: 'reader',
-        type: 'domain',
-        domain,
+        type: 'group',
+        emailAddress: groupEmail,
       },
     }),
     (error) =>
