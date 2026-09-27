@@ -3,6 +3,10 @@ import { Result, ok, err, fromPromise } from 'neverthrow';
 import { service } from '../service';
 import { DriveFolder } from './types';
 
+function escapeQueryValue(value: string) {
+  return value.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+}
+
 export async function getFolderByName(
   name: string,
   parentId?: string
@@ -14,9 +18,9 @@ export async function getFolderByName(
 
   const drive = google.drive({ version: 'v3', auth: authResult.value });
 
-  let query = `name='${name}' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
+  let query = `name='${escapeQueryValue(name)}' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
   if (parentId) {
-    query += ` and '${parentId}' in parents`;
+    query += ` and '${escapeQueryValue(parentId)}' in parents`;
   }
 
   return fromPromise(
