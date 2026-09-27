@@ -34,8 +34,11 @@ export const findForUser = async (userId: string) => {
   return availabilities.map((a) => a.timeslotId);
 };
 
-export const findTimeslotsWithInterviewsForUser = async (userId: string) => {
-  const interviews = await db
+export const findTimeslotsWithInterviewsForUser = async (
+  userId: string,
+  executor: DbExecutor = db
+) => {
+  const interviews = await executor
     .select({
       timeslotId: schema.interview.timeslotId,
     })
