@@ -48,7 +48,7 @@ export default async function AvailabilityPage({
     const timeslotIds = slots
       .filter((slot) => slot.active)
       .map((slot) => slot.id);
-    return submitAvailability(timeslotIds);
+    return submitAvailability(rid, timeslotIds);
   }
 
   return (
