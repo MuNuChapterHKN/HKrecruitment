@@ -59,7 +59,7 @@ export default async function DashboardLayout({
           user={userForAbility}
           recruitment={{ selected: recruitment, options: recruitmentOptions }}
         />
-        <main className="w-full">
+        <main className="flex-1 min-w-0">
           <div className="w-full flex h-12 items-center gap-2 px-2 py-2 border-b-1 border-border bg-sidebar">
             <SidebarTrigger className="cursor-pointer" />
             <Separator orientation="vertical" className="mr-2" />
