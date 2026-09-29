@@ -7,11 +7,18 @@ function encodeSubject(subject: string): string {
 
 function buildRawMessage(params: {
   to: string;
+  replyTo?: string;
   subject: string;
   html: string;
 }): string {
+  const headers = [`To: ${params.to}`];
+
+  if (params.replyTo) {
+    headers.push(`Reply-To: ${params.replyTo}`);
+  }
+
   const message = [
-    `To: ${params.to}`,
+    ...headers,
     `Subject: ${encodeSubject(params.subject)}`,
     'MIME-Version: 1.0',
     'Content-Type: text/html; charset=UTF-8',
@@ -24,11 +31,16 @@ function buildRawMessage(params: {
 
 export async function sendTemplatedEmail(params: {
   to: string;
+  replyTo?: string;
   subject: string;
   html: string;
 }): Promise<void> {
+  const replyTo = params.replyTo ?? process.env.AUTOMATION_REPLY_TO;
+
   if (process.env.AUTOMATION_DRY_RUN === '1') {
-    console.log(`[DRY RUN][email] to=${params.to} subject=${params.subject}`);
+    console.log(
+      `[DRY RUN][email] to=${params.to} replyTo=${replyTo ?? ''} subject=${params.subject}`
+    );
     return;
   }
 
@@ -42,7 +54,7 @@ export async function sendTemplatedEmail(params: {
   await gmail.users.messages.send({
     userId: 'me',
     requestBody: {
-      raw: buildRawMessage(params),
+      raw: buildRawMessage({ ...params, replyTo }),
     },
   });
 }
