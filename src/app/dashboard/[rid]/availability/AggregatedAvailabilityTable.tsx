@@ -213,6 +213,12 @@ export function AggregatedAvailabilityTable({
                     const pendingInterviews = timeslot.interviews.filter(
                       (interview) => !interview.confirmed
                     );
+                    const interviewerNamesInMeeting = new Set<string>();
+                    timeslot.interviews.forEach((interview) => {
+                      interview.interviewers.forEach((interviewer) =>
+                        interviewerNamesInMeeting.add(interviewer)
+                      );
+                    });
 
                     if (pendingInterviews.length > 0) {
                       return (
@@ -244,6 +250,31 @@ export function AggregatedAvailabilityTable({
                                     {interview.applicant.surname}
                                   </div>
                                 ))}
+                                <div className="font-semibold">
+                                  Possible interviewers:
+                                </div>
+                                {timeslot.userNames.map((name) => {
+                                  const isFirstTime =
+                                    timeslot.firstTimeUserNames.includes(name);
+                                  const isInMeeting =
+                                    interviewerNamesInMeeting.has(name);
+                                  return (
+                                    <div
+                                      key={name}
+                                      className={
+                                        isInMeeting
+                                          ? COLORS.INTERVIEWER_IN_MEETING
+                                          : ''
+                                      }
+                                    >
+                                      {isFirstTime ? (
+                                        <strong>{name}</strong>
+                                      ) : (
+                                        name
+                                      )}
+                                    </div>
+                                  );
+                                })}
                               </div>
                             </TooltipContent>
                           </Tooltip>
@@ -260,13 +291,6 @@ export function AggregatedAvailabilityTable({
                       userCount >= 2
                         ? 'bg-green-500 text-white'
                         : 'bg-red-400 text-white';
-
-                    const interviewerNamesInMeeting = new Set<string>();
-                    timeslot.interviews.forEach((interview) => {
-                      interview.interviewers.forEach((interviewer) =>
-                        interviewerNamesInMeeting.add(interviewer)
-                      );
-                    });
 
                     const tooltipContent = (
                       <div className="space-y-1">
