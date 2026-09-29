@@ -8,7 +8,6 @@ import { getDashboardData } from '@/lib/services/dashboard';
 import { ActivityChart } from '@/components/dashboard/ActivityChart';
 import { StageSummary } from '@/components/dashboard/StageSummary';
 import { CourseSummary } from '@/components/dashboard/CourseSummary';
-import { AutomationsSection } from '@/components/dashboard/AutomationsSection';
 import { LatestApplicantsSection } from '@/components/dashboard/LatestApplicantsSection';
 
 export default async function Dashboard({
@@ -36,7 +35,6 @@ export default async function Dashboard({
     stageCounts,
     courseCounts,
     latestApplicants,
-    automations,
   } = data;
 
   return (

@@ -1,6 +1,13 @@
 'use client';
 
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts';
+import {
+  CartesianGrid,
+  Bar,
+  BarChart,
+  XAxis,
+  YAxis,
+  ReferenceArea,
+} from 'recharts';
 import {
   ChartContainer,
   ChartTooltip,
@@ -37,14 +44,32 @@ export function ActivityChart({ activity }: ActivityChartProps) {
       month: 'short',
     }).format(new Date(p.date)),
   }));
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const firstFuture = formatted.find((p) => {
+    const date = new Date(p.date);
+    date.setHours(0, 0, 0, 0);
+    return date > today;
+  });
+
+  const lastPoint = formatted[formatted.length - 1];
 
   return (
     <ChartContainer config={chartConfig} className="h-56 w-full">
-      <LineChart
+      <BarChart
         data={formatted}
         margin={{ top: 4, right: 8, bottom: 0, left: -16 }}
       >
         <CartesianGrid vertical={false} strokeDasharray="3 3" />
+        {firstFuture && (
+          <ReferenceArea
+            x1={firstFuture.label}
+            x2={lastPoint.label}
+            fill="var(--muted)"
+            fillOpacity={0.5}
+          />
+        )}
         <XAxis
           dataKey="label"
           tickLine={false}
@@ -61,15 +86,13 @@ export function ActivityChart({ activity }: ActivityChartProps) {
         <ChartTooltip
           content={<ChartTooltipContent labelKey="label" indicator="dot" />}
         />
-        <Line
-          type="monotone"
+        <Bar
           dataKey="count"
-          stroke="var(--color-count)"
-          strokeWidth={2}
-          dot={false}
-          activeDot={{ r: 4 }}
+          fill="var(--color-count)"
+          fillOpacity={0.8}
+          radius={[4, 4, 0, 0]}
         />
-      </LineChart>
+      </BarChart>
     </ChartContainer>
   );
 }

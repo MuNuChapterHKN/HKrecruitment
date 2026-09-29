@@ -168,12 +168,12 @@ export function AvailabilitiesTable({
             ←
           </button>
           <span className="text-sm font-medium min-w-[200px] text-center">
-            {weekDates[0].toLocaleDateString('en-US', {
+            {weekDates[0].toLocaleDateString('it-IT', {
               month: 'short',
               day: 'numeric',
             })}{' '}
             -{' '}
-            {weekDates[6].toLocaleDateString('en-US', {
+            {weekDates[6].toLocaleDateString('it-IT', {
               month: 'short',
               day: 'numeric',
               year: 'numeric',
@@ -198,8 +198,8 @@ export function AvailabilitiesTable({
                   <th className="p-2 border min-w-[110px]" key={day}>
                     <div>{day}</div>
                     <div className="text-xs font-normal text-gray-500">
-                      {weekDates[index].toLocaleDateString('en-US', {
-                        month: 'numeric',
+                      {weekDates[index].toLocaleDateString('it-IT', {
+                        month: 'short',
                         day: 'numeric',
                       })}
                     </div>

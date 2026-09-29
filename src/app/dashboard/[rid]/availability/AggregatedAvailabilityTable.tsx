@@ -148,12 +148,12 @@ export function AggregatedAvailabilityTable({
             ←
           </button>
           <span className="text-sm font-medium min-w-[200px] text-center">
-            {weekDates[0].toLocaleDateString('en-US', {
+            {weekDates[0].toLocaleDateString('it-IT', {
               month: 'short',
               day: 'numeric',
             })}{' '}
             -{' '}
-            {weekDates[6].toLocaleDateString('en-US', {
+            {weekDates[6].toLocaleDateString('it-IT', {
               month: 'short',
               day: 'numeric',
               year: 'numeric',
@@ -178,8 +178,8 @@ export function AggregatedAvailabilityTable({
                   <th className="p-2 border min-w-[110px]" key={day}>
                     <div>{day}</div>
                     <div className="text-xs font-normal text-gray-500">
-                      {weekDates[index].toLocaleDateString('en-US', {
-                        month: 'numeric',
+                      {weekDates[index].toLocaleDateString('it-IT', {
+                        month: 'short',
                         day: 'numeric',
                       })}
                     </div>
@@ -250,6 +250,7 @@ export function AggregatedAvailabilityTable({
                                     {interview.applicant.surname}
                                   </div>
                                 ))}
+                                <hr />
                                 <div className="font-semibold">
                                   Possible interviewers:
                                 </div>
