@@ -21,8 +21,8 @@ export type TimeslotWithAvailability = {
     meetingId: string;
     applicant: { name: string; surname: string };
     interviewers: string[];
-    confirmed: boolean;
   }[];
+  blockedBy: { name: string; surname: string }[];
 };
 
 const WEEK_DAYS = [
@@ -210,78 +210,13 @@ export function AggregatedAvailabilityTable({
                       );
                     }
 
-                    const pendingInterviews = timeslot.interviews.filter(
-                      (interview) => !interview.confirmed
-                    );
+                    const blockedBy = timeslot.blockedBy;
                     const interviewerNamesInMeeting = new Set<string>();
                     timeslot.interviews.forEach((interview) => {
                       interview.interviewers.forEach((interviewer) =>
                         interviewerNamesInMeeting.add(interviewer)
                       );
                     });
-
-                    if (pendingInterviews.length > 0) {
-                      return (
-                        <td
-                          key={cellKey}
-                          className="border text-center p-2 bg-gray-300 text-gray-700"
-                        >
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <div className="flex items-center justify-center gap-1 cursor-help">
-                                <Lock className="w-4 h-4" />
-                                <span className="text-xs font-medium">
-                                  Blocked
-                                </span>
-                              </div>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <div className="space-y-1">
-                                <div className="font-semibold">
-                                  Temporarily blocked
-                                </div>
-                                <div className="text-xs text-gray-300">
-                                  Reserved until the interview is confirmed, to
-                                  avoid overbooking.
-                                </div>
-                                {pendingInterviews.map((interview, index) => (
-                                  <div key={index} className="text-sm">
-                                    {interview.applicant.name}{' '}
-                                    {interview.applicant.surname}
-                                  </div>
-                                ))}
-                                <hr />
-                                <div className="font-semibold">
-                                  Possible interviewers:
-                                </div>
-                                {timeslot.userNames.map((name) => {
-                                  const isFirstTime =
-                                    timeslot.firstTimeUserNames.includes(name);
-                                  const isInMeeting =
-                                    interviewerNamesInMeeting.has(name);
-                                  return (
-                                    <div
-                                      key={name}
-                                      className={
-                                        isInMeeting
-                                          ? COLORS.INTERVIEWER_IN_MEETING
-                                          : ''
-                                      }
-                                    >
-                                      {isFirstTime ? (
-                                        <strong>{name}</strong>
-                                      ) : (
-                                        name
-                                      )}
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            </TooltipContent>
-                          </Tooltip>
-                        </td>
-                      );
-                    }
 
                     let userCount =
                       timeslot.totalUsers - timeslot.firstTimeUsers;
@@ -416,6 +351,34 @@ export function AggregatedAvailabilityTable({
                               </TooltipTrigger>
                               <TooltipContent>
                                 {interviewsTooltip}
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
+                          {blockedBy.length > 0 && (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="cursor-help">
+                                  <Lock className="w-4 h-4" />
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <div className="space-y-1">
+                                  <div className="font-semibold">
+                                    Temporarily blocked
+                                  </div>
+                                  <div className="text-xs text-gray-300">
+                                    Reserved until the interview is confirmed,
+                                    to avoid overbooking.
+                                  </div>
+                                  <div className="font-semibold">
+                                    Blocked by:
+                                  </div>
+                                  {blockedBy.map((applicant, index) => (
+                                    <div key={index} className="text-sm">
+                                      {applicant.name} {applicant.surname}
+                                    </div>
+                                  ))}
+                                </div>
                               </TooltipContent>
                             </Tooltip>
                           )}
