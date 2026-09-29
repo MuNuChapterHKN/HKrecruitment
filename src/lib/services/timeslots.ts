@@ -56,6 +56,7 @@ const findPendingInterviewSummaries = async (rid: string) => {
   return await db
     .select({
       timeslotId: schema.interview.timeslotId,
+      applicantId: schema.applicant.id,
       applicantName: schema.applicant.name,
       applicantSurname: schema.applicant.surname,
     })
@@ -120,7 +121,6 @@ const buildAggregatedAvailability = async (
       meetingId: string;
       applicant: { name: string; surname: string };
       interviewers: string[];
-      confirmed: boolean;
     }[]
   >();
 
@@ -139,7 +139,6 @@ const buildAggregatedAvailability = async (
           surname: record.applicantSurname,
         },
         interviewers: [],
-        confirmed: true,
       };
       interviews.push(interview);
     }
@@ -153,19 +152,43 @@ const buildAggregatedAvailability = async (
   });
 
   const pendingInterviewData = await findPendingInterviewSummaries(rid);
+  const pendingApplicantsByTimeslotId = new Map<
+    string,
+    { id: string; name: string; surname: string }[]
+  >();
   pendingInterviewData.forEach((record) => {
-    if (!timeslotInterviewMap.has(record.timeslotId)) {
-      timeslotInterviewMap.set(record.timeslotId, []);
+    const applicant = {
+      id: record.applicantId,
+      name: record.applicantName,
+      surname: record.applicantSurname,
+    };
+
+    if (!pendingApplicantsByTimeslotId.has(record.timeslotId)) {
+      pendingApplicantsByTimeslotId.set(record.timeslotId, []);
     }
-    timeslotInterviewMap.get(record.timeslotId)!.push({
-      meetingId: '',
-      applicant: {
-        name: record.applicantName,
-        surname: record.applicantSurname,
-      },
-      interviewers: [],
-      confirmed: false,
-    });
+    pendingApplicantsByTimeslotId.get(record.timeslotId)!.push(applicant);
+  });
+
+  const blockedApplicantsByIndex = new Map<
+    number,
+    { id: string; name: string; surname: string }[]
+  >();
+  pendingApplicantsByTimeslotId.forEach((applicants, timeslotId) => {
+    const pendingIndex = timeslotIndices.get(timeslotId);
+    if (pendingIndex === undefined) return;
+
+    for (
+      let i = pendingIndex - TIMESLOT_AVAILABILITY_MARGIN;
+      i <= pendingIndex + TIMESLOT_AVAILABILITY_MARGIN;
+      i++
+    ) {
+      if (i < 0 || i >= sortedTimeslots.length) continue;
+
+      if (!blockedApplicantsByIndex.has(i)) {
+        blockedApplicantsByIndex.set(i, []);
+      }
+      blockedApplicantsByIndex.get(i)!.push(...applicants);
+    }
   });
 
   const userInterviews = new Map<string, Set<number>>();
@@ -242,6 +265,8 @@ const buildAggregatedAvailability = async (
       userIds: [],
     };
     const interviews = timeslotInterviewMap.get(ts.id) || [];
+    const blockedBy =
+      blockedApplicantsByIndex.get(timeslotIndices.get(ts.id)!) || [];
 
     return {
       id: ts.id,
@@ -251,6 +276,7 @@ const buildAggregatedAvailability = async (
       userNames: availability.users,
       firstTimeUserNames: availability.firstTimeUsers,
       interviews,
+      blockedBy,
     };
   });
 };

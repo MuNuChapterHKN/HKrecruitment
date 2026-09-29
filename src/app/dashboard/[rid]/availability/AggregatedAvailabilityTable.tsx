@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/tooltip';
 import { X, Calendar, Calendars, Lock } from 'lucide-react';
 import { getMeetingLink } from '@/lib/utils';
+import { DashboardLink } from '@/components/dashboard/DashboardLink';
 
 export type TimeslotWithAvailability = {
   id: string;
@@ -21,8 +22,8 @@ export type TimeslotWithAvailability = {
     meetingId: string;
     applicant: { name: string; surname: string };
     interviewers: string[];
-    confirmed: boolean;
   }[];
+  blockedBy: { id: string; name: string; surname: string }[];
 };
 
 const WEEK_DAYS = [
@@ -210,78 +211,13 @@ export function AggregatedAvailabilityTable({
                       );
                     }
 
-                    const pendingInterviews = timeslot.interviews.filter(
-                      (interview) => !interview.confirmed
-                    );
+                    const blockedBy = timeslot.blockedBy;
                     const interviewerNamesInMeeting = new Set<string>();
                     timeslot.interviews.forEach((interview) => {
                       interview.interviewers.forEach((interviewer) =>
                         interviewerNamesInMeeting.add(interviewer)
                       );
                     });
-
-                    if (pendingInterviews.length > 0) {
-                      return (
-                        <td
-                          key={cellKey}
-                          className="border text-center p-2 bg-gray-300 text-gray-700"
-                        >
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <div className="flex items-center justify-center gap-1 cursor-help">
-                                <Lock className="w-4 h-4" />
-                                <span className="text-xs font-medium">
-                                  Blocked
-                                </span>
-                              </div>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <div className="space-y-1">
-                                <div className="font-semibold">
-                                  Temporarily blocked
-                                </div>
-                                <div className="text-xs text-gray-300">
-                                  Reserved until the interview is confirmed, to
-                                  avoid overbooking.
-                                </div>
-                                {pendingInterviews.map((interview, index) => (
-                                  <div key={index} className="text-sm">
-                                    {interview.applicant.name}{' '}
-                                    {interview.applicant.surname}
-                                  </div>
-                                ))}
-                                <hr />
-                                <div className="font-semibold">
-                                  Possible interviewers:
-                                </div>
-                                {timeslot.userNames.map((name) => {
-                                  const isFirstTime =
-                                    timeslot.firstTimeUserNames.includes(name);
-                                  const isInMeeting =
-                                    interviewerNamesInMeeting.has(name);
-                                  return (
-                                    <div
-                                      key={name}
-                                      className={
-                                        isInMeeting
-                                          ? COLORS.INTERVIEWER_IN_MEETING
-                                          : ''
-                                      }
-                                    >
-                                      {isFirstTime ? (
-                                        <strong>{name}</strong>
-                                      ) : (
-                                        name
-                                      )}
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            </TooltipContent>
-                          </Tooltip>
-                        </td>
-                      );
-                    }
 
                     let userCount =
                       timeslot.totalUsers - timeslot.firstTimeUsers;
@@ -319,7 +255,7 @@ export function AggregatedAvailabilityTable({
                         return (
                           <td
                             key={cellKey}
-                            className="border text-center p-2 bg-white"
+                            className={`border text-center p-2 ${blockedBy.length > 0 ? 'bg-gray-300' : 'bg-white'}`}
                           >
                             <X className="w-4 h-4 mx-auto text-gray-400" />
                           </td>
@@ -387,7 +323,15 @@ export function AggregatedAvailabilityTable({
                     return (
                       <td
                         key={cellKey}
-                        className={`border text-center p-2 ${timeslot.totalUsers > 0 ? cellColor : timeslot.interviews.length > 0 ? COLORS.CELL_WITH_INTERVIEW : 'bg-white'}`}
+                        className={`border text-center p-2 ${
+                          blockedBy.length > 0
+                            ? 'bg-gray-300'
+                            : timeslot.totalUsers > 0
+                              ? cellColor
+                              : timeslot.interviews.length > 0
+                                ? COLORS.CELL_WITH_INTERVIEW
+                                : 'bg-white'
+                        }`}
                       >
                         <div className="flex items-center justify-center gap-2">
                           {timeslot.totalUsers > 0 && (
@@ -416,6 +360,58 @@ export function AggregatedAvailabilityTable({
                               </TooltipTrigger>
                               <TooltipContent>
                                 {interviewsTooltip}
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
+                          {blockedBy.length > 0 && (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="cursor-help">
+                                  <Lock className="w-4 h-4" />
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-xs text-pretty">
+                                <div className="space-y-4">
+                                  {blockedBy.map((applicant, idx) => (
+                                    <div
+                                      key={applicant.id}
+                                      className="space-y-3"
+                                    >
+                                      {idx > 0 && (
+                                        <hr className="border-gray-600" />
+                                      )}
+                                      <div className="space-y-2">
+                                        <div className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                                          Blocked
+                                          {blockedBy.length > 1
+                                            ? ` #${idx + 1}`
+                                            : ''}
+                                        </div>
+                                        <div className="text-xs text-gray-300">
+                                          Reserved until the interview is
+                                          confirmed, to avoid overbooking. In
+                                          order to unlock it, go to the
+                                          candidates page and confirm the
+                                          meeting by choosing the interviewers.
+                                        </div>
+                                        <div>
+                                          <div className="text-xs text-gray-400 mb-0.5">
+                                            Applicant
+                                          </div>
+                                          <div className="font-semibold text-base text-white">
+                                            {applicant.name} {applicant.surname}
+                                          </div>
+                                        </div>
+                                        <DashboardLink
+                                          href={`/candidates/${applicant.id}`}
+                                          className="inline-block mt-2 text-xs font-medium bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 transition-colors"
+                                        >
+                                          Open candidate details
+                                        </DashboardLink>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
                               </TooltipContent>
                             </Tooltip>
                           )}
