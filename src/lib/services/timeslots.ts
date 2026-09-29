@@ -56,6 +56,7 @@ const findPendingInterviewSummaries = async (rid: string) => {
   return await db
     .select({
       timeslotId: schema.interview.timeslotId,
+      applicantId: schema.applicant.id,
       applicantName: schema.applicant.name,
       applicantSurname: schema.applicant.surname,
     })
@@ -153,10 +154,11 @@ const buildAggregatedAvailability = async (
   const pendingInterviewData = await findPendingInterviewSummaries(rid);
   const pendingApplicantsByTimeslotId = new Map<
     string,
-    { name: string; surname: string }[]
+    { id: string; name: string; surname: string }[]
   >();
   pendingInterviewData.forEach((record) => {
     const applicant = {
+      id: record.applicantId,
       name: record.applicantName,
       surname: record.applicantSurname,
     };
@@ -169,7 +171,7 @@ const buildAggregatedAvailability = async (
 
   const blockedApplicantsByIndex = new Map<
     number,
-    { name: string; surname: string }[]
+    { id: string; name: string; surname: string }[]
   >();
   pendingApplicantsByTimeslotId.forEach((applicants, timeslotId) => {
     const pendingIndex = timeslotIndices.get(timeslotId);
