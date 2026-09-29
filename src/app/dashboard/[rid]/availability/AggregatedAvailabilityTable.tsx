@@ -22,7 +22,7 @@ export type TimeslotWithAvailability = {
     applicant: { name: string; surname: string };
     interviewers: string[];
   }[];
-  blockedBy: { name: string; surname: string }[];
+  blockedBy: { id: string; name: string; surname: string }[];
 };
 
 const WEEK_DAYS = [
@@ -254,7 +254,7 @@ export function AggregatedAvailabilityTable({
                         return (
                           <td
                             key={cellKey}
-                            className="border text-center p-2 bg-white"
+                            className={`border text-center p-2 ${blockedBy.length > 0 ? 'bg-gray-300' : 'bg-white'}`}
                           >
                             <X className="w-4 h-4 mx-auto text-gray-400" />
                           </td>
@@ -322,7 +322,15 @@ export function AggregatedAvailabilityTable({
                     return (
                       <td
                         key={cellKey}
-                        className={`border text-center p-2 ${timeslot.totalUsers > 0 ? cellColor : timeslot.interviews.length > 0 ? COLORS.CELL_WITH_INTERVIEW : 'bg-white'}`}
+                        className={`border text-center p-2 ${
+                          blockedBy.length > 0
+                            ? 'bg-gray-300'
+                            : timeslot.totalUsers > 0
+                              ? cellColor
+                              : timeslot.interviews.length > 0
+                                ? COLORS.CELL_WITH_INTERVIEW
+                                : 'bg-white'
+                        }`}
                       >
                         <div className="flex items-center justify-center gap-2">
                           {timeslot.totalUsers > 0 && (
