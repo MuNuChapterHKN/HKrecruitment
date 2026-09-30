@@ -86,7 +86,8 @@ export async function shareFileWithGroup(
 
 export async function shareWithAccounts(
   fileId: string,
-  emails: string[]
+  emails: string[],
+  role: 'reader' | 'writer' = 'reader'
 ): Promise<Result<void, Error>> {
   const authResult = await service.getAuth();
   if (authResult.isErr()) {
@@ -102,7 +103,7 @@ export async function shareWithAccounts(
         fileId,
         sendNotificationEmail: false,
         requestBody: {
-          role: 'reader',
+          role,
           type: 'user',
           emailAddress,
         },

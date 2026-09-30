@@ -158,14 +158,15 @@ export const stageDCreateInterviewAssets = inngest.createFunction(
     await step.run('share-report-document-with-interviewers', async () => {
       if (dryRun) {
         console.log(
-          `[DRY RUN][stage-d] Would share report document ${reportDocId} with: ${interviewerEmails.join(', ')}`
+          `[DRY RUN][stage-d] Would share report document ${reportDocId} (writer) with: ${interviewerEmails.join(', ')}`
         );
         return;
       }
 
       const shareResult = await shareWithAccounts(
         reportDocId,
-        interviewerEmails
+        interviewerEmails,
+        'writer'
       );
       if (shareResult.isErr()) {
         throw shareResult.error;
