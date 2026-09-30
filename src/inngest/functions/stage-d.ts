@@ -5,6 +5,7 @@ import {
   createInterviewReportDocument,
   hasRealExternalId,
 } from '@/lib/automation/interviewAssets';
+import { getFileMetadata, shareWithAccounts } from '@/lib/google/drive/files';
 import { notifyTelegram } from '@/lib/automation/notifications';
 import {
   loadActiveStageContext,
@@ -121,6 +122,55 @@ export const stageDCreateInterviewAssets = inngest.createFunction(
         return calendarResult.meetingId;
       }
     );
+
+    const interviewerEmails = interviewers
+      .map((interviewer) => interviewer.email)
+      .filter((email): email is string => Boolean(email));
+
+    await step.run('share-candidate-folder-with-interviewers', async () => {
+      if (dryRun) {
+        console.log(
+          `[DRY RUN][stage-d] Would share candidate folder of applicant ${context.applicant.id} with: ${interviewerEmails.join(', ')}`
+        );
+        return;
+      }
+
+      const cvMetadataResult = await getFileMetadata(
+        context.applicant.cvFileId
+      );
+      if (cvMetadataResult.isErr()) {
+        throw cvMetadataResult.error;
+      }
+
+      const folderId = cvMetadataResult.value.parents?.[0];
+      if (!folderId) {
+        throw new Error(
+          `No parent folder found for CV file ${context.applicant.cvFileId}`
+        );
+      }
+
+      const shareResult = await shareWithAccounts(folderId, interviewerEmails);
+      if (shareResult.isErr()) {
+        throw shareResult.error;
+      }
+    });
+
+    await step.run('share-report-document-with-interviewers', async () => {
+      if (dryRun) {
+        console.log(
+          `[DRY RUN][stage-d] Would share report document ${reportDocId} with: ${interviewerEmails.join(', ')}`
+        );
+        return;
+      }
+
+      const shareResult = await shareWithAccounts(
+        reportDocId,
+        interviewerEmails
+      );
+      if (shareResult.isErr()) {
+        throw shareResult.error;
+      }
+    });
 
     await step.run('notify-hr', async () => {
       const candidate = `${context.applicant.name} ${context.applicant.surname}`;

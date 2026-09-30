@@ -84,6 +84,41 @@ export async function shareFileWithGroup(
   ).andThen(() => ok(undefined));
 }
 
+export async function shareWithAccounts(
+  fileId: string,
+  emails: string[]
+): Promise<Result<void, Error>> {
+  const authResult = await service.getAuth();
+  if (authResult.isErr()) {
+    return err(authResult.error);
+  }
+
+  const drive = google.drive({ version: 'v3', auth: authResult.value });
+  const uniqueEmails = [...new Set(emails.filter(Boolean))];
+
+  for (const emailAddress of uniqueEmails) {
+    const result = await fromPromise(
+      drive.permissions.create({
+        fileId,
+        sendNotificationEmail: false,
+        requestBody: {
+          role: 'reader',
+          type: 'user',
+          emailAddress,
+        },
+      }),
+      (error) =>
+        error instanceof Error ? error : new Error('Unknown error occurred')
+    );
+
+    if (result.isErr()) {
+      return err(result.error);
+    }
+  }
+
+  return ok(undefined);
+}
+
 export async function getFileMetadata(
   fileId: string
 ): Promise<Result<DriveFile, Error>> {
