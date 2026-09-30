@@ -57,13 +57,6 @@ export const findBlockedTimeslotsForUser = async (
   userId: string,
   executor: DbExecutor = db
 ) => {
-  const allTimeslots = await findAll(rid, executor);
-  const sortedTimeslots = [...allTimeslots].sort(
-    (a, b) => a.startingFrom.getTime() - b.startingFrom.getTime()
-  );
-  const timeslotIndices = new Map<string, number>();
-  sortedTimeslots.forEach((ts, index) => timeslotIndices.set(ts.id, index));
-
   const pendingInterviews = await executor
     .select({ timeslotId: schema.interview.timeslotId })
     .from(schema.interview)
@@ -78,20 +71,9 @@ export const findBlockedTimeslotsForUser = async (
       )
     );
 
-  const blockedTimeslotIds = new Set<string>();
-  pendingInterviews.forEach(({ timeslotId }) => {
-    const pendingIndex = timeslotIndices.get(timeslotId);
-    if (pendingIndex === undefined) return;
-
-    for (
-      let i = pendingIndex - TIMESLOT_AVAILABILITY_MARGIN;
-      i <= pendingIndex + TIMESLOT_AVAILABILITY_MARGIN;
-      i++
-    ) {
-      if (i < 0 || i >= sortedTimeslots.length) continue;
-      blockedTimeslotIds.add(sortedTimeslots[i].id);
-    }
-  });
+  const blockedTimeslotIds = new Set(
+    pendingInterviews.map(({ timeslotId }) => timeslotId)
+  );
 
   const userAvailabilities = await executor
     .select({ timeslotId: schema.interviewerAvailability.timeslotId })

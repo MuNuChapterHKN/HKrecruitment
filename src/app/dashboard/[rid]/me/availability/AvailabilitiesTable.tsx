@@ -250,9 +250,9 @@ export function AvailabilitiesTable({
                               </div>
                             </TooltipTrigger>
                             <TooltipContent>
-                              Slot bloccato: c&apos;è un colloquio in attesa di
-                              conferma, non puoi modificare la disponibilità per
-                              questo timeslot
+                              Slot blocked: there is an interview pending
+                              confirmation, you cannot change your availability
+                              for this timeslot
                             </TooltipContent>
                           </Tooltip>
                         ) : timeslot.locked ? (
