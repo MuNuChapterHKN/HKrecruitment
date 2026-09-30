@@ -52,6 +52,39 @@ export const findTimeslotsWithInterviewsForUser = async (
   return interviews.map((i) => i.timeslotId);
 };
 
+export const findBlockedTimeslotsForUser = async (
+  rid: string,
+  userId: string,
+  executor: DbExecutor = db
+) => {
+  const pendingInterviews = await executor
+    .select({ timeslotId: schema.interview.timeslotId })
+    .from(schema.interview)
+    .innerJoin(
+      schema.timeslot,
+      eq(schema.interview.timeslotId, schema.timeslot.id)
+    )
+    .where(
+      and(
+        eq(schema.timeslot.recruitingSessionId, rid),
+        eq(schema.interview.confirmed, false)
+      )
+    );
+
+  const blockedTimeslotIds = new Set(
+    pendingInterviews.map(({ timeslotId }) => timeslotId)
+  );
+
+  const userAvailabilities = await executor
+    .select({ timeslotId: schema.interviewerAvailability.timeslotId })
+    .from(schema.interviewerAvailability)
+    .where(eq(schema.interviewerAvailability.userId, userId));
+
+  return userAvailabilities
+    .map((availability) => availability.timeslotId)
+    .filter((timeslotId) => blockedTimeslotIds.has(timeslotId));
+};
+
 const findPendingInterviewSummaries = async (rid: string) => {
   return await db
     .select({

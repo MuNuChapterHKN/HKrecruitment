@@ -6,7 +6,10 @@ import { auth } from '@/lib/server/auth';
 import { headers } from 'next/headers';
 import { and, eq, inArray, sql } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
-import { findTimeslotsWithInterviewsForUser } from '@/lib/services/timeslots';
+import {
+  findBlockedTimeslotsForUser,
+  findTimeslotsWithInterviewsForUser,
+} from '@/lib/services/timeslots';
 import { abilityForUserInSession } from '@/lib/abilities/server';
 
 export async function submitAvailability(rid: string, timeslotIds: string[]) {
@@ -58,10 +61,10 @@ export async function submitAvailability(rid: string, timeslotIds: string[]) {
     const lockedError = await db.transaction(async (tx) => {
       await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${rid}))`);
 
-      const lockedTimeslotIds = await findTimeslotsWithInterviewsForUser(
-        user.id,
-        tx
-      );
+      const lockedTimeslotIds = [
+        ...(await findTimeslotsWithInterviewsForUser(user.id, tx)),
+        ...(await findBlockedTimeslotsForUser(rid, user.id, tx)),
+      ];
 
       const existingAvailabilities = await tx
         .select()
@@ -87,7 +90,7 @@ export async function submitAvailability(rid: string, timeslotIds: string[]) {
       );
 
       if (attemptingToRemoveLocked) {
-        return 'Cannot remove availability from timeslots with scheduled interviews';
+        return 'Cannot remove availability from locked or blocked timeslots';
       }
 
       if (sessionTimeslotIds.length > 0) {
