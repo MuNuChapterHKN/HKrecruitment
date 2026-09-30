@@ -87,7 +87,10 @@ export async function shareFileWithGroup(
 export async function shareWithAccounts(
   fileId: string,
   emails: string[],
-  role: 'reader' | 'writer' = 'reader'
+  options: {
+    role?: 'reader' | 'writer';
+    sendNotificationEmail?: boolean;
+  } = {}
 ): Promise<Result<void, Error>> {
   const authResult = await service.getAuth();
   if (authResult.isErr()) {
@@ -96,12 +99,13 @@ export async function shareWithAccounts(
 
   const drive = google.drive({ version: 'v3', auth: authResult.value });
   const uniqueEmails = [...new Set(emails.filter(Boolean))];
+  const role = options.role ?? 'reader';
 
   for (const emailAddress of uniqueEmails) {
     const result = await fromPromise(
       drive.permissions.create({
         fileId,
-        sendNotificationEmail: false,
+        sendNotificationEmail: options.sendNotificationEmail ?? false,
         requestBody: {
           role,
           type: 'user',

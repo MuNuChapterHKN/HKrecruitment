@@ -166,7 +166,10 @@ export const stageDCreateInterviewAssets = inngest.createFunction(
       const shareResult = await shareWithAccounts(
         reportDocId,
         interviewerEmails,
-        'writer'
+        {
+          role: 'writer',
+          sendNotificationEmail: true,
+        }
       );
       if (shareResult.isErr()) {
         throw shareResult.error;
