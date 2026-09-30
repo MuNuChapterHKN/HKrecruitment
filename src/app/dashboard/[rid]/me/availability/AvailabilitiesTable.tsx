@@ -2,7 +2,7 @@
 
 import { TimeslotPeek } from './page';
 import { useState, useEffect } from 'react';
-import { Calendar } from 'lucide-react';
+import { Calendar, Lock } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
@@ -87,7 +87,8 @@ export function AvailabilitiesTable({
     setTimeslots((prev) => {
       const clickedSlot = prev.find((ts) => ts.id === timeslotId);
 
-      if (!clickedSlot || clickedSlot.locked) return prev;
+      if (!clickedSlot || clickedSlot.locked || clickedSlot.blocked)
+        return prev;
 
       const activeCount = prev.filter((ts) => ts.active).length;
 
@@ -234,12 +235,27 @@ export function AvailabilitiesTable({
                       <td
                         key={cellKey}
                         onClick={() =>
-                          !timeslot.locked && toggleSlot(timeslot.id)
+                          !timeslot.locked &&
+                          !timeslot.blocked &&
+                          toggleSlot(timeslot.id)
                         }
                         className={`border text-center min-w-[110px]
-                        ${timeslot.locked ? 'bg-blue-500 text-white cursor-not-allowed' : timeslot.active ? 'bg-green-500 text-white cursor-pointer' : 'bg-white hover:bg-gray-100 cursor-pointer'}`}
+                        ${timeslot.blocked ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : timeslot.locked ? 'bg-blue-500 text-white cursor-not-allowed' : timeslot.active ? 'bg-green-500 text-white cursor-pointer' : 'bg-white hover:bg-gray-100 cursor-pointer'}`}
                       >
-                        {timeslot.locked ? (
+                        {timeslot.blocked ? (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div className="flex items-center justify-center">
+                                <Lock className="w-4 h-4" />
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              Slot bloccato: c&apos;è un colloquio in attesa di
+                              conferma, non puoi modificare la disponibilità per
+                              questo timeslot
+                            </TooltipContent>
+                          </Tooltip>
+                        ) : timeslot.locked ? (
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <div className="flex items-center justify-center">
