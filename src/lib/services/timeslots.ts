@@ -204,8 +204,14 @@ const buildAggregatedAvailability = async (
 
   const blockedApplicantsByIndex = new Map<
     number,
-    { id: string; name: string; surname: string }[]
+    {
+      id: string;
+      name: string;
+      surname: string;
+      causeTimeslotId: string;
+    }[]
   >();
+
   pendingApplicantsByTimeslotId.forEach((applicants, timeslotId) => {
     const pendingIndex = timeslotIndices.get(timeslotId);
     if (pendingIndex === undefined) return;
@@ -220,7 +226,13 @@ const buildAggregatedAvailability = async (
       if (!blockedApplicantsByIndex.has(i)) {
         blockedApplicantsByIndex.set(i, []);
       }
-      blockedApplicantsByIndex.get(i)!.push(...applicants);
+
+      blockedApplicantsByIndex.get(i)!.push(
+        ...applicants.map((applicant) => ({
+          ...applicant,
+          causeTimeslotId: timeslotId,
+        }))
+      );
     }
   });
 
