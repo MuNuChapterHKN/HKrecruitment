@@ -55,7 +55,7 @@ export function DashboardSidebar({ user, recruitment }: DashboardSidebarProps) {
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
-          window.location.href = '/signin';
+          window.location.href = '/recruitment/signin';
         },
       },
     });
