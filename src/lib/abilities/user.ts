@@ -20,6 +20,7 @@ export type AppSubject =
   | 'CandidatesActions'
   | 'MembersActions'
   | 'RecruitmentActions'
+  | 'UpcomingInterviewsPage'
   | 'all';
 
 export type AppAbility = MongoAbility<[AppAction, AppSubject]>;
@@ -46,6 +47,7 @@ export function defineAbilityFor<T extends object>(user: UserLike<T>) {
   const { can, build } = new AbilityBuilder<AppAbility>(createMongoAbility);
   const role = resolveDashboardRole(user.role);
 
+  can('read', 'UpcomingInterviewsPage');
   can('read', 'DashboardOverviewPage');
   can('read', 'MyAvailabilityPage');
   can('submit', 'AvailabilityActions');

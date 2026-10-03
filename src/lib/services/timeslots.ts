@@ -129,6 +129,7 @@ const buildAggregatedAvailability = async (
       meetingId: schema.interview.meetingId,
       applicantName: schema.applicant.name,
       applicantSurname: schema.applicant.surname,
+      applicantId: schema.applicant.id,
       interviewerId: schema.usersToInterviews.userId,
       interviewerName: schema.user.name,
     })
@@ -152,8 +153,9 @@ const buildAggregatedAvailability = async (
     string,
     {
       meetingId: string;
-      applicant: { name: string; surname: string };
+      applicant: { name: string; surname: string; id: string };
       interviewers: string[];
+      interviewerIds: string[];
     }[]
   >();
 
@@ -170,8 +172,10 @@ const buildAggregatedAvailability = async (
         applicant: {
           name: record.applicantName,
           surname: record.applicantSurname,
+          id: record.applicantId,
         },
         interviewers: [],
+        interviewerIds: [],
       };
       interviews.push(interview);
     }
@@ -181,6 +185,13 @@ const buildAggregatedAvailability = async (
       !interview.interviewers.includes(record.interviewerName)
     ) {
       interview.interviewers.push(record.interviewerName);
+    }
+
+    if (
+      record.interviewerId &&
+      !interview.interviewerIds.includes(record.interviewerId)
+    ) {
+      interview.interviewerIds.push(record.interviewerId);
     }
   });
 
