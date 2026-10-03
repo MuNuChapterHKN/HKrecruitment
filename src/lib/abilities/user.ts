@@ -12,6 +12,7 @@ export type AppAction = 'read' | 'submit' | 'manage';
 export type AppSubject =
   | 'DashboardOverviewPage'
   | 'MyAvailabilityPage'
+  | 'TemplatesPage'
   | 'AvailabilityOverviewPage'
   | 'CandidatesPage'
   | 'CandidateDetailsPage'
@@ -58,6 +59,7 @@ export function defineAbilityFor<T extends object>(user: UserLike<T>) {
     can('read', 'CandidatesPage');
     can('read', 'CandidateDetailsPage');
     can('manage', 'CandidatesActions');
+    can('read', 'TemplatesPage');
   }
 
   if (role === 'admin') {
