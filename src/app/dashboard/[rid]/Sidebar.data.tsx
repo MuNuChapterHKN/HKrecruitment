@@ -1,5 +1,6 @@
 import type { AppSubject } from '@/lib/abilities';
-import { Calendar, CalendarClock, Gauge, Headset, Users } from 'lucide-react';
+import { Calendar, CalendarClock, Gauge, Headset, Users, FileText } from 'lucide-react';
+
 
 type SidebarLink = {
   label: string;
@@ -40,6 +41,12 @@ export const LINKS: Record<string, { links: SidebarLink[] }> = {
         href: '/me/interviews',
         icon: <Headset />,
         subject: 'UpcomingInterviewsPage',
+      },
+      {
+        label: 'Templates',
+        href: '/templates',
+        icon: <FileText />,
+        subject: 'TemplatesPage',
       },
     ],
   },
