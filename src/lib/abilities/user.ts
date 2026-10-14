@@ -22,6 +22,7 @@ export type AppSubject =
   | 'MembersActions'
   | 'RecruitmentActions'
   | 'UpcomingInterviewsPage'
+  | 'LeaderboardPage'
   | 'all';
 
 export type AppAbility = MongoAbility<[AppAction, AppSubject]>;
@@ -62,6 +63,7 @@ export function defineAbilityFor<T extends object>(user: UserLike<T>) {
     can('read', 'CandidateDetailsPage');
     can('manage', 'CandidatesActions');
     can('read', 'TemplatesPage');
+    can('read', 'LeaderboardPage');
   }
 
   if (role === 'admin') {
