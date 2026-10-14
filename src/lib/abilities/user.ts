@@ -63,6 +63,7 @@ export function defineAbilityFor<T extends object>(user: UserLike<T>) {
     can('read', 'CandidateDetailsPage');
     can('manage', 'CandidatesActions');
     can('read', 'TemplatesPage');
+    can('read', 'LeaderboardPage');
   }
 
   if (role === 'admin') {
@@ -70,7 +71,6 @@ export function defineAbilityFor<T extends object>(user: UserLike<T>) {
     can('manage', 'MembersActions');
     can('manage', 'RecruitmentActions');
     can('manage', 'all');
-    can('read', 'LeaderboardPage');
   }
 
   return build();
