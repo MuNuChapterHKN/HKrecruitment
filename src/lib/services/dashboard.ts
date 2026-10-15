@@ -54,7 +54,9 @@ function countByStage(applicants: Applicant[]): StageCount[] {
   for (const appl of applicants) {
     map.set(appl.stage, (map.get(appl.stage) ?? 0) + 1);
   }
-  return Array.from(map.entries()).map(([stage, count]) => ({ stage, count }));
+  return Array.from(map.entries())
+    .sort(([stageA], [stageB]) => stageA.localeCompare(stageB))
+    .map(([stage, count]) => ({ stage, count }));
 }
 
 function countByCourse(applicants: Applicant[]): CourseCount[] {
