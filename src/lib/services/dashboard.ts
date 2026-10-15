@@ -37,6 +37,7 @@ function aggregateActivity(
   }
   for (const appl of applicants) {
     if (!appl.createdAt) continue;
+    if (appl.archived) continue;
     const key = toItalianDateKey(new Date(appl.createdAt));
     if (countMap.has(key)) {
       countMap.set(key, (countMap.get(key) ?? 0) + 1);
