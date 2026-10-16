@@ -23,7 +23,7 @@ export default async function Dashboard({
   const role = await findUserRoleForSession(session.user.id, rid);
 
   if (role === AuthUserRole.Guest) {
-    return <GuestOverview />;
+    return <GuestOverview name={session.user.name} />;
   }
 
   const data = await getDashboardData(rid);
