@@ -98,6 +98,10 @@ export function ApplicantsListClient({
     });
   }, [optimisticApplicants, deferredSearch, filters]);
 
+  const visibleApplicantsCount = filters.showArchived
+    ? optimisticApplicants.length
+    : optimisticApplicants.filter((a) => !a.archived).length;
+
   const isStale = filters.search !== deferredSearch;
   const hasAnyFilter =
     deferredSearch.trim().length > 0 ||
@@ -112,8 +116,8 @@ export function ApplicantsListClient({
         <div className="flex items-center gap-3">
           <div className="text-sm text-muted-foreground">
             {hasAnyFilter
-              ? `${filtered.length} of ${applicants.length}`
-              : `${applicants.length} candidate${applicants.length !== 1 ? 's' : ''}`}
+              ? `${filtered.length} of ${visibleApplicantsCount}`
+              : `${visibleApplicantsCount} candidate${visibleApplicantsCount !== 1 ? 's' : ''}`}
           </div>
           <ViewToggle />
         </div>
