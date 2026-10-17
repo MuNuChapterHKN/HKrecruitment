@@ -67,6 +67,8 @@ export const stageBInterviewBookingEmail = inngest.createFunction(
     });
 
     await step.run('send-interview-booking-email', async () => {
+      return true; // TODO: temporarily disabled email sending
+      /*
       await sendTemplatedEmail({
         to: context.applicant.email,
         subject:
@@ -74,6 +76,7 @@ export const stageBInterviewBookingEmail = inngest.createFunction(
           'HKN Mu Nu Chapter - Book your interview',
         html,
       });
+      */
     });
 
     await step.run('notify-hr-and-log', async () => {
