@@ -355,7 +355,7 @@ export const findAvailableForBooking = async (
 ) => {
   const now = new Date();
   const tomorrow = new Date(now);
-  tomorrow.setDate(tomorrow.getDate() + 2);
+  tomorrow.setDate(tomorrow.getDate()); // TODO: temporary remove the 48h check
   tomorrow.setHours(0, 0, 0, 0);
 
   const allTimeslots = await findAll(rid, executor);
