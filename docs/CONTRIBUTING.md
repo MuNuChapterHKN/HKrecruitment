@@ -3,8 +3,10 @@
 This project is gonna be managed by multiple people at the same time, thus we all have to follow some rules in order to keep the codebase clean and not loose trace of what is happening. Therefore, try to follow these guidelines whenever you contribute to the project:
 
 1. Every new feature is gonna have an issue describing in brief terms the task. _E.g. Adding logout button in the dashboard._
-2. Every new feature has a branch assigned to it that is followed by only one contributor, and its name has to be `yournickname/name-feature`. _E.g. peppe/dashboard-logout._
-3. When you think your feature is ready to be merged, open a pull request to `dev` and add one of the Project Leads as a reviewer.
+2. Work on your own fork of the repository. Every new feature has a branch assigned to it that is followed by only one contributor, and its name has to be `yournickname/name-feature`. _E.g. peppe/dashboard-logout._
+3. Before opening a pull request, run `pnpm lint`, `pnpm typecheck` and `pnpm pretty`: all three must pass.
+4. When you think your feature is ready to be merged, open a pull request to `dev` (GitHub proposes `main` by default: change it) and add one of the Project Leads as a reviewer. On your first pull request a maintainer has to approve the CI run.
+5. In the pull request write `Closes #<issue>` and how many hours the task took.
 
 Regarding the code, as also defined in the [README](/docs/README.md):
 
