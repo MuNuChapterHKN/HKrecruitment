@@ -6,7 +6,7 @@
 - **Dev**: `pnpm dev`
 - **Lint**: `pnpm lint`
 - **Database**: `pnpm db:push`, `pnpm db:seed`, `pnpm db:reset`
-- **No test framework configured** - avoid creating tests unless explicitly requested
+- **Test**: `pnpm test` (Vitest)
 
 ## Code Style
 
