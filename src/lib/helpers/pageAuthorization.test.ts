@@ -144,3 +144,9 @@ describe('requirePageAccess', () => {
     });
   });
 });
+
+// Temporary failing check to verify CI red status
+import { expect, test } from 'vitest';
+test('temporary CI failure check', () => {
+  expect(true).toBe(false);
+});
