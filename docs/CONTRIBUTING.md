@@ -14,6 +14,18 @@ Regarding the code, as also defined in the [README](/docs/README.md):
 4. If you're using any AI related software, make sure they also follow these guidelines. Refer to [AGENTS](/AGENTS.md) for more info.
 5. Make sure that your commit has a significant message, in order to explain others what you did. There is no syntax that we impose, but [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) are suggested.
 
+## Pre-PR checks
+
+Before opening a pull request, run:
+
+```bash
+pnpm check
+```
+
+This command runs `pnpm lint`, `pnpm typecheck`, and `pnpm pretty` in order, stopping if any check fails.
+
+Fix any reported errors before submitting your PR.
+
 ## Regarding AI
 
 You're completely free to use AI whenever you see fit. The only suggestion is to give it enough context not to go against the points described above. Sometimes AIs tend to rewrite whole files when it isn't really needed, try to review your AI generated code before submitting it for approval.

@@ -49,6 +49,18 @@ For approved contributors, check out the contributing guidelines in [CONTRIBUTIN
   <img src="https://contrib.rocks/image?repo=MuNuChapterHKN/HKrecruitment" />
 </a>
 
+### Before opening a pull request
+
+Run the following command to verify your changes:
+
+```bash
+pnpm check
+```
+
+This runs linting, TypeScript type checking, and Prettier formatting checks in sequence. The command stops at the first failure.
+
+All checks must pass before opening a pull request.
+
 ## License
 
 This project is released under [GNU GPLv3](/LICENSE). Forking, redistribution, and modification for both personal and commercial use are allowed as long as the source code stays open under the same license.
