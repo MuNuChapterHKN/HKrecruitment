@@ -144,8 +144,3 @@ describe('requirePageAccess', () => {
     });
   });
 });
-
-import { expect, test } from 'vitest';
-test('temporary CI failure check', () => {
-  expect(true).toBe(false);
-});
