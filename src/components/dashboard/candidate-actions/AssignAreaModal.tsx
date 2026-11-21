@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Dialog,
   DialogContent,
@@ -8,35 +9,56 @@ import {
   DialogTitle,
   DialogFooter,
   Button,
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
 } from '@/components';
+import { AREAS } from '@/db/schema';
+import { areaLabels } from '@/lib/areas';
+import { assignArea } from '@/lib/actions/applicants';
 import type { BaseModalProps } from './types';
 
 export interface AreaFormData {
   area: string;
 }
 
-const AREAS = [
-  'software',
-  'hardware',
-  'network',
-  'security',
-  'ai/ml',
-  'devops',
-];
-
-export default function AssignAreaModal({ onClose }: BaseModalProps) {
+export default function AssignAreaModal({
+  applicant,
+  onClose,
+}: BaseModalProps) {
+  const router = useRouter();
   const [formData, setFormData] = useState<AreaFormData>({
-    area: '',
+    area: applicant?.chosenArea ?? '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // TODO: Implement API call to assign candidate to area
-    console.log('Assigning candidate to area:', formData);
+    if (!applicant) return;
 
-    onClose();
-    setFormData({ area: '' });
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      const result = await assignArea(applicant.id, formData.area);
+
+      if (!result.success) {
+        setError(result.error || 'Failed to assign area');
+        return;
+      }
+
+      onClose();
+      router.refresh();
+    } catch (error) {
+      console.error('Error assigning area:', error);
+      setError('Failed to assign area');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -53,29 +75,35 @@ export default function AssignAreaModal({ onClose }: BaseModalProps) {
             >
               Select area
             </label>
-            <select
-              id="area"
+            <Select
               value={formData.area}
-              onChange={(e) =>
-                setFormData({ ...formData, area: e.target.value })
+              onValueChange={(value) =>
+                setFormData({ ...formData, area: value })
               }
-              className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-2"
-              required
             >
-              <option value="">Choose an area...</option>
-              {AREAS.map((area) => (
-                <option key={area} value={area}>
-                  {area}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger id="area" className="w-full mt-2">
+                <SelectValue placeholder="Choose an area..." />
+              </SelectTrigger>
+              <SelectContent>
+                {AREAS.map((area) => (
+                  <SelectItem key={area} value={area}>
+                    {areaLabels[area]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
+          {error && <p className="text-sm text-destructive">{error}</p>}
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" className="bg-green-600 hover:bg-green-700">
-              Assign to Area
+            <Button
+              type="submit"
+              className="bg-green-600 hover:bg-green-700"
+              disabled={isSubmitting || !formData.area}
+            >
+              {isSubmitting ? 'Assigning...' : 'Assign to Area'}
             </Button>
           </DialogFooter>
         </form>
