@@ -50,3 +50,6 @@ n8n/backup
 # data
 .data
 n8n/backup
+
+# local drive (used when Google credentials are missing)
+/.local-drive/

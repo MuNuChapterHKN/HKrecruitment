@@ -20,8 +20,12 @@ export class GoogleService {
     private refreshToken: string | undefined
   ) {}
 
+  hasCredentials(): boolean {
+    return Boolean(this.clientId && this.clientSecret && this.refreshToken);
+  }
+
   private async initialize(): Promise<Result<string, Error>> {
-    if (!this.clientId || !this.clientSecret || !this.refreshToken) {
+    if (!this.hasCredentials()) {
       return err(
         new Error(
           'Missing required OAuth credentials: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, or GOOGLE_REFRESH_TOKEN'
@@ -65,7 +69,13 @@ export class GoogleService {
   }
 
   async getAuth(): Promise<Result<GoogleAuth, Error>> {
-    if (!this.oauth2Client) await this.initialize();
+    if (!this.oauth2Client) {
+      const initResult = await this.initialize();
+      if (initResult.isErr()) {
+        this.oauth2Client = null;
+        return err(initResult.error);
+      }
+    }
 
     if (this.isTokenExpired()) {
       const refreshResult = await this.refresh();
