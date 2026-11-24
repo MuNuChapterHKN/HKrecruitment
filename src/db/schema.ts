@@ -6,6 +6,7 @@ import {
   numeric,
   boolean,
   integer,
+  uniqueIndex,
 } from 'drizzle-orm/pg-core';
 import { account, user, session, verification } from './auth-schema';
 import { relations } from 'drizzle-orm';
@@ -29,6 +30,11 @@ export const LANGUAGE_LEVELS = [
   'native',
 ] as const;
 export const STAGES = ['a', 'b', 'c', 'd', 'e', 'f', 'z', 's'] as const;
+export const EMAIL_STATUSES = ['pending', 'sent', 'failed'] as const;
+export const EMAIL_TYPES = [
+  'application_receipt',
+  'interview_booking',
+] as const;
 export const AREAS = [
   'it',
   'hr',
@@ -264,6 +270,34 @@ export const usersToRecruitingSessionsRelations = relations(
       references: [recruitingSession.id],
     }),
   })
+);
+
+export const emailLog = pgTable(
+  'email_log',
+  {
+    id: text('id').primaryKey(),
+    applicantId: text('applicant_id').references(() => applicant.id, {
+      onDelete: 'cascade',
+    }),
+    stageStatusId: text('stage_status_id').references(() => stageStatus.id, {
+      onDelete: 'cascade',
+    }),
+    type: text('type', { enum: EMAIL_TYPES }).notNull(),
+    recipient: text('recipient').notNull(),
+    subject: text('subject').notNull(),
+    html: text('html').notNull(),
+    status: text('status', { enum: EMAIL_STATUSES })
+      .default('pending')
+      .notNull(),
+    attempts: integer('attempts').default(0).notNull(),
+    lastError: text('last_error'),
+    providerMessageId: text('provider_message_id'),
+    sentAt: timestamp('sent_at'),
+    ...timestamps,
+  },
+  (t) => [
+    uniqueIndex('email_log_stage_status_type_uq').on(t.stageStatusId, t.type),
+  ]
 );
 
 export { account, user, session, verification };

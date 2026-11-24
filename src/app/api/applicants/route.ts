@@ -14,6 +14,7 @@ import { ZodError } from 'zod';
 import { findLatest } from '@/lib/services/recruitmentSessions';
 import { nanoid } from 'nanoid';
 import { emitStageChangedEventForStageStatus } from '@/lib/automation/stageEvents';
+import { recordEmailDispatchFailure } from '@/lib/automation/email';
 
 export async function POST(req: Request) {
   try {
@@ -205,7 +206,23 @@ export async function POST(req: Request) {
       };
     });
 
-    await emitStageChangedEventForStageStatus(result.stageStatus);
+    try {
+      await emitStageChangedEventForStageStatus(result.stageStatus);
+    } catch (emitError) {
+      console.error('[POST /api/applicants] Event dispatch error:', emitError);
+      await recordEmailDispatchFailure({
+        type: 'application_receipt',
+        to: result.applicant.email,
+        subject:
+          process.env.STAGE_A_EMAIL_SUBJECT ||
+          'HKN Mu Nu Chapter - Application received',
+        applicantId: result.applicant.id,
+        stageStatusId: result.stageStatus.id,
+        error: emitError,
+      }).catch((logError) =>
+        console.error('[POST /api/applicants] Email log error:', logError)
+      );
+    }
 
     return NextResponse.json(result.applicant, { status: 201 });
   } catch (error) {

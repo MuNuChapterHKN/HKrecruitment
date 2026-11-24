@@ -8,6 +8,13 @@
       "when": 1789657198545,
       "tag": "0000_melted_warbird",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790104585577,
+      "tag": "0001_glorious_cloak",
+      "breakpoints": true
     }
   ]
 }
