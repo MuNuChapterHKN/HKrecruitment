@@ -2,6 +2,7 @@ import { google } from 'googleapis';
 import { Result, ok, err, fromPromise } from 'neverthrow';
 import { service } from '../service';
 import { DriveFolder } from './types';
+import { isLocalDrive, localCreateFolder, localGetFolderByName } from './local';
 
 function escapeQueryValue(value: string) {
   return value.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
@@ -11,6 +12,8 @@ export async function getFolderByName(
   name: string,
   parentId?: string
 ): Promise<Result<DriveFolder | null, Error>> {
+  if (isLocalDrive()) return localGetFolderByName(name, parentId);
+
   const authResult = await service.getAuth();
   if (authResult.isErr()) {
     return err(authResult.error);
@@ -49,6 +52,8 @@ export async function createFolder(params: {
   name: string;
   parentId?: string;
 }): Promise<Result<DriveFolder, Error>> {
+  if (isLocalDrive()) return localCreateFolder(params);
+
   const authResult = await service.getAuth();
   if (authResult.isErr()) {
     return err(authResult.error);
