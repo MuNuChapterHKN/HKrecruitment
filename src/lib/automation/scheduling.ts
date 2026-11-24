@@ -1,9 +1,9 @@
 ﻿import { DateTime } from 'luxon';
 
 export const ROME_TIMEZONE = 'Europe/Rome';
-export const DEFAULT_STAGE_DELAY_HOURS = 1;
-export const SLEEPING_HOUR_CUTOFF = 21;
-export const NEXT_DAY_START_HOUR = 9;
+export const DEFAULT_STAGE_DELAY_HOURS = 0;
+export const SLEEPING_HOUR_CUTOFF = 23;
+export const NEXT_DAY_START_HOUR = 7;
 
 export function computeStageExecutionTime(
   occurredAt: Date,

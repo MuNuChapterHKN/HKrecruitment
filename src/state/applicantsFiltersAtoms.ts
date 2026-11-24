@@ -8,7 +8,6 @@ export type ApplicantsFilters = {
   search: string;
   stages: ApplicationStage[];
   degreeLevels: DegreeLevel[];
-  areas: Area[];
   showArchived: boolean;
 };
 
@@ -16,7 +15,6 @@ export const defaultApplicantsFilters: ApplicantsFilters = {
   search: '',
   stages: [],
   degreeLevels: [],
-  areas: [],
   showArchived: false,
 };
 

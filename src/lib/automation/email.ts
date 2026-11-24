@@ -12,11 +12,18 @@ function encodeSubject(subject: string): string {
 
 function buildRawMessage(params: {
   to: string;
+  replyTo?: string;
   subject: string;
   html: string;
 }): string {
+  const headers = [`To: ${params.to}`];
+
+  if (params.replyTo) {
+    headers.push(`Reply-To: ${params.replyTo}`);
+  }
+
   const message = [
-    `To: ${params.to}`,
+    ...headers,
     `Subject: ${encodeSubject(params.subject)}`,
     'MIME-Version: 1.0',
     'Content-Type: text/html; charset=UTF-8',
@@ -38,13 +45,17 @@ function escapeTelegramHtml(text: string): string {
 
 async function deliverEmail(params: {
   to: string;
+  replyTo?: string;
   subject: string;
   html: string;
 }): Promise<string | null> {
   const to = process.env.EMAIL_REDIRECT_TO || params.to;
+  const replyTo = params.replyTo ?? process.env.AUTOMATION_REPLY_TO;
 
   if (process.env.AUTOMATION_DRY_RUN === '1') {
-    console.log(`[DRY RUN][email] to=${to} subject=${params.subject}`);
+    console.log(
+      `[DRY RUN][email] to=${to} replyTo=${replyTo ?? ''} subject=${params.subject}`
+    );
     return DRY_RUN_MESSAGE_ID;
   }
 
@@ -58,7 +69,7 @@ async function deliverEmail(params: {
   const response = await gmail.users.messages.send({
     userId: 'me',
     requestBody: {
-      raw: buildRawMessage({ ...params, to }),
+      raw: buildRawMessage({ ...params, to, replyTo }),
     },
   });
 

@@ -8,7 +8,6 @@ import { getDashboardData } from '@/lib/services/dashboard';
 import { ActivityChart } from '@/components/dashboard/ActivityChart';
 import { StageSummary } from '@/components/dashboard/StageSummary';
 import { CourseSummary } from '@/components/dashboard/CourseSummary';
-import { AutomationsSection } from '@/components/dashboard/AutomationsSection';
 import { LatestApplicantsSection } from '@/components/dashboard/LatestApplicantsSection';
 
 export default async function Dashboard({
@@ -24,7 +23,7 @@ export default async function Dashboard({
   const role = await findUserRoleForSession(session.user.id, rid);
 
   if (role === AuthUserRole.Guest) {
-    return <GuestOverview />;
+    return <GuestOverview name={session.user.name} />;
   }
 
   const data = await getDashboardData(rid);
@@ -36,7 +35,6 @@ export default async function Dashboard({
     stageCounts,
     courseCounts,
     latestApplicants,
-    automations,
   } = data;
 
   return (
@@ -61,7 +59,7 @@ export default async function Dashboard({
         <CourseSummary courseCounts={courseCounts} />
       </section>
 
-      <AutomationsSection automations={automations} />
+      {/* <AutomationsSection automations={automations} /> */}
 
       <LatestApplicantsSection applicants={latestApplicants} />
     </main>

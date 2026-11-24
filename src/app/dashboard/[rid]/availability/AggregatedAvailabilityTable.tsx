@@ -1,6 +1,5 @@
 'use client';
 
-import { TimeslotWithAvailability } from './page';
 import { useState, useMemo } from 'react';
 import {
   Tooltip,
@@ -8,8 +7,29 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { X, Calendar, Calendars } from 'lucide-react';
+import { X, Calendar, Calendars, Lock } from 'lucide-react';
 import { getMeetingLink } from '@/lib/utils';
+import { DashboardLink } from '@/components/dashboard/DashboardLink';
+
+export type TimeslotWithAvailability = {
+  id: string;
+  startingFrom: Date;
+  totalUsers: number;
+  firstTimeUsers: number;
+  userNames: string[];
+  firstTimeUserNames: string[];
+  interviews: {
+    meetingId: string;
+    applicant: { name: string; surname: string };
+    interviewers: string[];
+  }[];
+  blockedBy: {
+    id: string;
+    name: string;
+    surname: string;
+    causeTimeslotId: string;
+  }[];
+};
 
 const WEEK_DAYS = [
   'Monday',
@@ -134,12 +154,12 @@ export function AggregatedAvailabilityTable({
             ←
           </button>
           <span className="text-sm font-medium min-w-[200px] text-center">
-            {weekDates[0].toLocaleDateString('en-US', {
+            {weekDates[0].toLocaleDateString('it-IT', {
               month: 'short',
               day: 'numeric',
             })}{' '}
             -{' '}
-            {weekDates[6].toLocaleDateString('en-US', {
+            {weekDates[6].toLocaleDateString('it-IT', {
               month: 'short',
               day: 'numeric',
               year: 'numeric',
@@ -164,8 +184,8 @@ export function AggregatedAvailabilityTable({
                   <th className="p-2 border min-w-[110px]" key={day}>
                     <div>{day}</div>
                     <div className="text-xs font-normal text-gray-500">
-                      {weekDates[index].toLocaleDateString('en-US', {
-                        month: 'numeric',
+                      {weekDates[index].toLocaleDateString('it-IT', {
+                        month: 'short',
                         day: 'numeric',
                       })}
                     </div>
@@ -196,6 +216,14 @@ export function AggregatedAvailabilityTable({
                       );
                     }
 
+                    const blockedBy = timeslot.blockedBy;
+                    const interviewerNamesInMeeting = new Set<string>();
+                    timeslot.interviews.forEach((interview) => {
+                      interview.interviewers.forEach((interviewer) =>
+                        interviewerNamesInMeeting.add(interviewer)
+                      );
+                    });
+
                     let userCount =
                       timeslot.totalUsers - timeslot.firstTimeUsers;
 
@@ -205,13 +233,6 @@ export function AggregatedAvailabilityTable({
                       userCount >= 2
                         ? 'bg-green-500 text-white'
                         : 'bg-red-400 text-white';
-
-                    const interviewerNamesInMeeting = new Set<string>();
-                    timeslot.interviews.forEach((interview) => {
-                      interview.interviewers.forEach((interviewer) =>
-                        interviewerNamesInMeeting.add(interviewer)
-                      );
-                    });
 
                     const tooltipContent = (
                       <div className="space-y-1">
@@ -239,7 +260,7 @@ export function AggregatedAvailabilityTable({
                         return (
                           <td
                             key={cellKey}
-                            className="border text-center p-2 bg-white"
+                            className={`border text-center p-2 ${blockedBy.length > 0 ? 'bg-gray-300' : 'bg-white'}`}
                           >
                             <X className="w-4 h-4 mx-auto text-gray-400" />
                           </td>
@@ -307,7 +328,15 @@ export function AggregatedAvailabilityTable({
                     return (
                       <td
                         key={cellKey}
-                        className={`border text-center p-2 ${timeslot.totalUsers > 0 ? cellColor : timeslot.interviews.length > 0 ? COLORS.CELL_WITH_INTERVIEW : 'bg-white'}`}
+                        className={`border text-center p-2 ${
+                          blockedBy.length > 0
+                            ? 'bg-gray-300'
+                            : timeslot.totalUsers > 0
+                              ? cellColor
+                              : timeslot.interviews.length > 0
+                                ? COLORS.CELL_WITH_INTERVIEW
+                                : 'bg-white'
+                        }`}
                       >
                         <div className="flex items-center justify-center gap-2">
                           {timeslot.totalUsers > 0 && (
@@ -336,6 +365,69 @@ export function AggregatedAvailabilityTable({
                               </TooltipTrigger>
                               <TooltipContent>
                                 {interviewsTooltip}
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
+                          {blockedBy.length > 0 && (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="cursor-help">
+                                  <Lock className="w-4 h-4" />
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-xs text-pretty">
+                                <div className="space-y-4">
+                                  {blockedBy.map((applicant, idx) => {
+                                    const isIndirectlyBlocked =
+                                      applicant.causeTimeslotId !== timeslot.id;
+
+                                    return (
+                                      <div
+                                        key={`${applicant.id}-${applicant.causeTimeslotId}`}
+                                        className="space-y-3"
+                                      >
+                                        {idx > 0 && (
+                                          <hr className="border-gray-600" />
+                                        )}
+
+                                        <div className="space-y-2">
+                                          <div className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                                            Blocked
+                                            {isIndirectlyBlocked
+                                              ? ' (due to adjacent block)'
+                                              : ' (due to candidate reservation)'}
+                                            {blockedBy.length > 1
+                                              ? ` #${idx + 1}`
+                                              : ''}
+                                          </div>
+                                          <div className="text-xs text-gray-300">
+                                            Reserved until the interview is
+                                            confirmed, to avoid overbooking. In
+                                            order to unlock it, go to the
+                                            candidates page and confirm the
+                                            meeting by choosing the
+                                            interviewers.
+                                          </div>
+                                          <div>
+                                            <div className="text-xs text-gray-400 mb-0.5">
+                                              Applicant
+                                            </div>
+                                            <div className="font-semibold text-base text-white">
+                                              {applicant.name}{' '}
+                                              {applicant.surname}
+                                            </div>
+                                          </div>
+                                          <DashboardLink
+                                            href={`/candidates/${applicant.id}`}
+                                            className="inline-block mt-2 text-xs font-medium bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 transition-colors"
+                                          >
+                                            Open candidate details
+                                          </DashboardLink>
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
                               </TooltipContent>
                             </Tooltip>
                           )}

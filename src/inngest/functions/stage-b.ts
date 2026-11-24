@@ -14,8 +14,10 @@ type StageEventData = {
 };
 
 function buildBookingUrl(applicantId: string, token: string | null): string {
-  const baseUrl = process.env.HKRECRUITMENT_URL || 'http://localhost:3000';
-  const url = new URL(`/interview/book/${applicantId}`, baseUrl);
+  const baseUrl =
+    process.env.HKRECRUITMENT_URL || 'http://localhost:3000/recruitment';
+  const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+  const url = new URL(`interview/book/${applicantId}`, normalizedBaseUrl);
 
   if (token) {
     url.searchParams.set('token', token);
@@ -72,6 +74,8 @@ export const stageBInterviewBookingEmail = inngest.createFunction(
     });
 
     await step.run('send-interview-booking-email', async () => {
+      return true; // TODO: temporarily disabled email sending
+      /*
       await sendLoggedEmail({
         type: 'interview_booking',
         to: context.applicant.email,
@@ -82,6 +86,7 @@ export const stageBInterviewBookingEmail = inngest.createFunction(
           'HKN Mu Nu Chapter - Book your interview',
         html,
       });
+      */
     });
 
     await step.run('notify-hr-and-log', async () => {

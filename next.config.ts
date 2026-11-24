@@ -10,9 +10,14 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/',
-        destination: '/recruitment/signin',
+        destination: '/recruitment/dashboard',
         basePath: false,
-        permanent: true,
+        permanent: false,
+      },
+      {
+        source: '/',
+        destination: '/dashboard',
+        permanent: false,
       },
     ];
   },

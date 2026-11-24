@@ -3,6 +3,12 @@ import { Result, ok, err, fromPromise } from 'neverthrow';
 import { service } from '../service';
 import { DriveFile } from './types';
 import stream from 'stream';
+import {
+  isLocalDrive,
+  localGetFileMetadata,
+  localShareFileWithGroup,
+  localUploadFile,
+} from './local';
 
 export async function uploadFile(params: {
   file: {
@@ -12,6 +18,8 @@ export async function uploadFile(params: {
   };
   parentId?: string;
 }): Promise<Result<DriveFile, Error>> {
+  if (isLocalDrive()) return localUploadFile(params);
+
   const authResult = await service.getAuth();
   if (authResult.isErr()) {
     return err(authResult.error);
@@ -58,10 +66,12 @@ export async function uploadFile(params: {
   });
 }
 
-export async function shareFileWithDomain(
+export async function shareFileWithGroup(
   fileId: string,
-  domain: string
+  groupEmail: string
 ): Promise<Result<void, Error>> {
+  if (isLocalDrive()) return localShareFileWithGroup();
+
   const authResult = await service.getAuth();
   if (authResult.isErr()) {
     return err(authResult.error);
@@ -72,10 +82,11 @@ export async function shareFileWithDomain(
   return fromPromise(
     drive.permissions.create({
       fileId,
+      sendNotificationEmail: false,
       requestBody: {
         role: 'reader',
-        type: 'domain',
-        domain,
+        type: 'group',
+        emailAddress: groupEmail,
       },
     }),
     (error) =>
@@ -86,6 +97,8 @@ export async function shareFileWithDomain(
 export async function getFileMetadata(
   fileId: string
 ): Promise<Result<DriveFile, Error>> {
+  if (isLocalDrive()) return localGetFileMetadata(fileId);
+
   const authResult = await service.getAuth();
   if (authResult.isErr()) {
     return err(authResult.error);

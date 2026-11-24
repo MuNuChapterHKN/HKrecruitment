@@ -2,7 +2,7 @@
 
 import { TimeslotPeek } from './page';
 import { useState, useEffect } from 'react';
-import { Calendar } from 'lucide-react';
+import { Calendar, Lock } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
@@ -87,7 +87,8 @@ export function AvailabilitiesTable({
     setTimeslots((prev) => {
       const clickedSlot = prev.find((ts) => ts.id === timeslotId);
 
-      if (!clickedSlot || clickedSlot.locked) return prev;
+      if (!clickedSlot || clickedSlot.locked || clickedSlot.blocked)
+        return prev;
 
       const activeCount = prev.filter((ts) => ts.active).length;
 
@@ -168,12 +169,12 @@ export function AvailabilitiesTable({
             ←
           </button>
           <span className="text-sm font-medium min-w-[200px] text-center">
-            {weekDates[0].toLocaleDateString('en-US', {
+            {weekDates[0].toLocaleDateString('it-IT', {
               month: 'short',
               day: 'numeric',
             })}{' '}
             -{' '}
-            {weekDates[6].toLocaleDateString('en-US', {
+            {weekDates[6].toLocaleDateString('it-IT', {
               month: 'short',
               day: 'numeric',
               year: 'numeric',
@@ -198,8 +199,8 @@ export function AvailabilitiesTable({
                   <th className="p-2 border min-w-[110px]" key={day}>
                     <div>{day}</div>
                     <div className="text-xs font-normal text-gray-500">
-                      {weekDates[index].toLocaleDateString('en-US', {
-                        month: 'numeric',
+                      {weekDates[index].toLocaleDateString('it-IT', {
+                        month: 'short',
                         day: 'numeric',
                       })}
                     </div>
@@ -234,12 +235,27 @@ export function AvailabilitiesTable({
                       <td
                         key={cellKey}
                         onClick={() =>
-                          !timeslot.locked && toggleSlot(timeslot.id)
+                          !timeslot.locked &&
+                          !timeslot.blocked &&
+                          toggleSlot(timeslot.id)
                         }
                         className={`border text-center min-w-[110px]
-                        ${timeslot.locked ? 'bg-blue-500 text-white cursor-not-allowed' : timeslot.active ? 'bg-green-500 text-white cursor-pointer' : 'bg-white hover:bg-gray-100 cursor-pointer'}`}
+                        ${timeslot.blocked ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : timeslot.locked ? 'bg-blue-500 text-white cursor-not-allowed' : timeslot.active ? 'bg-green-500 text-white cursor-pointer' : 'bg-white hover:bg-gray-100 cursor-pointer'}`}
                       >
-                        {timeslot.locked ? (
+                        {timeslot.blocked ? (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div className="flex items-center justify-center">
+                                <Lock className="w-4 h-4" />
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              Slot blocked: there is an interview pending
+                              confirmation, you cannot change your availability
+                              for this timeslot
+                            </TooltipContent>
+                          </Tooltip>
+                        ) : timeslot.locked ? (
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <div className="flex items-center justify-center">

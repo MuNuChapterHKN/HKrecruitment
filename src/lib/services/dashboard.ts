@@ -37,6 +37,7 @@ function aggregateActivity(
   }
   for (const appl of applicants) {
     if (!appl.createdAt) continue;
+    if (appl.archived) continue;
     const key = toItalianDateKey(new Date(appl.createdAt));
     if (countMap.has(key)) {
       countMap.set(key, (countMap.get(key) ?? 0) + 1);
@@ -53,7 +54,9 @@ function countByStage(applicants: Applicant[]): StageCount[] {
   for (const appl of applicants) {
     map.set(appl.stage, (map.get(appl.stage) ?? 0) + 1);
   }
-  return Array.from(map.entries()).map(([stage, count]) => ({ stage, count }));
+  return Array.from(map.entries())
+    .sort(([stageA], [stageB]) => stageA.localeCompare(stageB))
+    .map(([stage, count]) => ({ stage, count }));
 }
 
 function countByCourse(applicants: Applicant[]): CourseCount[] {

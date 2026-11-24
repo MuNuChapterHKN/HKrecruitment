@@ -1,12 +1,12 @@
-import { db, schema } from '@/db';
+import { db, schema, type DbExecutor } from '@/db';
 import { and, eq } from 'drizzle-orm';
 
 const tsl = schema.timeslot;
 
 export const TIMESLOT_AVAILABILITY_MARGIN = 1;
 
-export const findAll = async (rid: string) =>
-  await db.select().from(tsl).where(eq(tsl.recruitingSessionId, rid));
+export const findAll = async (rid: string, executor: DbExecutor = db) =>
+  await executor.select().from(tsl).where(eq(tsl.recruitingSessionId, rid));
 
 export const findAllMasked = async (rid: string) =>
   await db
@@ -34,8 +34,11 @@ export const findForUser = async (userId: string) => {
   return availabilities.map((a) => a.timeslotId);
 };
 
-export const findTimeslotsWithInterviewsForUser = async (userId: string) => {
-  const interviews = await db
+export const findTimeslotsWithInterviewsForUser = async (
+  userId: string,
+  executor: DbExecutor = db
+) => {
+  const interviews = await executor
     .select({
       timeslotId: schema.interview.timeslotId,
     })
@@ -49,9 +52,68 @@ export const findTimeslotsWithInterviewsForUser = async (userId: string) => {
   return interviews.map((i) => i.timeslotId);
 };
 
-export const findWithAggregatedAvailability = async (rid: string) => {
-  const allTimeslots = await findAll(rid);
+export const findBlockedTimeslotsForUser = async (
+  rid: string,
+  userId: string,
+  executor: DbExecutor = db
+) => {
+  const pendingInterviews = await executor
+    .select({ timeslotId: schema.interview.timeslotId })
+    .from(schema.interview)
+    .innerJoin(
+      schema.timeslot,
+      eq(schema.interview.timeslotId, schema.timeslot.id)
+    )
+    .where(
+      and(
+        eq(schema.timeslot.recruitingSessionId, rid),
+        eq(schema.interview.confirmed, false)
+      )
+    );
 
+  const blockedTimeslotIds = new Set(
+    pendingInterviews.map(({ timeslotId }) => timeslotId)
+  );
+
+  const userAvailabilities = await executor
+    .select({ timeslotId: schema.interviewerAvailability.timeslotId })
+    .from(schema.interviewerAvailability)
+    .where(eq(schema.interviewerAvailability.userId, userId));
+
+  return userAvailabilities
+    .map((availability) => availability.timeslotId)
+    .filter((timeslotId) => blockedTimeslotIds.has(timeslotId));
+};
+
+const findPendingInterviewSummaries = async (rid: string) => {
+  return await db
+    .select({
+      timeslotId: schema.interview.timeslotId,
+      applicantId: schema.applicant.id,
+      applicantName: schema.applicant.name,
+      applicantSurname: schema.applicant.surname,
+    })
+    .from(schema.interview)
+    .innerJoin(
+      schema.applicant,
+      eq(schema.interview.id, schema.applicant.interviewId)
+    )
+    .innerJoin(
+      schema.timeslot,
+      eq(schema.interview.timeslotId, schema.timeslot.id)
+    )
+    .where(
+      and(
+        eq(schema.timeslot.recruitingSessionId, rid),
+        eq(schema.interview.confirmed, false)
+      )
+    );
+};
+
+const buildAggregatedAvailability = async (
+  rid: string,
+  allTimeslots: Awaited<ReturnType<typeof findAll>>
+) => {
   const timeslotIndices = new Map<string, number>();
   const sortedTimeslots = [...allTimeslots].sort(
     (a, b) => a.startingFrom.getTime() - b.startingFrom.getTime()
@@ -67,6 +129,7 @@ export const findWithAggregatedAvailability = async (rid: string) => {
       meetingId: schema.interview.meetingId,
       applicantName: schema.applicant.name,
       applicantSurname: schema.applicant.surname,
+      applicantId: schema.applicant.id,
       interviewerId: schema.usersToInterviews.userId,
       interviewerName: schema.user.name,
     })
@@ -90,8 +153,9 @@ export const findWithAggregatedAvailability = async (rid: string) => {
     string,
     {
       meetingId: string;
-      applicant: { name: string; surname: string };
+      applicant: { name: string; surname: string; id: string };
       interviewers: string[];
+      interviewerIds: string[];
     }[]
   >();
 
@@ -108,8 +172,10 @@ export const findWithAggregatedAvailability = async (rid: string) => {
         applicant: {
           name: record.applicantName,
           surname: record.applicantSurname,
+          id: record.applicantId,
         },
         interviewers: [],
+        interviewerIds: [],
       };
       interviews.push(interview);
     }
@@ -119,6 +185,65 @@ export const findWithAggregatedAvailability = async (rid: string) => {
       !interview.interviewers.includes(record.interviewerName)
     ) {
       interview.interviewers.push(record.interviewerName);
+    }
+
+    if (
+      record.interviewerId &&
+      !interview.interviewerIds.includes(record.interviewerId)
+    ) {
+      interview.interviewerIds.push(record.interviewerId);
+    }
+  });
+
+  const pendingInterviewData = await findPendingInterviewSummaries(rid);
+  const pendingApplicantsByTimeslotId = new Map<
+    string,
+    { id: string; name: string; surname: string }[]
+  >();
+  pendingInterviewData.forEach((record) => {
+    const applicant = {
+      id: record.applicantId,
+      name: record.applicantName,
+      surname: record.applicantSurname,
+    };
+
+    if (!pendingApplicantsByTimeslotId.has(record.timeslotId)) {
+      pendingApplicantsByTimeslotId.set(record.timeslotId, []);
+    }
+    pendingApplicantsByTimeslotId.get(record.timeslotId)!.push(applicant);
+  });
+
+  const blockedApplicantsByIndex = new Map<
+    number,
+    {
+      id: string;
+      name: string;
+      surname: string;
+      causeTimeslotId: string;
+    }[]
+  >();
+
+  pendingApplicantsByTimeslotId.forEach((applicants, timeslotId) => {
+    const pendingIndex = timeslotIndices.get(timeslotId);
+    if (pendingIndex === undefined) return;
+
+    for (
+      let i = pendingIndex - TIMESLOT_AVAILABILITY_MARGIN;
+      i <= pendingIndex + TIMESLOT_AVAILABILITY_MARGIN;
+      i++
+    ) {
+      if (i < 0 || i >= sortedTimeslots.length) continue;
+
+      if (!blockedApplicantsByIndex.has(i)) {
+        blockedApplicantsByIndex.set(i, []);
+      }
+
+      blockedApplicantsByIndex.get(i)!.push(
+        ...applicants.map((applicant) => ({
+          ...applicant,
+          causeTimeslotId: timeslotId,
+        }))
+      );
     }
   });
 
@@ -196,6 +321,8 @@ export const findWithAggregatedAvailability = async (rid: string) => {
       userIds: [],
     };
     const interviews = timeslotInterviewMap.get(ts.id) || [];
+    const blockedBy =
+      blockedApplicantsByIndex.get(timeslotIndices.get(ts.id)!) || [];
 
     return {
       id: ts.id,
@@ -205,187 +332,56 @@ export const findWithAggregatedAvailability = async (rid: string) => {
       userNames: availability.users,
       firstTimeUserNames: availability.firstTimeUsers,
       interviews,
+      blockedBy,
     };
   });
+};
+
+export const findWithAggregatedAvailability = async (rid: string) => {
+  return await buildAggregatedAvailability(rid, await findAll(rid));
 };
 
 export const findWithMaskedAggregatedAvailability = async (rid: string) => {
-  const allTimeslots = await findAllMasked(rid);
-
-  const timeslotIndices = new Map<string, number>();
-  const sortedTimeslots = [...allTimeslots].sort(
-    (a, b) => a.startingFrom.getTime() - b.startingFrom.getTime()
-  );
-  sortedTimeslots.forEach((ts, index) => {
-    timeslotIndices.set(ts.id, index);
-  });
-
-  const interviewData = await db
-    .select({
-      timeslotId: schema.interview.timeslotId,
-      interviewId: schema.interview.id,
-      meetingId: schema.interview.meetingId,
-      applicantName: schema.applicant.name,
-      applicantSurname: schema.applicant.surname,
-      interviewerId: schema.usersToInterviews.userId,
-      interviewerName: schema.user.name,
-    })
-    .from(schema.interview)
-    .innerJoin(
-      schema.applicant,
-      eq(schema.interview.id, schema.applicant.interviewId)
-    )
-    .innerJoin(
-      schema.usersToInterviews,
-      eq(schema.interview.id, schema.usersToInterviews.interviewId)
-    )
-    .innerJoin(schema.user, eq(schema.usersToInterviews.userId, schema.user.id))
-    .innerJoin(
-      schema.timeslot,
-      eq(schema.interview.timeslotId, schema.timeslot.id)
-    )
-    .where(eq(schema.timeslot.recruitingSessionId, rid));
-
-  const timeslotInterviewMap = new Map<
-    string,
-    {
-      meetingId: string;
-      applicant: { name: string; surname: string };
-      interviewers: string[];
-    }[]
-  >();
-
-  interviewData.forEach((record) => {
-    if (!timeslotInterviewMap.has(record.timeslotId)) {
-      timeslotInterviewMap.set(record.timeslotId, []);
-    }
-    const interviews = timeslotInterviewMap.get(record.timeslotId)!;
-
-    let interview = interviews.find((i) => i.meetingId === record.meetingId);
-    if (!interview) {
-      interview = {
-        meetingId: record.meetingId || '',
-        applicant: {
-          name: record.applicantName,
-          surname: record.applicantSurname,
-        },
-        interviewers: [],
-      };
-      interviews.push(interview);
-    }
-
-    if (
-      record.interviewerName &&
-      !interview.interviewers.includes(record.interviewerName)
-    ) {
-      interview.interviewers.push(record.interviewerName);
-    }
-  });
-
-  const userInterviews = new Map<string, Set<number>>();
-  interviewData.forEach((row) => {
-    if (row.interviewerId && row.timeslotId) {
-      const timeslotIndex = timeslotIndices.get(row.timeslotId);
-      if (timeslotIndex !== undefined) {
-        if (!userInterviews.has(row.interviewerId)) {
-          userInterviews.set(row.interviewerId, new Set());
-        }
-        userInterviews.get(row.interviewerId)!.add(timeslotIndex);
-      }
-    }
-  });
-
-  const availabilityData = await db
-    .select({
-      timeslotId: schema.interviewerAvailability.timeslotId,
-      userId: schema.interviewerAvailability.userId,
-      userName: schema.user.name,
-      isFirstTime: schema.user.isFirstTime,
-    })
-    .from(schema.interviewerAvailability)
-    .innerJoin(
-      schema.user,
-      eq(schema.interviewerAvailability.userId, schema.user.id)
-    );
-
-  const timeslotAvailabilityMap = new Map<
-    string,
-    { users: string[]; firstTimeUsers: string[]; userIds: string[] }
-  >();
-
-  availabilityData.forEach((record) => {
-    if (!timeslotAvailabilityMap.has(record.timeslotId)) {
-      timeslotAvailabilityMap.set(record.timeslotId, {
-        users: [],
-        firstTimeUsers: [],
-        userIds: [],
-      });
-    }
-    const data = timeslotAvailabilityMap.get(record.timeslotId)!;
-
-    const currentIndex = timeslotIndices.get(record.timeslotId)!;
-    const userInterviewIndices = userInterviews.get(record.userId);
-
-    let isAvailable = true;
-    if (userInterviewIndices) {
-      for (
-        let i = currentIndex - TIMESLOT_AVAILABILITY_MARGIN;
-        i <= currentIndex + TIMESLOT_AVAILABILITY_MARGIN;
-        i++
-      ) {
-        if (userInterviewIndices.has(i)) {
-          isAvailable = false;
-          break;
-        }
-      }
-    }
-
-    if (isAvailable) {
-      data.users.push(record.userName);
-      data.userIds.push(record.userId);
-      if (record.isFirstTime) {
-        data.firstTimeUsers.push(record.userName);
-      }
-    }
-  });
-
-  return allTimeslots.map((ts) => {
-    const availability = timeslotAvailabilityMap.get(ts.id) || {
-      users: [],
-      firstTimeUsers: [],
-      userIds: [],
-    };
-    const interviews = timeslotInterviewMap.get(ts.id) || [];
-
-    return {
-      id: ts.id,
-      startingFrom: ts.startingFrom,
-      totalUsers: availability.users.length,
-      firstTimeUsers: availability.firstTimeUsers.length,
-      userNames: availability.users,
-      firstTimeUserNames: availability.firstTimeUsers,
-      interviews,
-    };
-  });
+  return await buildAggregatedAvailability(rid, await findAllMasked(rid));
 };
 
-export const findAvailableForBooking = async (rid: string) => {
+const hasInterviewWithinMargin = (
+  interviewIndices: Set<number>,
+  currentIndex: number
+) => {
+  for (
+    let i = currentIndex - TIMESLOT_AVAILABILITY_MARGIN;
+    i <= currentIndex + TIMESLOT_AVAILABILITY_MARGIN;
+    i++
+  ) {
+    if (interviewIndices.has(i)) {
+      return true;
+    }
+  }
+  return false;
+};
+
+export const findAvailableForBooking = async (
+  rid: string,
+  executor: DbExecutor = db
+) => {
   const now = new Date();
   const tomorrow = new Date(now);
-  tomorrow.setDate(tomorrow.getDate() + 2);
+  tomorrow.setDate(tomorrow.getDate()); // TODO: temporary remove the 48h check
   tomorrow.setHours(0, 0, 0, 0);
 
-  const allTimeslots = await findAll(rid);
+  const allTimeslots = await findAll(rid, executor);
   const futureTimeslots = allTimeslots.filter(
     (ts) => ts.startingFrom >= tomorrow
   );
 
-  const allTimeslotsWithInterviews = await db
+  const allTimeslotsWithInterviews = await executor
     .select({
       timeslotId: schema.timeslot.id,
       startingFrom: schema.timeslot.startingFrom,
       interviewId: schema.interview.id,
       userId: schema.usersToInterviews.userId,
+      confirmed: schema.interview.confirmed,
     })
     .from(schema.timeslot)
     .leftJoin(
@@ -398,11 +394,6 @@ export const findAvailableForBooking = async (rid: string) => {
     )
     .where(eq(schema.timeslot.recruitingSessionId, rid));
 
-  const timeslotMap = new Map<string, Date>();
-  allTimeslots.forEach((ts) => {
-    timeslotMap.set(ts.id, ts.startingFrom);
-  });
-
   const timeslotIndices = new Map<string, number>();
   const sortedTimeslots = [...allTimeslots].sort(
     (a, b) => a.startingFrom.getTime() - b.startingFrom.getTime()
@@ -412,7 +403,15 @@ export const findAvailableForBooking = async (rid: string) => {
   });
 
   const userInterviews = new Map<string, Set<number>>();
+  const pendingTimeslotIndices = new Set<number>();
   allTimeslotsWithInterviews.forEach((row) => {
+    if (row.interviewId && row.confirmed === false) {
+      const timeslotIndex = timeslotIndices.get(row.timeslotId);
+      if (timeslotIndex !== undefined) {
+        pendingTimeslotIndices.add(timeslotIndex);
+      }
+    }
+
     if (row.userId && row.interviewId && row.timeslotId) {
       const timeslotIndex = timeslotIndices.get(row.timeslotId);
       if (timeslotIndex !== undefined) {
@@ -424,7 +423,7 @@ export const findAvailableForBooking = async (rid: string) => {
     }
   });
 
-  const availabilities = await db
+  const availabilities = await executor
     .select({
       userId: schema.interviewerAvailability.userId,
       timeslotId: schema.interviewerAvailability.timeslotId,
@@ -446,6 +445,10 @@ export const findAvailableForBooking = async (rid: string) => {
   for (const timeslot of futureTimeslots) {
     const currentIndex = timeslotIndices.get(timeslot.id)!;
 
+    if (hasInterviewWithinMargin(pendingTimeslotIndices, currentIndex)) {
+      continue;
+    }
+
     const usersAvailableInSlot = availabilities.filter(
       (a) => a.timeslotId === timeslot.id
     );
@@ -454,16 +457,7 @@ export const findAvailableForBooking = async (rid: string) => {
       const userInterviewIndices = userInterviews.get(user.userId);
       if (!userInterviewIndices) return true;
 
-      for (
-        let i = currentIndex - TIMESLOT_AVAILABILITY_MARGIN;
-        i <= currentIndex + TIMESLOT_AVAILABILITY_MARGIN;
-        i++
-      ) {
-        if (userInterviewIndices.has(i)) {
-          return false;
-        }
-      }
-      return true;
+      return !hasInterviewWithinMargin(userInterviewIndices, currentIndex);
     });
 
     const firstTimeCount = actuallyAvailableUsers.filter(

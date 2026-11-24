@@ -94,23 +94,19 @@ export function ApplicantsListClient({
       )
         return false;
 
-      if (filters.areas.length > 0) {
-        const chosenArea = (a as Applicant & { chosenArea?: string | null })
-          .chosenArea;
-        if (!chosenArea || !filters.areas.includes(chosenArea as never))
-          return false;
-      }
-
       return true;
     });
   }, [optimisticApplicants, deferredSearch, filters]);
+
+  const visibleApplicantsCount = filters.showArchived
+    ? optimisticApplicants.length
+    : optimisticApplicants.filter((a) => !a.archived).length;
 
   const isStale = filters.search !== deferredSearch;
   const hasAnyFilter =
     deferredSearch.trim().length > 0 ||
     filters.stages.length > 0 ||
     filters.degreeLevels.length > 0 ||
-    filters.areas.length > 0 ||
     filters.showArchived;
 
   return (
@@ -120,8 +116,8 @@ export function ApplicantsListClient({
         <div className="flex items-center gap-3">
           <div className="text-sm text-muted-foreground">
             {hasAnyFilter
-              ? `${filtered.length} of ${applicants.length}`
-              : `${applicants.length} candidate${applicants.length !== 1 ? 's' : ''}`}
+              ? `${filtered.length} of ${visibleApplicantsCount}`
+              : `${visibleApplicantsCount} candidate${visibleApplicantsCount !== 1 ? 's' : ''}`}
           </div>
           <ViewToggle />
         </div>

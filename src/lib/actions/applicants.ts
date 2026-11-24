@@ -9,6 +9,14 @@ import { switchStage, switchToLimbo } from '@/lib/services/stages';
 import { getApplicantById } from '@/lib/services/applicants';
 import { abilityForUserInSession } from '@/lib/abilities/server';
 import type { ApplicationStage } from '@/db/types';
+import { db, schema } from '@/db';
+import { AREAS } from '@/db/schema';
+import { eq } from 'drizzle-orm';
+import type { Area } from '@/state/applicantsFiltersAtoms';
+
+function isArea(value: string): value is Area {
+  return (AREAS as readonly string[]).includes(value);
+}
 
 export async function acceptApplication(applicantId: string) {
   const session = await auth.api.getSession({
@@ -145,6 +153,48 @@ export async function removeFromLimbo(
   } catch (error) {
     console.error('Error removing from limbo:', error);
     return { success: false, error: 'Failed to remove from limbo' };
+  }
+}
+
+export async function assignArea(applicantId: string, area: string) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session) {
+    return { success: false, error: 'Unauthorized' };
+  }
+  const { user } = session;
+
+  try {
+    const applicant = await getApplicantById(applicantId);
+    if (!applicant) return { success: false, error: 'Applicant not found' };
+
+    const ability = await abilityForUserInSession(
+      user.id,
+      applicant.recruitingSessionId
+    );
+    if (!ability.can('manage', 'CandidatesActions')) {
+      return { success: false, error: 'Forbidden' };
+    }
+
+    if (!isArea(area)) {
+      return { success: false, error: 'Invalid area' };
+    }
+
+    await db
+      .update(schema.applicant)
+      .set({ chosenArea: area })
+      .where(eq(schema.applicant.id, applicantId));
+
+    revalidatePath(
+      `/dashboard/${applicant.recruitingSessionId}/candidates`,
+      'layout'
+    );
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error assigning area:', error);
+    return { success: false, error: 'Failed to assign area' };
   }
 }
 

@@ -33,6 +33,7 @@ For approved contributors, check out the contributing guidelines in [CONTRIBUTIN
       <td align="center" valign="top" width="0.01%"><a href="https://github.com/pippotadde"><img src="https://avatars.githubusercontent.com/u/199654936?v=4" width="75px;" alt="" /></a></td>
       <td align="center" valign="top" width="0.01%"><a href="https://github.com/LucaScibetta"><img src="https://avatars.githubusercontent.com/u/100673348?v=4" width="75px;" alt="" /></a></td>
       <td align="center" valign="top" width="0.01%"><a href="https://www.linkedin.com/in/stefano-falco-763783334"><img src="https://avatars.githubusercontent.com/u/185826235?v=4" width="75px;" alt="" /></a></td>
+      <td align="center" valign="top" width="0.01%"><a href="https://github.com/andrearosso"><img src="https://avatars.githubusercontent.com/u/8850536?v=4" width="75px;" alt="" /></a></td>
     </tr>
   </tbody>
 </table>

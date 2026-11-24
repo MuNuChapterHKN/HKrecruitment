@@ -1,7 +1,7 @@
 ﻿import { google } from 'googleapis';
 import { nanoid } from 'nanoid';
 import { DateTime } from 'luxon';
-import type { Applicant, Interview, Timeslot } from '@/db/types';
+import type { Applicant, Interview } from '@/db/types';
 import { service } from '@/lib/google/service';
 import { ROME_TIMEZONE } from './scheduling';
 

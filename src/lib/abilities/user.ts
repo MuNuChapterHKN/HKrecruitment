@@ -12,6 +12,7 @@ export type AppAction = 'read' | 'submit' | 'manage';
 export type AppSubject =
   | 'DashboardOverviewPage'
   | 'MyAvailabilityPage'
+  | 'TemplatesPage'
   | 'AvailabilityOverviewPage'
   | 'CandidatesPage'
   | 'CandidateDetailsPage'
@@ -20,6 +21,8 @@ export type AppSubject =
   | 'CandidatesActions'
   | 'MembersActions'
   | 'RecruitmentActions'
+  | 'UpcomingInterviewsPage'
+  | 'LeaderboardPage'
   | 'all';
 
 export type AppAbility = MongoAbility<[AppAction, AppSubject]>;
@@ -46,6 +49,7 @@ export function defineAbilityFor<T extends object>(user: UserLike<T>) {
   const { can, build } = new AbilityBuilder<AppAbility>(createMongoAbility);
   const role = resolveDashboardRole(user.role);
 
+  can('read', 'UpcomingInterviewsPage');
   can('read', 'DashboardOverviewPage');
   can('read', 'MyAvailabilityPage');
   can('submit', 'AvailabilityActions');
@@ -58,6 +62,8 @@ export function defineAbilityFor<T extends object>(user: UserLike<T>) {
     can('read', 'CandidatesPage');
     can('read', 'CandidateDetailsPage');
     can('manage', 'CandidatesActions');
+    can('read', 'TemplatesPage');
+    can('read', 'LeaderboardPage');
   }
 
   if (role === 'admin') {

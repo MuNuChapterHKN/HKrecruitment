@@ -6,8 +6,14 @@ If this closes an issue, write "Closes #1" where #1 should be the number of the 
 
 Tiny description, nothing fancy, even just one sentence. Write here if you had difficulties in implementing something.
 
+**Time spent:**
+
+How many hours the task took, roughly (e.g. 2 h).
+
 **Guidelines Check:**
 
+- [ ] The pull request targets `dev`, not `main`.
+- [ ] `pnpm lint`, `pnpm typecheck` and `pnpm pretty` pass.
 - [ ] I ran `pnpm dev` and checked the results.  
 - [ ] I successfully ran `pnpm build`.
 - [ ] I checked if there was something similar already that I could use, instead of creating it from scratch.  
