@@ -152,7 +152,21 @@ export async function archiveApplicantAction(rid: string, applicantId: string) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) return { success: false, error: 'Unauthorized' };
 
+  const { user } = session;
+
   try {
+    const applicant = await getApplicantById(applicantId);
+    if (!applicant) return { success: false, error: 'Applicant not found' };
+
+    const ability = await abilityForUserInSession(
+      user.id,
+      applicant.recruitingSessionId
+    );
+
+    if (!ability.can('manage', 'CandidatesActions')) {
+      return { success: false, error: 'Forbidden' };
+    }
+
     await setApplicantArchived(rid, applicantId, true);
     revalidatePath(`/dashboard/${rid}/candidates`);
     return { success: true };
@@ -169,7 +183,21 @@ export async function unarchiveApplicantAction(
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) return { success: false, error: 'Unauthorized' };
 
+  const { user } = session;
+
   try {
+    const applicant = await getApplicantById(applicantId);
+    if (!applicant) return { success: false, error: 'Applicant not found' };
+
+    const ability = await abilityForUserInSession(
+      user.id,
+      applicant.recruitingSessionId
+    );
+
+    if (!ability.can('manage', 'CandidatesActions')) {
+      return { success: false, error: 'Forbidden' };
+    }
+
     await setApplicantArchived(rid, applicantId, false);
     revalidatePath(`/dashboard/${rid}/candidates`);
     return { success: true };
