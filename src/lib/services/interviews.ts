@@ -11,6 +11,7 @@ export const findOne = async (interviewId: string) => {
     .select({
       id: schema.interview.id,
       timeslotId: schema.interview.timeslotId,
+      recruitingSessionId: schema.timeslot.recruitingSessionId,
       meetingId: schema.interview.meetingId,
       reportDocId: schema.interview.reportDocId,
       confirmed: schema.interview.confirmed,
@@ -24,7 +25,7 @@ export const findOne = async (interviewId: string) => {
     .where(eq(schema.interview.id, interviewId))
     .limit(1);
 
-  return result[0] ?? null;
+  return result.at(0) ?? null;
 };
 
 export const findInterviewers = async (interviewId: string) => {
