@@ -13,6 +13,13 @@ type StageEventData = {
   scheduledAt: string;
 };
 
+export function isStageBEmailEnabled(
+  value: string | undefined = process.env.STAGE_B_EMAIL_ENABLED
+): boolean {
+  const normalized = value?.trim().toLowerCase();
+  return normalized === '1' || normalized === 'true';
+}
+
 function buildBookingUrl(applicantId: string, token: string | null): string {
   const baseUrl =
     process.env.HKRECRUITMENT_URL || 'http://localhost:3000/recruitment';
@@ -73,28 +80,36 @@ export const stageBInterviewBookingEmail = inngest.createFunction(
       });
     });
 
-    await step.run('send-interview-booking-email', async () => {
-      return true; // TODO: temporarily disabled email sending
-      /*
-      await sendLoggedEmail({
-        type: 'interview_booking',
-        to: context.applicant.email,
-        applicantId: context.applicant.id,
-        stageStatusId: context.stageStatus.id,
-        subject:
-          process.env.STAGE_B_EMAIL_SUBJECT ||
-          'HKN Mu Nu Chapter - Book your interview',
-        html,
-      });
-      */
-    });
+    const emailSent = await step.run(
+      'send-interview-booking-email',
+      async () => {
+        if (!isStageBEmailEnabled()) {
+          return false;
+        }
+
+        await sendLoggedEmail({
+          type: 'interview_booking',
+          to: context.applicant.email,
+          applicantId: context.applicant.id,
+          stageStatusId: context.stageStatus.id,
+          subject:
+            process.env.STAGE_B_EMAIL_SUBJECT ||
+            'HKN Mu Nu Chapter - Book your interview',
+          html,
+        });
+
+        return true;
+      }
+    );
 
     await step.run('notify-hr-and-log', async () => {
       const candidate = `${context.applicant.name} ${context.applicant.surname}`;
 
       await notifyTelegram({
         channel: 'hr',
-        text: `Interview booking email sent to ${candidate}.`,
+        text: emailSent
+          ? `Interview booking email sent to ${candidate}.`
+          : `Interview booking email NOT sent (disabled) for ${candidate}: ${interviewBookingUrl}`,
       });
 
       await notifyTelegram({
@@ -107,6 +122,6 @@ export const stageBInterviewBookingEmail = inngest.createFunction(
       await markStageStatusProcessed(context.stageStatus.id);
     });
 
-    return { success: true };
+    return { success: true, emailSent };
   }
 );
