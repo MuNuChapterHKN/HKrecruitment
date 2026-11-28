@@ -8,6 +8,7 @@ import {
   shareFileWithGroup,
   getFileMetadata,
 } from '@/lib/google/drive/files';
+import { abilityForUserInSession } from '@/lib/abilities/server';
 import { getApplicantById } from '@/lib/services/applicants';
 import { auth } from '@/lib/server/auth';
 
@@ -20,9 +21,9 @@ export async function PATCH(
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const { user } = session;
 
     const { id } = await params;
-    const form = await req.formData();
 
     const currentApplicant = await getApplicantById(id);
     if (!currentApplicant) {
@@ -32,6 +33,15 @@ export async function PATCH(
       );
     }
 
+    const ability = await abilityForUserInSession(
+      user.id,
+      currentApplicant.recruitingSessionId
+    );
+    if (!ability.can('manage', 'CandidatesActions')) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
+    const form = await req.formData();
     const fileType = form.get('fileType') as 'cv' | 'sp' | null;
     const file = form.get('file') as File | null;
 
